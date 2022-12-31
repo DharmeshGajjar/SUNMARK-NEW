@@ -1,0 +1,2072 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
+    List<SUNMark.Models.AccountMasterModel> accountmasterList = ViewBag.accountmasterList as List<SUNMark.Models.AccountMasterModel>;
+    List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
+    List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
+    ViewData["Title"] = userRight.ModuleNm;
+    string headerAdd = "";
+    string headerList = "";
+    string gridAdd = "";
+    string gridList = "";
+    bool headerAddTrue = false;
+    bool headerListTrue = false;
+    int vNo = ViewBag.voucherNo != null ? Convert.ToInt32(ViewBag.voucherNo) : 0;
+    int id = ViewBag.id != null ? (int)ViewBag.id : 0;
+    var companyList = ViewBag.companyList != null ? ViewBag.companyList as List<SelectListItem> : new List<SelectListItem>();
+    var godownList = ViewBag.godownList != null ? ViewBag.godownList as List<SelectListItem> : new List<SelectListItem>();
+    var productTypeList = ViewBag.productTypeList != null ? ViewBag.productTypeList as List<SelectListItem> : new List<SelectListItem>();
+    var productList = ViewBag.productList != null ? ViewBag.productList as List<SelectListItem> : new List<SelectListItem>();
+    var gradeList = ViewBag.gradeList != null ? ViewBag.gradeList as List<SelectListItem> : new List<SelectListItem>();
+    var processDoneList = ViewBag.processDoneList != null ? ViewBag.processDoneList as List<SelectListItem> : new List<SelectListItem>();
+    var locationList = ViewBag.locationList != null ? ViewBag.locationList as List<SelectListItem> : new List<SelectListItem>();
+    if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+    {
+        headerAdd = "active";
+        gridAdd = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+}
+
+<style>
+    #tblDisplay thead tr th {
+        padding: 5px !important;
+        text-align: center
+    }
+
+    #tblDisplay tbody tr td {
+        padding: 5px !important;
+        text-align: center
+    }
+
+    #tblCoil tbody tr td,
+    #tblCoil thead tr th {
+        padding: 5px !important;
+        text-align: center
+    }
+
+    #tblPipe tbody tr td,
+    #tblPipe thead tr th {
+        padding: 5px !important;
+        text-align: center
+    }
+
+    #tblOther tbody tr td,
+    #tblOther thead tr th {
+        padding: 5px !important;
+        text-align: center
+    }
+
+    #tblOther,
+    #tblOther tbody,
+    #tblOther thead {
+        width: 100% !important
+    }
+</style>
+<div class="card card-primary">
+    <div class="card-header" style="font-family:Verdana">
+        <h6> @ViewData["Title"]</h6>
+    </div>
+    <div class="card-body">
+        <div class="card card-primary card-tabs">
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                    @if (userRight != null && userRight.IsList)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerList" id="custom-tabs-three-list-tab" data-toggle="pill" href="#custom-tabs-three-list" role="tab" aria-controls="custom-tabs-three-list" aria-selected="@headerListTrue" style="font-family:Verdana;font-size:small" onclick="GoToListTab()">List (Alt+L)</a>
+                        </li>
+                    }
+                    @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerAdd" id="custom-tabs-three-add-tab" data-toggle="pill" href="#custom-tabs-three-add" role="tab" aria-controls="custom-tabs-three-add" aria-selected="@headerAddTrue" style="font-family:Verdana;font-size:small" onclick="GoToAddTab()">Add/Update (F2)</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="tab-content" id="custom-tabs-three-tabContent">
+                        @if (userRight != null && userRight.IsList)
+                        {
+                            <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
+                                <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
+                                    <div class="col-md-12 col-12 mb-2 mt-2">
+                                        <div class="row">
+                                            <div class="col-md-1 mb-2 float-left">
+                                                <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                                    @for (int i = 0; i < pageNoList.Count; i++)
+                                                    {
+                                                        string checkedd = "checked";
+                                                        <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                                        checkedd = string.Empty;
+                                                    }
+
+                                                </select>
+                                            </div>
+                                            <div class="col-md-5 col-12">
+                                                <div class="row">
+                                                    <div class="col-md-6 col">
+                                                        <select class="form-control select2 drpReportLayout" onchange="loadData()">
+                                                            <option value="" ; style="width:200px">--Select Layout--</option>
+                                                            @if (layoutList != null && layoutList.Count > 0)
+                                                            {
+                                                                foreach (var item in layoutList)
+                                                                {
+                                                                    <option value="@item.Value">@item.Text </option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                                        @if (isAdministrator == 1)
+                                                        {
+                                                            <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                                Edit
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                                        <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                                        <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                            <div class="col-md-3 col-12 float-right">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dataTable">
+
+                                    </div>
+                                    <div class="pager float-right"></div>
+                                </div>
+                            </div>
+                        }
+                        @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                        {
+                            <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
+                                @using (Html.BeginForm("Index", "GodownTransfer", FormMethod.Post, new { id = "frmGdnTrans" }))
+                                {
+                                    <input type="hidden" id="txtIsPrint" name="isPrint" value="0" />
+                                    <div class="row">
+                                        <div class="d-none" id="hiddenGrade">
+                                            <select class="form-control">
+                                                <option value="">Select</option>
+                                                @if (gradeList != null && gradeList.Count > 0)
+                                                {
+                                                    foreach (var item in gradeList)
+                                                    {
+                                                        <option value="@item.Text">@item.Text</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="d-none" id="hiddenProduct">
+                                            <select class="form-control">
+                                                <option value="">Select</option>
+                                                @if (productList != null && productList.Count > 0)
+                                                {
+                                                    foreach (var item in productList)
+                                                    {
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="d-none" id="hiddenProcessDone">
+                                            <select class="form-control">
+                                                <option value="">Select</option>
+                                                @if (processDoneList != null && processDoneList.Count > 0)
+                                                {
+                                                    foreach (var item in processDoneList)
+                                                    {
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1 col-6">
+                                            <label class="control-label">
+                                                VNo <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="vno" name="vno" class="form-control" disabled value="@vNo" required />
+                                                <input type="hidden" id="vou" name="vou" class="form-control" disabled value="0" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-6">
+                                            <label>
+                                                Company <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <select class="form-control select2" name="companyVou" id="companyVou" required>
+                                                    <option value="">Select</option>
+                                                    @if (companyList != null && companyList.Count > 0)
+                                                    {
+                                                        foreach (var item in companyList)
+                                                        {
+                                                            <option value="@item.Value">@item.Text</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6">
+                                            <label>
+                                                Challan No <span class="required text-danger"></span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="challanNo" name="challanNo" class="form-control" value="" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6">
+                                            <label>
+                                                Date <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="date" id="date" name="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6">
+                                            <label>
+                                                From Godown <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <select class="form-control select2" name="fromGodownVou" id="fromGodownVou" required>
+                                                    <option value="">Select</option>
+                                                    @if (godownList != null && godownList.Count > 0)
+                                                    {
+                                                        foreach (var item in godownList)
+                                                        {
+                                                            <option value="@item.Value">@item.Text</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6">
+                                            <label>
+                                                Location <span class="required text-danger"></span>
+                                            </label>
+
+                                            <div>
+                                                <select class="form-control select2" name="locationVou" id="locationVou">
+                                                    <option value="">Select</option>
+                                                    @if (locationList != null && locationList.Count > 0)
+                                                    {
+                                                        foreach (var item in locationList)
+                                                        {
+                                                            <option value="@item.Value">@item.Text</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-6 mt-1">
+                                            <label>
+                                                To Godown <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <select class="form-control select2" name="toGodownVou" id="toGodownVou" required>
+                                                    <option value="">Select</option>
+                                                    @if (godownList != null && godownList.Count > 0)
+                                                    {
+                                                        foreach (var item in godownList)
+                                                        {
+                                                            <option value="@item.Value">@item.Text</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6 mt-1">
+                                            <label>
+                                                Vehicle No <span class="required text-danger"></span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="vehicleNo" name="vehicleNo" class="form-control" value="" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6 mt-1">
+                                            <label>
+                                                Mode Of Transport <span class="required text-danger"></span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="modeOfTransport" name="modeOfTransport" class="form-control" value="" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6 mt-1">
+                                            <label>
+                                                Purpose <span class="required text-danger"></span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="purpose" name="purpose" class="form-control" value="" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6 mt-1">
+                                            <label>
+                                                Product Type <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <select class="form-control select2" name="productTypeVou" id="productTypeVou" required onchange="HideShowGrid(true)">
+                                                    <option value="">Select</option>
+                                                    @if (productTypeList != null && productTypeList.Count > 0)
+                                                    {
+                                                        foreach (var item in productTypeList)
+                                                        {
+                                                            <option value="@item.Value">@item.Text</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-12 mt-1">
+                                            <label>
+                                                Remarks
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="remarks" name="remarks" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3 table-responsive">
+                                            <table class="table table-borderless d-none" id="tblCoil" style="padding:0 0 0 0;margin:0 0 0 0">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="7%">
+                                                            #
+                                                        </th>
+                                                        <th width="20%">
+                                                            Coil No
+                                                        </th>
+                                                        <th width="20%">
+                                                            Grade
+                                                        </th>
+                                                        <th width="10%">
+                                                            Thick
+                                                        </th>
+                                                        <th width="10%">
+                                                            Width
+                                                        </th>
+                                                        <th width="10%">
+                                                            Weight
+                                                        </th>
+                                                        <th width="10%">
+                                                            Remarks
+                                                        </th>
+                                                        <th width="5%">
+                                                            Actions
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="AddRows">
+                                                        <td width="7%">
+                                                            <input type="text" class="form-control" name="srNo" value="0" onchange="GetDataBySrNoCoil(this.value)" />
+                                                        </td>
+                                                        <td width="20%">
+                                                            <input type="text" class="form-control" name="coilNo" value="" onchange="GetDataByCoilNo(this.value,this)" />
+                                                        </td>
+                                                        <td width="20%">
+                                                            <select class="form-control select2" name="gradeCoilVou" id="gradeCoilVou" disabled>
+                                                                <option value="">Select</option>
+                                                                @if (gradeList != null && gradeList.Count > 0)
+                                                                {
+                                                                    foreach (var item in gradeList)
+                                                                    {
+                                                                        <option value="@item.Text">@item.Text</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control" name="thickCoil" id="thickCoil" disabled />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control" name="widthCoil" id="widthCoil" disabled />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control" name="weightCoil" id="weightCoil" disabled />
+                                                        </td>
+                                                        <td width="15%">
+                                                            <input type="text" class="form-control" name="remarks" />
+                                                        </td>
+                                                        <td width="5%" class="text-center">
+                                                            <i class="fa fa-plus text-primary mt-1" style="font-size:20px" onclick="AddRowsCoil()"></i>
+                                                            <i class="fa fa-sync text-blue ml-3" onclick="RefreshCoil(this)" style="font-size:18px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="d-none">
+                                                        <td style="padding:0 0 0 0">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <table class="table table-borderless  d-none" id="tblPipe" style="padding:0 0 0 0;margin:0 0 0 0">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="7%">
+                                                            #
+                                                        </th>
+                                                        <th width="15%">
+                                                            Grade
+                                                        </th>
+                                                        <th width="10%">
+                                                            Thick
+                                                        </th>
+                                                        <th width="10%">
+                                                            OD
+                                                        </th>
+                                                        <th width="10%">
+                                                            Feet Pr
+                                                        </th>
+                                                        <th width="10%">
+                                                            PCS
+                                                        </th>
+                                                        <th width="10%">
+                                                            NB
+                                                        </th>
+                                                        <th width="10%">
+                                                            SCH
+                                                        </th>
+                                                        <th width="10%">
+                                                            Process Done
+                                                        </th>
+                                                        <th width="10%">
+                                                            Remarks
+                                                        </th>
+                                                        <th width="5%">
+                                                            Actions
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="AddRows">
+                                                        <td width="7%">
+                                                            <input type="text" class="form-control" name="srNo" value="0" onchange="GetDataBySrNoPipe(this.value)" />
+                                                        </td>
+                                                        <td width="15%">
+                                                            <select class="form-control select2" name="gradePipeVou" id="gradePipeVou">
+                                                                <option value="">Select</option>
+                                                                @if (gradeList != null && gradeList.Count > 0)
+                                                                {
+                                                                    foreach (var item in gradeList)
+                                                                    {
+                                                                        <option value="@item.Text">@item.Text</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control" name="thickPipe" id="thickPipe" onchange="GetNBSCGValue(this)" />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control" name="odPipe" id="odPipe" onchange="GetNBSCGValue(this)" />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control" name="feetPerPipe" id="feetPerPipe" />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control" name="pcsPipe" id="pcsPipe" />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control" name="nbPipe" id="nbPipe" disabled />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control" name="schPipe" id="schPipe" disabled />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <select class="form-control select2" name="processDonePipeVou" id="processDonePipeVou">
+                                                                <option value="">Select</option>
+                                                                @if (processDoneList != null && processDoneList.Count > 0)
+                                                                {
+                                                                    foreach (var item in processDoneList)
+                                                                    {
+                                                                        <option value="@item.Value">@item.Text</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control" name="remarksPipe" id="remarksPipe" />
+                                                        </td>
+                                                        <td width="5%" class="text-center">
+                                                            <i class="fa fa-plus text-primary mt-1" style="font-size:20px" onclick="AddRowsPipe()"></i>
+                                                            <i class="fa fa-sync text-blue ml-3" onclick="RefreshPipe(this)" style="font-size:18px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="d-none">
+                                                        <td style="padding:0 0 0 0">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-1"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <table class="table table-borderless d-none" id="tblOther" style="padding:0 0 0 0;margin:0 0 0 0">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="10%">
+                                                            #
+                                                        </th>
+                                                        <th width="30%">
+                                                            Product
+                                                        </th>
+                                                        <th width="25%">
+                                                            Qty
+                                                        </th>
+                                                        <th width="20%">
+                                                            Remarks
+                                                        </th>
+                                                        <th width="5%">
+                                                            Actions
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="AddRows">
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control" name="srNo" value="0" onchange="GetDataBySrNoOther(this.value)" />
+                                                        </td>
+                                                        <td width="30%">
+                                                            <select class="form-control select2" name="productOtherVou" id="productOtherVou">
+                                                                <option value="">Select</option>
+                                                                @if (productList != null && productList.Count > 0)
+                                                                {
+                                                                    foreach (var item in productList)
+                                                                    {
+                                                                        <option value="@item.Value">@item.Text</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td width="25%">
+                                                            <input type="text" class="form-control" name="qtyOther" id="qtyOther" />
+                                                        </td>
+                                                        <td width="20%">
+                                                            <input type="text" class="form-control" name="remarksOther" />
+                                                        </td>
+                                                        <td width="5%" class="text-center">
+                                                            <i class="fa fa-plus text-primary mt-1" style="font-size:20px" onclick="AddRowsOther()"></i>
+                                                            <i class="fa fa-sync text-blue ml-3" onclick="RefreshOther(this)" style="font-size:18px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="d-none">
+                                                        <td style="padding:0 0 0 0">
+                                                            <label class="control-label pl-2"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-2"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-2"></label>
+                                                        </td>
+                                                        <td style="padding:0 0 0 8px">
+                                                            <label class="control-label pl-2"></label>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="table-responsive md-12 mt-2">
+                                            <table class="table table-bordered overflow-auto table-head-fixed" id="tblDisplay">
+                                            </table>
+                                        </div>
+                                        <div class="col-md-12 mt-3">
+                                            <div class="row">
+                                                <div class="col-md-12 text-center">
+                                                    @if (userRight.IsEdit && id > 0)
+                                                    {
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick="AddGodownTransfer()" type="button">
+                                                            Save (F10)
+                                                        </button>
+                                                        <a href="/GodownTransfer/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                            Cancel (Esc)
+                                                        </a>
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
+                                                            Print (F9)
+                                                        </button>
+                                                    }
+                                                    else if (userRight.IsAdd && id == 0)
+                                                    {
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick="AddGodownTransfer()" type="button">
+                                                            Save (F10)
+                                                        </button>
+                                                        <a href="/GodownTransfer/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                            Cancel (Esc)
+                                                        </a>
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
+                                                            Print (F9)
+                                                        </button>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var companyVou = $('#companyVou').val();
+        if (companyVou != null && companyVou != '') {
+            GoToAddTab()
+        }
+        else {
+            GoToListTab()
+        }
+    });
+
+    function GoToAddTab() {
+        $('#custom-tabs-three-list-tab').removeClass('active');
+        $('#custom-tabs-three-add-tab').addClass('active');
+
+        $('#custom-tabs-three-list').removeClass('active');
+        $('#custom-tabs-three-add').addClass('active');
+        $('#custom-tabs-three-add').addClass('show');
+        document.getElementById('companyVou').focus();
+
+        HideShowGrid(false);
+    }
+
+    function GoToListTab() {
+        $('#custom-tabs-three-list-tab').addClass('active');
+        $('#custom-tabs-three-add-tab').removeClass('active');
+
+        $('#custom-tabs-three-list').addClass('active');
+        $('#custom-tabs-three-list').addClass('show');
+        $('#custom-tabs-three-add').removeClass('active');
+        $('#custom-tabs-three-add').removeClass('show');
+        $('#txtReportSearchDataTable').focus();
+    }
+</script>
+
+<script>
+    var isRecentCalledEsc = false;
+    var isRecentCalledAddRows = false;
+    var isRecentCalledSave = false;
+
+    (function (code) {
+        code(window.jQuery, document, window);
+    }(function ($, document, window) {
+        $(function () {
+            $(window)
+                .initKeyboard({ debug: 1 })
+                .on('F2', function () {
+                    GoToAddTab()
+                }).on('F9', function () {
+                    $("#btnPrint").click();
+                }).on('F10', function () {
+                    if (!isRecentCalledSave) {
+                        $("#btnSave").click();
+                        isRecentCalledSave = true;
+                        setTimeout(function () {
+                            isRecentCalledSave = false;
+                        }, 1000)
+                    }
+                })
+                .on('Alt+L', function () {
+                    GoToListTab();
+                })
+                .on('+', function () {
+                    if (!isRecentCalledAddRows) {
+                        CheckRecordAddRows();
+                        isRecentCalledAddRows = true;
+                        setTimeout(function () {
+                            isRecentCalledAddRows = false;
+                        }, 1000)
+                    }
+
+                })
+                .on('Pagedown', function () {
+                    if (!isRecentCalledAddRows) {
+                        CheckRecordAddRows();
+                        isRecentCalledAddRows = true;
+                        setTimeout(function () {
+                            isRecentCalledAddRows = false;
+                        }, 1000)
+                    }
+                })
+                .on('Alt+I', function () {
+                    if (!isRecentCalledAddRows) {
+                        isRecentCalledAddRows = true;
+                        AddRows();
+                        setTimeout(function () {
+                            isRecentCalledAddRows = false;
+                        }, 500)
+                    }
+
+                })
+                .on('Alt+C', function () {
+                    if (confirm("Do you want to exit without save?")) {
+                        location.href = '/GodownTransfer/Index'
+                    }
+                    else {
+                        $('#date').focus();
+                    }
+
+                }).on('Escape', function () {
+                    if (!isRecentCalledEsc) {
+                        isRecentCalledEsc = true;
+                        if (confirm("Do you want to exit without save?")) {
+                            location.href = '/GodownTransfer/Index'
+                        }
+                        else {
+                            $('#date').focus();
+                        }
+                        setTimeout(function () {
+                            isRecentCalledEsc = false;
+                        }, 500)
+                    }
+
+                })
+        });
+    }));
+</script>
+
+<script>
+    var isRecentCalled = false;
+
+    $(function () {
+        loadData();
+        var pageIndex = '';
+        var pageSize = '';
+        var totalRecord = '';
+        var isDelete = '@Html.Raw(userRight.IsDelete)';
+        var isEdit = '@Html.Raw(userRight.IsEdit)';
+    })
+
+    var timer = null;
+
+    $('#txtReportSearchDataTable').keyup(function (e) {
+        if (e.keyCode >= 112 && e.keyCode <= 123) {
+            e.preventDefault();
+            return false;
+        }
+        else {
+            clearTimeout(timer);
+
+            timer = setTimeout(loadData, 1000)
+        }
+
+    });
+
+    function loadData(pageIndex, columnName, sortBy) {
+        isRecentCalled = true;
+        if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
+            pageIndex = 1;
+        }
+        var layoutId = $('.drpReportLayout').val();
+
+        if (!layoutId) {
+            $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
+            SetSelect2()
+
+        }
+        if (!columnName) {
+            columnName = '';
+        }
+        if (!sortBy) {
+            sortBy = '';
+        }
+        $('.dataTable').html();
+        $.ajax({
+            url: '/GodownTransfer/GetReportView',
+            type: 'GET',
+            data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+            dataType: 'HTML',
+            traditional: true, // add this
+            success: function (data) {
+                $('.dataTable').html(data);
+                setTimeout(function () {
+                    isRecentCalled = false;
+                }, 2000)
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    }
+
+    //$('#btnPrint').click(function () {
+    //    window.open('/GodownTransfer/GdnTrnPrintDetials/'+ id,'_blank')
+    //})
+
+    $('#btnExportToExcel').click(function () {
+        window.location.href = "/GodownTransfer/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+    })
+
+    $('#btnExportToPDF').click(function () {
+        window.location.href = "/GodownTransfer/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+    })
+</script>
+<script>
+    var isRecentCall = false;
+    var isSaveCalled = false;
+    function CheckRecordAddRows() {
+        if (!$('#tblCoil').hasClass('d-none')) {
+            AddRowsCoil();
+        }
+        if (!$('#tblPipe').hasClass('d-none')) {
+            AddRowsPipe();
+        } if (!$('#tblOther').hasClass('d-none')) {
+            AddRowsOther();
+        }
+    }
+
+    function HideShowGrid(flg) {
+        var value = ''
+        //if (ormvchvou != null && ormvchvou != '' && ormvchvou != 0) {
+        //    value = $('#txtOrmPtyVou').children('option:selected').html();
+        //}
+        //else {
+        value = $('#productTypeVou').children('option:selected').html();
+        if (!flg && value && value == "Select") {
+            $('#productTypeVou').children('option').each(function () {
+                if ($(this).html() == 'COIL' || $(this).html() == 'coil') {
+                    $('#productTypeVou').val($(this).val());
+                    SetSelect2()
+                }
+            });
+        }
+        value = $('#productTypeVou').children('option:selected').html();
+        //}
+
+        if (value) {
+            if (value == 'COIL' || value == 'coil') {
+                $('#tblCoil').removeClass('d-none');
+                $('#tblPipe').addClass('d-none');
+                $('#tblOther').addClass('d-none');
+            }
+            else if (value == 'PIPE' || value == 'pipe') {
+                $('#tblCoil').addClass('d-none');
+                $('#tblPipe').removeClass('d-none');
+                $('#tblOther').addClass('d-none');
+            }
+            else {
+                $('#tblCoil').addClass('d-none');
+                $('#tblPipe').addClass('d-none');
+                $('#tblOther').removeClass('d-none');
+            }
+        }
+        else {
+            $('#tblCoil').removeClass('d-none');
+            $('#tblPipe').addClass('d-none');
+            $('#tblOther').addClass('d-none');
+        }
+        if (flg) {
+            $('#tblDisplay').children('tbody').remove();
+            $('#tblDisplay').children('thead').remove();
+        }
+
+    }
+
+    function AddRowsCoil() {
+            var previousRow = $('#tblCoil').children('tbody').children('tr:last').prev();
+            if (previousRow != null) {
+                var coilNo = $(previousRow).children('td').eq(1).children('input').val();
+                var grade = $(previousRow).children('td').eq(2).children('select').val();
+                var gradeHTML = $(previousRow).children('td').eq(2).children('select').children('option:selected').html();
+                var thick = $(previousRow).children('td').eq(3).children('input').val();
+                var width = $(previousRow).children('td').eq(4).children('input').val();
+                var qty = $(previousRow).children('td').eq(5).children('input').val();
+                var remarks = $(previousRow).children('td').eq(6).children('input').val();
+                var srNo = $(previousRow).children('td').eq(0).children('input').val();
+                if (grade != null && thick != null && width != null && qty != null && grade != "" && thick != "" && width != "" && qty != "") {
+
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        var html = $('#tblCoil').children().find('tr.AddRows:first').html();
+
+                        if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                            $('#tblDisplay').append(`<thead>` + $('#tblCoil').children('thead').html() + `</thead><tbody></tbody>`);
+                            $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
+                        }
+                        else {
+                            $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
+                        }
+                    }
+                    $('#tblCoil').children('tbody').children('tr:last').removeClass('d-none')
+
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('label').html(coilNo);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('label').html(gradeHTML);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(3).children('label').html(thick);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(4).children('label').html(width);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('label').html(qty);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(6).children('label').html(remarks);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(0).children('label').html(srNo);
+                    }
+                    else {
+                        var lastGrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val();
+                        var thickNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
+                        var widthNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val();
+                        var coilNoNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').val();
+
+                        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').val(lastGrade);
+                        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val(thickNew);
+                        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val(widthNew);
+                        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').val(coilNoNew);
+                    }
+
+
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+
+
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('span').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).html($('#hiddenGrade').html());
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').addClass('select2');
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val(grade);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').removeClass('select2')
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').val(coilNo);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val(thick);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val(width);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val(qty);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val(remarks);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).addClass('text-center')
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).html(`<i class="fa fa-edit text-primary" onclick="EditRowsCoil(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsCoil(this)" style="font-size:18px"></i>`)
+
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true)
+
+                        $('#tblDisplay').children('tbody').children().find('input').each(function () {
+                            $(this).removeAttr('onfocusin')
+                            $(this).removeAttr('onfocus')
+                            $(this).removeAttr('onfocusout')
+                            $(this).removeClass('focusIn')
+                        })
+                    }
+                    else {
+                        $('#tblDisplay').children('tbody').children('tr').each(function () {
+                            if ($(this).children('td').eq(0).children('input').val() == srNo) {
+                                $(this).children('td').eq(2).children('select').remove();
+                                $(this).children('td').eq(2).children('span').remove();
+                                $(this).children('td').eq(2).html($('#hiddenGrade').html());
+                                $(this).children('td').eq(2).children('select').addClass('select2');
+                                $(this).children('td').eq(2).children('select').val(grade);
+                                $(this).children('td').eq(2).children('select').removeClass('select2')
+                                $(this).children('td').eq(2).children('select').attr('disabled', true)
+                                $(this).children('td').eq(3).children('input').val(thick);
+                                $(this).children('td').eq(1).children('input').val(coilNo);
+                                $(this).children('td').eq(4).children('input').val(width);
+                                $(this).children('td').eq(5).children('input').val(qty);
+                                $(this).children('td').eq(6).children('input').val(remarks);
+                                $(this).children('td').eq(7).addClass('text-center')
+                                $(this).children('td').eq(7).html(`<i class="fa fa-edit text-primary" onclick="EditRowsCoil(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsCoil(this)" style="font-size:18px"></i>`)
+                            }
+                        })
+                    }
+
+
+
+                    SetSerialNumberCoil();
+                    SetNameCoil();
+                    SetSelect2();
+                    isRecentCall = true
+                    setTimeout(function () {
+                        isRecentCall = false;
+
+                    }, 500)
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').focus();
+                    setTimeout(function () {
+                        window.scrollTo(0, 0);
+                    }, 100)
+
+
+                }
+                else {
+                    showErrorMessage("Please enter all required fields");
+                }
+            }
+    }
+
+    function DeleteRowsCoil(obj) {
+        Swal.fire({
+            title: 'Are you sure want to delete row?',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(obj).closest('tr').remove();
+                SetSerialNumberCoil();
+                if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                    $('#tblDisplay').children('thead').remove();
+                    $('#tblDisplay').children('tbody').remove();
+                }
+            } else if (result.isDenied) {
+            }
+        })
+
+    }
+
+    function SetSerialNumberCoil() {
+        var count = 1;
+        $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+            $(this).children('td').eq(0).children('input').val(count);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(0).children('label').html(count)
+            count = parseInt(count) + 1;
+        });
+    }
+
+    function SetNameCoil() {
+        $('#tblDisplay').children('tbody').children('tr:last').children("td").eq(1).children("select").attr("Id", "PurchaseOrder.OrdGrdCoil999999");
+        $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
+            $(this).children("td").eq(1).children("select").attr("name", "gradeGridVou");
+            $(this).children("td").eq(1).children("select").attr("Id", "gradeGridVou" + i + "");
+            $(this).children("td").eq(2).children("input").attr("name", "thickGrid");
+            $(this).children("td").eq(2).children("input").attr("Id", "thickGrid" + i + "");
+            $(this).children("td").eq(3).children("input").attr("name", "widthGrid");
+            $(this).children("td").eq(3).children("input").attr("Id", "widthGrid" + i + "");
+            $(this).children("td").eq(4).children("input").attr("name", "qtyGrid");
+            $(this).children("td").eq(4).children("input").attr("Id", "qtyGrid" + i + "");
+            $(this).children("td").eq(5).children("input").attr("name", "remarksGrid");
+            $(this).children("td").eq(5).children("input").attr("Id", "remarksGrid" + i + "");
+        });
+    }
+
+    function EditRowsCoil(obj) {
+        if (obj != null) {
+            var srno = $(obj).closest('tr').children('td').eq(0).children('input').val();
+            var coilNo = $(obj).closest('tr').children('td').eq(1).children('input').val();
+            var grade = $(obj).closest('tr').children('td').eq(2).children('select').val();
+            var thick = $(obj).closest('tr').children('td').eq(3).children('input').val();
+            var width = $(obj).closest('tr').children('td').eq(4).children('input').val();
+            var qty = $(obj).closest('tr').children('td').eq(5).children('input').val();
+            var remarks = $(obj).closest('tr').children('td').eq(6).children('input').val();
+
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(0).children('input').val(srno);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(1).children('input').val(coilNo);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(2).children('select').val(grade);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(3).children('input').val(thick);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(4).children('input').val(width);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(5).children('input').val(qty);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(6).children('input').val(remarks);
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').focus();
+            SetSelect2();
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').focus();
+        }
+    }
+
+    function GetDataBySrNoCoil(value) {
+        $('#tblDisplay').children('tbody').children('tr').each(function () {
+            if ($(this).children('td').eq(0).children('input').val() == value) {
+                EditRowsCoil($(this));
+                $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('select').focus();
+            }
+        })
+    }
+
+
+    function AddRowsPipe() {
+            var previousRow = $('#tblPipe').children('tbody').children('tr:last').prev();
+            if (previousRow != null) {
+                var grade = $(previousRow).children('td').eq(1).children('select').val();
+                var thick = $(previousRow).children('td').eq(2).children('input').val();
+                var od = $(previousRow).children('td').eq(3).children('input').val();
+                var feetper = $(previousRow).children('td').eq(4).children('input').val();
+                var pcs = $(previousRow).children('td').eq(5).children('input').val();
+                var nb = $(previousRow).children('td').eq(6).children('input').val();
+                var sch = $(previousRow).children('td').eq(7).children('input').val();
+                var processDone = $(previousRow).children('td').eq(8).children('select').val();
+                var processDoneHTML = $(previousRow).children('td').eq(8).children('select').children('option:selected').html();
+                var remarks = $(previousRow).children('td').eq(9).children('input').val();
+                var srNo = $(previousRow).children('td').eq(0).children('input').val();
+                if (grade != null && thick != null && od != null && feetper != null && pcs != null && processDone != null && grade != "" && thick != "" && od != "" && feetper != "" && pcs != "" && processDone != "") {
+
+
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        var html = $('#tblPipe').children().find('tr.AddRows:first').html();
+
+                        if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                            $('#tblDisplay').append(`<thead>` + $('#tblPipe').children('thead').html() + `</thead><tbody></tbody>`);
+                            $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
+                        }
+                        else {
+                            $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
+                        }
+                    }
+
+                    $('#tblPipe').children('tbody').children('tr:last').removeClass('d-none')
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(1).children('label').html(grade);
+                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(2).children('label').html(thick);
+                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(3).children('label').html(od);
+                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(4).children('label').html(feetper);
+                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(5).children('label').html(pcs);
+                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(6).children('label').html(nb);
+                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(7).children('label').html(sch);
+                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(8).children('label').html(processDoneHTML);
+                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(9).children('label').html(remarks);
+                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(0).children('label').html(srNo);
+                    }
+                    else {
+                        var lastGrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val();
+                        var thickNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').val();
+                        var odNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
+                        var feetperNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val();
+                        var pcsNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val();
+                        var nbNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val();
+                        var schNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val();
+                        var processDoneNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').children('option:selected').val();
+
+                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val(lastGrade);
+                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(2).children('input').val(thickNew);
+                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val(odNew);
+                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val(feetperNew);
+                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val(pcsNew);
+                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val(nbNew);
+                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val(schNew);
+                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(8).children('input').val(processDoneNew);
+                    }
+
+                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
+                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
+                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(8).children('select').val('');
+                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(9).children('input').val('');
+                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+
+
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('span').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).html($('#hiddenGrade').html());
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').addClass('select2');
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val(grade);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').removeClass('select2')
+
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('span').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).html($('#hiddenProcessDone').html());
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').addClass('select2');
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').val(processDone);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').removeClass('select2')
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').val(thick);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val(od);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val(feetper);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val(pcs);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val(nb);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val(sch);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val(remarks);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).addClass('text-center')
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).html(`<i class="fa fa-edit text-primary" onclick="EditRowsPipe(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsPipe(this)" style="font-size:18px"></i>`)
+
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('select').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').attr('disabled', true)
+
+                        $('#tblDisplay').children('tbody').children().find('input').each(function () {
+                            $(this).removeAttr('onfocusin')
+                            $(this).removeAttr('onfocus')
+                            $(this).removeAttr('onfocusout')
+                            $(this).removeClass('focusIn')
+                        })
+                    }
+                    else {
+                        $('#tblDisplay').children('tbody').children('tr').each(function () {
+                            if ($(this).children('td').eq(0).children('input').val() == srNo) {
+                                $(this).children('td').eq(1).children('select').remove();
+                                $(this).children('td').eq(1).children('span').remove();
+                                $(this).children('td').eq(1).html($('#hiddenGrade').html());
+                                $(this).children('td').eq(1).children('select').addClass('select2');
+                                $(this).children('td').eq(1).children('select').val(grade);
+                                $(this).children('td').eq(1).children('select').removeClass('select2')
+                                $(this).children('td').eq(1).children('select').attr('disabled', true)
+
+                                $(this).children('td').eq(8).children('select').remove();
+                                $(this).children('td').eq(8).children('span').remove();
+                                $(this).children('td').eq(8).html($('#hiddenProcessDone').html());
+                                $(this).children('td').eq(8).children('select').addClass('select2');
+                                $(this).children('td').eq(8).children('select').val(processDone);
+                                $(this).children('td').eq(8).children('select').removeClass('select2')
+                                $(this).children('td').eq(8).children('select').attr('disabled', true)
+
+                                $(this).children('td').eq(2).children('input').val(thick);
+                                $(this).children('td').eq(3).children('input').val(od);
+                                $(this).children('td').eq(4).children('input').val(feetper);
+                                $(this).children('td').eq(5).children('input').val(pcs);
+                                $(this).children('td').eq(6).children('input').val(nb);
+                                $(this).children('td').eq(7).children('input').val(sch);
+                                $(this).children('td').eq(9).children('input').val(remarks);
+                                $(this).children('td').eq(10).addClass('text-center')
+                                $(this).children('td').eq(10).html(`<i class="fa fa-edit text-primary" onclick="EditRowsPipe(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsPipe(this)" style="font-size:18px"></i>`)
+                            }
+                        })
+                    }
+
+                    SetSerialNumberPipe();
+                    SetNamePipe();
+                    SetSelect2();
+                    isRecentCall = true
+                    setTimeout(function () {
+                        isRecentCall = false;
+                    }, 500)
+                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
+                }
+                else {
+                    showErrorMessage("Please enter all required fields");
+                }
+            }
+    }
+
+    function DeleteRowsPipe(obj) {
+        Swal.fire({
+            title: 'Are you sure want to delete row?',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(obj).closest('tr').remove();
+                SetSerialNumberPipe();
+                SetNamePipe();
+                if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                    $('#tblDisplay').children('thead').remove();
+                    $('#tblDisplay').children('tbody').remove();
+                }
+            } else if (result.isDenied) {
+            }
+        })
+
+
+    }
+
+    function SetSerialNumberPipe() {
+        var count = 1;
+        $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+            $(this).children('td').eq(0).children('input').val(count);
+            $('#tblPipe').children('tbody').children('tr:last').children('td').eq(0).children('label').html(count)
+
+            count = parseInt(count) + 1;
+        });
+    }
+
+    function SetNamePipe() {
+        $('#tblDisplay').children('tbody').children('tr:last').children("td").eq(1).children("select").attr("Id", "gradeGridVou9999999");
+        $('#tblDisplay').children('tbody').children('tr:last').children("td").eq(1).children("select").attr("Id", "gradeGridVou9999999");
+        $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
+            $(this).children("td").eq(1).children("select").attr("name", "gradeGridVou");
+            $(this).children("td").eq(1).children("select").attr("Id", "gradeGridVou" + i + "");
+            $(this).children("td").eq(2).children("select").attr("name", "thickGrid");
+            $(this).children("td").eq(2).children("select").attr("Id", "thickGrid" + i + "");
+            $(this).children("td").eq(3).children("input").attr("name", "odGrid");
+            $(this).children("td").eq(3).children("input").attr("Id", "odGrid" + i + "");
+            $(this).children("td").eq(4).children("input").attr("name", "feetPerGrid");
+            $(this).children("td").eq(4).children("input").attr("Id", "feetPerGrid" + i + "");
+            $(this).children("td").eq(5).children("input").attr("name", "pcsGrid");
+            $(this).children("td").eq(5).children("input").attr("Id", "pcsGrid" + i + "");
+            $(this).children("td").eq(6).children("input").attr("name", "nbGrid");
+            $(this).children("td").eq(6).children("input").attr("Id", "nbGrid" + i + "");
+            $(this).children("td").eq(7).children("input").attr("name", "schGrid");
+            $(this).children("td").eq(7).children("input").attr("Id", "schGrid" + i + "");
+            $(this).children("td").eq(8).children("input").attr("name", "processDoneGridVou");
+            $(this).children("td").eq(8).children("input").attr("Id", "processDoneGridVou" + i + "");
+            $(this).children("td").eq(9).children("input").attr("name", "remarksGrid");
+            $(this).children("td").eq(9).children("input").attr("Id", "remarksGrid" + i + "");
+        });
+    }
+
+    function EditRowsPipe(obj) {
+        if (obj != null) {
+            var srno = $(obj).closest('tr').children('td').eq(0).children('input').val();
+            var grade = $(obj).closest('tr').children('td').eq(1).children('select').val();
+            var thick = $(obj).closest('tr').children('td').eq(2).children('input').val();
+            var od = $(obj).closest('tr').children('td').eq(3).children('input').val();
+            var feetper = $(obj).closest('tr').children('td').eq(4).children('input').val();
+            var pcs = $(obj).closest('tr').children('td').eq(5).children('input').val();
+            var nb = $(obj).closest('tr').children('td').eq(6).children('input').val();
+            var sch = $(obj).closest('tr').children('td').eq(7).children('input').val();
+            var processDone= $(obj).closest('tr').children('td').eq(8).children('select').val();
+            var remarks = $(obj).closest('tr').children('td').eq(8).children('input').val();
+
+
+            $('#tblPipe').children('tbody').children('tr').children('td').eq(0).children('input').val(srno);
+            $('#tblPipe').children('tbody').children('tr').children('td').eq(1).children('select').val(grade);
+            $('#tblPipe').children('tbody').children('tr').children('td').eq(2).children('input').val(thick);
+            $('#tblPipe').children('tbody').children('tr').children('td').eq(3).children('input').val(od);
+            $('#tblPipe').children('tbody').children('tr').children('td').eq(4).children('input').val(feetper);
+            $('#tblPipe').children('tbody').children('tr').children('td').eq(5).children('input').val(pcs);
+            $('#tblPipe').children('tbody').children('tr').children('td').eq(6).children('input').val(nb);
+            $('#tblPipe').children('tbody').children('tr').children('td').eq(7).children('input').val(sch);
+            $('#tblPipe').children('tbody').children('tr').children('td').eq(8).children('select').val(processDone);
+            $('#tblPipe').children('tbody').children('tr').children('td').eq(9).children('input').val(remarks);
+            SetSelect2();
+            $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
+        }
+    }
+
+    function GetDataBySrNoPipe(value) {
+        $('#tblDisplay').children('tbody').children('tr').each(function () {
+            if ($(this).children('td').eq(0).children('input').val() == value) {
+                EditRowsPipe($(this));
+                $('#tblPipe').children('tbody').children('tr:last').children('td').eq(1).children('select').focus();
+            }
+        })
+    }
+
+    function AddRowsOther() {
+            var previousRow = $('#tblOther').children('tbody').children('tr:last').prev();
+            if (previousRow != null) {
+                var product = $(previousRow).children('td').eq(1).children('select').val();
+                var producthtml = $(previousRow).children('td').eq(1).children('select').children('option:selected').html();
+                var quantity = $(previousRow).children('td').eq(2).children('input').val();
+                var remarks = $(previousRow).children('td').eq(3).children('input').val();
+                var srNo = $(previousRow).children('td').eq(0).children('input').val();
+                if (product != null && quantity != null && product != "" && quantity != "") {
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        var html = $('#tblOther').children().find('tr.AddRows:first').html();
+
+                        if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                            $('#tblDisplay').append(`<thead>` + $('#tblOther').children('thead').html() + `</thead><tbody></tbody>`);
+                            $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
+                        }
+                        else {
+                            $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
+                        }
+                    }
+
+                    $('#tblOther').children('tbody').children('tr:last').removeClass('d-none')
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        $('#tblOther').children('tbody').children('tr:last').children('td').eq(1).children('label').html(producthtml);
+                        $('#tblOther').children('tbody').children('tr:last').children('td').eq(2).children('label').html(quantity);
+                        $('#tblOther').children('tbody').children('tr:last').children('td').eq(3).children('label').html(remarks);
+                        $('#tblOther').children('tbody').children('tr:last').children('td').eq(0).children('label').html(srNo);
+                    }
+                    else {
+                        var productNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val();
+                        var qtynew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').val();
+                        var remarksnew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
+
+                        $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val(productNew);
+                        $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(2).children('input').val(qtynew);
+                        $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val(remarksnew);
+                    }
+
+                    $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val('');
+                    $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(2).children('input').val('');
+                    $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val('');
+                    $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+
+
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('span').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).html($('#hiddenProduct').html());
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').addClass('select2');
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val(product);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').removeClass('select2')
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').val(quantity);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val(remarks);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).addClass('text-center')
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).html(`<i class="fa fa-edit text-primary" onclick="EditRowsOther(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsOther(this)" style="font-size:18px"></i>`)
+
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').attr('disabled', true)
+
+
+                        $('#tblDisplay').children('tbody').children().find('input').each(function () {
+                            $(this).removeAttr('onfocusin')
+                            $(this).removeAttr('onfocus')
+                            $(this).removeAttr('onfocusout')
+                            $(this).removeClass('focusIn')
+                        })
+                    }
+                    else {
+                        $('#tblDisplay').children('tbody').children('tr').each(function () {
+                            if ($(this).children('td').eq(0).children('input').val() == srNo) {
+                                $(this).children('td').eq(1).children('select').remove();
+                                $(this).children('td').eq(1).children('span').remove();
+                                $(this).children('td').eq(1).html($('#hiddenProduct').html());
+                                $(this).children('td').eq(1).children('select').addClass('select2');
+                                $(this).children('td').eq(1).children('select').val(product);
+                                $(this).children('td').eq(1).children('select').removeClass('select2')
+                                $(this).children('td').eq(1).children('select').attr('disabled', true)
+
+                                $(this).children('td').eq(2).children('input').val(quantity);
+                                $(this).children('td').eq(3).children('input').val(remarks);
+                                $(this).children('td').eq(4).addClass('text-center')
+                                $(this).children('td').eq(4).html(`<i class="fa fa-edit text-primary" onclick="EditRowsOther(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsOther(this)" style="font-size:18px"></i>`)
+                            }
+                        })
+                    }
+
+                    SetSerialNumberOther();
+                    SetNameOther();
+                    SetSelect2();
+                    isRecentCall = true
+                    setTimeout(function () {
+                        isRecentCall = false;
+                    }, 500)
+                    $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
+                }
+                else {
+                    showErrorMessage("Please enter all required fields");
+                }
+            }
+    }
+
+    function DeleteRowsOther(obj) {
+        Swal.fire({
+            title: 'Are you sure want to delete row?',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(obj).closest('tr').remove();
+                SetSerialNumberOther();
+                if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                    $('#tblDisplay').children('thead').remove();
+                    $('#tblDisplay').children('tbody').remove();
+                }
+            } else if (result.isDenied) {
+            }
+        })
+    }
+
+    function SetSerialNumberOther() {
+        var count = 1;
+        $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+            $(this).children('td').eq(0).children('input').val(count);
+            $('#tblOther').children('tbody').children('tr:last').children('td').eq(0).children('label').html(count)
+            $(this).children('td').eq(1).children('select').attr('id', 'dropdownproduct' + count);
+            count = parseInt(count) + 1;
+        });
+    }
+
+    function SetNameOther() {
+        $('#tblDisplay').children('tbody').children('tr:last').children("td").eq(1).children("select").attr("Id", "PurchaseOrder.OrdPrdVou99999999");
+        $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
+            $(this).children("td").eq(1).children("select").attr("name", "productGridVou");
+            $(this).children("td").eq(1).children("select").attr("Id", "productGridVou" + i + "");
+            $(this).children("td").eq(2).children("input").attr("name", "qtyGrid");
+            $(this).children("td").eq(2).children("input").attr("Id", "qtyGrid" + i + "");
+            $(this).children("td").eq(3).children("input").attr("name", "remarksGrid");
+            $(this).children("td").eq(3).children("input").attr("Id", "remarksGrid" + i + "");
+        });
+    }
+
+    function EditRowsOther(obj) {
+        if (obj != null) {
+            var srno = $(obj).closest('tr').children('td').eq(0).children('input').val();
+            var product = $(obj).closest('tr').children('td').eq(1).children('select').val();
+            var quantity = $(obj).closest('tr').children('td').eq(2).children('input').val();
+            var remarks = $(obj).closest('tr').children('td').eq(3).children('input').val();
+            $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val(srno);
+            $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val(product);
+            $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(2).children('input').val(quantity);
+            $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val(remarks);
+            $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
+            SetSelect2();
+            $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
+        }
+    }
+
+    function GetDataBySrNoOther(value) {
+        $('#tblDisplay').children('tbody').children('tr').each(function () {
+            if ($(this).children('td').eq(0).children('input').val() == value) {
+                EditRowsOther($(this));
+                $('#tblOther').children('tbody').children('tr:last').children('td').eq(1).children('select').focus();
+            }
+        })
+    }
+
+    function RefreshCoil() {
+        var grade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val();
+        var thick = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
+        var width = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val();
+
+        //$('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val(grade);
+        //$('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('input').val(thick);
+        //$('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val(width);
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+        SetSelect2();
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').focus();
+    }
+
+    function RefreshPipe() {
+        var grade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val();
+        var thick = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').val();
+        var od = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
+        var feetper = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val();
+        var pcs = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val();
+
+        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val(grade);
+        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(2).children('input').val(thick);
+        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val(od);
+        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val(feetper);
+        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val(pcs);
+        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
+        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
+        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(8).children('select').val('');
+        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(9).children('input').val('');
+        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+        SetSelect2();
+        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
+    }
+
+    function RefreshOther() {
+        $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val('');
+        $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(2).children('input').val('');
+        $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val('');
+        $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+        SetSelect2();
+        $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
+    }
+
+    function GetNBSCGValue(obj) {
+        var odpipe = $(obj).val();
+        var thickpipe = $(obj).parent('td').prev('td').children('input').val();
+        var input = $(obj);
+        if (thickpipe != null && thickpipe != "" && odpipe != null && odpipe != "") {
+            $.ajax({
+                type: "POST",
+                url: '/SalesOrder/GetNBSChValue',
+                data: { "thickpipe": thickpipe, "odpipe": odpipe },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            $(obj).closest('tr').children("td").eq(6).children("input").val(response.ordNb)
+                            $(obj).closest('tr').children("td").eq(7).children("input").val(response.ordSch)
+
+                        }
+                        else {
+                            $(obj).closest('tr').children("td").eq(6).children("input").val("")
+                            $(obj).closest('tr').children("td").eq(7).children("input").val("")
+
+                        }
+                    }
+                    else {
+                        $(obj).closest('tr').children("td").eq(6).children("input").val("")
+                        $(obj).closest('tr').children("td").eq(7).children("input").val("")
+
+                    }
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+    }
+
+    function AddGodownTransfer() {
+
+        if (!isSaveCalled) {
+            isSaveCalled = true;
+            setTimeout(function () {
+                isSaveCalled = false;
+            }, 1000)
+            if (ValidateGrid() && ValidateTextbox()) {
+                if ($('select[name="fromGodownVou"]').val() == $('select[name="toGodownVou"]').val()) {
+                    showErrorMessage("From godown and to godown cannot be same!")
+                }
+                else {
+                    var productType = $('#productTypeVou').children('option:selected').html();
+                    var gradeList = [];
+                    var coilList = [];
+                    var thickList = [];
+                    var widthList = [];
+                    var qtyList = [];
+                    var remarksList = [];
+                    var odList = [];
+                    var feetPerList = [];
+                    var pcsList = [];
+                    var processDoneList = [];
+                    var productList = [];
+                    var nbList = [];
+                    var schList = [];
+                    if (productType == 'COIL' || productType == 'coil') {
+                        $('#tblDisplay').children('tbody').children('tr').each(function () {
+                            gradeList.push($(this).children('td').eq(2).children('select').val());
+                            thickList.push($(this).children('td').eq(3).children('input').val());
+                            widthList.push($(this).children('td').eq(4).children('input').val());
+                            qtyList.push($(this).children('td').eq(5).children('input').val());
+                            remarksList.push($(this).children('td').eq(6).children('input').val());
+                            coilList.push($(this).children('td').eq(1).children('input').val());
+                        });
+                    }
+                    else if (productType == 'PIPE' || productType == 'pipe') {
+                        $('#tblDisplay').children('tbody').children('tr').each(function () {
+                            gradeList.push($(this).children('td').eq(1).children('select').val());
+                            thickList.push($(this).children('td').eq(2).children('input').val());
+                            odList.push($(this).children('td').eq(3).children('input').val());
+                            feetPerList.push($(this).children('td').eq(4).children('input').val());
+                            pcsList.push($(this).children('td').eq(5).children('input').val());
+                            nbList.push($(this).children('td').eq(6).children('input').val());
+                            schList.push($(this).children('td').eq(7).children('input').val());
+                            processDoneList.push($(this).children('td').eq(8).children('select').val());
+                            remarksList.push($(this).children('td').eq(9).children('input').val());
+                        });
+                    }
+                    else {
+                        $('#tblDisplay').children('tbody').children('tr').each(function () {
+                            productList.push($(this).children('td').eq(1).children('select').val());
+                            qtyList.push($(this).children('td').eq(2).children('input').val());
+                            remarksList.push($(this).children('td').eq(3).children('input').val());
+                        })
+                    }
+
+
+                    var model = {
+                        "CmpVou": $('select[name="companyVou"]').val(),
+                        "Vou": $('input[name="vou"]').val(),
+                        "ChallanNo": $('input[name="challanNo"]').val(),
+                        "VNo": $('input[name="vno"]').val(),
+                        "Date": $('input[name="date"]').val(),
+                        "FromGodown": $('select[name="fromGodownVou"]').val(),
+                        "ToGodown": $('select[name="toGodownVou"]').val(),
+                        "ProductType": $('select[name="productTypeVou"]').val(),
+                        "Remarks": $('input[name="remarks"]').val(),
+                        "isPrint": $('input[name="isPrint"]').val(),
+                        "Grade": gradeList,
+                        "CoilNo": coilList,
+                        "Thick": thickList,
+                        "OD": odList,
+                        "FeetPer": feetPerList,
+                        "PCS": pcsList,
+                        "NB": nbList,
+                        "SCH": schList,
+                        "ProcessDone": processDoneList,
+                        "Width": widthList,
+                        "Qty": qtyList,
+                        "GridRemarks": remarksList,
+                        "Product": productList,
+                        "Location": $('select[name="locationVou"]').val(),
+                        "VehicleNo": $('input[name="vehicleNo"]').val(),
+                        "ModeOfTransport": $('input[name="modeOfTransport"]').val(),
+                        "Purpose": $('input[name="purpose"]').val()
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: '/GodownTransfer/AddGodownTransfer',
+                        data: { "godownTransferModel": model },
+                        dataType: "JSON",
+                        success: function (response) {
+                            if (response) {
+                                if (response.result) {
+                                    window.location.href = '/GodownTransfer/index'
+                                }
+                                else {
+                                    showErrorMessage(response.message);
+                                }
+                            }
+                            else {
+                                showErrorMessage(response.message);
+                            }
+                        },
+                        error: function (response) {
+
+                        }
+                    });
+                }
+
+            }
+            else {
+                showErrorMessage("Please enter all compulsory fields!");
+            }
+        }
+
+    }
+
+    function ValidateTextbox() {
+        var isAllow = true;
+        if (!$('select[name="companyVou"]').val()) {
+            sAllow = false;
+        }
+        if (!$('input[name="vno"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="date"]').val()) {
+            isAllow = false;
+        }
+        //if (!$('input[name="challanNo"]').val()) {
+        //    isAllow = false;
+        //}
+        if (!$('select[name="fromGodownVou"]').val()) {
+            isAllow = false;
+        }
+        if (!$('select[name="toGodownVou"]').val()) {
+            isAllow = false;
+        }
+        if (!$('select[name="productTypeVou"]').val()) {
+            isAllow = false;
+        }
+        //if (!$('select[name="locationVou"]').val()) {
+        //    isAllow = false;
+        //}
+        //if (!$('input[name="vehicleNo"]').val()) {
+        //    isAllow = false;
+        //}
+        //if (!$('input[name="modeOfTransport"]').val()) {
+        //    isAllow = false;
+        //}
+        //if (!$('input[name="purpose"]').val()) {
+        //    isAllow = false;
+        //}
+        return isAllow;
+    }
+
+    function ValidateGrid() {
+        var isAllow = true;
+        var productType = $('#productTypeVou').children('option:selected').html();
+        if (productType == 'COIL' || productType == 'coil') {
+            $('#tblDisplay').children('tbody').children('tr').each(function () {
+                if (!$(this).children('td').eq(1).children('input').val() || !$(this).children('td').eq(2).children('select').val() || !$(this).children('td').eq(3).children('input').val() || !$(this).children('td').eq(4).children('input').val() || !$(this).children('td').eq(5).children('input').val()) {
+                    isAllow = false;
+                }
+            })
+        }
+        else if (productType == 'PIPE' || productType == 'pipe') {
+            $('#tblDisplay').children('tbody').children('tr').each(function () {
+                if (!$(this).children('td').eq(1).children('select').val() || !$(this).children('td').eq(2).children('input').val() || !$(this).children('td').eq(3).children('input').val() || !$(this).children('td').eq(4).children('input').val() || !$(this).children('td').eq(4).children('input').val() || !$(this).children('td').eq(8).children('select').val()) {
+                    isAllow = false;
+                }
+            })
+        }
+        else {
+            $('#tblDisplay').children('tbody').children('tr').each(function () {
+                if (!$(this).children('td').eq(1).children('select').val() || !$(this).children('td').eq(2).children('input').val() ) {
+                    isAllow = false;
+                }
+            })
+        }
+        return isAllow
+    }
+
+    var id = '@Html.Raw(id)'
+
+    $(function () {
+        if (id && parseInt(id) > 0) {
+            $('input[name="vou"]').val(id);
+            $.ajax({
+                type: "POST",
+                url: '/GodownTransfer/GetDataById',
+                data: { "id": id },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            GoToAddTab();
+
+                            var response = response.data;
+                            $('select[name="companyVou"]').val(response.cmpVou);
+                            $('select[name="companyVou"]').attr('disabled', true);
+                            $('input[name="vno"]').val(response.vno);
+                            $('input[name="vno"]').attr('disabled', true);
+                            $('input[name="challanNo"]').val(response.challanNo);
+                            //$('input[name="challanNo"]').attr('disabled', true);
+                            $('input[name="date"]').val(response.date);
+                            $('select[name="fromGodownVou"]').val(response.fromGodown);
+                            $('select[name="fromGodownVou"]').attr('disabled',true);
+                            $('select[name="toGodownVou"]').val(response.toGodown);
+                            $('select[name="toGodownVou"]').attr('disabled', true);
+                            $('select[name="productTypeVou"]').val(response.productType);
+                            $('select[name="productTypeVou"]').attr('disabled', true);
+                            $('input[name="remarks"]').val(response.remarks);
+                            $('select[name="locationVou"]').val(response.location);
+                            $('input[name="vehicleNo"]').val(response.vehicleNo);
+                            $('input[name="modeOfTransport"]').val(response.modeOfTransport);
+                            $('input[name="purpose"]').val(response.purpose);
+
+                            HideShowGrid(response.productTypeString);
+
+                            if (response.productTypeString == 'COIL' || response.productTypeString == 'coil') {
+                                for (var x = 0; x < response.grade.length; x++) {
+                                    $('#tblCoil').children('tbody').children('tr').children('td').eq(2).children('select').val(response.grade[x]);
+                                    $('#tblCoil').children('tbody').children('tr').children('td').eq(3).children('input').val(response.thick[x]);
+                                    $('#tblCoil').children('tbody').children('tr').children('td').eq(4).children('input').val(response.width[x]);
+                                    $('#tblCoil').children('tbody').children('tr').children('td').eq(5).children('input').val(response.qty[x]);
+                                    $('#tblCoil').children('tbody').children('tr').children('td').eq(6).children('input').val(response.gridRemarks[x]);
+                                    $('#tblCoil').children('tbody').children('tr').children('td').eq(1).children('input').val(response.coilNo[x]);
+                                    AddRowsCoil();
+                                }
+                            }
+                            else if (response.productTypeString == 'PIPE' || response.productTypeString == 'PIPE') {
+                                for (var x = 0; x < response.grade.length; x++) {
+                                    $('#tblPipe').children('tbody').children('tr').children('td').eq(1).children('select').val(response.grade[x]);
+                                    $('#tblPipe').children('tbody').children('tr').children('td').eq(2).children('input').val(response.thick[x]);
+                                    $('#tblPipe').children('tbody').children('tr').children('td').eq(3).children('input').val(response.od[x]);
+                                    $('#tblPipe').children('tbody').children('tr').children('td').eq(4).children('input').val(response.feetPer[x]);
+                                    $('#tblPipe').children('tbody').children('tr').children('td').eq(5).children('input').val(response.pcs[x]);
+                                    $('#tblPipe').children('tbody').children('tr').children('td').eq(6).children('input').val(response.nb[x]);
+                                    $('#tblPipe').children('tbody').children('tr').children('td').eq(7).children('input').val(response.sch[x]);
+                                    $('#tblPipe').children('tbody').children('tr').children('td').eq(8).children('select').val(response.processDone[x]);
+                                    $('#tblPipe').children('tbody').children('tr').children('td').eq(9).children('input').val(response.gridRemarks[x]);
+                                    AddRowsPipe();
+                                }
+                            }
+                            else {
+                                for (var x = 0; x < response.product.length; x++) {
+                                    $('#tblOther').children('tbody').children('tr').children('td').eq(1).children('select').val(response.product[x]);
+                                    $('#tblOther').children('tbody').children('tr').children('td').eq(2).children('input').val(response.qty[x]);
+                                    $('#tblOther').children('tbody').children('tr').children('td').eq(3).children('input').val(response.gridRemarks[x]);
+                                    AddRowsOther();
+                                }
+                            }
+                            SetSelect2();
+                        }
+                        else {
+                            showErrorMessage(response.message);
+                        }
+                    }
+                    else {
+                        showErrorMessage(response.message);
+                    }
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+    })
+
+    function GetDataByCoilNo(coilNo,obj) {
+        if (coilNo) {
+            $.ajax({
+                type: "POST",
+                url: '/GodownTransfer/GetDataByCoilNo',
+                data: { "coilNo": coilNo },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            $(obj).closest('tr').children('td').eq(2).children('select').val(response.data[0]);
+                            $(obj).closest('tr').children('td').eq(3).children('input').val(response.data[1]);
+                            $(obj).closest('tr').children('td').eq(4).children('input').val(response.data[2]);
+                            $(obj).closest('tr').children('td').eq(5).children('input').val(response.data[3]);
+                            SetSelect2();
+                        }
+                        else {
+                            showErrorMessage(response.message);
+                            $(obj).closest('tr').children('td').eq(2).children('select').val("");
+                            $(obj).closest('tr').children('td').eq(3).children('input').val("");
+                            $(obj).closest('tr').children('td').eq(4).children('input').val("");
+                            $(obj).closest('tr').children('td').eq(5).children('input').val("");
+                            $(obj).closest('tr').children('td').eq(1).children('input').focus();
+                        }
+                    }
+                    else {
+                        showErrorMessage("Internal Error!");
+                        $(obj).closest('tr').children('td').eq(2).children('select').val("");
+                        $(obj).closest('tr').children('td').eq(3).children('input').val("");
+                        $(obj).closest('tr').children('td').eq(4).children('input').val("");
+                        $(obj).closest('tr').children('td').eq(5).children('input').val("");
+                        $(obj).closest('tr').children('td').eq(1).children('input').focus();
+                    }
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+        else {
+            showErrorMessage("Enter Coil No");
+        }
+    }
+
+
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        var ReturnId = '@Html.Raw(TempData["ReturnId"])';
+        var Savedone = '@Html.Raw(TempData["Savedone"])';
+        if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
+            window.open(
+                '/GodownTransfer/GdnTrnPrintDetials/'+ReturnId+'',
+                '_blank' // <- This is what makes it open in a new window.
+            );
+        }
+    })
+
+    $('#frmGdnTrans').submit(function (event) {
+        var unit = '';
+        var isAllow = false;
+        var value = $('#productTypeVou').children('option:selected').html();
+        if (value) {
+            if (value == 'COIL' || value == 'coil') {
+                $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+                    var weight = $(this).children("td").eq(5).children("input").val();
+                    if (weight == undefined || weight == null || weight == '' || weight == "") {
+                        isAllow = true;
+                    }
+                });
+                if (isAllow) {
+                    showErrorMessage("Please Enter Weight");
+                    event.preventDefault();
+                    return;
+                }
+                else {
+                    $('#txtIsPrint').val('1');
+                    AddGodownTransfer();
+                    $('#frmGdnTrans').unbind('submit');
+                }
+            }
+            else if (value == 'PIPE' || value == 'Pipe') {
+                $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+                    var grade = $(this).children("td").eq(1).children("select").val();
+                    if (grade == undefined || grade == null || grade == '' || grade == "") {
+                        isAllow = true;
+                    }
+                });
+                if (isAllow) {
+                    showErrorMessage("Please Enter Grade");
+                    event.preventDefault();
+                    return;
+                }
+                else {
+                    $('#txtIsPrint').val('1');
+                    AddGodownTransfer();
+                    $('#frmGdnTrans').unbind('submit');
+                }
+            }
+            else {
+                $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+                    var product = $(this).children("td").eq(1).children("select").val();
+                    if (product == undefined || product == null || product == '' || product == "") {
+                        isAllow = true;
+                    }
+                });
+                if (isAllow) {
+                    showErrorMessage("Please Enter Product");
+                    event.preventDefault();
+                    return;
+                }
+                else {
+                    $('#txtIsPrint').val('1');
+                    AddGodownTransfer();
+                    $('#frmGdnTrans').unbind('submit');
+                }
+            }
+        }
+    });
+
+    $("#btnPrint").click(function () {
+        $('#txtIsPrint').val('1');
+        $('#frmGdnTrans').submit();
+    })
+
+    $("#btnSave").click(function () {
+        $('#txtIsPrint').val('0');
+        $('#frmGdnTrans').submit();
+    })
+</script>

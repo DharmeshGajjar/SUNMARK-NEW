@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href="/CoilStock/print.css" rel="stylesheet" />
+    <style>
+        body {
+            height: 842px;
+            width: 650px;
+            to centre page on screen margin-left: auto;
+            margin-right: auto;
+        }
+
+        @page {
+            margin: 1cm;
+            size: A4 portrait;
+        }
+    </style>
+</head>
+<body style="font-size: 10px;max-width: 1000px;font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;margin-left:30px;margin-top:30px;position: relative;">
+
+    <table style="width:100%">
+        <thead>
+            <tr>
+                <th style="font-weight:normal;">
+                    <div id="divHeader" align="left" style="display:inline;width:100%">
+                        <div style="width:100%">
+                            <span style="float:left;font-size:14px">
+                                <span id="ContentPlaceHolder1_lblPrntRptDt" style="color:black;font-weight:bold">
+                                    Report Date :
+                                </span>
+                                <span id="ContentPlaceHolder1_lblTodDt">
+                                    #*#*RptDate*#*#
+                                </span>
+
+                            </span>
+                        </div>
+
+                        <div align="center" style="width:100%;display:inline-block;font-size:15px">
+                            <span id="ContentPlaceHolder2_lblPrntComDt1" style="color:black">
+                                <b style="font-size:22px">#*#*cmpName*#*# </b> <br />
+                                <b>
+                                    #*#*cmpAdd*#*#
+                                </b> <br />
+                                <b>
+                                    Mobile :
+                                </b> #*#*cmpPhone*#*#
+
+                                <b>
+                                    E-mail :
+                                </b>#*#*cmpEmail*#*#
+
+                                <b>
+                                    GSTIN :
+                                </b>#*#*cmpGST*#*#
+
+                            </span>
+                        </div>
+                        <br />
+                        <div style="font-size:15px" align="center">
+                            <b>
+                                <span id="ContentPlaceHolder1_lblPrntTt1" style="color:black;font-weight:bold">
+                                    #*#*Title*#*#
+                                </span>
+                            </b>
+                            <span>
+                                &nbsp;&nbsp;
+                                <b>
+                                    #*#*SubTitle*#*#
+                                </b>
+                            </span>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="panel-body" style="overflow:auto;">
+                        #*#*datatable*#*#
+                        <span id="ContentPlaceHolder1_lblHdrText"></span>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+
+        </tfoot>
+    </table>
+    
+</body>
+
+</html>

@@ -1,0 +1,209 @@
+﻿@model SUNMark.Models.CapacityModel
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
+    List<SUNMark.Models.CapacityModel> CapacityList = ViewBag.CapacityList as List<SUNMark.Models.CapacityModel>;
+    List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
+    List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
+    ViewData["Title"] = userRight.ModuleNm;
+    string headerAdd = "";
+    string headerList = "";
+    string gridAdd = "";
+    string gridList = "";
+    bool headerAddTrue = false;
+    bool headerListTrue = false;
+
+    if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+    {
+        headerAdd = "active";
+        gridAdd = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+
+
+}
+<style>
+    #tblDisplay thead tr th {
+        padding: 5px !important;
+        text-align: center
+    }
+
+    #tblDisplay tbody tr td {
+        padding: 5px !important;
+        text-align: center
+    }
+</style>
+
+<div class="card card-primary">
+    <div class="card-header" style="font-family:Verdana">
+        <h6> @ViewData["Title"]</h6>
+    </div>
+    <div class="card-body">
+        <div class="col-md-12">
+            @if (userRight != null && userRight.IsList)
+            {
+                <div class="table-responsive mt-1" style="font-family:Verdana;font-size:small;font-display:inherit">
+                    <div class="row mt-3">
+                        <div class="col-md-5 mt-1 text-right">
+                            <button class="btn btn-primary px-4 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick=" loadData();">
+                                View (Alt+V)
+                            </button>
+                            <a href="/BiltyReport/index" class="btn btn-warning px-4 text-dark" style="font-family:Verdana;font-size:medium">
+                                Cancel (Esc)
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-12 mb-2 mt-2">
+                        <div class="row">
+                            <div class="col-md-1 mb-2 float-left">
+                                <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                    @for (int i = 0; i < pageNoList.Count; i++)
+                                    {
+                                        string checkedd = "checked";
+                                        <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                        checkedd = string.Empty;
+                                    }
+
+                                </select>
+                            </div>
+                            <div class="col-md-5 col-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <select class="form-control select2 drpReportLayout">
+                                            <option value="" ; style="width:200px">--Select Layout--</option>
+                                            @if (layoutList != null && layoutList.Count > 0)
+                                            {
+                                                foreach (var item in layoutList)
+                                                {
+                                                    if (item.Selected)
+                                                    {
+                                                        <option selected value="@item.Value">@item.Text </option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.Value">@item.Text </option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                        @if (isAdministrator == 1)
+                                        {
+                                            <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                Edit
+                                            </button>
+                                        }
+                                    </div>
+                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                        <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                        <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3"></div>
+                            <div class="col-md-3 col-12 float-right">
+                                <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dataTable mt-3">
+
+                    </div>
+                    <div class="pager float-right"></div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var isRecentCalled = false;
+
+
+    $(function () {
+
+        loadData();
+        var pageIndex = '';
+        var pageSize = '';
+        var totalRecord = '';
+        var isDelete = '@Html.Raw(userRight.IsDelete)';
+        var isEdit = '@Html.Raw(userRight.IsEdit)';
+    })
+
+    var timer = null;
+    $('#txtReportSearchDataTable').keyup(function (e) {
+        if (e.keyCode >= 112 && e.keyCode <= 123) {
+            e.preventDefault();
+            return false;
+        }
+        else {
+            clearTimeout(timer);
+
+            timer = setTimeout(loadData, 1000)
+        }
+
+    });
+
+    function loadData(pageIndex, columnName, sortBy) {
+            isRecentCalled = true;
+            if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
+                pageIndex = 1;
+            }
+            var layoutId = $('.drpReportLayout').val();
+
+            if (!layoutId) {
+                $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
+                //SetSelect2()
+
+            }
+            if (!columnName) {
+                columnName = '';
+            }
+            if (!sortBy) {
+                sortBy = '';
+            }
+            $('.dataTable').html();
+            $.ajax({
+                url: '/CapacityMst/GetReportView',
+                type: 'GET',
+                data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+                dataType: 'HTML',
+                traditional: true, // add this
+                success: function (data) {
+                    $('.dataTable').html(data);
+                    setTimeout(function () {
+                        isRecentCalled = false;
+                    }, 2000)
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+    }
+
+    $('#btnExportToExcel').click(function () {
+        window.location.href = "/CapacityMst/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+    })
+
+    $('#btnExportToPDF').click(function () {
+        window.location.href = "/CapacityMst/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+    })
+</script>

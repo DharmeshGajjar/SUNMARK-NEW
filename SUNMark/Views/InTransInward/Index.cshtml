@@ -1,0 +1,1671 @@
+﻿@model SUNMark.Models.InTransInwardModel
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
+    List<SUNMark.Models.InTransInwardModel> inwardList = ViewBag.inwardList as List<SUNMark.Models.InTransInwardModel>;
+    List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
+    List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
+    ViewData["Title"] = userRight.ModuleNm;
+    string headerAdd = "";
+    string headerList = "";
+    string gridAdd = "";
+    string gridList = "";
+    bool headerAddTrue = false;
+    bool headerListTrue = false;
+
+
+    if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+    {
+        headerAdd = "active";
+        gridAdd = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+}
+<style>
+    #tblDisplay thead tr th {
+        padding: 5px !important;
+        text-align: center
+    }
+
+    s #tblDisplay tbody tr td {
+        padding: 5px !important;
+        text-align: center
+    }
+</style>
+
+<div class="card card-primary">
+    <div class="card-header" style="font-family:Verdana">
+        <h6> @ViewData["Title"] </h6>
+    </div>
+    <div class="card-body">
+        <div class="card card-primary card-tabs">
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                    @if (userRight != null && userRight.IsList)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerList" id="custom-tabs-three-list-tab" data-toggle="pill" href="#custom-tabs-three-list" role="tab" aria-controls="custom-tabs-three-list" aria-selected="@headerListTrue" style="font-family:Verdana;font-size:small" onclick="GoToListTab()">List (Alt+L)</a>
+                        </li>
+                    }
+                    @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerAdd" id="custom-tabs-three-add-tab" data-toggle="pill" href="#custom-tabs-three-add" role="tab" aria-controls="custom-tabs-three-add" aria-selected="@headerAddTrue" style="font-family:Verdana;font-size:small" onclick="GoToAddTab()">Add/Update (F2)</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="tab-content" id="custom-tabs-three-tabContent">
+                        @if (userRight != null && userRight.IsList)
+                        {
+                            <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
+                                <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
+                                    <div class="col-md-12 col-12 mb-2 mt-2">
+                                        <div class="row">
+                                            <div class="col-md-1 mb-2 float-left">
+                                                <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                                    @for (int i = 0; i < pageNoList.Count; i++)
+                                                    {
+                                                        string checkedd = "checked";
+                                                        <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                                        checkedd = string.Empty;
+                                                    }
+
+                                                </select>
+                                            </div>
+                                            <div class="col-md-5 col-12">
+                                                <div class="row">
+                                                    <div class="col-md-6 col">
+                                                        <select class="form-control select2 drpReportLayout" onchange="loadData()">
+                                                            <option value="" ; style="width:200px">--Select Layout--</option>
+                                                            @if (layoutList != null && layoutList.Count > 0)
+                                                            {
+                                                                foreach (var item in layoutList)
+                                                                {
+                                                                    <option value="@item.Value">@item.Text </option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                                        @if (isAdministrator == 1)
+                                                        {
+                                                            <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                                Edit
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                                        <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                                        <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                            <div class="col-md-3 col-12 float-right">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dataTable">
+
+                                    </div>
+                                    <div class="pager float-right"></div>
+                                </div>
+                            </div>
+                        }
+                        @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                        {
+                            <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
+                                <form method="post" class="mt-1">
+                                    <div class="container-fluid">
+                                        <div class="row">
+
+                                            <div class="d-none" id="dropdownGrade">
+                                                @if (Model != null && Model.Inward != null && Model.Inward.GradeList != null && Model.Inward.GradeList.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Inward.IntGrdVou, new SelectList(Model.Inward.GradeList, "Text", "Text"), "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
+
+                                            </div>
+                                            <div class="d-none" id="dropdownGodownCoil">
+                                                @if (Model != null && Model.Inward != null && Model.Inward.GodownCoilList != null && Model.Inward.GodownCoilList.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Inward.IntGdnCoilVou, Model.Inward.GodownCoilList, "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                V.No <span class="required">*</span>
+                                                            </label>
+                                                            <input type="hidden" name="IsCheckCoil" id="IsCheckCoil" value="@Model.IsCheckCoil"/>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                @Html.TextBoxFor(x => x.InwVNo, new { @class = "form-control form-control-lg", @placeholder = "Bilty No", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width: 100px", @required = "required", @name = "InwVNo", @readonly = "readonly" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Date <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                @Html.TextBoxFor(x => x.InwDt, new { @class = "form-control form-control-lg", @placeholder = "Date", @tabindex = "2", @style = "font-family: Verdana;font-size:small; height:30px; width: 200px", @required = "required", @type = "date" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3  font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Company <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                                @Html.DropDownListFor(x => x.InwCmpVou, Model.CompanyList, "Select", new { @class = "form-control select2 InwCmpVou", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @id = "txtInwCmpVou", onchange = "HideShowGrid(true)" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                ETA Date <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                @Html.TextBoxFor(x => x.InwETADt, new { @class = "form-control form-control-lg", @placeholder = "Date", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px; width: 200px", @required = "required", @type = "date" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Party <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                                @Html.DropDownListFor(x => x.InwAccVou, new SelectList(Model.AccountList, "Value", "Text"), "Select", new { @class = "form-control select2 InwAccVou", @tabindex = "5", style = "font-family: Verdana;font-size:small; height:30px; width:300px ", @id = "InwAccVou", @onchange = "GetAccountCity(this)", @required = "required" })
+                                                                <a class="btn btn-outline-info ml-2" href="/AccountMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                City <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                <input type="text" id="txtCtyName" name="CtyName" class="form-control form-control-lg" placeholder="City" tabindex="6" value="@Model.CtyName" style="font-family: Verdana;font-size:small; height:30px;width:170px" disabled="disabled" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Product <span class="required">*</span>
+                                                            </label>
+                                                            <input type="hidden" name="InwPrdTyp" />
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                @Html.DropDownListFor(x => x.InwPrdVou, Model.MainProductList, "Select", new { @class = "form-control select2 InwPrdVou", @tabindex = "7", @style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @id = "txtInwPrdVou", onchange = "HideShowGrid(true)" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Godown <span class="required"></span>
+                                                            </label>
+                                                            <input type="hidden" name="InwPrdTyp" />
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                @Html.DropDownListFor(x => x.InwGdnVou, Model.HdGodwonList, "Select", new { @class = "form-control select2 InwGdnVou", @tabindex = "8", @style = "font-family: Verdana;font-size:small; height:30px; width:300px", @id = "txtInwGdnVou", onchange = "HideShowGrid(true)" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Remarks <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                                <input type="text" id="txtInwRem" name="InwRem" class="form-control form-control-lg" placeholder="Remarks" tabindex="9" value="@Model.InwRem" style="font-family: Verdana;font-size:small; height:30px;width:300px" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6" id="divUploadExcel">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Upload Excel <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                                <a download="" class="btn btn-primary" href="" id="btnDownloadSample"><i class="fa fa-download mr-2"></i> Sample</a>
+                                                                <input type="file" class="ml-3 col-md-6" value="Select File" onchange="UploadExcel()" id="fileUpload" />
+                                                                <a class="btn btn-warning text-center ml-2" id="btnPasteCoilExcel"><i class="fa fa-copy mr-2"></i></a>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="table-responsive mt-12" style="font-family:Verdana;font-size:small;font-display:inherit;margin:0 0 0 0">
+                                                <table class="table table-borderless" id="tblCoil" style="padding:0 0 0 0;margin:0 0 0 0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:2% !important">
+                                                                Sr
+                                                            </th>
+                                                            <th style="width:10% !important">
+                                                                Bill No
+                                                            </th>
+                                                            <th style="width:10% !important">
+                                                                Godown <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:20% !important">
+                                                                Sup.Coil No <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:15% !important">
+                                                                Heat No <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:10% !important">
+                                                                Grade <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:12%;text-align:right !important">
+                                                                Width <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:10%;text-align:right !important">
+                                                                Thick <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:12%;text-align:right !important">
+                                                                Net Wt.(KG) <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:20% !important">
+                                                                Remarks
+                                                            </th>
+                                                            <th style="width:12% !important">
+                                                                In Transit Coil No <span class="text-danger"></span>
+                                                            </th>
+                                                            <th style="width:12% !important">
+                                                                SC No <span class="text-danger"></span>
+                                                            </th>
+                                                            <th style="width:12% !important">
+                                                                PO Width <span class="text-danger"></span>
+                                                            </th>
+                                                            <th style="width:12% !important">
+                                                                PO Thick <span class="text-danger"></span>
+                                                            </th>
+                                                            <th style="width:5% !important">
+                                                                Actions
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr class="AddRows">
+                                                            <td style="padding:0 0 0 0">
+                                                                <input type="number" class="form-control" onchange="GetDataBySrNoCoil(this.value)" value="0" style="padding:0px !important;padding-left:3px !important;padding-right:3px !important;font-family: Verdana;font-size:small; height:30px;width:50px" />
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Inward.BillNoCoil, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtBillNoCoil" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @if (Model != null && Model.Inward != null && Model.Inward.GodownCoilList != null && Model.Inward.GodownCoilList.Count > 0)
+                                                                {
+                                                                    @Html.DropDownListFor(x => x.Inward.IntGdnCoil, Model.Inward.GodownCoilList, "Select", new { @class = "form-control select2 IntGdnCoil", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important" })
+                                                                }
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Inward.SupCoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:160px !important", @onfocus = "this.select()", @name = "txtSupCoilNo", @onblur = "SuplierCoilCheck(this)" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Inward.HeatNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:115px !important", @onfocus = "this.select()", @name = "txtHeatNo" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @if (Model != null && Model.Inward != null && Model.Inward.GradeList != null && Model.Inward.GradeList.Count > 0)
+                                                                {
+                                                                    @Html.DropDownListFor(x => x.Inward.IntGrdCoil, new SelectList(Model.Inward.GradeList, "Text", "Text"), "Select", new { @class = "form-control select2 IntGrdCoil", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important" })
+                                                                }
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Inward.IntWidth, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtWidth", @onKeyUp = "numericFilter(this);" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Inward.IntThickCoil, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtThickCoil", @onKeyUp = "numericFilter(this);" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Inward.IntQtyCoil, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtWeigth", @onKeyUp = "numericFilter(this);" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Inward.IntRemksCoil, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important", @name = "txtRemarks" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Inward.CoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtCoilNo", @readonly = "readonly" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Inward.IntSCNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtIntSCNoStr" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Inward.IntPOWidth, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtIntPOWidthStr", @onKeyUp = "numericFilter(this);" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Inward.IntPOThick, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtIntPOThickStr", @onKeyUp = "numericFilter(this);" })
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <i class="fa fa-plus text-blue" onclick="AddRowsCoil(this)" style="font-size:18px"></i>
+                                                                <i class="fa fa-sync text-blue ml-3" onclick="RefreshCoil(this)" style="font-size:18px"></i>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="d-none">
+                                                            <td style="padding:0 0 0 0">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 0">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="table-responsive col-md-12" style="font-family:Verdana;font-size:small;font-display:inherit;margin:0 0 0 0">
+                                                <table class="table table-bordered overflow-auto table-head-fixed" id="tblDisplay">
+                                                    @if (Model != null && Model.Inward != null && Model.Inward.IntGrdCoil != null && Model.Inward.IntGrdCoil.Length > 0)
+                                                    {
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width:2% !important">
+                                                                    Sr
+                                                                </th>
+                                                                <th style="width:10% !important">
+                                                                    Bill No
+                                                                </th>
+                                                                <th style="width:10% !important">
+                                                                    Godown <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:20% !important">
+                                                                    Sup.Coil No <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:15% !important">
+                                                                    Heat No <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:10% !important">
+                                                                    Grade <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:12%;text-align:right !important">
+                                                                    Width <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:10%;text-align:right !important">
+                                                                    Thick <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:12%;text-align:right !important">
+                                                                    Net Wt.(KG) <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:20% !important">
+                                                                    Remarks
+                                                                </th>
+                                                                <th style="width:12% !important">
+                                                                    In Transit Coil No <span class="text-danger"></span>
+                                                                </th>
+                                                                <th style="width:12% !important">
+                                                                    SC No <span class="text-danger"></span>
+                                                                </th>
+                                                                <th style="width:12% !important">
+                                                                    PO Width <span class="text-danger"></span>
+                                                                </th>
+                                                                <th style="width:12% !important">
+                                                                    PO Thick <span class="text-danger"></span>
+                                                                </th>
+                                                                <th style="width:5% !important">
+                                                                    Actions
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @for (int y = 0; y < Model.Inward.IntQtyCoil.Length; y++)
+                                                            {
+                                                                <tr class="AddRows">
+                                                                    <td style="padding:0 0 0 0">
+                                                                        <input type="number" class="form-control" onblur="GetDataBySrNoOther(this.value)" value="@(y+1)" style="padding:0px !important;padding-left:3px !important;padding-right:3px !important;font-family: Verdana;font-size:small; height:30px;" disabled />
+                                                                        @*<input type="number" class="form-control" onblur="GetDataBySrNoCoil(this.value)" value="@(y+1)" style="padding:0px !important;padding-left:3px !important;padding-right:3px !important;font-family: Verdana;font-size:small; height:30px;width:50px" disabled />*@
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Inward.BillNoCoil[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtBillNoCoil" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.GodownCoilList != null && Model.Inward.GodownCoilList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.IntGdnCoil[y], Model.Inward.GodownCoilList, "Select", new { @class = "form-control select2 IntGdnCoil", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Inward.SupCoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:160px !important", @onfocus = "this.select()", @name = "txtSupCoilNo", @onblur = "SuplierCoilCheck(this,true)"  })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Inward.HeatNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:115px !important", @onfocus = "this.select()", @name = "txtHeatNo" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.GradeList != null && Model.Inward.GradeList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.IntGrdCoil[y], new SelectList(Model.Inward.GradeList, "Text", "Text"), "Select", new { @class = "form-control select2 IntGrdCoil", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Inward.IntWidth[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtWidth", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Inward.IntThickCoil[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtThickCoil", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Inward.IntQtyCoil[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtWeigth", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Inward.IntRemksCoil[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important", @name = "txtRemarks" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Inward.CoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtCoilNo", @readonly = "readonly" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Inward.IntSCNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtIntScNo" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Inward.IntPOWidth[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtIntPOWidth", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Inward.IntPOThick[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtIntPOThick", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <i class="fa fa-edit text-primary" onclick="EditRowsCoil(this)" style="font-size:18px"></i>
+                                                                        <i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsCoil(this)" style="font-size:18px"></i>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    }
+                                                </table>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-12 text-center">
+                                                        @if (userRight.IsEdit && Model != null && Model.InwVou > 0)
+                                                        {
+                                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave">
+                                                                Save (F10)
+                                                            </button>
+                                                            <a href="/InTransInward/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                                Cancel (Esc)
+                                                            </a>
+                                                        }
+                                                        else if (userRight.IsAdd && Model.InwVou == 0)
+                                                        {
+                                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave">
+                                                                Save (F10)
+                                                            </button>
+                                                            <a href="/InTransInward/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                                Cancel (Esc)
+                                                            </a>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        $(document).ready(function () {
+            var inwvou = '@Html.Raw(Model.InwVou)';
+            if (inwvou != null && inwvou != '' && inwvou != 0) {
+                GoToAddTab();
+            }
+            else {
+                GoToListTab();
+            }
+            //CalculateCoil();
+            var focusType = '@Html.Raw(ViewBag.FocusType)';
+            if (focusType != null && focusType != '' && focusType == 1) {
+                GoToAddTab();
+            }
+
+        });
+
+    function GoToAddTab() {
+        $('#custom-tabs-three-list-tab').removeClass('active');
+        $('#custom-tabs-three-add-tab').addClass('active');
+
+        $('#custom-tabs-three-list').removeClass('active');
+        $('#custom-tabs-three-add').addClass('active');
+        $('#custom-tabs-three-add').addClass('show');
+        document.getElementById('txtInwCmpVou').focus();
+        var id = '@Html.Raw(Model.InwVou)';
+        if(!id || id == 0)
+            GetVoucherNumber();
+        if ($('#txtInwCmpVou').children('option').length == 2) {
+            $('#txtInwCmpVou').val($('#txtInwCmpVou').children('option').eq(1).attr('value'));
+            SetSelect2()
+            //$('#txtBilDepVou').attr('disabled', true);
+        }
+        HideShowGrid(false);
+        $('#InwDt').focus();
+    }
+    function GoToListTab() {
+        $('#custom-tabs-three-list-tab').addClass('active');
+        $('#custom-tabs-three-add-tab').removeClass('active');
+
+        $('#custom-tabs-three-list').addClass('active');
+        $('#custom-tabs-three-list').addClass('show');
+        $('#custom-tabs-three-add').removeClass('active');
+        $('#custom-tabs-three-add').removeClass('show');
+        $('#txtReportSearchDataTable').focus();
+    }
+</script>
+<script>
+    var isRecentCalledEsc = false;
+    var isRecentCalledAddRows = false;
+    var isRecentCalledSave = false;
+    (function (code) {
+        code(window.jQuery, document, window);
+    }(function ($, document, window) {
+        $(function () {
+            $(window)
+                .initKeyboard({ debug: 1 })
+                .on('F2', function () {
+                    GoToAddTab()
+                    GetVoucherNumber();
+                }).on('F9', function () {
+                    $("#btnPrint").click();
+                }).on('F10', function () {
+                    @*var ischeckcoil = '@Html.Raw(Model.IsCheckCoil)';
+                    if (ischeckcoil == '0') {*@
+                    if (!$("#btnSave").is(":disabled")) {
+                        $("#btnSave").click();
+                        $('#btnSave').prop('disabled', false);
+                    }
+                    //}
+                })
+                .on('Alt+L', function () {
+                    GoToListTab();
+                })
+                .on('Pagedown', function () {
+                    if (!isRecentCalledAddRows) {
+                        isRecentCalledAddRows = true;
+                        AddRowsCoil();
+                        setTimeout(function () {
+                            isRecentCalledAddRows = false;
+                        }, 500)
+                    }
+                })
+                .on('Alt+I', function () {
+                    CheckRecordAddRows();
+                })
+                .on('Alt+C', function () {
+                    if (confirm("Do you want to exit without save?")) {
+                        //isAdd == 2;
+                        location.href = '/InTransInward/Index'
+                    }
+                    else {
+                        $('#txtInwDt').focus();
+                    }
+
+                }).on('Escape', function () {
+                    if (!isRecentCalledEsc) {
+                        isRecentCalledEsc = true;
+                        if (confirm("Do you want to exit without save?")) {
+                            localStorage.setItem("InTransInward", "2");
+                            location.href = '/InTransInward/Index'
+
+                        }
+                        else {
+                            $('#txtInwDt').focus();
+                        }
+                        setTimeout(function () {
+                            isRecentCalledEsc = false;
+                        }, 500)
+                    }
+
+                })
+        });
+    }));
+</script>
+
+<script>
+
+    var isRecentCalled = false;
+
+
+    $(function () {
+
+        loadData();
+        SetNameCoil(true);
+        var pageIndex = '';
+        var pageSize = '';
+        var totalRecord = '';
+        var isDelete = '@Html.Raw(userRight.IsDelete)';
+        var isEdit = '@Html.Raw(userRight.IsEdit)';
+    })
+
+    var timer = null;
+    $('#txtReportSearchDataTable').keyup(function (e) {
+        if (e.keyCode >= 112 && e.keyCode <= 123) {
+            e.preventDefault();
+            return false;
+        }
+        else {
+            clearTimeout(timer);
+
+            timer = setTimeout(loadData, 1000)
+        }
+
+    });
+
+    function GetVoucherNumber() {
+        var InwVou = "0";
+        if (InwVou == "0") {
+            $.ajax({
+                type: "POST",
+                url: '/InTransInward/GetLastVoucherNo',
+                data: "",
+                dataType: "JSON",
+                success: function (response) {
+                    $('input[name="InwVNo"]').val(response.inwVNo);
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+    }
+
+    function GetAccountCity(obj) {
+        var accountList = JSON.parse('@Html.Raw(Json.Serialize(Model.AccountList))');
+        var statevalue = $(obj).val();
+        if (statevalue) {
+            if (accountList != null && accountList.length > 0) {
+                for (var x = 0; x < accountList.length; x++) {
+                    if (accountList[x].value == statevalue) {
+                        var cityname = accountList[x].value1;
+                        $('#txtCtyName').val(accountList[x].value1)
+                    }
+                }
+            }
+        }
+        HideShowGrid(false);
+    }
+
+    function loadData(pageIndex, columnName, sortBy) {
+            isRecentCalled = true;
+            if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
+                pageIndex = 1;
+            }
+            var layoutId = $('.drpReportLayout').val();
+
+            if (!layoutId) {
+                $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
+                SetSelect2()
+
+            }
+            if (!columnName) {
+                columnName = '';
+            }
+            if (!sortBy) {
+                sortBy = '';
+            }
+            $('.dataTable').html();
+            $.ajax({
+                url: '/InTransInward/GetReportView',
+                type: 'GET',
+                data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+                dataType: 'HTML',
+                traditional: true, // add this
+                success: function (data) {
+                    $('.dataTable').html(data);
+                    setTimeout(function () {
+                        isRecentCalled = false;
+                    }, 2000)
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+    }
+
+    $('#btnExportToExcel').click(function () {
+        window.location.href = "/Inward/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+    })
+    $('#btnExportToPDF').click(function () {
+        window.location.href = "/Inward/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+    })
+</script>
+
+<script>
+    $(function () {
+        var inwPrdTyp = $('#txtInwPtyVou').children('option:selected').text()
+        if (inwPrdTyp)
+            $('input[name="InwPrdTyp"]').val(inwPrdTyp);
+    })
+
+    $('#txtInwPtyVou').change(function () {
+        var inwPrdTyp = $('#txtInwPtyVou').children('option:selected').text()
+        if (inwPrdTyp)
+            $('input[name="InwPrdTyp"]').val(inwPrdTyp);
+    })
+
+
+    $(function () {
+        $('#btnDownloadSample').attr('href', '/InTransCoil.xlsx')
+        $('#btnDownloadSample').attr('download', 'InTransCoil.xlsx')
+    })
+
+    function HideShowGrid(flg) {
+        var cmpvou = $('#txtInwCmpVou').val();
+        var accvou = $('#InwAccVou').val();
+        var prdvou = $('#txtInwPrdVou').children('option:selected').html();
+        var gdnvou = $('#txtInwGdnVou').val();
+        if (cmpvou != null && cmpvou != '' && cmpvou != 0 && accvou != null && accvou != '' && accvou != 0 && prdvou != null && prdvou != '' && prdvou != 0 && gdnvou != null && gdnvou != '' && gdnvou != 0) {
+            $('#btnDownloadSample').attr('href', '/InTransCoil.xlsx')
+            $('#btnDownloadSample').attr('download', 'InTransCoil.xlsx')
+            $('#divUploadExcel').removeClass('d-none');
+        }
+        else {
+            $('#btnDownloadSample').attr('href', '/InTransCoil.xlsx')
+            $('#btnDownloadSample').attr('download', 'InTransCoil.xlsx')
+            $('#divUploadExcel').addClass('d-none');
+        }
+    }
+
+</script>
+<script type="text/javascript">
+    $('#txtInwRem').focusout(function () {
+        var mgodown = $('#txtInwGdnVou').children('option:selected').val();
+        $('#tblCoil').children('tbody').children('tr:first').children('td').eq(2).children('select').val(mgodown);
+        $('#tblCoil').children('tbody').children('tr:first').children('td').eq(1).children('input').focus();
+        SetSelect2();
+    })
+
+    $(function () {
+        var gdnnm = $('#txtInwGdnVou').children('option:selected').text()
+        if (gdnnm)
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(2).children('select').val(gdnnm);
+    })
+
+    $('#txtInwGdnVou').change(function () {
+        var gdnnm = $('#txtInwGdnVou').children('option:selected').text()
+        if (gdnnm)
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(2).children('select').val(gdnnm);
+    })
+
+
+</script>
+
+
+
+<script>
+    var isRecentCall = false;
+    var isExcelUpload = false;
+    var isPasteDone = false;
+
+    function AddRowsCoil() {
+        if (!isRecentCall) {
+            var previousRow = $('#tblCoil').children('tbody').children('tr:last').prev();
+            if (previousRow != null) {
+                var billno = $(previousRow).children('td').eq(1).children('input').val();
+                var coilgodown = $(previousRow).children('td').eq(2).children('select').val();
+                var coilsupno = $(previousRow).children('td').eq(3).children('input').val();
+                var coilHeatno = $(previousRow).children('td').eq(4).children('input').val();
+                var coilgrade = $(previousRow).children('td').eq(5).children('select').val();
+                var coilwidth = $(previousRow).children('td').eq(6).children('input').val();
+                var coilthick = $(previousRow).children('td').eq(7).children('input').val();
+                var coilqty = $(previousRow).children('td').eq(8).children('input').val();
+                var coilremarks = $(previousRow).children('td').eq(9).children('input').val();
+                var intrancoil = $(previousRow).children('td').eq(10).children('input').val();
+                var coilscno = $(previousRow).children('td').eq(11).children('input').val();
+                var coilpowidth = $(previousRow).children('td').eq(12).children('input').val();
+                var coilpothick = $(previousRow).children('td').eq(13).children('input').val();
+                var srNo = $(previousRow).children('td').eq(0).children('input').val();
+                if (coilgodown != null && coilsupno != null && coilHeatno != null && coilgrade != null && coilthick != null && coilwidth != null && coilqty != null && coilgodown != "" && coilsupno != "" && coilHeatno != "" && coilgrade != "" && coilthick != "" && coilwidth != "" && coilqty != "") {
+
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        var html = $('#tblCoil').children().find('tr.AddRows:first').html();
+
+                        if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                            $('#tblDisplay').append(`<thead>` + $('#tblCoil').children('thead').html() + `</thead><tbody></tbody>`);
+                            $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
+                        }
+                        else {
+                            $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
+                        }
+                    }
+                    $('#tblCoil').children('tbody').children('tr:last').removeClass('d-none')
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('label').html(billno);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('label').html(coilgodown);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(3).children('label').html(coilsupno);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(4).children('label').html(coilHeatno);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('label').html(coilgrade);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(6).children('label').html(coilwidth);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(7).children('label').html(coilthick);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(8).children('label').html(coilqty);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(9).children('label').html(coilremarks);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('label').html(intrancoil);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('label').html(coilscno);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(12).children('label').html(coilpowidth);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(13).children('label').html(coilpothick);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(0).children('label').html(srNo);
+
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(8).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(9).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(11).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(12).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(13).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+
+
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').val(billno);
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('span').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).html($('#dropdownGodownCoil').html());
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').addClass('select2');
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val(coilgodown);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').removeClass('select2')
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val(coilsupno);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val(coilHeatno);
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('span').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).html($('#dropdownGrade').html());
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').addClass('select2');
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').val(coilgrade);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').removeClass('select2')
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val(coilwidth);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val(coilthick);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val(coilqty);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val(coilremarks);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').val(intrancoil);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').val(coilscno);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(12).children('input').val(coilpowidth);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(13).children('input').val(coilpothick);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(14).addClass('text-center')
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(14).html(`<i class="fa fa-edit text-primary" onclick="EditRowsCoil(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsCoil(this)" style="font-size:18px"></i>`)
+
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(12).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(13).children('input').attr('disabled', true)
+
+                        $('#tblDisplay').children('tbody').children().find('input').each(function () {
+                            $(this).removeAttr('onfocusin')
+                            $(this).removeAttr('onfocus')
+                            $(this).removeAttr('onfocusout')
+                            $(this).removeClass('focusIn')
+                        })
+                    }
+                    else {
+                        $('#tblDisplay').children('tbody').children('tr').each(function () {
+                            if ($(this).children('td').eq(0).children('input').val() == srNo) {
+                                $(this).children('td').eq(1).children('input').val(billno);
+
+                                $(this).children('td').eq(2).children('select').remove();
+                                $(this).children('td').eq(2).children('span').remove();
+                                $(this).children('td').eq(2).html($('#dropdownGodownCoil').html());
+                                $(this).children('td').eq(2).children('select').addClass('select2');
+                                $(this).children('td').eq(2).children('select').val(coilgodown);
+                                $(this).children('td').eq(2).children('select').removeClass('select2')
+                                $(this).children('td').eq(2).children('select').attr('disabled', true)
+
+                                $(this).children('td').eq(3).children('input').val(coilsupno);
+                                $(this).children('td').eq(4).children('input').val(coilHeatno);
+
+                                $(this).children('td').eq(5).children('select').remove();
+                                $(this).children('td').eq(5).children('span').remove();
+                                $(this).children('td').eq(5).html($('#dropdownGrade').html());
+                                $(this).children('td').eq(5).children('select').addClass('select2');
+                                $(this).children('td').eq(5).children('select').val(coilgrade);
+                                $(this).children('td').eq(5).children('select').removeClass('select2')
+                                $(this).children('td').eq(5).children('select').attr('disabled', true)
+
+                                $(this).children('td').eq(7).children('input').val(coilthick);
+                                $(this).children('td').eq(6).children('input').val(coilwidth);
+                                $(this).children('td').eq(8).children('input').val(coilqty);
+                                $(this).children('td').eq(9).children('input').val(coilremarks);
+                                $(this).children('td').eq(10).children('input').val(intrancoil);
+                                $(this).children('td').eq(11).children('input').val(coilscno);
+                                $(this).children('td').eq(12).children('input').val(coilpowidth);
+                                $(this).children('td').eq(13).children('input').val(coilpothick);
+                                $(this).children('td').eq(14).addClass('text-center')
+                                $(this).children('td').eq(14).html(`<i class="fa fa-edit text-primary" onclick="EditRowsCoil(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsCoil(this)" style="font-size:18px"></i>`)
+                                $('#btnSave').prop('disabled', false);
+                            }
+                        })
+                    }
+
+
+
+                    SetSerialNumberCoil();
+                    SetNameCoil();
+                    SetSelect2();
+                    //CalculateCoil();
+                    isRecentCall = true
+                    setTimeout(function () {
+                        isRecentCall = false;
+
+                    }, 500)
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').focus();
+                    setTimeout(function () {
+                        window.scrollTo(0, 0);
+                    }, 100)
+                }
+                else {
+                    showErrorMessage("Please enter all required fields");
+                    return false;
+                }
+            }
+        }
+    }
+
+    function DeleteRowsCoil(obj) {
+        if ($('#tblCoil').children('tbody').children('tr:not(tr.lastRow)').length > 1) {
+            var supcoilno = $(obj).closest('tr').children('td').eq(3).children('input').val();
+            if (supcoilno != '') {
+                $.ajax({
+                    url: '/InTransInward/GetDeleteSupCoil',
+                    type: 'POST',
+                    data: { 'supcoilno': supcoilno },
+                    dataType: 'JSON',
+                    traditional: true, // add this
+                    success: function (data) {
+                        if (data.result) {
+                            if (data.data == "1") {
+                                Swal.fire({
+                                    title: 'Are you sure want to delete row?',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Delete',
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        $(obj).closest('tr').remove();
+                                        CalculateCoil();
+                                        SetSerialNumberCoil();
+                                        if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                                            $('#tblDisplay').children('thead').remove();
+                                            $('#tblDisplay').children('tbody').remove();
+                                        }
+                                    } else if (result.isDenied) {
+                                    }
+                                })
+                            }
+                            else {
+                                showErrorMessage("You Can Not Delete Records This Record is Included Some Trasaction!");
+                            }
+                        }
+                    }
+                })
+            }
+        }
+        else {
+            showErrorMessage('Cannot delete first row');
+        }
+
+    }
+
+    function SetSerialNumberCoil() {
+        var count = 1;
+        $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+            $(this).children('td').eq(0).children('input').val(count);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(0).children('label').html(count)
+            $(this).children('td').eq(5).children('select').attr('id', 'drpGrade' + count);
+            count = parseInt(count) + 1;
+        });
+    }
+
+    function SetNameCoil(isRemove) {
+        $('#tblDisplay').children('tbody').children('tr:last').children("td").eq(5).children("select").attr("Id", "Inward.IntGrdCoil999999");
+        $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
+            $(this).children("td").eq(1).children("input").attr("name", "Inward.BillNoCoil");
+            $(this).children("td").eq(1).children("input").attr("Id", "Inward.BillNoCoil" + i + "");
+            $(this).children("td").eq(2).children("select").attr("name", "Inward.IntGdnCoil");
+            $(this).children("td").eq(2).children("select").attr("Id", "Inward.IntGdnCoil" + i + "");
+            $(this).children("td").eq(3).children("input").attr("name", "Inward.SupCoilNo");
+            $(this).children("td").eq(3).children("input").attr("Id", "Inward.SupCoilNo" + i + "");
+            if (!isRemove)
+                $(this).children("td").eq(3).children("input").attr("onblur", 'SuplierCoilCheck(this)');
+            $(this).children("td").eq(4).children("input").attr("name", "Inward.HeatNo");
+            $(this).children("td").eq(4).children("input").attr("Id", "Inward.HeatNo" + i + "");
+            $(this).children("td").eq(5).children("select").attr("name", "Inward.IntGrdCoil");
+            $(this).children("td").eq(5).children("select").attr("Id", "Inward.IntGrdCoil" + i + "");
+            $(this).children("td").eq(6).children("input").attr("name", "Inward.IntWidth");
+            $(this).children("td").eq(6).children("input").attr("Id", "Inward.IntWidth" + i + "");
+            $(this).children("td").eq(7).children("input").attr("name", "Inward.IntThickCoil");
+            $(this).children("td").eq(7).children("input").attr("Id", "Inward.IntThickCoil" + i + "");
+            $(this).children("td").eq(8).children("input").attr("name", "Inward.IntQtyCoil");
+            $(this).children("td").eq(8).children("input").attr("Id", "Inward.IntQtyCoil" + i + "");
+            $(this).children("td").eq(9).children("input").attr("name", "Inward.IntRemksCoil");
+            $(this).children("td").eq(9).children("input").attr("Id", "Inward.IntRemksCoil" + i + "");
+            $(this).children("td").eq(10).children("input").attr("name", "Inward.CoilNo");
+            $(this).children("td").eq(10).children("input").attr("Id", "Inward.CoilNo" + i + "");
+            $(this).children("td").eq(11).children("input").attr("name", "Inward.IntScNo");
+            $(this).children("td").eq(11).children("input").attr("Id", "Inward.IntScNo" + i + "");
+            $(this).children("td").eq(12).children("input").attr("name", "Inward.IntPoWidth");
+            $(this).children("td").eq(12).children("input").attr("Id", "Inward.IntPOWdith" + i + "");
+            $(this).children("td").eq(13).children("input").attr("name", "Inward.IntPOThick");
+            $(this).children("td").eq(13).children("input").attr("Id", "Inward.IntPOThick" + i + "");
+        });
+    }
+
+    function EditRowsCoil(obj) {
+        if (obj != null) {
+            var srno = $(obj).closest('tr').children('td').eq(0).children('input').val();
+            var csrno = $(obj).closest('tr').children('td').eq(0).children('input').val();
+            var cbillno = $(obj).closest('tr').children('td').eq(1).children('input').val();
+            var cgodown = $(obj).closest('tr').children('td').eq(2).children('select').val();
+            var csupcoilno = $(obj).closest('tr').children('td').eq(3).children('input').val();
+            var cheatno = $(obj).closest('tr').children('td').eq(4).children('input').val();
+            var cgrade = $(obj).closest('tr').children('td').eq(5).children('select').val();
+            var cthick = $(obj).closest('tr').children('td').eq(7).children('input').val();
+            var cwidth = $(obj).closest('tr').children('td').eq(6).children('input').val();
+            var cqty = $(obj).closest('tr').children('td').eq(8).children('input').val();
+            var cremarks = $(obj).closest('tr').children('td').eq(9).children('input').val();
+            var cintracoil = $(obj).closest('tr').children('td').eq(10).children('input').val();
+            var cscno = $(obj).closest('tr').children('td').eq(11).children('input').val();
+            var cpowidth = $(obj).closest('tr').children('td').eq(12).children('input').val();
+            var cpothick = $(obj).closest('tr').children('td').eq(13).children('input').val();
+
+
+
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(0).children('input').val(srno);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(1).children('input').val(cbillno);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(2).children('select').val(cgodown);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(3).children('input').val(csupcoilno);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(4).children('input').val(cheatno);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(5).children('select').val(cgrade);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(7).children('input').val(cthick);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(6).children('input').val(cwidth);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(8).children('input').val(cqty);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(9).children('input').val(cremarks);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(10).children('input').val(cintracoil);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(11).children('input').val(cscno);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(12).children('input').val(cpowidth);
+            $('#tblCoil').children('tbody').children('tr').children('td').eq(13).children('input').val(cpothick);
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').focus();
+            SetSelect2();
+            $('#btnSave').prop('disabled', true);
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').focus();
+
+        }
+    }
+
+    function GetDataBySrNoCoil(value) {
+        $('#tblDisplay').children('tbody').children('tr').each(function () {
+            if ($(this).children('td').eq(0).html() == value || $(this).children('td').eq(0).children('input').val() == value) {
+                EditRowsCoil($(this));
+                //$('#tblCoil').children('tbody').children('tr').children('td').eq(0).children('input').val(value);
+                $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('select').focus();
+            }
+        })
+    }
+
+    function RefreshCoil() {
+        var rgodown = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val();
+        var rgrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').val();
+        var rsupcoil = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
+        var rheat = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val();
+
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').val(rgodown);
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(5).children('select').val(rgrade);
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(8).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(9).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(10).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(11).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(12).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(13).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+        SetSelect2();
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').focus();
+    }
+
+    function CalculateCoil() {
+        var totalWeight = 0;
+        $('#tblCoil').children('tbody').children('tr').each(function () {
+            totalWeight = parseFloat(totalWeight) + parseFloat($(this).children('td').eq(8).children('input').val());
+        })
+
+        $('#tblCoil').children('thead').children('tr').children('th').eq(8).html(`(<b style='text-align:right'>` + totalWeight + `</b>)</br>` + $('#tblCoil').children('thead').children('tr').children('th').eq(8).html());
+    }
+
+    $(function () {
+        var inwvou = '@Html.Raw(Model.InwVou)';
+        if (inwvou != null && inwvou != '' && inwvou != 0) {
+            GoToAddTab()
+            var abillno = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').val();
+            var agodown = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val();
+            var asupcoil = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
+            var aheatno = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val();
+            var agrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').val();
+
+            var awidth = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val();
+            var athick =  $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val();
+            var aqty =  $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val();
+            var aremarks = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val();
+            var aintran = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').val();
+            var ascno = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').val();
+            var apowidth = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(12).children('input').val();
+            var apothick = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(13).children('input').val();
+            var asrno = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').val();
+            $('#tblCoil').children('tbody').children('tr:last').removeClass('d-none')
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('label').html(abillno);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('label').html(agodown);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(3).children('label').html(asupcoil);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(4).children('label').html(aheatno);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('label').html(agrade);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(6).children('label').html(awidth);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(7).children('label').html(athick);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(8).children('label').html(aqty);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(9).children('label').html(aremarks);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('label').html(aintran);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('label').html(ascno);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(12).children('label').html(apowidth);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(13).children('label').html(apothick);
+            $('#tblCoil').children('tbody').children('tr:last').children('td').eq(0).children('label').html(asrno);
+
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').val('');
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').val('');
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val('');
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val('');
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(5).children('select').val('');
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(8).children('input').val('');
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(9).children('input').val('');
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(10).children('input').val('');
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(11).children('input').val('');
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(12).children('input').val('');
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(13).children('input').val('');
+            $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+            $('#tblDisplay').children('tbody').children('tr').each(function (i) {
+                $(this).children("td").eq(1).children('input').attr('disabled', true);
+                $(this).children("td").eq(2).children('select').attr('disabled', true);
+                $(this).children("td").eq(3).children('input').attr('disabled', true);
+                $(this).children("td").eq(4).children('input').attr('disabled', true);
+                $(this).children("td").eq(5).children('select').attr('disabled', true);
+                $(this).children("td").eq(6).children('input').attr('disabled', true);
+                $(this).children("td").eq(7).children('input').attr('disabled', true);
+                $(this).children("td").eq(8).children('input').attr('disabled', true);
+                $(this).children("td").eq(9).children('input').attr('disabled', true);
+                $(this).children("td").eq(10).children('input').attr('disabled', true);
+                $(this).children("td").eq(11).children('input').attr('disabled', true);
+                $(this).children("td").eq(12).children('input').attr('disabled', true);
+                $(this).children("td").eq(13).children('input').attr('disabled', true);
+                $(this).children("td").eq(0).children('input').attr('disabled', true);
+
+            });
+        }
+        //else {
+        //    var isAdd = localStorage.getItem("InTransInward");
+        //    if (isAdd && isAdd == "1") {
+        //        GoToAddTab();
+        //    }
+        //    else if (isAdd && isAdd == "2") {
+        //        GoToListTab();
+        //    }
+        //}
+
+
+    })
+
+    $("#btnSave").click(function () {
+        //var ischeckcoil = $('IsCheckCoil').val();
+        //if (ischeckcoil == '0') {
+
+            localStorage.setItem("InTransInward", "1");
+            if (!isRecentCall) {
+                var previousRow = $('#tblCoil').children('tbody').children('tr:last').prev();
+                if (previousRow != null) {
+                    var ewidth = $(previousRow).children('td').eq(6).children('input').val();
+                    if (ewidth != 0) {
+                        AddRowsCoil()
+                    }
+                }
+            }
+            $('#tblDisplay').children('tbody').children('tr').each(function (i) {
+                if (!$(this).children("td").eq(9).children("input").val()) {
+                    $(this).children("td").eq(9).children("input").val("-1")
+                }
+                if (!$(this).children("td").eq(11).children("input").val()) {
+                    $(this).children("td").eq(11).children("input").val("-1")
+                }
+                if (!$(this).children("td").eq(12).children("input").val()) {
+                    $(this).children("td").eq(12).children("input").val("-1")
+                }
+                if (!$(this).children("td").eq(13).children("input").val()) {
+                    $(this).children("td").eq(13).children("input").val("-1")
+                }
+
+                $(this).children("td").eq(1).children('input').attr('disabled', false);
+                $(this).children("td").eq(2).children('select').attr('disabled', false);
+                $(this).children("td").eq(3).children('input').attr('disabled', false);
+                $(this).children("td").eq(4).children('input').attr('disabled', false);
+                $(this).children("td").eq(5).children('select').attr('disabled', false);
+                $(this).children("td").eq(6).children('input').attr('disabled', false);
+                $(this).children("td").eq(7).children('input').attr('disabled', false);
+                $(this).children("td").eq(8).children('input').attr('disabled', false);
+                $(this).children("td").eq(9).children('input').attr('disabled', false);
+                $(this).children("td").eq(10).children('input').attr('disabled', false);
+                $(this).children("td").eq(11).children('input').attr('disabled', false);
+                $(this).children("td").eq(12).children('input').attr('disabled', false);
+                $(this).children("td").eq(13).children('input').attr('disabled', false);
+                $(this).children("td").eq(0).children('input').attr('disabled', false);
+
+            });
+
+        //}
+    });
+
+
+    function numericFilter(txb) {
+        txb.value = txb.value.replace(/[^\0-9]/ig, "");
+    }
+
+
+    function SuplierCoilCheck(previousRow, isExists) {
+        if (previousRow != null) {
+            var inwvou = '@Html.Raw(Model.InwVou)';
+            var srno1 = $(previousRow).closest('tr').children('td').eq(0).children('input').val();
+            var supcoil = $(previousRow).closest('tr').children('td').eq(3).children('input').val();
+            var inputId = $(previousRow).closest('tr').children('td').eq(3).children('input').attr('id');
+            var thick = $(previousRow).closest('tr').children('td').eq(7).children('input').attr('id');
+            if (thick != 0) {
+                $.ajax({
+                    url: '/InTransInward/GetSupCoilCheck',
+                    type: 'POST',
+                    data: { 'supcoil': supcoil, 'inwvou':inwvou, 'srno1': srno1  },
+                    dataType: 'JSON',
+                    traditional: true, // add this
+                    success: function (data) {
+                        if (data.result) {
+                            if (data.data == "1" && !isExists) {
+                                //$('IsCheckCoil').val('1')
+                                showErrorMessage("Supplier Coil No Already Exsits!");
+                                $(previousRow).closest('tr').children('td').eq(3).children('input').focus();
+                            }
+                            else {
+                                if (!isExists) {
+                                    var isMatch = false;
+                                    $('#tblDisplay').children('tbody').children('tr').each(function () {
+                                        if ($(this).children('td').eq(0).children('input').val() != srno1) {
+                                            if ($(this).children('td').eq(3).children('input').val() == supcoil) {
+                                                isMatch = true;
+                                            }
+                                            //else {
+                                            //    $('IsCheckCoil').val('0')
+                                            //}
+                                        }
+                                    })
+                                    if (isMatch) {
+                                        //$('IsCheckCoil').val('1')
+                                        showErrorMessage("Supplier Coil No Already Exsits!");
+                                        $('#tblCoil').children('tbody').children('tr').each(function () {
+                                            if ($(this).children('td').eq(3).children('input').attr('id') == inputId) {
+                                                isMatch = true;
+                                                $(this).closest('tr').children('td').eq(3).children('input').focus();
+                                            }
+                                        })
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            errorMessage(response);
+                        }
+                    },
+                    failure: function (response) {
+                        errorMessage(response);
+                    }
+                });
+            }
+        }
+    }
+
+</script>
+<script>
+
+    function UploadExcel() {
+        if ($('#fileUpload') != null && $('#fileUpload')[0].files[0] != null && $('#fileUpload')[0].files[0] != undefined) {
+            var ggodown = $('#txtInwGdnVou').children('option:selected').val();
+            var formData = new FormData();
+            formData.append('file', $('#fileUpload')[0].files[0]);
+            formData.append('type', "COIL");
+            $.ajax({
+                url: '/InTransInward/Excel',
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (data) {
+                    if (data != null) {
+
+                        if (!data.result) {
+                            showErrorMessage(data.message)
+                            $('#fileUpload').val("");
+                        }
+                        else {
+                            var gradeList = data.gradeList;
+                            var godownList = data.godownList;
+                            var notFoundItemList = data.notFoundItemList;
+                            var data = data.gridList;
+
+                            if (godownList != null && godownList.length > 0) {
+                                $('#dropdownGodownCoil').children('select').children('option').remove();
+                                for (var x = 0; x < godownList.length; x++) {
+                                    $('#dropdownGodownCoil').children('select').append(`<option value="` + godownList[x].text + `">` + godownList[x].text + `</option`);
+                                }
+
+                            }
+
+                            if (gradeList != null && gradeList.length > 0) {
+                                $('#dropdownGrade').children('select').children('option').remove();
+                                for (var x = 0; x < gradeList.length; x++) {
+                                    $('#dropdownGrade').children('select').append(`<option value="` + gradeList[x].text + `">` + gradeList[x].text + `</option`);
+                                }
+
+                            }
+
+                            if (data != null && data.length > 0) {
+                                var html = $('#tblCoil').children().find('tr.AddRows:first').html();
+                                $('#tblDisplay').children('tbody').remove();
+                                $('#tblDisplay').children('thead').remove();
+                                $('#tblDisplay').append(`<thead>` + $('#tblCoil').children('thead').html() + `</thead><tbody></tbody>`);
+                                $('#tblDisplay').children('thead').children('tr').children('th:last').addClass('d-none');
+                                for (var x = 0; x < data.length; x++) {
+                                    $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
+
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').val((parseInt(x) + 1));
+
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').val(data[x][1]);
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').remove();
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('span').remove();
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).html($('#dropdownGodownCoil').html());
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').addClass('select2');
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val(ggodown);
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').removeClass('select2')
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val(data[x][2]);
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val(data[x][3]);
+
+
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').remove();
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('span').remove();
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).html($('#dropdownGrade').html());
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').addClass('select2');
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').val(data[x][4]);
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').removeClass('select2')
+
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val(data[x][5]);
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val(data[x][6]);
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val(data[x][7]);
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val(data[x]['']);
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').val(data[x]['']);
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(12).children('input').val(data[x][8]);
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(13).children('input').val(data[x][9]);
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').val(data[x][10]);
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(14).addClass('text-center')
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(14).addClass('d-none')
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(14).html(`<i class="fa fa-edit text-primary" onclick="EditRowsCoil(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsCoil(this)" style="font-size:18px"></i>`)
+
+
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').attr('disabled', true)
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true)
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').attr('disabled', true)
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').attr('disabled', true)
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').attr('disabled', true)
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').attr('disabled', true)
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').attr('disabled', true)
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').attr('disabled', true)
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').attr('disabled', true)
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').attr('disabled', true)
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').attr('disabled', true)
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').attr('disabled', true)
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').attr('disabled', true)
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(12).children('input').attr('disabled', true)
+                                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(13).children('input').attr('disabled', true)
+                                }
+
+                                $('#tblCoil').addClass('d-none');
+                                $('#fileUpload').val("");
+                                isExcelUpload = true;
+                                isPasteDone = false;
+                            }
+
+                            var alertHTML = '';
+                            if (notFoundItemList != null && notFoundItemList.length > 0) {
+                                alertHTML = '<b style="font-size:20px !important">Following unique grade not found!</b><table style="font-size:16px !important" class="table table-boredered mt-3"><thead><tr><th>#</th><th>Grade</th></tr></thead><tbody>';
+                                for (var x = 0; x < notFoundItemList.length; x++) {
+                                    alertHTML += "<tr><td>" + (parseInt(x) + 1) + "</td>";
+                                    if (notFoundItemList[x].text)
+                                        alertHTML += "<td>" + notFoundItemList[x].text + "</td>";
+                                    else
+                                        alertHTML += "<td>-</td>";
+
+                                    alertHTML += "</tr>";
+                                }
+                                alertHTML += "</tbody</table>";
+
+                                Swal.fire({
+                                    position: 'center',
+                                    title: alertHTML,
+                                    showConfirmButton: true,
+                                })
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+    }
+
+    $('#btnPasteCoilExcel').click(function () {
+        $('#tblCoil').removeClass('d-none');
+
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').remove();
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('span').remove();
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).html($('#dropdownGodownCoil').html());
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').addClass('select2');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').val("");
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').attr('name', 'Inward.IntGdnCoil')
+
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(5).children('select').remove();
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(5).children('span').remove();
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(5).html($('#dropdownGrade').html());
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(5).children('select').addClass('select2');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(5).children('select').val("");
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(5).children('select').attr('name', 'Inward.IntGrdCoil')
+
+        $('#tblDisplay').children('thead').children('tr').children('th:last').removeClass('d-none');
+        $('#tblDisplay').children('tbody').children('tr').each(function () {
+            $(this).children('td:last').removeClass('d-none');
+        });
+
+
+        var billno = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').val();
+        var godown = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val();
+        var supcoilno = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
+        var heatno = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val();
+        var grade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').val();
+        var width = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val();
+        var thick = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val();
+        var weight = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val();
+        var remks = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val();
+        var intrcoil = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').val();
+        var scno = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').val();
+        var powidth = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(12).children('input').val();
+        var pothick = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(13).children('input').val();
+        var srNo = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').val();
+
+        $('#tblCoil').children('tbody').children('tr:last').removeClass('d-none');
+        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('label').html(billno);
+        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('label').html(godown);
+        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(3).children('label').html(supcoilno);
+        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(4).children('label').html(heatno);
+        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('label').html(grade);
+        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(6).children('label').html(width);
+        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(7).children('label').html(thick);
+        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(8).children('label').html(weight);
+        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(9).children('label').html(remks);
+        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('label').html(intrcoil);
+        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('label').html(scno);
+        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(12).children('label').html(powidth);
+        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(13).children('label').html(pothick);
+        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(0).children('label').html(srNo);
+        SetSerialNumberCoil();
+        SetNameCoil();
+        SetSelect2();
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').focus();
+        isPasteDone = true;
+    })
+
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+
+</script>
+<script>
+    $(document).ready(function () {
+        $(".InwAccVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/InTransInward/GetAccount-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+    });
+
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+
+    $(function () {
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(5).children('select').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(8).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(9).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(10).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(11).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(12).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(13).children('input').val('');
+        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+    })
+</script>

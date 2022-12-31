@@ -1,0 +1,1043 @@
+﻿@model SUNMark.Models.MillingMasterModel
+@using Microsoft.AspNetCore.Http
+@using SUNMark.Models;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
+    List<SUNMark.Models.JobWorkEntryModel> jobworkentryList = ViewBag.jobworkentryList as List<SUNMark.Models.JobWorkEntryModel>;
+    List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
+    List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
+    ViewData["Title"] = userRight.ModuleNm;
+    string headerAdd = "";
+    string headerList = "";
+    string gridAdd = "";
+    string gridList = "";
+    bool headerAddTrue = false;
+    bool headerListTrue = false;
+    int id = ViewBag.id != null ? (int)ViewBag.id : 0;
+    int vNo = ViewBag.voucherNo != null ? Convert.ToInt32(ViewBag.voucherNo) : 0;
+    List<SelectListItem> companyList = ViewBag.companyList != null ? ViewBag.companyList as List<SelectListItem> : null;
+    List<SelectListItem> productList = ViewBag.productList != null ? ViewBag.productList as List<SelectListItem> : null;
+    List<SelectListItem> shiftList = ViewBag.shiftList != null ? ViewBag.shiftList as List<SelectListItem> : null;
+    List<CustomDropDown> employeeList = ViewBag.employeeList != null ? ViewBag.employeeList as List<CustomDropDown> : null;
+    List<CustomDropDown> supervisorList = ViewBag.supervisorList != null ? ViewBag.supervisorList as List<CustomDropDown> : null;
+    List<SelectListItem> processList = ViewBag.processList != null ? ViewBag.processList as List<SelectListItem> : null;
+    List<SelectListItem> milprocessList = ViewBag.milprocessList != null ? ViewBag.milprocessList as List<SelectListItem> : null;
+    List<SelectListItem> nbList = ViewBag.nbList != null ? ViewBag.nbList as List<SelectListItem> : null;
+    List<SelectListItem> schList = ViewBag.schList != null ? ViewBag.schList as List<SelectListItem> : null;
+
+
+    if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+    {
+        headerAdd = "active";
+        gridAdd = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+}
+<div class="card card-primary">
+    <div class="card-header" style="font-family:Verdana">
+        <h6> @ViewData["Title"]</h6>
+    </div>
+    <div class="card-body">
+        <div class="card card-primary card-tabs">
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                    @if (userRight != null && userRight.IsList)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerList" id="custom-tabs-three-list-tab" data-toggle="pill" href="#custom-tabs-three-list" role="tab" aria-controls="custom-tabs-three-list" aria-selected="@headerListTrue" style="font-family:Verdana;font-size:small" onclick="GoToListTab()">List (Alt+L)</a>
+                        </li>
+                    }
+                    @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerAdd" id="custom-tabs-three-add-tab" data-toggle="pill" href="#custom-tabs-three-add" role="tab" aria-controls="custom-tabs-three-add" aria-selected="@headerAddTrue" style="font-family:Verdana;font-size:small" onclick="GoToAddTab()">Add/Update (F2)</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="tab-content" id="custom-tabs-three-tabContent">
+                        @if (userRight != null && userRight.IsList)
+                        {
+                            <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
+                                <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
+                                    <div class="col-md-12 col-12 mb-2 mt-2">
+                                        <div class="row">
+                                            <div class="col-md-1 mb-2 float-left">
+
+                                                <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                                    @for (int i = 0; i < pageNoList.Count; i++)
+                                                    {
+                                                        string checkedd = "checked";
+                                                        <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                                        checkedd = string.Empty;
+                                                    }
+
+                                                </select>
+
+                                            </div>
+                                            <div class="col-md-5 col-12">
+                                                <div class="row">
+                                                    <div class="col-md-6 col">
+                                                        <select class="form-control select2 drpReportLayout" onchange="loadData()">
+                                                            <option value="" ; style="width:200px">--Select Layout--</option>
+                                                            @if (layoutList != null && layoutList.Count > 0)
+                                                            {
+                                                                foreach (var item in layoutList)
+                                                                {
+                                                                    <option value="@item.Value">@item.Text </option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                                        @if (isAdministrator == 1)
+                                                        {
+                                                            <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                                Edit
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                                        <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                                        <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                            <div class="col-md-3 col-12 float-right">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dataTable">
+
+                                    </div>
+                                    <div class="pager float-right"></div>
+                                </div>
+                            </div>
+                        }
+                        @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                        {
+                            <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
+                                <form method="post" class="mt-1" autocomplete="off" id="millingForm">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-1 col-12">
+                                                    <div class="form-group">
+                                                        <label>VNo.<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                        @Html.TextBoxFor(x => x.Vno, new { @class = "form-control ", @placeholder = "Voucher No", @type = "text", @disabled = "disabled" })
+                                                        @Html.TextBoxFor(x => x.Vou, new { @class = "form-control ", @placeholder = "Voucher No", @type = "hidden", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-12">
+                                                    <div class="form-group">
+                                                        <input type="hidden" id="issueCoilNoVou" name="issueCoilNoVou" class="form-control" disabled value="0" />
+                                                        <label>Company<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                        @Html.DropDownListFor(x => x.CompanyVou, companyList, "Select", new { @class = "form-control select2", @style = "width:100% !important" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Date<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                        @Html.TextBoxFor(x => x.Date, new { @class = "form-control ", @placeholder = "Date", @type = "date", @onblur = "return FDate()" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Shift<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                        @Html.DropDownListFor(x => x.ShiftVou, shiftList, "Select", new { @class = "form-control select2", onchange = "GetSupervisor()", @style = "width:100% !important" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Mill No<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                        @Html.DropDownListFor(x => x.MillNo, new SelectList(milprocessList, "Value", "Text"), "Select", new { @class = "form-control select2", onchange = "GetSupervisor()", @style = "width:100% !important" })
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label>Operator 1<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.DropDownListFor(x => x.Operator1, new SelectList(employeeList, "Value", "Text"), "Select", new { @class = "form-control select2", @style = "width:100% " })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label>Operator 2<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.DropDownListFor(x => x.Operator2, new SelectList(employeeList, "Value", "Text"), "Select", new { @class = "form-control select2", @style = "width:100% " })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-6">
+                                                    <div class="form-group">
+                                                        <label>Supervisor<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.DropDownListFor(x => x.Supervisor, new SelectList(supervisorList, "Value", "Text"), "Select", new { @class = "form-control select2", @style = "width:100% " })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-2 col-6">
+                                                    <div class="form-group">
+                                                        <label>Issue Coil No<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                        @Html.TextBoxFor(x => x.IssueCoilNo, new { @class = "form-control ", @placeholder = "Issue Coil No", @type = "text", @onchange = "GetDataByCoilNo(this.value)" })
+                                                        @Html.TextBoxFor(x => x.IssueCoilNoVou, new { @class = "form-control ", @placeholder = "IssueCoilNoVou", @type = "hidden" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-6">
+                                                    <div class="form-group">
+                                                        <label>Grade<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Grade, new { @class = "form-control ", @placeholder = "Grade", @type = "text", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-6">
+                                                    <div class="form-group">
+                                                        <label>Width<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Width, new { @class = "form-control ", @placeholder = "Width", @type = "text", @disabled = "disabled", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-6">
+                                                    <div class="form-group">
+                                                        <label>Thick<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Thick, new { @class = "form-control ", @placeholder = "Thick", @type = "text", @disabled = "disabled", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-6">
+                                                    <div class="form-group">
+                                                        <label>Weight<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        <label class="control-label pl-1" style="font-family: Verdana;width:110px;text-align:right" id="PCSWeight">-</label>
+                                                        @Html.TextBoxFor(x => x.Weight, new { @class = "form-control ", @placeholder = "Weight", @type = "text", @disabled = "disabled", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-2 col-6">
+                                                    <div class="form-group">
+                                                        <label>OD<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.OD, new { @class = "form-control ", @placeholder = "OD", @type = "text", @onchange = "GetNBSCHDetails(this)", @disabled = "disabled", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>NB<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        <input type="hidden" id="NB" name="NB" class="form-control" value="" />
+                                                        @Html.DropDownListFor(x => x.NbVou, nbList, "Select", new { @class = "form-control select2", @style = "width:100% ", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>SCH<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        <input type="hidden" id="SCH" name="SCH" class="form-control" value="" />
+                                                        @Html.DropDownListFor(x => x.SCHVou, schList, "Select", new { @class = "form-control select2", @style = "width:100% ", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Curr.Process<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                        @Html.DropDownListFor(x => x.PrcVou, processList, "Select", new { @class = "form-control select2", @style = "width:100% " })
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Length(Feet)<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                        @Html.TextBoxFor(x => x.FeetPer, new { @class = "form-control ", @placeholder = "Length(Feet)", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>No Of Pipe<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                        <label class="control-label pl-1" style="font-family: Verdana;width:70px;text-align:right" id="NoOfPipe">-</label>
+                                                        @Html.TextBoxFor(x => x.PCS, new { @class = "form-control ", @placeholder = "No Of Pipe", @type = "text", @onchange = "GetODThickPCS(this)", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Weight<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.PCSWeight, new { @class = "form-control decimal", @placeholder = "Weight", @type = "text", name = "PCSWeight", @id = "txtPCSWeight", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>In Time<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.InTime, new { @class = "form-control ", @placeholder = "In Time", @type = "time" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                            <label>Out Time<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                            @Html.TextBoxFor(x => x.OutTime, new { @class = "form-control ", @placeholder = "Out Time", @type = "time" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Received Product<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                        @Html.DropDownListFor(x => x.RecPrdVou, productList, "Select", new { @class = "form-control select2", @style = "width:100% " })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>RL PCS<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.RLPCS, new { @class = "form-control ", @placeholder = "RL PCS", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>RL Weight<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.RLWeight, new { @class = "form-control ", @placeholder = "RL Weight", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Scrap Product<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.DropDownListFor(x => x.ScrapPipeProductVou, productList, "Select", new { @class = "form-control select2", @style = "width:100% " })
+                                                    </div>
+                                                </div>
+                                                @*<div class="col-md-2 col-12">
+            <div class="form-group">
+                <label>Scrap Length<span class="text-danger" style="font-family: Verdana"></span></label>
+                @Html.TextBoxFor(x => x.ScrapLength, new { @class = "form-control ", @placeholder = "Scrap Length", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+            </div>
+        </div>*@
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Scrap Weight<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.ScrapWeight, new { @class = "form-control decimal", @placeholder = "Scrap Weight", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Next Process<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                        @Html.DropDownListFor(x => x.ProcessVou, processList, "Select", new { @class = "form-control select2", @style = "width:100% " })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>No Of Tourch<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.NoOfTourch, new { @class = "form-control ", @placeholder = "No Of Tourch", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Welding Speed<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.WeldingSpeed, new { @class = "form-control ", @placeholder = "Welding Speed", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>AMP<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.AMP, new { @class = "form-control ", @placeholder = "AMP", @type = "text" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Voltage<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Voltage, new { @class = "form-control ", @placeholder = "Voltage", @type = "text" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-12">
+                                                    <div class="form-group">
+                                                        <label>Remarks</label>
+                                                        @Html.TextBoxFor(x => x.Remarks, new { @class = "form-control ", @placeholder = "Remarks", @type = "text" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Read 1 Thick<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Read1Thick, new { @class = "form-control ", @placeholder = "Read 1 Thick", @type = "text",  @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Read 1 OD<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Read1OD, new { @class = "form-control ", @placeholder = "Read 1 OD", @type = "text", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Read 2 Thick<span class="text-danger"></span></label>
+                                                        @Html.TextBoxFor(x => x.Read2Thick, new { @class = "form-control ", @placeholder = "Read 2 Thick", @type = "text", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Read 2 OD<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Read2OD, new { @class = "form-control ", @placeholder = "Read 2 OD", @type = "text", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Finish Date<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.FinishDate, new { @class = "form-control ", @placeholder = "Finish Date", @type = "date",@onblur = "return TDate()" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-12">
+                                                    <div class="form-group">
+                                                        <label>Reason</label>
+                                                        @Html.TextBoxFor(x => x.Reason, new { @class = "form-control ", @placeholder = "Reason", @type = "text" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 text-center">
+                                                    @if (userRight.IsEdit && id > 0)
+                                                    {
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddMilling()">
+                                                            Save (F10)
+                                                        </button>
+                                                        <a href="/Milling/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                            Cancel (Esc)
+                                                        </a>
+                                                    }
+                                                    else if (userRight.IsAdd && id == 0)
+                                                    {
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddMilling()">
+                                                            Save (F10)
+                                                        </button>
+                                                        <a href="/Milling/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                            Cancel (Esc)
+                                                        </a>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var Vou = '@Html.Raw(Model.Vou)';
+        if (Vou != null && Vou != '' && Vou != 0) {
+            GoToAddTab()
+            $('select[name="MillNo"]').attr('disabled', true)
+            $('input[name="IssueCoilNo"]').attr('disabled', true)
+        }
+        else {
+            GoToListTab()
+        }
+    });
+
+    function GoToAddTab() {
+        $('#custom-tabs-three-list-tab').removeClass('active');
+        $('#custom-tabs-three-add-tab').addClass('active');
+
+        $('#custom-tabs-three-list').removeClass('active');
+        $('#custom-tabs-three-add').addClass('active');
+        $('#custom-tabs-three-add').addClass('show');
+        $('#CompanyVou').focus();
+    }
+
+    function GoToListTab() {
+        $('#custom-tabs-three-list-tab').addClass('active');
+        $('#custom-tabs-three-add-tab').removeClass('active');
+
+        $('#custom-tabs-three-list').addClass('active');
+        $('#custom-tabs-three-list').addClass('show');
+        $('#custom-tabs-three-add').removeClass('active');
+        $('#custom-tabs-three-add').removeClass('show');
+        $('#txtReportSearchDataTable').focus();
+    }
+</script>
+<script>
+    var isRecentCalledEsc = false;
+    var isRecentCalledAddRows = false;
+    var isRecentCalledSave = false;
+    (function (code) {
+        code(window.jQuery, document, window);
+    }(function ($, document, window) {
+        $(function () {
+            $(window)
+                .initKeyboard({ debug: 1 })
+                .on('F2', function () {
+                    GoToAddTab()
+                }).on('F10', function () {
+                    if (!isRecentCalledSave) {
+                        $('select[name="MillNo"]').attr('disabled', false)
+                        $('input[name="IssueCoilNo"]').attr('disabled', false)
+                        $("#btnSave").click();
+                        isRecentCalledSave = true;
+                        setTimeout(function () {
+                            isRecentCalledSave = false;
+                        }, 1000)
+                    }
+                })
+                .on('Alt+L', function () {
+                    GoToListTab();
+                })
+                .on('Pagedown', function () {
+                    if (!isRecentCalledAddRows) {
+                        isRecentCalledAddRows = true;
+                        AddRows();
+                        setTimeout(function () {
+                            isRecentCalledAddRows = false;
+                        }, 500)
+                    }
+                })
+                .on('Alt+C', function () {
+                    if (confirm("Do you want to exit without save?")) {
+                        location.href = '/Milling/Index'
+                    }
+                    else {
+                        $('#CompanyVou').focus();
+                    }
+
+                }).on('Escape', function () {
+                    if (!isRecentCalledEsc) {
+                        isRecentCalledEsc = true;
+                        if (confirm("Do you want to exit without save?")) {
+                            location.href = '/Milling/Index'
+                        }
+                        else {
+                            $('#CompanyVou').focus();
+                        }
+                        setTimeout(function () {
+                            isRecentCalledEsc = false;
+                        }, 500)
+                    }
+
+                })
+        });
+    }));
+</script>
+
+<script>
+
+    var isRecentCalled = false;
+
+    $(function () {
+        loadData();
+        var pageIndex = '';
+        var pageSize = '';
+        var totalRecord = '';
+        var isDelete = '@Html.Raw(userRight.IsDelete)';
+        var isEdit = '@Html.Raw(userRight.IsEdit)';
+    })
+
+    var timer = null;
+    $('#txtReportSearchDataTable').keyup(function (e) {
+        if (e.keyCode >= 112 && e.keyCode <= 123) {
+            e.preventDefault();
+            return false;
+        }
+        else {
+            clearTimeout(timer);
+
+            timer = setTimeout(loadData, 1000)
+        }
+
+    });
+    function loadData(pageIndex, columnName, sortBy) {
+        isRecentCalled = true;
+        if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
+            pageIndex = 1;
+        }
+        var layoutId = $('.drpReportLayout').val();
+
+        if (!layoutId) {
+            $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
+                SetSelect2()
+
+        }
+        if (!columnName) {
+            columnName = '';
+        }
+        if (!sortBy) {
+            sortBy = '';
+        }
+        $('.dataTable').html();
+        $.ajax({
+            url: '/Milling/GetReportView',
+            type: 'GET',
+            data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+            dataType: 'HTML',
+            traditional: true, // add this
+            success: function (data) {
+                $('.dataTable').html(data);
+                setTimeout(function () {
+                    isRecentCalled = false;
+                }, 2000)
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    }
+
+    $('#btnExportToExcel').click(function () {
+        window.location.href = "/Milling/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+    })
+
+    $('#btnExportToPDF').click(function () {
+        window.location.href = "/Milling/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+    })
+</script>
+<script>
+    var isSaveCalled = false;
+    function ValidateTextbox() {
+        var isAllow = true;
+        if (!$('select[name="CompanyVou"]').val()) {
+            sAllow = false;
+        }
+        if (!$('input[name="Vno"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="Date"]').val()) {
+            isAllow = false;
+        }
+        if (!$('select[name="ShiftVou"]').val()) {
+            isAllow = false;
+        }
+        if (!$('select[name="MillNo"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="IssueCoilNo"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="FeetPer"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="PCS"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="Weight"]').val()) {
+            isAllow = false;
+        }
+        if (!$('select[name="RecPrdVou"]').val()) {
+            isAllow = false;
+        }
+        return isAllow;
+    }
+
+    function GetDataByCoilNo(coilNo) {
+        var mildt = $('input[name="Date"]').val();
+        if (coilNo) {
+            $.ajax({
+                type: "POST",
+                url: '/Milling/GetDataByCoilNo',
+                data: { "coilNo": coilNo,"mildt": mildt },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            //var lotdt = response.data(7);
+                            //if (lotdt < mildt) {
+                            //    showErrorMessage("Invalid Coil No!");
+                            //}
+                            //else {
+                                $('input[name="Weight"]').val(response.data[5]);
+                                $('input[name="IssueCoilNoVou"]').val(response.data[1]);
+                                $('input[name="Grade"]').val(response.data[2]);
+                                $('input[name="Thick"]').val(response.data[3]);
+                                $('input[name="Width"]').val(response.data[4]);
+                                $('input[name="OD"]').val((response.data[4] / 3.14).toFixed(2));
+                                var weight = (((response.data[4] / 3.14).toFixed(2) - response.data[3]) * response.data[3] * 0.02503).toFixed(2);
+                                var pcs = (response.data[0] / weight).toFixed(0);
+                                $('#NoOfPipe').text(pcs);
+                                $('#PCSWeight').text((weight * pcs).toFixed(1));
+                                $('input[name="PCS"]').val(0);
+                                $('input[name="PCSWeight"]').val(0);
+                                GetNBSCHDetails();
+
+                            //}
+                        }
+                        else {
+                            showErrorMessage(response.message);
+                            $('input[name="Weight"]').val("");
+                            $('input[name="IssueCoilNoVou"]').val("");
+                            $('input[name="Grade"]').val("");
+                            $('input[name="Thick"]').val("");
+                            $('input[name="Width"]').val("");
+                            $('input[name="OD"]').val("");
+                            $('#NoOfPipe').text('');
+                            $('#PCSWeight').text('');
+                            $('input[name="IssueCoilNo"]').focus();
+                        }
+                    }
+                    else {
+                        showErrorMessage("Internal Error!");
+                        $('input[name="Weight"]').val("");
+                        $('input[name="OD"]').val("");
+                        $('input[name="PCS"]').val("");
+                        $('input[name="FeetPer"]').val("");
+                        $('input[name="IssueCoilNoVou"]').val("");
+                        $('input[name="Grade"]').val("");
+                        $('input[name="Thick"]').val("");
+                        $('input[name="Width"]').val("");
+                        $('input[name="OD"]').val("");
+                        $('#NoOfPipe').text('');
+                        $('#PCSWeight').text('');
+                        $('input[name="IssueCoilNo"]').focus();
+                    }
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+        else {
+            showErrorMessage("Enter Coil No");
+            $('input[name="IssueCoilNo"]').focus();
+        }
+    }
+
+    function EnableTextbox() {
+        $('input[name="Vno"]').attr('disabled', false)
+        $('input[name="Vou"]').attr('disabled', false)
+        $('input[name="OD"]').attr('disabled', false)
+        $('input[name="FeetPer"]').attr('disabled', false)
+        $('input[name="PCS"]').attr('disabled', false)
+        $('input[name="Weight"]').attr('disabled', false)
+        $('input[name="NB"]').attr('disabled', false)
+        $('input[name="SCH"]').attr('disabled', false)
+    }
+
+    function AddMilling() {
+        $('#txtNB').attr("disabled", false)
+        $('#txtSCH').attr("disabled", false)
+        $('#txtPCSWeight').attr("disabled", false)
+        //$('#Supervisor').attr("disabled", false)
+        //$('#Operator1').attr("disabled", false)
+        //$('#Operator2').attr("disabled", false)
+        if (ValidateTextbox()) {
+            EnableTextbox();
+            $('#millingForm').submit();
+        }
+        else {
+            showErrorMessage("Please enter all compulsory fields.");
+        }
+    }
+
+    function GetNBSCHDetails() {
+        var thick = $('#Thick').val();
+        var od = $('#OD').val();
+        if (thick != null && thick != "" && od != null && od != "") {
+            $.ajax({
+                type: "POST",
+                url: '/Milling/GetNBSCH',
+                data: { "thick": thick, "od": od },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            $('input[name="NB"]').val(response.lotNB);
+                            $('input[name="SCH"]').val(response.lotSCH);
+                        }
+                        else {
+                            $('input[name="NB"]').val(response.lotNB);
+                            $('input[name="SCH"]').val(response.lotSCH);
+                        }
+                    }
+                    else {
+                        $('input[name="NB"]').val(response.lotNB);
+                        $('input[name="SCH"]').val(response.lotSCH);
+                    }
+                },
+                error: function (response) {
+                }
+            });
+        }
+    }
+
+    function GetODThickPCS() {
+        var thick = $('#Thick').val();
+        var od = $('#OD').val();
+        var pcs = $('#PCS').val();
+        if (thick != null && thick != "" && od != null && od != "" && pcs != null && pcs != "") {
+            $('input[name="PCSWeight"]').val((((od - thick) * thick * 0.02503) * pcs).toFixed(1));
+        }
+    }
+
+</script>
+<script>
+    $(function () {
+        var nb = $('#NbVou').children('option:selected').text()
+        if (nb)
+            $('input[name="NB"]').val(nb);
+    })
+
+    $('#NbVou').change(function () {
+        var nb = $('#NbVou').children('option:selected').text()
+        if (nb)
+            $('input[name="NB"]').val(nb);
+    })
+
+    $(function () {
+        var sch = $('#SCHVou').children('option:selected').text()
+        if (sch)
+            $('input[name="SCH"]').val(sch);
+    })
+
+    $('#SCHVou').change(function () {
+        var sch = $('#SCHVou').children('option:selected').text()
+        if (sch)
+            $('input[name="SCH"]').val(sch);
+    })
+
+    function GetSupervisor() {
+
+        var macNo = $('#MillNo').val();
+        var shift = $('#ShiftVou').val();
+        $('input[name="IssueCoilNo"]').prop("readonly", false);
+        if (macNo && shift) {
+            $.ajax({
+                url: '/Milling/GetSupEmpByShiftMacNo',
+                type: 'POST',
+                data: { shift: shift, macNo: macNo },
+                dataType: 'JSON',
+                success: function (data) {
+                    if (data) {
+                        if (data.result) {
+                            $('#Supervisor').val(data.sup);
+                            $('#Operator1').val(data.opr1);
+                            $('#Operator2').val(data.op2);
+                            SetSelect2();
+
+                        }
+                        else {
+                            $('#Supervisor').val('');
+                            $('#Operator1').val('');
+                            $('#Operator2').val('');
+                        }
+
+                    }
+                    else {
+                        $('#Supervisor').val('');
+                        $('#Operator1').val('');
+                        $('#Operator2').val('');
+                    }
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+            $.ajax({
+                url: '/Milling/GetMachineWiseMilling',
+                type: 'POST',
+                data: { macNo: macNo },
+                dataType: 'JSON',
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            $('input[name="InTime"]').val(response.inTime);
+                            $('input[name="FeetPer"]').val(response.lenFeet);
+                            $('input[name="IssueCoilNo"]').val(response.lotNo);
+                            $('input[name="IssueCoilNo"]').prop("readonly", true);
+                            $('input[name="IssueCoilNoVou"]').val(response.lotVou);
+                            $('input[name="NB"]').val(response.nb);
+                            $('select[name="NbVou"]').val(response.nbVou);
+                            $('select[name="ProcessVou"]').val(response.nextPrcVou);
+                            $('input[name="OD"]').val(response.od);
+                            $('select[name="Operator1"]').val(response.opr1EmpVou);
+                            $('select[name="Operator2"]').val(response.opr2EmpVou);
+                            $('input[name="OutTime"]').val(response.outTime);
+                            var weight = (((response.width / 3.14).toFixed(2) - response.thick) * response.thick * 0.02503).toFixed(2);
+                            var pcss = (response.lotQty / weight).toFixed(0);
+                            var pcsWeightt = ((weight * pcss).toFixed(1));
+                            var totMilqty = response.milQtyS;
+                            var totscrqty = response.milScrQty;
+                            var totqty = (parseFloat(totMilqty) + parseFloat(totscrqty)).toFixed(1);
+                            var milQty = (pcsWeightt - totqty).toFixed(1);
+                            var milPCS = (pcss - response.milPcsS)
+                            $('#NoOfPipe').text(milPCS);
+                            $('select[name="PrcVou"]').val(response.prcVou);
+                            $('select[name="RecPrdVou"]').val(response.product);
+                            $('#PCSWeight').text(milQty);
+                            $('input[name="PCS"]').val(0);
+                            $('input[name="PCSWeight"]').val(0);
+                            $('input[name="Read1OD"]').val(response.redOD1);
+                            $('input[name="Read2OD"]').val(response.redOD2);
+                            $('input[name="Read1Thick"]').val(response.redThick1);
+                            $('input[name="Read2Thick"]').val(response.redThick2);
+                            $('input[name="Remarks"]').val(response.rem);
+                            $('input[name="RLPCS"]').val(response.rlPcs);
+                            $('input[name="RLWeight"]').val(response.rlWeight);
+                            $('input[name="SCH"]').val(response.sch);
+                            $('select[name="SCHVou"]').val(response.schVou);
+                            $('select[name="MilSupEmpVou"]').val(response.supEmpVou);
+                            $('select[name="ScrapPipeProductVou"]').val(response.scrPrdVou);
+                            $('input[name="ScrapWeight"]').val(response.scrQty);
+                            $('input[name="NoOfTourch"]').val(response.touNo);
+                            $('input[name="AMP"]').val(response.weldAMP);
+                            $('input[name="WeldingSpeed"]').val(response.weldSpeed);
+                            $('input[name="Voltage"]').val(response.weldVolt);
+                            $('input[name="Grade"]').val(response.grade);
+                            $('input[name="Width"]').val(response.width);
+                            $('input[name="Thick"]').val(response.thick);
+                            $('input[name="Weight"]').val(response.lotQty);
+                            SetSelect2();
+                        }
+                        else {
+                            $('input[name="InTime"]').val('');
+                            $('input[name="FeetPer"]').val('');
+                            $('input[name="IssueCoilNo"]').val('');
+                            $('input[name="IssueCoilNoVou"]').val('');
+                            $('input[name="NB"]').val('');
+                            $('select[name="NbVou"]').val('');
+                            $('select[name="ProcessVou"]').val('');
+                            $('input[name="OD"]').val('');
+                            $('select[name="Operator1"]').val('');
+                            $('select[name="Operator2"]').val('');
+                            $('input[name="OutTime"]').val('');
+                            $('input[name="PCS"]').val('');
+                            $('select[name="PrcVou"]').val('');
+                            $('select[name="RecPrdVou"]').val('');
+                            $('input[name="PCSWeight"]').val('');
+                            $('#NoOfPipe').text('');
+                            $('Weight').text('');
+                            $('input[name="Read1OD"]').val('');
+                            $('input[name="Read2OD"]').val('');
+                            $('input[name="Read1Thick"]').val('');
+                            $('input[name="Read2Thick"]').val('');
+                            $('input[name="Remarks"]').val('');
+                            $('input[name="RLPCS"]').val('');
+                            $('input[name="RLWeight"]').val('');
+                            $('input[name="SCH"]').val('');
+                            $('select[name="SCHVou"]').val('');
+                            $('select[name="MilSupEmpVou"]').val('');
+                            $('select[name="ScrapPipeProductVou"]').val('');
+                            $('input[name="ScrapWeight"]').val('');
+                            $('input[name="NoOfTourch"]').val('');
+                            $('input[name="AMP"]').val('');
+                            $('input[name="WeldingSpeed"]').val('');
+                            $('input[name="Voltage"]').val('');
+                            $('input[name="Grade"]').val('');
+                            $('input[name="Width"]').val('');
+                            $('input[name="Thick"]').val('');
+                            $('input[name="Weight"]').val('');
+                        }
+
+                    }
+                    else {
+                        $('input[name="InTime"]').val('');
+                        $('input[name="FeetPer"]').val('');
+                        $('input[name="IssueCoilNo"]').val('');
+                        $('input[name="IssueCoilNoVou"]').val('');
+                        $('input[name="NB"]').val('');
+                        $('select[name="NbVou"]').val('');
+                        $('select[name="ProcessVou"]').val('');
+                        $('input[name="OD"]').val('');
+                        $('select[name="Operator1"]').val('');
+                        $('select[name="Operator2"]').val('');
+                        $('input[name="OutTime"]').val('');
+                        $('input[name="PCS"]').val('');
+                        $('select[name="PrcVou"]').val('');
+                        $('select[name="RecPrdVou"]').val('');
+                        $('input[name="PCSWeight"]').val('');
+                        $('#NoOfPipe').text('');
+                        $('Weight').text('');
+                        $('input[name="Read1OD"]').val('');
+                        $('input[name="Read2OD"]').val('');
+                        $('input[name="Read1Thick"]').val('');
+                        $('input[name="Read2Thick"]').val('');
+                        $('input[name="Remarks"]').val('');
+                        $('input[name="RLPCS"]').val('');
+                        $('input[name="RLWeight"]').val('');
+                        $('input[name="SCH"]').val('');
+                        $('select[name="SCHVou"]').val('');
+                        $('select[name="MilSupEmpVou"]').val('');
+                        $('select[name="ScrapPipeProductVou"]').val('');
+                        $('input[name="ScrapWeight"]').val('');
+                        $('input[name="NoOfTourch"]').val('');
+                        $('input[name="AMP"]').val('');
+                        $('input[name="WeldingSpeed"]').val('');
+                        $('input[name="Voltage"]').val('');
+                        $('input[name="Grade"]').val('');
+                        $('input[name="Width"]').val('');
+                        $('input[name="Thick"]').val('');
+                        $('input[name="Weight"]').val('');
+                    }
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+
+
+        }
+    }
+
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+
+    function numericFilter(txb) {
+        txb.value = txb.value.replace(/[^\0-9]/ig, "");
+    }
+
+    $(function () {
+        $('.decimal').keypress(function (e) {
+            var character = String.fromCharCode(e.keyCode)
+            var newValue = this.value + character;
+            if (isNaN(newValue) || hasDecimalPlace(newValue, 2)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        function hasDecimalPlace(value, x) {
+            var pointIndex = value.indexOf('.');
+            return pointIndex >= 0 && pointIndex < value.length - x;
+        }
+    });
+
+    function TDate() {
+        var Todate = $('#FinishDate').val();
+        var FromDate = $('#Date').val();
+        if (FromDate != '' && FromDate != null && FromDate != undefined) {
+            if (new Date(Todate) < new Date(FromDate)) {
+                showErrorMessage("Finish date must be bigger or equal to date.");
+                $('#FinishDate').val('');
+                return false;
+            }
+        }
+        return true;
+    }
+    function FDate() {
+        var Todate = $('#FinishDate').val();
+        var FromDate = $('#Date').val();
+        if (Todate != '' && Todate != null && Todate != undefined) {
+            if (new Date(Todate) < new Date(FromDate)) {
+                showErrorMessage("Date must be smaller or equal to finish date.");
+                $('#Date').val('');
+                return false;
+            }
+        }
+        return true;
+    }
+
+</script>

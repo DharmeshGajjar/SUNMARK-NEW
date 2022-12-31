@@ -1,0 +1,159 @@
+﻿<div class="row">
+    <div class="col-md-6">
+        <input type="hidden" value="@Model.Type" id="txtMscType" />
+        <input type="hidden" value="@Model.MscVou" id="txtMscVou" />
+        <input type="hidden" value="@Model.ActiveYN" id="txtActiveYN" name="ActiveYN"/>
+        <div class="row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12  font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                Name <span class="required">*</span>
+            </label>
+            <div class="col-md-auto col-12  form-outline form-white mb-2">
+                <input type="text" id="txtMscName" name="MscName" onfocus="this.select()" class="form-control form-control-lg" placeholder="@Model.Placeholder" onkeyup="GetMscCode()"
+                       tabindex="1" value="@Model.MscName" style="font-family: Verdana;font-size:small; height:30px;width:250px" required autocomplete="off" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                Code <span class="required">*</span>
+            </label>
+
+            <div class="col-md-auto col-12 form-outline form-white mb-2">
+                <input type="text" id="txtMscCd" name="MscCd" onfocus="this.select()" class="form-control form-control-lg uppercaseWithoutSpace text-uppercase " maxlength="10" placeholder="Code"
+                       tabindex="2" value="@Model.MscCd" style="font-family: Verdana;font-size:small; height:30px; width: 150px" autocomplete="off" required />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                        Position <span class="required"></span>
+                    </label>
+                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                        <input type="text" id="txtMscPos" name="MscPos" onfocus="this.select()" class="form-control form-control-lg" placeholder="Position" tabindex="3" value="@Model.MscPos" style="font-family: Verdana;font-size:small; height:30px; width: 100px;text-align:right;" />
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                        Active <span class="required"></span>
+                    </label>
+                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                        <select class="form-control select2 MscActYNVou" tabindex="4" onfocus="this.select()" style="font-family: Verdana;font-size:small; height:30px; width:100px" id="MscActYNVou">
+                            <option value="">Select</option>
+                            @foreach (var item in Model.ActiveYNList as List<SelectListItem>)
+                            {
+                                if (Model.MscActYNVou != null && Convert.ToString(Model.MscActYNVou) == item.Value)
+                                {
+                                    <option value="@item.Value" selected>@item.Text</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                @if (Model.IsEdit && Model != null && Model.MscVou > 0)
+                {
+                    <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave">
+                        Save (F10)
+                    </button>
+                    <a href="@Model.RedirectURL" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                        Cancel (Esc)
+                    </a>
+                }
+                else if (Model.IsAdd && Model.MscVou == 0)
+                {
+                    <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave">
+                        Save (F10)
+                    </button>
+                    <a href="@Model.RedirectURL" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                        Cancel (Esc)
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $('#btnSave').click(function () {
+        var name = $('#txtMscName').val();
+        var type = $('#txtMscType').val();
+        var code = $('#txtMscCd').val();
+        var position = $('#txtMscPos').val();
+        var activeyn = $('#txtActiveYN').val();
+        var mscvou = $('#txtMscVou').val();
+
+        if (!name) {
+            showErrorMessage("Please enter name");
+            return false;
+        }
+
+        $.ajax({
+            url: '/PartialView/MscMstPartialViewAdd',
+            type: 'POST',
+            data: { name: name, code: code, position: position, type: type, id: mscvou, activeyn : activeyn },
+            dataType: 'JSON',
+            traditional: true,
+            success: function (data) {
+                if (data != null && data.result) {
+                    window.location.href = data.redirectURL;
+                }
+                else {
+                    showErrorMessage(data.message);
+                }
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    })
+</script>
+
+<script>
+    function GetMscCode() {
+        var MscName = $('#txtMscName').val();
+        var id = $('#txtMscVou').val();
+
+        if (MscName && id && parseInt(id) <= 0) {
+            MscName = MscName.replace(/[^A-Z0-9]/ig, "");
+            $('#txtMscCd').val(MscName.substring(0, 10));
+        }
+    }
+</script>
+<script>
+    $(function () {
+        var activeyn = $('#MscActYNVou').children('option:selected').text()
+        if (activeyn)
+            $('input[name="ActiveYN"]').val(activeyn);
+    })
+
+    $('#MscActYNVou').change(function () {
+        var activeyn = $('#MscActYNVou').children('option:selected').text()
+        if (activeyn)
+            $('input[name="ActiveYN"]').val(activeyn);
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $('.MscActYNVou').select2({
+            placeholder: "---Select---",
+        });
+
+        $('.drpReportLayout').select2({
+            placeholder: "---Select---",
+        });
+    });
+</script>

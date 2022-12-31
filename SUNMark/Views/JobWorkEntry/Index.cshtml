@@ -1,0 +1,2713 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
+    List<SUNMark.Models.JobWorkEntryModel> jobworkentryList = ViewBag.jobworkentryList as List<SUNMark.Models.JobWorkEntryModel>;
+    List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
+    List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
+    ViewData["Title"] = userRight.ModuleNm;
+    string headerAdd = "";
+    string headerList = "";
+    string gridAdd = "";
+    string gridList = "";
+    bool headerAddTrue = false;
+    bool headerListTrue = false;
+    int id = ViewBag.id != null ? (int)ViewBag.id : 0;
+    int vNo = ViewBag.vNo != null ? Convert.ToInt32(ViewBag.vNo) : 0;
+    int jobNo = ViewBag.jobNo != null ? Convert.ToInt32(ViewBag.jobNo) : 0;
+    var lottypeList = ViewBag.lottypeList != null ? ViewBag.lottypeList as List<SelectListItem> : new List<SelectListItem>();
+    var shiftList = ViewBag.shiftList != null ? ViewBag.shiftList as List<SelectListItem> : new List<SelectListItem>();
+    var machineList = ViewBag.machineList != null ? ViewBag.machineList as List<SelectListItem> : new List<SelectListItem>();
+    var operatorList = ViewBag.operatorList != null ? ViewBag.operatorList as List<SelectListItem> : new List<SelectListItem>();
+    var nbList = ViewBag.nbDropdown != null ? ViewBag.nbDropdown as List<SelectListItem> : new List<SelectListItem>();
+    var schList = ViewBag.schDropdown != null ? ViewBag.schDropdown as List<SelectListItem> : new List<SelectListItem>();
+    var godownList = ViewBag.godownList != null ? ViewBag.godownList as List<SelectListItem> : new List<SelectListItem>();
+    var odList = ViewBag.odList != null ? ViewBag.odList as List<SelectListItem> : new List<SelectListItem>();
+
+    if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+    {
+        headerAdd = "active";
+        gridAdd = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+
+}
+<style>
+    input.form-control {
+        height: 30px !important
+    }
+</style>
+<style>
+    #tblDisplay thead tr th {
+        padding: 5px !important;
+        text-align: center
+    }
+
+    #tblDisplay tbody tr td {
+        padding: 5px !important;
+        text-align: center
+    }
+
+    #tblSlit tbody tr td,
+    #tblSlit thead tr th {
+        padding: 5px !important;
+        text-align: center
+    }
+
+    #tblSplit tbody tr td,
+    #tblSplit thead tr th {
+        padding: 5px !important;
+        text-align: center
+    }
+</style>
+
+<div class="card card-primary">
+    <div class="card-header" style="font-family:Verdana">
+        <h6> @ViewData["Title"]</h6>
+    </div>
+    <div class="card-body">
+        <div class="card card-primary card-tabs">
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                    @if (userRight != null && userRight.IsList)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerList" id="custom-tabs-three-list-tab" data-toggle="pill" href="#custom-tabs-three-list" role="tab" aria-controls="custom-tabs-three-list" aria-selected="@headerListTrue" style="font-family:Verdana;font-size:small" onclick="GoToListTab()">List (Alt+L)</a>
+                        </li>
+                    }
+                    @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerAdd" id="custom-tabs-three-add-tab" data-toggle="pill" href="#custom-tabs-three-add" role="tab" aria-controls="custom-tabs-three-add" aria-selected="@headerAddTrue" style="font-family:Verdana;font-size:small" onclick="GoToAddTab()">Add/Update (F2)</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="tab-content" id="custom-tabs-three-tabContent">
+                        @if (userRight != null && userRight.IsList)
+                        {
+                            <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
+                                <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
+                                    <div class="col-md-12 col-12 mb-2 mt-2">
+                                        <div class="row">
+
+                                            <div class="col-md-1 mb-2 float-left">
+                                                <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                                    @for (int i = 0; i < pageNoList.Count; i++)
+                                                    {
+                                                        string checkedd = "checked";
+                                                        <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                                        checkedd = string.Empty;
+                                                    }
+
+                                                </select>
+                                            </div>
+                                            <div class="col-md-5 col-12">
+                                                <div class="row">
+                                                    <div class="col-md-6 col">
+                                                        <select class="form-control select2 drpReportLayout" onchange="loadData()">
+                                                            <option value="" ; style="width:200px">--Select Layout--</option>
+                                                            @if (layoutList != null && layoutList.Count > 0)
+                                                            {
+                                                                foreach (var item in layoutList)
+                                                                {
+                                                                    <option value="@item.Value">@item.Text </option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                                        @if (isAdministrator == 1)
+                                                        {
+                                                            <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                                Edit
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                                        <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                                        <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                            <div class="col-md-3 col-12 float-right">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dataTable">
+
+                                    </div>
+                                    <div class="pager float-right"></div>
+                                </div>
+                            </div>
+                        }
+                        @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                        {
+                            <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
+                                @using (Html.BeginForm("Index", "JobWorkEntry", FormMethod.Post, new { id = "frmjobwork" }))
+                                {
+                                    <input type="hidden" id="txtIsPrint" name="isPrint" value="0" />
+                                    <div class="row">
+                                        <div class="d-none" id="dropdownSlitType">
+                                            <select class="form-control" name="slitTypeGrid" id="slitTypeGrid" onchange="EnableDisableNBSCH(this)" style="width:130px !important">
+                                                <option>---Select---</option>
+                                                <option value="COIL">COIL</option>
+                                                <option value="BAL. PATTA">BAL. PATTA</option>
+                                                <option value="SCRAP">SCRAP</option>
+                                            </select>
+
+                                        </div>
+                                        <div class="d-none" id="dropdownRecCoilNoSlit">
+                                            <select class="form-control" name="recCoilNoSlitGrid" id="recCoilNoSlitGrid" style="width:100px !important">
+                                                <option>---Select---</option>
+                                                <option value="1">01</option>
+                                                <option value="2">02</option>
+                                                <option value="3">03</option>
+                                                <option value="4">04</option>
+                                                <option value="5">05</option>
+                                                <option value="6">06</option>
+                                                <option value="7">07</option>
+                                                <option value="8">08</option>
+                                                <option value="9">09</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                                <option value="13">13</option>
+                                                <option value="14">14</option>
+                                                <option value="15">15</option>
+                                                <option value="16">16</option>
+                                                <option value="17">17</option>
+                                                <option value="18">18</option>
+                                                <option value="19">19</option>
+                                                <option value="20">20</option>
+                                                <option value="21">21</option>
+                                                <option value="22">22</option>
+                                                <option value="23">23</option>
+                                                <option value="24">24</option>
+                                                <option value="25">25</option>
+                                                <option value="26">26</option>
+                                                <option value="27">27</option>
+                                                <option value="28">28</option>
+                                                <option value="29">29</option>
+                                                <option value="30">30</option>
+                                                <option value="31">31</option>
+                                                <option value="32">32</option>
+                                                <option value="33">33</option>
+                                                <option value="34">34</option>
+                                                <option value="35">35</option>
+                                                <option value="36">36</option>
+                                                <option value="37">37</option>
+                                                <option value="38">38</option>
+                                                <option value="39">39</option>
+                                                <option value="40">40</option>
+                                                <option value="41">41</option>
+                                                <option value="42">42</option>
+                                                <option value="43">43</option>
+                                                <option value="44">44</option>
+                                                <option value="45">45</option>
+                                                <option value="46">46</option>
+                                                <option value="47">47</option>
+                                                <option value="48">48</option>
+                                                <option value="49">49</option>
+                                                <option value="50">50</option>
+                                            </select>
+
+                                        </div>
+                                        <div class="d-none" id="dropdownRecCoilNoSplit">
+                                            <select class="form-control" name="recCoilNoSplitGrid" id="recCoilNoSplitGrid">
+                                                <option>---Select---</option>
+                                                <option value="A">A</option>
+                                                <option value="B">B</option>
+                                                <option value="C">C</option>
+                                            </select>
+
+                                        </div>
+                                        <div class="d-none" id="dropdownSCHSlit">
+                                            <select class="form-control" name="schGrid" id="schGrid" disabled style="width:100px !important" onchange="GetNBSCHValue(this)">
+                                                <option>---Select---</option>
+                                                @if (schList != null && schList.Count > 0)
+                                                {
+                                                    foreach (var item in schList)
+                                                    {
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="d-none" id="dropdownNBSlit" style="width:100px !important">
+                                            <select class="form-control" name="nbGrid" id="nbGrid" disabled style="width:100px !important" onchange="GetNBSCHValue(this)">
+                                                <option>---Select---</option>
+                                                @if (nbList != null && nbList.Count > 0)
+                                                {
+                                                    foreach (var item in nbList)
+                                                    {
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                }
+
+                                            </select>
+                                        </div>
+                                        <div class="d-none" id="dropdownGodown">
+                                            <select class="form-control" name="godownGrid" id="godownGrid" style="width:150px !important">
+                                                <option>---Select---</option>
+                                                @if (godownList != null && godownList.Count > 0)
+                                                {
+                                                    foreach (var item in godownList)
+                                                    {
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="d-none" id="dropdownGodownSplit">
+                                            <select class="form-control" name="godownGridSplit" id="godownGridSplit">
+                                                <option>---Select---</option>
+                                                @if (godownList != null && godownList.Count > 0)
+                                                {
+                                                    foreach (var item in godownList)
+                                                    {
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="d-none" id="dropdownODSlit" style="width:100px !important">
+                                            <select class="form-control" name="odGrid" id="odGrid" style="width:100px !important">
+                                                <option>---Select---</option>
+                                                @if (odList != null && odList.Count > 0)
+                                                {
+                                                    foreach (var item in odList)
+                                                    {
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 col-12">
+                                            <label class="control-label">
+                                                Job Type <span class="required text-danger">*</span>
+                                            </label>
+                                            <input type="hidden" name="jobTypeN" id="txtjobTypeN" />
+                                            <select class="form-control select2" name="jobType" id="jobType" onchange="HideShowGrid(this.value)" required>
+                                                <option value="">Select</option>
+                                                <option value="SPLIT">SPLIT</option>
+                                                <option value="SLIT">SLIT</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1 col-6">
+                                            <label class="control-label">
+                                                VNo <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="vno" name="vno" class="form-control" disabled value="@vNo" />
+                                                <input type="hidden" id="jobVou" name="jobVou" class="form-control" disabled value="0" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6">
+                                            <label>
+                                                Date <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="date" id="date" name="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-12">
+                                            <label class="control-label">
+                                                Shift <span class="required text-danger"></span>
+                                            </label>
+                                            <input type="hidden" name="JobShiftN" id="JobShiftN" />
+                                            <select class="form-control select2" name="jobShift" id="jobShift" required>
+                                                <option value="">Select</option>
+                                                @if (shiftList != null && shiftList.Count > 0)
+                                                {
+                                                    foreach (var item in shiftList)
+                                                    {
+
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 col-12">
+                                            <label class="control-label">
+                                                Machine No <span class="required text-danger">*</span>
+                                            </label>
+                                            <input type="hidden" name="JobMacNoN" id="JobMacNoN" />
+                                            <select class="form-control select2" name="JobMacNo" id="JobMacNo" required>
+                                                <option value="">Select</option>
+                                                @if (machineList != null && machineList.Count > 0)
+                                                {
+                                                    foreach (var item in machineList)
+                                                    {
+
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 col-12">
+                                            <label class="control-label">
+                                                Operator <span class="required text-danger"></span>
+                                            </label>
+                                            <input type="hidden" name="JobOprMscVouN" id="JobOprMscVouN" />
+                                            <select class="form-control select2" name="JobOprMscVou" id="JobOprMscVou" required>
+                                                <option value="">Select</option>
+                                                @if (operatorList != null && operatorList.Count > 0)
+                                                {
+                                                    foreach (var item in operatorList)
+                                                    {
+
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 col-6">
+                                            <label>
+                                                Issue Coil No <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="issueCoilNo" name="issueCoilNo" class="form-control" onchange="GetCoilData(this.value)" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-6">
+                                            <label>
+                                                Job Worker <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="jobWorker" name="jobWorker" class="form-control" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6">
+                                            <label>
+                                                Job No <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="jobNo" name="jobNo" class="form-control" value="@jobNo" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-6 mt-1">
+                                            <label>
+                                                Company Name <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="companyName" name="companyName" class="form-control" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6  mt-1">
+                                            <label>
+                                                Company Code <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="companyCode" name="companyCode" class="form-control" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6  mt-1">
+                                            <label>
+                                                Complete Date
+                                            </label>
+
+                                            <div>
+                                                <input type="date" id="completeDate" name="completeDate" class="form-control" onkeyup="CheckCompDate()" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6  mt-1">
+                                            <label>
+                                                Rec Date <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="date" id="recDate" name="recDate" class="form-control" disabled />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-6  mt-1">
+                                            <label>
+                                                Finish <span class="required text-danger"></span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="finish" name="finish" class="form-control" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-12  mt-1">
+                                            <label>
+                                                Product Name <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="productName" name="productName" class="form-control" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6  mt-1">
+                                            <label>
+                                                Grade <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="grade" name="grade" class="form-control" disabled />
+                                                <input type="hidden" id="gdnVou" name="gdnVou" class="form-control" disabled />
+                                                <input type="hidden" id="lotVou" name="lotVou" class="form-control" disabled />
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-2 col-6  mt-1">
+                                            <label>
+                                                Thickness <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="thickness" name="thickness" class="form-control" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6  mt-1">
+                                            <label>
+                                                Weight <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="weight" name="weight" class="form-control" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6  mt-1">
+                                            <label>
+                                                Width <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="width" name="width" class="form-control" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6  mt-1">
+                                            <label>
+                                                Actual Weight <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="actualWeight" name="actualWeight" class="form-control" onchange="GetRemaining()" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6  mt-1">
+                                            <label>
+                                                Actual Width <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="actualWidth" name="actualWidth" class="form-control" onchange="GetRemaining()" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6  mt-1">
+                                            <label class="lblRemaining">
+                                                Remaining Weight <span class="required text-danger">*</span>
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="remaining" name="remaining" class="form-control" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6 mt-1 d-none">
+                                            <label class="control-label">
+                                                Coil Prefix <span class="required text-danger"></span>
+                                            </label>
+
+                                            <select class="form-control select2" name="LotTypeVou" id="LotTypeVou">
+                                                <option value="">Select</option>
+                                                @if (lottypeList != null && lottypeList.Count > 0)
+                                                {
+                                                    foreach (var item in lottypeList)
+                                                    {
+
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 col-6  mt-1">
+                                            <label>
+                                                Remarks
+                                            </label>
+
+                                            <div>
+                                                <input type="text" id="remarks" name="remarks" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3 table-responsive">
+                                            <table class="table table-borderless" id="tblSplit" style="padding:0 0 0 0;margin:0 0 0 0">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="7%">
+                                                            Sr
+                                                        </th>
+                                                        <th width="10%">
+                                                            Formula Wt
+                                                        </th>
+                                                        <th width="10%">
+                                                            Vendor Wt
+                                                        </th>
+                                                        <th width="10%">
+                                                            Rec. Coil No
+                                                        </th>
+                                                        <th width="15%">
+                                                            Coil No
+                                                        </th>
+                                                        <th width="15%">
+                                                            Godown
+                                                        </th>
+                                                        <th width="20%">
+                                                            Reading
+                                                        </th>
+                                                        <th width="5%">
+                                                            Actions
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td width="7%">
+                                                            <input type="text" class="form-control" name="srNo" value="0" onfocus="this.select()" onchange="GetDataBySrNoSplit(this.value)" />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control text-right gridTextbox" name="formulaWeight" onfocus="this.select()" />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control text-right gridTextbox" name="vendorWeight" onfocus="this.select()" disabled />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <select class="form-control select2" name="recCoilNoSplitGrid" id="recCoilNoSplitGrid">
+                                                                <option>---Select---</option>
+                                                                <option value="A">A</option>
+                                                                <option value="B">B</option>
+                                                                <option value="C">C</option>
+                                                            </select>
+                                                        </td>
+                                                        <td width="15%">
+                                                            <input type="text" class="form-control gridTextbox" name="coilNo" onfocus="this.select()" disabled />
+                                                        </td>
+                                                        <td width="20%">
+                                                            <select class="form-control select2" name="godownGridSplit" id="godownGridSplit">
+                                                                <option>---Select---</option>
+                                                                @if (godownList != null && godownList.Count > 0)
+                                                                {
+                                                                    foreach (var item in godownList)
+                                                                    {
+                                                                        <option value="@item.Value">@item.Text</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td width="20%">
+                                                            <input type="text" class="form-control gridTextbox" name="remarks" onfocus="this.select()" />
+                                                        </td>
+                                                        <td width="5%" class="text-center">
+                                                            <i class="fa fa-plus text-primary mt-1" style="font-size:20px" onclick="AddRowsSplit()"></i>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <table class="table table-borderless table-responsive" id="tblSlit" style="padding:0 0 0 0;margin:0 0 0 0">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="7%">
+                                                            Sr
+                                                        </th>
+                                                        <th width="10%">
+                                                            Width
+                                                        </th>
+                                                        <th width="10%">
+                                                            No Of Coil
+                                                        </th>
+                                                        <th width="10%">
+                                                            Formula Wt
+                                                        </th>
+                                                        <th width="10%">
+                                                            Actual Wt
+                                                        </th>
+                                                        <th width="10%">
+                                                            Type
+                                                        </th>
+                                                        <th width="10%">
+                                                            Rec. Coil No
+                                                        </th>
+                                                        <th width="10%">
+                                                            NB
+                                                        </th>
+                                                        <th width="10%">
+                                                            SCH
+                                                        </th>
+                                                        <th width="10%">
+                                                            OD
+                                                        </th>
+
+                                                        <th width="10%">
+                                                            Coil No
+                                                        </th>
+                                                        <th>
+                                                            Godown
+                                                        </th>
+                                                        <th width="20%">
+                                                            Reading
+                                                        </th>
+                                                        <th width="5%">
+                                                            Actions
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td width="7%">
+                                                            <input type="text" class="form-control gridTextbox" name="srNo" value="0" onfocus="this.select()" onchange="GetDataBySrNoSlit(this.value)" style="width:50px !important" />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control gridTextbox" name="gridWidth" onfocus="this.select()" style="width:100px !important" />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control gridTextbox" name="noOfCoil" onfocus="this.select()" style="width:50px !important" />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control gridTextbox" name="formulaWeight" onfocus="this.select()" disabled style="width:100px !important" />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control gridTextbox" name="actualWeightGrid" onfocus="this.select()" disabled style="width:100px !important" />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <select class="form-control select2" name="slitTypeGrid" id="slitTypeGrid" onchange="EnableDisableNBSCH(this)" style="width:130px !important">
+                                                                <option>---Select---</option>
+                                                                <option value="COIL">COIL</option>
+                                                                <option value="BAL. PATTA">BAL. PATTA</option>
+                                                                <option value="SCRAP">SCRAP</option>
+                                                            </select>
+                                                        </td>
+                                                        <td width="10%">
+                                                            <select class="form-control select2" name="recCoilNoSlitGrid" id="recCoilNoSlitGrid" style="width:100px !important">
+                                                                <option>---Select---</option>
+                                                            </select>
+                                                        </td>
+                                                        <td width="10%">
+                                                            <select class="form-control select2" name="nbGrid" id="nbGrid" style="width:100px !important" onchange="GetNBSCHValue(this)">
+                                                                <option>---Select---</option>
+                                                                @if (nbList != null && nbList.Count > 0)
+                                                                {
+                                                                    foreach (var item in nbList)
+                                                                    {
+                                                                        <option value="@item.Value">@item.Text</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td width="10%">
+                                                            <select class="form-control select2" name="schGrid" id="schGrid" style="width:100px !important" onchange="GetNBSCHValue(this)">
+                                                                <option>---Select---</option>
+                                                                @if (schList != null && schList.Count > 0)
+                                                                {
+                                                                    foreach (var item in schList)
+                                                                    {
+                                                                        <option value="@item.Value">@item.Text</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control gridTextbox" name="odGrid" onfocus="this.select()" style="width:100px !important" />
+                                                            @*<select class="form-control select2" name="odGrid" id="odGrid" style="width:100px !important">
+                                                                    <option>---Select---</option>
+                                                                    @if (odList != null && odList.Count > 0)
+                                                                    {
+                                                                        foreach (var item in odList)
+                                                                        {
+                                                                            <option value="@item.Value">@item.Text</option>
+                                                                        }
+                                                                    }
+                                                                </select>*@
+                                                        </td>
+
+                                                        <td width="10%">
+                                                            <input type="text" class="form-control gridTextbox" name="coilNo" onfocus="this.select()" disabled style="width:100px !important" />
+                                                        </td>
+                                                        <td width="10%">
+                                                            <select class="form-control select2" name="godownGrid" id="godownGrid" style="width:150px !important">
+                                                                <option>---Select---</option>
+                                                                @if (godownList != null && godownList.Count > 0)
+                                                                {
+                                                                    foreach (var item in godownList)
+                                                                    {
+                                                                        <option value="@item.Value">@item.Text</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td width="20%">
+                                                            <input type="text" class="form-control gridTextbox" name="remarks" onfocus="this.select()" style="width:100px !important" />
+                                                        </td>
+                                                        <td width="5%" class="text-center">
+                                                            <i class="fa fa-plus text-primary mt-1" style="font-size:20px" onclick="AddRowsSlit()"></i>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="table-responsive md-12 mt-2">
+                                            <table class="table table-bordered table-responsive table-head-fixed" id="tblDisplay">
+                                            </table>
+                                        </div>
+                                        <div class="col-md-12 mt-3">
+                                            <div class="row">
+                                                <div class="col-md-12 text-center">
+                                                    @if (userRight.IsEdit && id > 0)
+                                                    {
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick="AddJobkWorkEntry(this)" type="button">
+                                                            Save (F10)
+                                                        </button>
+                                                        <a href="/JobWorkEntry/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                            Cancel (Esc)
+                                                        </a>
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
+                                                            Print (F9)
+                                                        </button>
+                                                    }
+                                                    else if (userRight.IsAdd && id == 0)
+                                                    {
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick="AddJobkWorkEntry(this)" type="button">
+                                                            Save (F10)
+                                                        </button>
+                                                        <a href="/JobWorkEntry/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                            Cancel (Esc)
+                                                        </a>
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
+                                                            Print (F9)
+                                                        </button>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var issueCoilNo = $('#issueCoilNo').val();
+        if (issueCoilNo != null && issueCoilNo != '') {
+            GoToAddTab();
+        }
+        else {
+            GoToListTab();
+        }
+
+        var focusType = '@Html.Raw(ViewBag.FocusType)';
+        if (focusType != null && focusType != '' && focusType == 1) {
+            GoToAddTab();
+        }
+
+    });
+
+    function GoToAddTab() {
+        $('#custom-tabs-three-list-tab').removeClass('active');
+        $('#custom-tabs-three-add-tab').addClass('active');
+
+        $('#custom-tabs-three-list').removeClass('active');
+        $('#custom-tabs-three-add').addClass('active');
+        $('#custom-tabs-three-add').addClass('show');
+        setTimeout(function () {
+            document.getElementById('jobType').focus();
+        }, 100)
+    }
+
+
+    function GoToListTab() {
+        $('#custom-tabs-three-list-tab').addClass('active');
+        $('#custom-tabs-three-add-tab').removeClass('active');
+
+        $('#custom-tabs-three-list').addClass('active');
+        $('#custom-tabs-three-list').addClass('show');
+        $('#custom-tabs-three-add').removeClass('active');
+        $('#custom-tabs-three-add').removeClass('show');
+        $('#txtReportSearchDataTable').focus();
+    }
+</script>
+<script>
+    var isRecentCalledEsc = false;
+    var isRecentCalledAddRows = false;
+    var isRecentCalledSave = false;
+    (function (code) {
+        code(window.jQuery, document, window);
+    }(function ($, document, window) {
+        $(function () {
+            $(window)
+                .initKeyboard({ debug: 1 })
+                .on('F2', function () {
+                    GoToAddTab()
+                }).on('F9', function () {
+                    $("#btnPrint").click();
+                }).on('F10', function () {
+                    //if (!isRecentCalledSave) {
+                        //if (!$("#btnSave").is(":disabled")) {
+                            $("#btnSave").click();
+                            //$('#btnSave').prop('disabled', true);
+                            //isRecentCalledSave = true;
+                        //    setTimeout(function () {
+                        //        isRecentCalledSave = false;
+                        //    }, 1000)
+                        //}
+                        //else {
+                        //    location.href = '/JobWorkEntry/Index'
+                        //}
+                    //}
+                })
+                .on('Alt+L', function () {
+                    GoToListTab();
+                })
+                .on('Pagedown', function () {
+                    if (!isRecentCalledAddRows) {
+                        isRecentCalledAddRows = true;
+                        AddRows();
+                        setTimeout(function () {
+                            isRecentCalledAddRows = false;
+                        }, 500)
+                    }
+                })
+                .on('Alt+C', function () {
+                    if (confirm("Do you want to exit without save?")) {
+                        location.href = '/JobWorkEntry/Index'
+                    }
+                    else {
+                        $('#jobType').focus();
+                    }
+
+                }).on('Escape', function () {
+                    if (!isRecentCalledEsc) {
+                        isRecentCalledEsc = true;
+                        if (confirm("Do you want to exit without save?")) {
+                            location.href = '/JobWorkEntry/Index'
+                        }
+                        else {
+                            $('#jobType').focus();
+                        }
+                        setTimeout(function () {
+                            isRecentCalledEsc = false;
+                        }, 500)
+                    }
+
+                })
+        });
+    }));
+</script>
+
+<script>
+
+    var isRecentCalled = false;
+
+    $(function () {
+        HideShowGrid();
+        loadData();
+        var pageIndex = '';
+        var pageSize = '';
+        var totalRecord = '';
+        var isDelete = '@Html.Raw(userRight.IsDelete)';
+        var isEdit = '@Html.Raw(userRight.IsEdit)';
+    })
+
+    var timer = null;
+    $('#txtReportSearchDataTable').keyup(function (e) {
+        if (e.keyCode >= 112 && e.keyCode <= 123) {
+            e.preventDefault();
+            return false;
+        }
+        else {
+            clearTimeout(timer);
+
+            timer = setTimeout(loadData, 1000)
+        }
+
+    });
+    function loadData(pageIndex, columnName, sortBy) {
+        isRecentCalled = true;
+        if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
+            pageIndex = 1;
+        }
+        var layoutId = $('.drpReportLayout').val();
+
+        if (!layoutId) {
+            $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
+            SetSelect2()
+
+        }
+        if (!columnName) {
+            columnName = '';
+        }
+        if (!sortBy) {
+            sortBy = '';
+        }
+        $('.dataTable').html();
+        $.ajax({
+            url: '/JobWorkEntry/GetReportView',
+            type: 'GET',
+            data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+            dataType: 'HTML',
+            traditional: true, // add this
+            success: function (data) {
+                $('.dataTable').html(data);
+                setTimeout(function () {
+                    isRecentCalled = false;
+                }, 2000)
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    }
+
+    $('#btnExportToExcel').click(function () {
+        window.location.href = "/JobWorkEntry/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+    })
+    $('#btnExportToPDF').click(function () {
+        window.location.href = "/JobWorkEntry/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+    })
+
+    //$('#btnPrint').click(function () {
+    //    var jobType = $('#jobType').val();
+    //    if (jobType == 'SLIT') {
+    //        $("#btnSave").click();
+    //        window.open('/JobWorkEntry/JobWorkPrintDetials/' + id, '_blank')
+    //    }
+    //})
+
+
+</script>
+
+<script>
+    var isSaveCalled = false;
+    var id = '@Html.Raw(id)'
+
+    function HideShowGrid(value, response) {
+        if (value) {
+            if (value == 'SPLIT') {
+                $('#tblSplit').removeClass('d-none')
+                $('#tblSlit').addClass('d-none')
+                $('.lblRemaining').html("Remaining Weight")
+                $('#tblDisplay').children('tbody,thead').remove();
+                $('input[name="actualWeight"]').change();
+
+            }
+            else {
+                $('#tblSplit').addClass('d-none')
+                $('#tblSlit').removeClass('d-none')
+                $('.lblRemaining').html("Remaining Width")
+                $('#tblDisplay').children('tbody,thead').remove();
+                $('input[name="actualWidth"]').change();
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(6).children('select').remove();
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(6).children('span').remove();
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(6).html($('#dropdownRecCoilNoSlit').html());
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(6).children('select').addClass('select2');
+                SetSelect2();
+            }
+            GetMachineList(response)
+        }
+        else {
+            $('#tblSplit').addClass('d-none')
+            $('#tblSlit').addClass('d-none')
+            $('.lblRemaining').html("Remaining")
+            $('#tblDisplay').children('tbody,thead').remove();
+        }
+        GetRemaining();
+        setTimeout(function () {
+            document.getElementById('date').focus();
+        },300)
+
+    }
+
+    function GetCoilData(coilNo) {
+        if (coilNo) {
+            $.ajax({
+                type: "POST",
+                url: '/JobWorkEntry/GetDataByCoilNo',
+                data: { "coilNo": coilNo },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            $('input[name="recDate"]').val(response.data[0]);
+                            $('input[name="finish"]').val(response.data[1]);
+                            $('input[name="grade"]').val(response.data[2]);
+                            $('input[name="gdnVou"]').val(response.data[3]);
+                            $('input[name="lotVou"]').val(response.data[4]);
+                            $('input[name="thickness"]').val(response.data[5]);
+                            $('input[name="weight"]').val(response.data[6]);
+                            $('input[name="width"]').val(response.data[7]);
+                            $('input[name="companyName"]').val(response.data[8]);
+                            $('input[name="companyCode"]').val(response.data[9]);
+                            $('input[name="jobWorker"]').val(response.data[10]);
+                            $('input[name="productName"]').val(response.data[11]);
+
+                        }
+                        else {
+                            showErrorMessage(response.message);
+                            $('input[name="recDate"]').val("");
+                            $('input[name="finish"]').val("");
+                            $('input[name="grade"]').val("");
+                            $('input[name="gdnVou"]').val("");
+                            $('input[name="lotVou"]').val("");
+                            $('input[name="thickness"]').val("");
+                            $('input[name="weight"]').val("");
+                            $('input[name="width"]').val("");
+                            $('input[name="companyName"]').val("");
+                            $('input[name="companyCode"]').val("");
+                            $('input[name="productName"]').val("");
+                            $('input[name="jobWorker"]').val("");
+                            $('input[name="issueCoilNo"]').focus();
+                        }
+                    }
+                    else {
+                        showErrorMessage("Internal Error!");
+                        $('input[name="recDate"]').val("");
+                        $('input[name="finish"]').val("");
+                        $('input[name="grade"]').val("");
+                        $('input[name="gdnVou"]').val("");
+                        $('input[name="lotVou"]').val("");
+                        $('input[name="thickness"]').val("");
+                        $('input[name="weight"]').val("");
+                        $('input[name="width"]').val("");
+                        $('input[name="companyName"]').val("");
+                        $('input[name="companyCode"]').val("");
+                        $('input[name="productName"]').val("");
+                        $('input[name="jobWorker"]').val("");
+                        $('input[name="issueCoilNo"]').focus();
+                    }
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+        else {
+            showErrorMessage("Enter Coil No");
+        }
+    }
+
+    function GetRemaining() {
+        var jobType = $('#jobType').val();
+        var value = ''
+        if (jobType == 'SPLIT') {
+            value = $('input[name="actualWeight"]').val();
+            $('input[name="remaining"]').val(value);
+        }
+        else {
+            value = $('input[name="actualWidth"]').val();
+            $('input[name="remaining"]').val(value);
+        }
+    }
+
+    function AddRowsSplit() {
+        var previousRow = $('#tblSplit').children('tbody').children('tr:last');
+        if (previousRow != null) {
+            var srNo = $(previousRow).children('td').eq(0).children('input').val();
+            var formulaWt = $(previousRow).children('td').eq(1).children('input').val();
+            var vendorWt = $(previousRow).children('td').eq(2).children('input').val();
+            var recCoilNo = $(previousRow).children('td').eq(3).children('select').val();
+            var coilNo = $(previousRow).children('td').eq(4).children('input').val();
+            var godown = $(previousRow).children('td').eq(5).children('select').val();
+            var remarks = $(previousRow).children('td').eq(6).children('input').val();
+            if (!vendorWt) {
+                vendorWt = 0
+            }
+            if (!coilNo) {
+                coilNo = 0
+            }
+            if (godown && godown == '---Select---') {
+                godown = '';
+            }
+            var remaining = $('input[name="remaining"]').val();
+            if (!AllowAddRowsSplit()) {
+                showErrorMessage("Cannot enter more than remaining weight " + remaining);
+            }
+            if (recCoilNo == '---Select---') {
+                recCoilNo = undefined;
+            }
+            if (!recCoilNo) {
+                recCoilNo = $('#tblDisplay').children('tbody').children('tr:last').prev().children('td').eq(3).children('select').val();
+                if (recCoilNo) {
+                    if (recCoilNo == 'A') {
+                        recCoilNo = 'B';
+                    }
+                    else if (recCoilNo == 'B') {
+                        recCoilNo = 'C';
+                    }
+                }
+                else {
+                    recCoilNo = 'A';
+                }
+            }
+            if (formulaWt != null && formulaWt != "" && parseFloat(formulaWt) && recCoilNo != null && recCoilNo != "" && recCoilNo != '---Select---') {
+                $('#tblDisplay').children('tbody').children('tr:last').remove();
+                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                    var html = $('#tblSplit').children('tbody').find('tr:first').html();
+
+                    if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                        $('#tblDisplay').append(`<thead>` + $('#tblSplit').children('thead').html() + `</thead><tbody></tbody>`);
+                        $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
+                    }
+                    else {
+                        $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
+                    }
+                }
+
+                $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').val('');
+                $('#tblSplit').children('tbody').children('tr:last').children('td').eq(4).children('input').val('');
+                $('#tblSplit').children('tbody').children('tr:last').children('td').eq(2).children('input').val('');
+                $('#tblSplit').children('tbody').children('tr:last').children('td').eq(3).children('select').val('');
+                $('#tblSplit').children('tbody').children('tr:last').children('td').eq(4).children('input').val('0');
+                $('#tblSplit').children('tbody').children('tr:last').children('td').eq(5).children('select').val('');
+                $('#tblSplit').children('tbody').children('tr:last').children('td').eq(6).children('input').val('');
+                $('#tblSplit').children('tbody').children('tr:last').children('td').eq(0).children('input').val('0');
+
+
+                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').val(formulaWt);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').removeClass('gridTextbox');
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').val(vendorWt);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').removeClass('gridTextbox')
+
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('select').remove();
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('span').remove();
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).html($('#dropdownRecCoilNoSplit').html());
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('select').val(recCoilNo)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('select').addClass('select2');
+
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val(coilNo);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').removeClass('gridTextbox')
+
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').remove();
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('span').remove();
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).html($('#dropdownGodownSplit').html());
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').val(godown)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').addClass('select2');
+
+
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val(remarks);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').removeClass('gridTextbox')
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).addClass('text-center')
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).html(`<i class="fa fa-edit text-primary" onclick="EditRowsSplit(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsSplit(this)" style="font-size:18px"></i>`)
+
+
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('select').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('select').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').attr('disabled', true)
+
+
+                    $('#tblDisplay').children('tbody').children().find('input').each(function () {
+                        $(this).removeAttr('onfocusin')
+                        $(this).removeAttr('onfocus')
+                        $(this).removeAttr('onfocusout')
+                        $(this).removeClass('focusIn')
+                    })
+                }
+                else {
+                    $('#tblDisplay').children('tbody').children('tr').each(function () {
+                        if ($(this).children('td').eq(0).children('input').val() == srNo) {
+                            $(this).children('td').eq(1).children('input').val(formulaWt);
+                            $(this).children('td').eq(2).children('input').val(vendorWt);
+                            $(this).children('td').eq(3).children('select').val(recCoilNo);
+                            $(this).children('td').eq(5).children('select').val(godown);
+                            $(this).children('td').eq(6).children('input').val(remarks);
+                            $(this).children('td').eq(7).addClass('text-center')
+                            $(this).children('td').eq(7).html(`<i class="fa fa-edit text-primary" onclick="EditRowsSplit(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsSplit(this)" style="font-size:18px"></i>`)
+                        }
+                    })
+                }
+
+                SetSerialNumberSplit();
+                SetSelect2();
+                SetReceivedCoilNoSplit();
+                if (id && parseInt(id) > 0) {
+                    setTimeout(function () {
+                        $('#tblSplit').children('tbody').children('tr:last').children('td').eq(0).children('input').focus();
+                        $('#tblSplit').children('tbody').children('tr:last').children('td').eq(0).children('input').select();
+                    }, 100)
+                }
+                else {
+                    setTimeout(function () {
+                        $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                        $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').select();
+                    },100)
+
+                }
+                CalculateSplit();
+            }
+            else {
+                showErrorMessage("Please enter all required fields");
+            }
+        }
+    }
+
+    function DeleteRowsSplit(obj) {
+        Swal.fire({
+            title: 'Are you sure want to delete row?',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(obj).closest('tr').remove();
+                SetSerialNumberSplit();
+                $('#tblDisplay').children('tbody').children('tr:last').remove();
+                CalculateSplit();
+                if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                    $('#tblDisplay').children('thead').remove();
+                    $('#tblDisplay').children('tbody').remove();
+                }
+            } else if (result.isDenied) {
+            }
+        })
+    }
+
+    function SetSerialNumberSplit() {
+        var count = 1;
+        $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+            $(this).children('td').eq(0).children('input').val(count);
+            $(this).children('td').eq(3).children('select').attr('id', 'recCoilNoSplitGrid' + count);
+            $(this).children('td').eq(5).children('select').attr('id', 'godownGridSplit' + count);
+            count = parseInt(count) + 1;
+        });
+    }
+
+    function GetDataBySrNoSplit(value) {
+        var completeDate = $('completeDate').val();
+        $('#tblDisplay').children('tbody').children('tr').each(function () {
+            if ($(this).children('td').eq(0).children('input').val() == value) {
+                EditRowsSplit($(this));
+                if (completeDate != null || completeDate != '') {
+                    $('#tblSplit').children('tbody').children('tr:last').children('td').eq(2).children('input').focus();
+                }
+                else {
+                    $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                }
+
+            }
+        })
+    }
+
+    function EditRowsSplit(obj) {
+        if (obj != null) {
+            var srno = $(obj).closest('tr').children('td').eq(0).children('input').val();
+            var formulaWt = $(obj).closest('tr').children('td').eq(1).children('input').val();
+            var vendotWt = $(obj).closest('tr').children('td').eq(2).children('input').val();
+            var recCoilNo = $(obj).closest('tr').children('td').eq(3).children('select').val();
+            var coilNo = $(obj).closest('tr').children('td').eq(4).children('input').val();
+            var godown = $(obj).closest('tr').children('td').eq(5).children('select').val();
+            var remarks = $(obj).closest('tr').children('td').eq(6).children('input').val();
+            //$('#tblSplit').children('tbody').children('tr:last').children('td').eq(3).children('select').append(`<option value="` + recCoilNo + `">` + recCoilNo + `</option>`);
+            $('#tblSplit').children('tbody').children('tr:last').children('td').eq(0).children('input').val(srno);
+            $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').val(formulaWt);
+            $('#tblSplit').children('tbody').children('tr:last').children('td').eq(2).children('input').val(vendotWt);
+            $('#tblSplit').children('tbody').children('tr:last').children('td').eq(3).children('select').val(recCoilNo);
+            $('#tblSplit').children('tbody').children('tr:last').children('td').eq(4).children('input').val(coilNo);
+            $('#tblSplit').children('tbody').children('tr:last').children('td').eq(5).children('select').val(godown);
+            $('#tblSplit').children('tbody').children('tr:last').children('td').eq(6).children('input').val(remarks);
+            SetSelect2();
+            $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+        }
+    }
+
+    function CalculateSplit() {
+        var totalFormulaWt = 0;
+        var totalActualWt = 0;
+        var actualWeight = $('input[name="actualWeight"]').val();
+        $('#tblDisplay').children('tbody').children('tr').each(function () {
+            totalFormulaWt = parseFloat(totalFormulaWt) + parseFloat($(this).children('td').eq(1).children('input').val());
+            totalActualWt = parseFloat(totalActualWt) + parseFloat($(this).children('td').eq(2).children('input').val());
+        });
+        $('#tblDisplay').children('tbody').children('tr:last').after("<tr><td><b>Total</b></td><td class='text-right'><b>" + totalFormulaWt + "</b></td><td class='text-right'><b>" + totalActualWt + "</b></td><td colspan='3'></td></tr>");
+        var remaining = parseFloat(actualWeight) - parseFloat(totalFormulaWt);
+        $('input[name="remaining"]').val(remaining);
+        $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').val(remaining);
+    }
+
+    function AllowAddRowsSplit() {
+        var totalFormulaWt = 0;
+        var remaining = $('input[name="remaining"]').val();
+        var actualWeight = $('input[name="actualWeight"]').val();
+        $('#tblDisplay').children('tbody').children('tr').each(function () {
+            if ($(this).children('td').eq(1).children('input').length > 0 && parseInt($(this).children('td').eq(0).children('input').val()) <= 0)
+                totalFormulaWt = parseFloat(totalFormulaWt) + parseFloat($(this).children('td').eq(1).children('input').val());
+        });
+        totalFormulaWt = parseFloat(totalFormulaWt) + parseFloat($('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').val());
+        if (parseFloat(totalFormulaWt) > parseFloat(actualWeight)) {
+            $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').val(remaining);
+            return false;
+        }
+        else {
+            return true;
+        }
+
+    }
+
+    function SetReceivedCoilNoSplit() {
+        //var selectedRecCoilNo = [];
+        //$('#tblDisplay').children('tbody').children('tr').each(function () {
+        //    if ($(this).children('td').eq(3).children('select').val()) {
+        //        selectedRecCoilNo.push($(this).children('td').eq(3).children('select').val());
+        //    }
+        //})
+        //$('#tblSplit').children('tbody').children('tr').children('td').eq(3).children('select').children('option').each(function () {
+        //    for (var x = 0; x < selectedRecCoilNo.length; x++) {
+        //        if ($(this).val() == selectedRecCoilNo[x]) {
+        //            $(this).remove();
+        //            break;
+        //        }
+        //    }
+
+        //})
+    }
+
+    function AddRowsSlit() {
+        var previousRow = $('#tblSlit').children('tbody').children('tr:last');
+        if (previousRow != null) {
+            var srNo = $(previousRow).children('td').eq(0).children('input').val();
+            var width = $(previousRow).children('td').eq(1).children('input').val();
+            var noOfCoil = $(previousRow).children('td').eq(2).children('input').val();
+            var formulawt = $(previousRow).children('td').eq(3).children('input').val();
+            var actualWt = $(previousRow).children('td').eq(4).children('input').val();
+            var type = $(previousRow).children('td').eq(5).children('select').val();
+            var recCoilNo = $(previousRow).children('td').eq(6).children('select').val();
+            var nb = $(previousRow).children('td').eq(7).children('select').val();
+            var sch = $(previousRow).children('td').eq(8).children('select').val();
+            var od = $(previousRow).children('td').eq(9).children('input').val();
+            var coilNo = $(previousRow).children('td').eq(10).children('input').val();
+            var godown = $(previousRow).children('td').eq(11).children('select').val();
+            var remarks = $(previousRow).children('td').eq(12).children('input').val();
+            var actualWeight = $('input[name="actualWeight"]').val()
+            var remaining = $('input[name="remaining"]').val()
+            var actualWidth = $('input[name="actualWidth"]').val()
+            if (!noOfCoil) {
+                noOfCoil = '1';
+            }
+            if (!coilNo) {
+                coilNo = '0';
+            }
+            if (godown && godown == '---Select---') {
+                godown = '';
+            }
+            if (!AllowAddRowsSlit()) {
+                showErrorMessage("Cannot enter more than remaining weight " + remaining);
+            }
+            if (recCoilNo == '---Select---') {
+                recCoilNo = undefined;
+            }
+            if (!recCoilNo) {
+                recCoilNo = $('#tblDisplay').children('tbody').children('tr:last').prev().children('td').eq(6).children('select').val();
+                if (!recCoilNo) {
+                    recCoilNo = 1;
+                }
+                else {
+                    recCoilNo = parseInt(recCoilNo) + parseInt(1);
+                }
+            }
+            if (width != null && width != "" && parseFloat(width) > 0 && noOfCoil != null && noOfCoil != "" && parseFloat(noOfCoil) && actualWeight != null && actualWeight != "" && parseFloat(actualWeight) > 0 && actualWidth != null && actualWidth != "" && parseFloat(actualWidth) > 0 && type != null && type != "" && type != "---Select---" && recCoilNo != null && recCoilNo != "" && recCoilNo != "---Select---") {
+
+                $('#tblDisplay').children('tbody').children('tr:last').remove();
+                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                    var html = $('#tblSlit').children('tbody').find('tr:first').html();
+
+                    if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                        $('#tblDisplay').append(`<thead>` + $('#tblSlit').children('thead').html() + `</thead><tbody></tbody>`);
+                        if (type != 'COIL' && parseInt(noOfCoil) > 1) {
+                            showErrorMessage("Bal Patta and scrap are allowed only once.");
+                        }
+                        else {
+                            for (var x = 0; x < parseInt(noOfCoil); x++) {
+                                $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
+                            }
+                        }
+                    }
+                    else {
+                        if (type != 'COIL' && parseInt(noOfCoil) > 1) {
+                            showErrorMessage("Bal Patta and scrap are allowed only once.");
+                        }
+                        else {
+                            for (var x = 0; x < parseInt(noOfCoil); x++) {
+                                $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
+                            }
+                        }
+                    }
+                }
+
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').val('');
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(2).children('input').val('');
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(3).children('input').val('');
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(4).children('input').val('');
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val('');
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(6).children('select').val('');
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(7).children('select').val('');
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(8).children('select').val('');
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(9).children('input').val('');
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(10).children('input').val(0);
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(11).children('select').val('');
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(12).children('input').val('');
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(0).children('input').val('0');
+
+
+                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                    if (type != 'COIL' && parseInt(noOfCoil) > 1) {
+                        showErrorMessage("Bal Patta and scrap are allowed only once.");
+                    }
+                    else {
+                        for (var x = 0, y = parseInt(noOfCoil), z = parseInt(recCoilNo); x < parseInt(noOfCoil); x++, y--, z++) {
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(1).children('input').val(width);
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(1).children('input').removeClass('gridTextbox')
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(2).children('input').val(1);
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(2).children('input').removeClass('gridTextbox')
+
+                            var formulaWt = ((parseFloat(actualWeight) * parseFloat(width)) / parseFloat(actualWidth)).toFixed(2);
+                            formulaWt = Math.round(formulaWt)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(3).children('input').val(formulaWt);
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(3).children('input').removeClass('gridTextbox')
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(4).children('input').val(actualWt);
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(4).children('input').removeClass('gridTextbox')
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').remove();
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('span').remove();
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).html($('#dropdownSlitType').html());
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').val(type)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').addClass('select2');
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').remove();
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('span').remove();
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).html($('#dropdownRecCoilNoSlit').html());
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').addClass('select2');
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').val(z)
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').remove();
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('span').remove();
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).html($('#dropdownNBSlit').html());
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').append(`<option value="` + nb + `">` + nb + `</option>`);
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').removeAttr('disabled')
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').val(nb)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').addClass('select2');
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').remove();
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('span').remove();
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).html($('#dropdownSCHSlit').html());
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').removeAttr('disabled')
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').val(sch)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').addClass('select2');
+
+
+                            //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').remove();
+                            //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('span').remove();
+                            //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).html($('#dropdownODSlit').html());
+                            //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').removeAttr('disabled')
+                            //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').val(od)
+                            //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').addClass('select2');
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('input').val(od)
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(10).children('input').val(coilNo)
+
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').remove();
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('span').remove();
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).html($('#dropdownGodown').html());
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').val(godown)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').addClass('select2');
+
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(12).children('input').val(remarks);
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(12).children('input').removeClass('gridTextbox')
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(13).addClass('text-center')
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsSlit(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsSlit(this)" style="font-size:18px"></i>`)
+
+
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(0).children('input').attr('disabled', true)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(1).children('input').attr('disabled', true)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(2).children('input').attr('disabled', true)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(3).children('input').attr('disabled', true)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(4).children('input').attr('disabled', true)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').attr('disabled', true)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').attr('disabled', true)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').attr('disabled', true)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').attr('disabled', true)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('input').attr('disabled', true)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(10).children('input').attr('disabled', true)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').attr('disabled', true)
+                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(12).children('input').attr('disabled', true)
+                        }
+                    }
+
+
+
+                    $('#tblDisplay').children('tbody').children().find('input').each(function () {
+                        $(this).removeAttr('onfocusin')
+                        $(this).removeAttr('onfocus')
+                        $(this).removeAttr('onfocusout')
+                        $(this).removeClass('focusIn')
+                    })
+                }
+                else {
+                    $('#tblDisplay').children('tbody').children('tr').each(function () {
+                        if ($(this).children('td').eq(0).children('input').val() == srNo) {
+                            $(this).children('td').eq(1).children('input').val(width);
+                            $(this).children('td').eq(2).children('input').val(noOfCoil);
+                            $(this).children('td').eq(3).children('input').val(formulawt);
+                            $(this).children('td').eq(4).children('input').val(actualWt);
+                            $(this).children('td').eq(5).children('select').val(type);
+                            $(this).children('td').eq(6).children('select').val(recCoilNo);
+                            $(this).children('td').eq(7).children('select').val(nb);
+                            $(this).children('td').eq(8).children('select').val(sch);
+                            $(this).children('td').eq(9).children('input').val(od);
+                            $(this).children('td').eq(10).children('select').val(coilNo);
+                            $(this).children('td').eq(11).children('select').val(godown);
+                            $(this).children('td').eq(12).children('input').val(remarks);
+                            $(this).children('td').eq(13).addClass('text-center')
+                            $(this).children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsSplit(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsSplit(this)" style="font-size:18px"></i>`)
+                        }
+                    })
+                    $('#tblSlit').children('tbody').children('tr').children('td').eq(2).children('input').attr('disabled', false);
+                }
+
+                SetSerialNumberSlit();
+                SetSelect2();
+                SetReceivedCoilNo();
+                CalculateSlit();
+                if (id && parseInt(id) > 0) {
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(0).children('input').focus();
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(0).children('input').select();
+                }
+                else {
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').select();
+                }
+
+
+                if ($('input[name="completeDate"]').val()) {
+                    if ($('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val() && $('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val() != 'COIL') {
+                        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', false);
+                    }
+                    else {
+                        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true);
+                    }
+                }
+            }
+            else {
+                showErrorMessage("Please enter all required fields and actual weight and width!");
+            }
+
+        }
+        setTimeout(function () {
+            document.getElementById("jobType").scrollIntoView();
+        }, 500);
+
+    }
+
+    function DeleteRowsSlit(obj) {
+        Swal.fire({
+            title: 'Are you sure want to delete row?',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var coilno = $(obj).closest('tr').children('td').eq(10).children('input').val();
+                if (coilno != "" && coilno != null) {
+                    $.ajax({
+                        type: "POST",
+                        url: '/JobWorkEntry/GetCoilNoDetails',
+                        data: { "coilno": coilno },
+                        dataType: "JSON",
+                        success: function (data) {
+                            if (data.result) {
+                                if (data.data == "-1") {
+                                    showErrorMessage("Coil is Already Used Can Not Delete Coil ");
+                                }
+                                else {
+                                    $(obj).closest('tr').remove();
+                                    SetSerialNumberSlit();
+                                    $('#tblDisplay').children('tbody').children('tr:last').remove();
+                                    CalculateSlit();
+                                    if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                                        $('#tblDisplay').children('thead').remove();
+                                        $('#tblDisplay').children('tbody').remove();
+                                    }
+                                }
+                            }
+                            else {
+                                errorMessage(response);
+                            }
+                        },
+                        error: function (response) {
+
+                        }
+                    });
+                }
+
+            } else if (result.isDenied) {
+            }
+        })
+    }
+
+    function SetSerialNumberSlit() {
+
+        var count = 1;
+        $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+            $(this).children('td').eq(0).children('input').val(count);
+            $(this).children('td').eq(5).children('select').attr('id', 'slitTypeGrid' + count);
+            $(this).children('td').eq(6).children('select').attr('id', 'recCoilNoSlitGrid' + count);
+            $(this).children('td').eq(7).children('select').attr('id', 'nbGrid' + count);
+            $(this).children('td').eq(8).children('select').attr('id', 'schGrid' + count);
+            //$(this).children('td').eq(9).children('select').attr('id', 'odGrid' + count);
+            $(this).children('td').eq(11).children('select').attr('id', 'godownGrid' + count);
+            count = parseInt(count) + 1;
+        });
+    }
+
+    function GetDataBySrNoSlit(value) {
+        var completeDate = $('completeDate').val();
+        $('#tblDisplay').children('tbody').children('tr').each(function () {
+            if ($(this).children('td').eq(0).children('input').val() == value) {
+                EditRowsSlit($(this));
+                if (completeDate != null || completeDate != '') {
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(4).children('input').focus();
+                }
+                else {
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                }
+
+            }
+        })
+    }
+
+    function EditRowsSlit(obj) {
+        if (obj != null) {
+            var srno = $(obj).closest('tr').children('td').eq(0).children('input').val();
+            var width = $(obj).closest('tr').children('td').eq(1).children('input').val();
+            var noofCoil = $(obj).closest('tr').children('td').eq(2).children('input').val();
+            var formulaWt = $(obj).closest('tr').children('td').eq(3).children('input').val();
+            var actualWt = $(obj).closest('tr').children('td').eq(4).children('input').val();
+            var type = $(obj).closest('tr').children('td').eq(5).children('select').val();
+            var recCoilNo = $(obj).closest('tr').children('td').eq(6).children('select').val();
+            var nb = $(obj).closest('tr').children('td').eq(7).children('select').val();
+            var sch = $(obj).closest('tr').children('td').eq(8).children('select').val();
+            var od = $(obj).closest('tr').children('td').eq(9).children('input').val();
+            var coilNo = $(obj).closest('tr').children('td').eq(10).children('input').val();
+            var godown = $(obj).closest('tr').children('td').eq(11).children('select').val();
+            var remarks = $(obj).closest('tr').children('td').eq(12).children('input').val();
+
+
+            //$('#tblSlit').children('tbody').children('tr:last').children('td').eq(6).children('select').append(`<option value="` + recCoilNo + `">` + recCoilNo + `</option>`);
+
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(0).children('input').val(srno);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').val(width);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(2).children('input').val(noofCoil);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(2).children('input').attr('disabled', true);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(3).children('input').val(formulaWt);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(4).children('input').val(actualWt);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val(type);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(6).children('select').val(recCoilNo);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(7).children('select').val(nb);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(8).children('select').val(sch);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(9).children('input').val(od);
+
+            //$('#tblSlit').children('tbody').children('tr:last').children('td').eq(8).children('select').val(nb);
+
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(10).children('select').val(coilNo);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(11).children('select').val(godown);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(12).children('input').val(remarks);
+            SetSelect2();
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+
+            if ($('input[name="completeDate"]').val()) {
+                if ($('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val() && $('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val() != 'COIL') {
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', false);
+                }
+                else {
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true);
+                }
+            }
+        }
+    }
+
+    function CalculateSlit() {
+        var totalWidth = 0;
+        var totalNoOfCoil = 0;
+        var formulaWt = 0;
+        var actualWt = 0;
+        var actualWidth = $('input[name="actualWidth"]').val();
+        $('#tblDisplay').children('tbody').children('tr').each(function () {
+            totalWidth = parseFloat(totalWidth) + parseFloat($(this).children('td').eq(1).children('input').val());
+            totalNoOfCoil = parseFloat(totalNoOfCoil) + parseFloat($(this).children('td').eq(2).children('input').val());
+            formulaWt = parseFloat(formulaWt) + parseFloat($(this).children('td').eq(3).children('input').val());
+            if ($(this).children('td').eq(4).children('input').val())
+                actualWt = parseFloat(actualWt) + parseFloat($(this).children('td').eq(4).children('input').val());
+        });
+        $('#tblDisplay').children('tbody').children('tr:last').after("<tr><td><b>Total</b></td><td class='text-left'><b>" + totalWidth + "</b></td><td class='text-left'><b>" + totalNoOfCoil + "</b></td><td class='text-right'><b>" + formulaWt + "</b></td><td class='text-right'><b>" + actualWt + "</b></td><td class='text-right' colspan='3'></td></tr>");
+        var remaining = parseFloat(actualWidth) - parseFloat(totalWidth);
+        $('input[name="remaining"]').val(remaining);
+        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').val(remaining);
+    }
+
+    function AllowAddRowsSlit() {
+        var totalWidth = 0;
+        var remaining = $('input[name="remaining"]').val();
+        var actualWidth = $('input[name="actualWidth"]').val();
+        $('#tblDisplay').children('tbody').children('tr').each(function () {
+            if ($(this).children('td').eq(1).children('input').length > 0 && parseInt($(this).children('td').eq(0).children('input').val()) <= 0) {
+                totalWidth = parseFloat(totalWidth) + parseFloat($(this).children('td').eq(1).children('input').val());
+            }
+        });
+        totalWidth = parseFloat(totalWidth) + (parseFloat($('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').val()) * parseFloat($('#tblSlit').children('tbody').children('tr:last').children('td').eq(2).children('input').val()));
+        if (parseFloat(totalWidth) > parseFloat(actualWidth)) {
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').val(remaining);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(2).children('input').val(0);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+            return false;
+        }
+        else {
+            return true;
+        }
+
+    }
+
+    function AddRows() {
+        var issueCoilNo = $('input[name="issueCoilNo"]').val();
+        var actualWeight = $('input[name="actualWeight"]').val();
+        var actualWidth = $('input[name="actualWidth"]').val();
+        if (!issueCoilNo) {
+            showErrorMessage("Please enter coil no!")
+        }
+        else if (!actualWeight) {
+            showErrorMessage("Please enter actual weight!")
+        }
+        else if (!actualWidth) {
+            showErrorMessage("Please enter actual width!")
+
+        }
+        else {
+            var jobType = $('#jobType').val();
+            if (jobType == 'SPLIT') {
+                AddRowsSplit();
+            }
+            else {
+                AddRowsSlit();
+
+            }
+        }
+    }
+
+    $('input[name="actualWeight"]').change(function () {
+        var jobType = $('#jobType').val();
+        if (jobType == 'SPLIT') {
+            if ($(this).val())
+                $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').val($(this).val());
+        }
+    })
+
+    $('input[name="actualWidth"]').change(function () {
+        var jobType = $('#jobType').val();
+        if (jobType == 'SLIT') {
+            if ($(this).val())
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').val($(this).val());
+        }
+    })
+
+    $('input[name="completeDate"]').focusout(function () {
+        var date = $('input[name="date"]').val();
+        var isscoil = $('input[name="issueCoilNo"]').val();
+        var date1 = $(this).val();
+        var newDate = new Date(date);
+        var completeDate = new Date(date1);
+
+        if (completeDate < newDate) {
+            $(this).focus();
+            showErrorMessage("Complete date must be greater than job date");
+        }
+        else {
+            if (isscoil != "") {
+                $.ajax({
+                    type: "POST",
+                    url: '/JobWorkEntry/GetCheckCompDtCoil',
+                    data: { "isscoil": isscoil },
+                    dataType: "JSON",
+                    success: function (data) {
+                        if (data.result) {
+                            if (data.data == "1") {
+                                showErrorMessage("Intrasit Coil Can not Complete Production!");
+                                $('input[name="completeDate"]').val('');
+                            }
+                        }
+                        else {
+                            errorMessage(response);
+                        }
+                    },
+                        failure: function (response) {
+                        errorMessage(response);
+                    }
+                });
+            }
+        }
+    });
+
+    $('input[name="issueCoilNo"]').focusout(function () {
+        if (id && parseInt(id) <= 0) {
+            $('input[name="actualWeight"]').focus();
+        }
+    });
+
+    $('input[name="actualWidth"]').focusout(function () {
+        var jobType = $('#jobType').val();
+        if (jobType == 'SPLIT') {
+            $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+        }
+        else {
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+        }
+    });
+
+    $('input[name="completeDate"]').change(function () {
+        var jobType = $('#jobType').val();
+        if (jobType == 'SLIT') {
+            if ($(this).val()) {
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(4).children('input').attr('disabled', false);
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true);
+
+
+                if ($('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val() && $('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val() != 'COIL') {
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', false);
+                }
+                else {
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true);
+                }
+            }
+        }
+        else {
+            if ($(this).val())
+            {
+                $('#tblSplit').children('tbody').children('tr:last').children('td').eq(2).children('input').attr('disabled', false);
+                $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true);
+            }
+
+        }
+    })
+
+    //function CheckCompDate() {
+    //    var isscoilno = $('input[name="issueCoilNo"]').val();
+    //    if (isscoilno != "") {
+    //        $.ajax({
+    //            type: "POST",
+    //            url: '/JobWorkEntry/GetCheckCompDtCoil',
+    //            data: { "isscoilno": isscoilno },
+    //            dataType: "JSON",
+    //            success: function (data) {
+    //                if (data.result) {
+    //                    if (data.data == "1") {
+    //                        showErrorMessage("Intrasit Coil Can not Complete Production!");
+    //                        $('input[name="completeDate"]').val('');
+    //                    }
+    //                }
+    //                else {
+    //                    errorMessage(response);
+    //                }
+    //            },
+    //            failure: function (response) {
+    //                errorMessage(response);
+    //            }
+    //        });
+    //    }
+    //}
+
+
+
+    function AddJobkWorkEntry(event) {
+        if (!isSaveCalled) {
+            isSaveCalled = true;
+            setTimeout(function () {
+                isSaveCalled = false;
+            },1000)
+            if (ValidateGrid() && ValidateTextbox()) {
+                if ($('input[name="completeDate"]').val()) {
+                    if (parseFloat($('input[name="remaining"]').val()) > 0) {
+                        showErrorMessage("Please make remaining value to zero");
+                        var jobType = $('#jobType').val();
+                        var jobTypeN = $('#jobTypeN').val();
+                        if (jobType == 'SPLIT') {
+                            $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                        }
+                        else {
+                            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                        }
+                        return false;
+                    }
+                }
+                if (!ValidateVendorWtActualWt()) {
+                    showErrorMessage("Vendor Weight does not match to formula weight");
+                    return false;
+                }
+                if (!ValidateSlitType())
+                {
+                    showErrorMessage("Bal Patta and scrap are allowed only once.");
+                    return false;
+                }
+                if (!ValidateReceiveCoilNo())
+                {
+                    showErrorMessage("Duplicate recieve coil no");
+                    return false;
+                }
+                else {
+                    var isscoil = $('input[name="issueCoilNo"]').val();
+                    var remaining = $('input[name="remaining"]').val();
+                    var date = $('input[name="date"]').val();
+                    var date1 = $('input[name="completeDate"]').val();
+                    var recDate = $('input[name="recDate"]').val();
+                    var newDate = new Date(date);
+                    var newRecDate = new Date(recDate);
+                    var completeDate = new Date(date1);
+                    var lottupevou = $('select[name="LotTypeVou"]').val();
+                    if (lottupevou == '---Select---') {
+                        lottupevou = '';
+                    }
+                    if (parseFloat(remaining) < 0) {
+                        showErrorMessage("Remaining cannot be less than 0!");
+                    }
+                    else if (parseFloat(remaining) > 0) {
+                        showErrorMessage("Remaining cannot be grater than 0!");
+                    }
+                    else if (completeDate < newDate) {
+                        $('input[name="completeDate"]').focus();
+                        showErrorMessage("Complete date must be greater than job date");
+                    }
+                    else if (newDate < newRecDate) {
+                        $('input[name="date"]').focus();
+                        showErrorMessage("Job date must be greater than receive date.");
+                    }
+                    else {
+                        var jobType = $('#jobType').val();
+                        var jobTypeN = jobType;
+                        var splitlist = [];
+                        var slitlist = [];
+                        if (jobType == 'SPLIT') {
+                            $('#tblDisplay').children('tbody').children('tr:not(:last)').each(function () {
+                                splitlist.push({
+                                    "FormulaWt": $(this).children('td').eq(1).children('input').val(),
+                                    "VendorWt": $(this).children('td').eq(2).children('input').val(),
+                                    "RecCoilNo": $(this).children('td').eq(3).children('select').val(),
+                                    "CoilNo": $(this).children('td').eq(4).children('input').val(),
+                                    "Godown": $(this).children('td').eq(5).children('select').val(),
+                                    "Remarks": $(this).children('td').eq(6).children('input').val(),
+                                });
+                            })
+                        }
+                        else {
+                            $('#tblDisplay').children('tbody').children('tr:not(:last)').each(function () {
+                                slitlist.push({
+                                    "Width": $(this).children('td').eq(1).children('input').val(),
+                                    "NoOfCoil": $(this).children('td').eq(2).children('input').val(),
+                                    "FormulaWt": $(this).children('td').eq(3).children('input').val(),
+                                    "ActualWt": $(this).children('td').eq(4).children('input').val(),
+                                    "Type": $(this).children('td').eq(5).children('select').val(),
+                                    "RecCoilNo": $(this).children('td').eq(6).children('select').val(),
+                                    "NB": $(this).children('td').eq(7).children('select').val(),
+                                    "SCH": $(this).children('td').eq(8).children('select').val(),
+                                    "OD": $(this).children('td').eq(9).children('input').val(),
+
+                                    "CoilNo": $(this).children('td').eq(10).children('input').val(),
+                                    "Godown": $(this).children('td').eq(11).children('select').val(),
+                                    "Remarks": $(this).children('td').eq(12).children('input').val(),
+                                });
+                            })
+                        }
+
+                        var model = {
+                            "JobId": $('input[name="jobVou"]').val(),
+                            "JobType": (jobType == 'SPLIT' ? "1" : "2"),
+                            "JobTypeN": (jobTypeN),
+                            "VNo": $('input[name="vno"]').val(),
+                            "Date": $('input[name="date"]').val(),
+                            "IssueCoilNo": $('input[name="issueCoilNo"]').val(),
+                            "Grade": $('input[name="grade"]').val(),
+                            "GodownVou": $('input[name="gdnVou"]').val(),
+                            "IssueCoilNoId": $('input[name="lotVou"]').val(),
+                            "Qty": $('input[name="weight"]').val(),
+                            "Width": $('input[name="width"]').val(),
+                            "Remarks": ($('input[name="remarks"]').val() ? $('input[name="remarks"]').val() : null),
+                            "ActualQty": $('input[name="actualWeight"]').val(),
+                            "ActualWidth": $('input[name="actualWidth"]').val(),
+                            "CompleteDate": ($('input[name="completeDate"]').val() ? $('input[name="completeDate"]').val() : null),
+                            "JobNo": $('input[name="jobNo"]').val(),
+                            "LotTypeVou": $('select[name="LotTypeVou"]').val(),
+                            "JobWorkEntrySplitsList": splitlist,
+                            "JobWorkEntrySlitsList": slitlist,
+                            "JobShift": $('select[name="jobShift"]').val(),
+                            "JobOprMscVou": $('select[name="JobOprMscVou"]').val(),
+                            "JobMacNo": $('select[name="JobMacNo"]').val(),
+                            "isPrint": $('input[name="isPrint"]').val(),
+                        }
+                        if (isscoil != "" && date1 != "") {
+                            $.ajax({
+                                type: "POST",
+                                url: '/JobWorkEntry/GetCheckCompDtCoil',
+                                data: { "isscoil": isscoil },
+                                dataType: "JSON",
+                                success: function (data) {
+                                    if (data.result) {
+                                        if (data.data == "1") {
+                                            showErrorMessage("Intrasit Coil Can not Complete Production!");
+                                            $('input[name="completeDate"]').val('');
+                                            return false;
+                                        }
+                                        else {
+                                            $.ajax({
+                                                type: "POST",
+                                                url: '/JobWorkEntry/AddJobWorkEntry',
+                                                data: { "jobWorkEntryModel": model },
+                                                dataType: "JSON",
+                                                success: function (response) {
+                                                    if (response) {
+                                                        if (response.result) {
+                                                            window.location.href = '/jobworkentry/index'
+                                                        }
+                                                        else {
+                                                            showErrorMessage(response.message);
+                                                        }
+                                                    }
+                                                    else {
+                                                        showErrorMessage(response.message);
+                                                    }
+                                                },
+                                                error: function (response) {
+                                                }
+                                            });
+                                        }
+                                    }
+                                    else {
+                                        errorMessage(response);
+                                    }
+                                },
+                                failure: function (response) {
+                                    errorMessage(response);
+                                }
+                            });
+                        }
+                        else {
+                            $.ajax({
+                                type: "POST",
+                                url: '/JobWorkEntry/AddJobWorkEntry',
+                                data: { "jobWorkEntryModel": model },
+                                dataType: "JSON",
+                                success: function (response) {
+                                    if (response) {
+                                        if (response.result) {
+                                            window.location.href = '/jobworkentry/index'
+                                        }
+                                        else {
+                                            showErrorMessage(response.message);
+                                        }
+                                    }
+                                    else {
+                                        showErrorMessage(response.message);
+                                    }
+                                },
+                                error: function (response) {
+                                }
+                            });
+
+                        }
+                    }
+                }
+            }
+            else {
+                showErrorMessage("Please enter all compulsory fields!");
+                $('#btnSave').prop('disabled', false);
+                event.preventDefault();
+                return false;
+            }
+        }
+
+    }
+
+    function ValidateTextbox() {
+        var isAllow = true;
+        if (!$('select[name="jobType"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="vno"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="date"]').val()) {
+            isAllow = false;
+        }
+        if (!$('select[name="JobMacNo"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="issueCoilNo"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="jobWorker"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="jobNo"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="companyName"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="companyCode"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="recDate"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="productName"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="grade"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="thickness"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="weight"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="width"]').val()) {
+            isAllow = false;
+        }
+
+        if (!$('input[name="actualWeight"]').val()) {
+            isAllow = false;
+        }
+
+        if (!$('input[name="actualWidth"]').val()) {
+            isAllow = false;
+        }
+
+        if (!$('input[name="remaining"]').val()) {
+            isAllow = false;
+        }
+
+
+        return isAllow;
+    }
+
+    function ValidateGrid() {
+        var isAllow = true;
+        var jobType = $('#jobType').val();
+        var completeDate = $('input[name="completeDate"]').val()
+        if (jobType == 'SPLIT') {
+            $('#tblDisplay').children('tbody').children('tr').each(function () {
+                if ($(this).children('td').eq(1).children('input').length > 0 && !$(this).children('td').eq(1).children('input').val()) {
+                    isAllow = false;
+                }
+                else if (completeDate && $(this).children('td').eq(2).children('input').val() && parseFloat($(this).children('td').eq(2).children('input').val()) <= 0) {
+                    showErrorMessage("Please fill vendor weight in each row.");
+                    isAllow = false;
+                    ok
+                }
+            })
+        }
+        else {
+            $('#tblDisplay').children('tbody').children('tr').each(function () {
+                if ($(this).children('td').eq(1).children('input').length > 0 && (!$(this).children('td').eq(1).children('input').val() || !$(this).children('td').eq(2).children('input').val() || !$(this).children('td').eq(3).children('input').val())) {
+                    isAllow = false;
+                }
+                else if (completeDate && $(this).children('td').eq(4).children('input').val() && parseFloat($(this).children('td').eq(4).children('input').val()) <= 0) {
+                    showErrorMessage("Please fill Actual weight in each row.");
+                    isAllow = false;
+                    ok
+                }
+            })
+        }
+        return isAllow
+    }
+
+    function ValidateVendorWtActualWt() {
+        var jobType = $('#jobType').val();
+        var completeDate = $('input[name="completeDate"]').val();
+        if (jobType == 'SPLIT' && completeDate) {
+            var totalFormulaWt = 0;
+            var totalActualWt = 0;
+            $('#tblDisplay').children('tbody').children('tr:not(:last)').each(function () {
+                totalFormulaWt = parseFloat(totalFormulaWt) + parseFloat($(this).children('td').eq(1).children('input').val());
+                totalActualWt = parseFloat(totalActualWt) + parseFloat($(this).children('td').eq(2).children('input').val());
+            });
+
+            var formulaWtRange1 = 0;
+            var formulaWtRange2 = 0;
+            var formulaWtTen = 0;
+            if (!totalFormulaWt) {
+                totalFormulaWt = 0;
+            }
+            if (!totalActualWt) {
+                totalActualWt = 0;
+            }
+            formulaWtTen = ((totalFormulaWt * 10) / 100);
+            formulaWtRange1 = totalFormulaWt - formulaWtTen;
+            formulaWtRange2 = totalFormulaWt + formulaWtTen;
+
+            if (parseFloat(totalActualWt) >= formulaWtRange1 && parseFloat(totalActualWt) <= formulaWtRange2)
+                return true;
+            else {
+                $('#tblSplit').children('tbody').children('tr:last').children('td').eq(0).children('input').focus();
+                return false;
+
+            }
+        }
+        else
+           return true;
+    }
+
+    function ValidateSlitType() {
+        var isAllow = true;
+        var balPatta = 0;
+        var scrap = 0;
+        $('#tblDisplay').children('tbody').children('tr').each(function () {
+            if ($(this).children('td').eq(5).children('select').val() == 'BAL. PATTA') {
+                balPatta = parseInt(balPatta) + 1;
+            }
+            if ($(this).children('td').eq(5).children('select').val() == 'SCRAP') {
+                scrap = parseInt(scrap) + 1;
+            }
+        })
+
+        if (balPatta > 1 || scrap > 1)
+            isAllow = false;
+        return isAllow;
+    }
+
+    function ValidateReceiveCoilNo() {
+        var jobType = $('#jobType').val();
+        var isAllow = true;
+        var selectedRecCoilNo = [];
+        if (jobType == 'SPLIT') {
+            $('#tblDisplay').children('tbody').children('tr').each(function () {
+                if ($(this).children('td').eq(3).children('select').val()) {
+                    selectedRecCoilNo.push($(this).children('td').eq(3).children('select').val());
+                }
+            })
+        }
+        else {
+            $('#tblDisplay').children('tbody').children('tr').each(function () {
+                if ($(this).children('td').eq(6).children('select').val()) {
+                    selectedRecCoilNo.push($(this).children('td').eq(6).children('select').val());
+                }
+            })
+        }
+
+        if (checkIfDuplicateExists(selectedRecCoilNo)) {
+            isAllow = false;
+        }
+        return isAllow;
+    }
+
+    function checkIfDuplicateExists(arr) {
+        return new Set(arr).size !== arr.length
+    }
+
+    function SetReceivedCoilNo() {
+        //var selectedRecCoilNo = [];
+        //$('#tblDisplay').children('tbody').children('tr').each(function () {
+        //    if ($(this).children('td').eq(6).children('select').val()) {
+        //        selectedRecCoilNo.push($(this).children('td').eq(6).children('select').val());
+        //    }
+        //})
+        //$('#tblSlit').children('tbody').children('tr').children('td').eq(6).children('select').children('option').each(function () {
+        //    for (var x = 0; x < selectedRecCoilNo.length; x++) {
+        //        if ($(this).val() == selectedRecCoilNo[x]) {
+        //            $(this).remove();
+        //            break;
+        //        }
+        //    }
+
+        //})
+    }
+
+    $(function () {
+        if (id && parseInt(id) > 0) {
+            $.ajax({
+                type: "POST",
+                url: '/JobWorkEntry/GetDataById',
+                data: { "id": id },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            GoToAddTab();
+
+                            var response = response.data;
+                            $('select[name="jobType"]').val(response.jobType);
+                            $('select[name="jobType"]').attr('disabled', true);
+                            $('input[name="vno"]').val(response.vNo);
+                            $('input[name="jobTypeN"]').val(response.jobTypeN);
+                            $('input[name="jobVou"]').val(id);
+                            $('input[name="date"]').val(response.date);
+                            $('input[name="recDate"]').val(response.recDate);
+                            $('input[name="issueCoilNo"]').val(response.issueCoilNo);
+                            $('input[name="issueCoilNo"]').attr('disabled', true);
+                            $('input[name="grade"]').val(response.grade);
+                            $('input[name="gdnVou"]').val(response.godownVou);
+                            $('input[name="lotVou"]').val(response.issueCoilNoId);
+                            $('input[name="weight"]').val(response.qty);
+                            $('input[name="width"]').val(response.width);
+                            $('input[name="remarks"]').val(response.remarks);
+                            $('select[name="LotTypeVou"]').val(response.lotTypeVou);
+                            $('input[name="actualWeight"]').val(response.actualQty);
+                            $('input[name="actualWidth"]').val(response.actualWidth);
+                            $('input[name="completeDate"]').val(response.completeDate);
+                            //if (id != '' && id != null && response.completeDate != '' && response.completeDate != null) {
+                            //        //$('#btnSave').prop('disabled', true);
+                            //    GetSaveButton();
+                            //}
+                            $('input[name="jobNo"]').val(response.jobNo);
+                            $('input[name="jobWorker"]').val(response.jobWorker);
+                            $('input[name="companyName"]').val(response.companyName);
+                            $('input[name="companyCode"]').val(response.companyCode);
+                            $('input[name="finish"]').val(response.finish);
+                            $('input[name="productName"]').val(response.productName);
+                            $('input[name="thickness"]').val(response.thick);
+                            HideShowGrid(response.jobType,response);
+
+                            if (response.jobType == 'SPLIT') {
+                                for (var x = 0; x < response.jobWorkEntrySplitsList.length; x++) {
+                                    $('#tblSplit').children('tbody').children('tr').children('td').eq(1).children('input').val(response.jobWorkEntrySplitsList[x].formulaWt);
+                                    $('#tblSplit').children('tbody').children('tr').children('td').eq(2).children('input').val(response.jobWorkEntrySplitsList[x].vendorWt);
+                                    $('#tblSplit').children('tbody').children('tr').children('td').eq(3).children('select').val(response.jobWorkEntrySplitsList[x].recCoilNo);
+                                    $('#tblSplit').children('tbody').children('tr').children('td').eq(4).children('input').val(response.jobWorkEntrySplitsList[x].coilNo);
+                                    $('#tblSplit').children('tbody').children('tr').children('td').eq(5).children('select').val(response.jobWorkEntrySplitsList[x].godown);
+                                    $('#tblSplit').children('tbody').children('tr').children('td').eq(6).children('input').val(response.jobWorkEntrySplitsList[x].remarks);
+                                    AddRowsSplit();
+                                }
+                            }
+                            else {
+                                for (var x = 0; x < response.jobWorkEntrySlitsList.length; x++) {
+                                    $('#tblSlit').children('tbody').children('tr').children('td').eq(1).children('input').val(response.jobWorkEntrySlitsList[x].width);
+                                    $('#tblSlit').children('tbody').children('tr').children('td').eq(2).children('input').val(1);
+                                    $('#tblSlit').children('tbody').children('tr').children('td').eq(4).children('input').val(response.jobWorkEntrySlitsList[x].actualWt);
+                                    $('#tblSlit').children('tbody').children('tr').children('td').eq(5).children('select').val(response.jobWorkEntrySlitsList[x].type);
+                                    $('#tblSlit').children('tbody').children('tr').children('td').eq(6).children('select').val(response.jobWorkEntrySlitsList[x].recCoilNo);
+                                    $('#tblSlit').children('tbody').children('tr').children('td').eq(7).children('select').val(response.jobWorkEntrySlitsList[x].nb);
+                                    $('#tblSlit').children('tbody').children('tr').children('td').eq(8).children('select').val(response.jobWorkEntrySlitsList[x].sch);
+
+                                    $('#tblSlit').children('tbody').children('tr').children('td').eq(9).children('input').val(response.jobWorkEntrySlitsList[x].od);
+                                    $('#tblSlit').children('tbody').children('tr').children('td').eq(10).children('input').val(response.jobWorkEntrySlitsList[x].coilNo);
+                                    $('#tblSlit').children('tbody').children('tr').children('td').eq(11).children('select').val(response.jobWorkEntrySlitsList[x].godown);
+                                    $('#tblSlit').children('tbody').children('tr').children('td').eq(12).children('input').val(response.jobWorkEntrySlitsList[x].remarks);
+                                    AddRowsSlit();
+                                }
+                            }
+                            $('input[name="completeDate"]').change();
+
+                            SetSelect2();
+
+                        }
+                        else {
+                            showErrorMessage(response.message);
+                        }
+                    }
+                    else {
+                        showErrorMessage(response.message);
+                    }
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+    })
+
+    $('.gridTextbox').focus(function () { $(this).select(); });
+
+    function GetMachineList(res) {
+        var jobType = $('select[name="jobType"]').val();
+        $('select[name="JobMacNo"]').children('option').remove();
+        $.ajax({
+            type: "POST",
+            url: '/JobWorkEntry/GetMachineListByJobType',
+            data: { "jobType": jobType },
+            dataType: "JSON",
+            success: function (response) {
+                if (response) {
+                    if (response.result) {
+                        var html = `<option value="">---Select---</option>`;
+                        for (var x = 0; x < response.data.length; x++) {
+                            html += `<option value="` + response.data[x].value + `">` + response.data[x].text +`</option>`
+                        }
+                        $('select[name="JobMacNo"]').append(html);
+                        if (res) {
+                            $('select[name="jobShift"]').val(res.jobShift);
+                            $('select[name="JobOprMscVou"]').val(res.jobOprMscVou);
+                            $('select[name="JobMacNo"]').val(res.jobMacNo);
+                            SetSelect2();
+                        }
+                        SetSelect2();
+                    }
+                    else {
+
+                    }
+                }
+                else {
+
+                }
+            },
+            error: function (response) {
+
+            }
+        });
+    }
+</script>
+<script>
+    $(function () {
+        var jobtype = $('#txtJobType').children('option:selected').text()
+        if (jobtype)
+            $('input[name="JobTypeN"]').val(jobtype);
+    })
+
+    $('#txtJobType').change(function () {
+        var jobtype = $('#txtJobType').children('option:selected').text()
+        if (jobtype)
+            $('input[name="JobTypeN"]').val(jobtype);
+    })
+
+    $('#jobType').focusout(function () {
+        $('input[name="date"]').focus();
+    })
+
+    function EnableDisableNBSCH(obj) {
+        if ($(obj).val() && $(obj).val() != 'SCRAP') {
+            $(obj).closest('tr').children('td').eq(7).children('select').attr('disabled', false);
+            $(obj).closest('tr').children('td').eq(8).children('select').attr('disabled', false);
+            $(obj).closest('tr').children('td').eq(9).children('input').attr('disabled', false);
+        }
+        else {
+            $(obj).closest('tr').children('td').eq(7).children('select').attr('disabled', true);
+            $(obj).closest('tr').children('td').eq(8).children('select').attr('disabled', true);
+            $(obj).closest('tr').children('td').eq(9).children('input').attr('disabled', true);
+        }
+
+        if ($('input[name="completeDate"]').val()) {
+            if ($(obj).val() && $(obj).val() != 'COIL') {
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', false);
+            }
+            else {
+                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true);
+            }
+        }
+
+        $(obj).closest('tr').children('td').eq(5).children('select').focus();
+        SetSelect2();
+    }
+
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+
+    function GetNBSplit(obj, nbValue) {
+
+        var od = $(obj).val();
+        var html = '<option value=""></option>';
+        $(obj).parent('td').next('td').children('select').children('option').remove();
+        if (od) {
+            $.ajax({
+                type: "POST",
+                url: '/JobWorkEntry/GetNBByOd',
+                data: { "od": od },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            for (var x = 0; x < response.message.length; x++) {
+                                if (nbValue && nbValue == response.message[x].value) {
+                                    html += '<option selected value="' + response.message[x].value + '">' + response.message[x].text + '</option>';
+                                }
+                                else {
+                                    html += '<option value="' + response.message[x].value + '">' + response.message[x].text + '</option>';
+                                }
+                            }
+                            $(obj).parent('td').next('td').children('select').append(html);
+                        }
+                        else {
+                            $(obj).parent('td').next('td').children('select').append(html);
+                        }
+                    }
+                    else {
+                        $(obj).parent('td').next('td').children('select').append(html);
+                    }
+
+                    SetSelect2();
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+    }
+
+    function GetNBSCHValue(obj) {
+        var nb = $(obj).closest('tr').children('td').eq(7).children('select').val();
+        var sch = $(obj).closest('tr').children('td').eq(8).children('select').val();
+        if (nb && sch) {
+            $.ajax({
+                type: "POST",
+                url: '/JobWorkEntry/GetNBSCH',
+                data: { "nb": nb, "sch": sch },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            $(obj).closest('tr').children('td').eq(9).children('input').val(response.ordOd);
+                            $(obj).closest('tr').children('td').eq(8).children('select').focus();
+                        }
+                        else {
+                            $(obj).closest('tr').children('td').eq(9).children('input').val("");
+                        }
+                    }
+                    else {
+                        $(obj).closest('tr').children('td').eq(9).children('input').val("");
+                    }
+
+                    SetSelect2();
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+    }
+
+    @*function GetSaveButton() {
+        var compdt = $('#completeDate').val();
+        var jobvno = '@Html.Raw(id)'
+        if (compdt != '' && jobvno != "0") {
+            $.ajax({
+                type: "POST",
+                url: '/JobWorkEntry/GetCoilDetails',
+                data: { "compdt": compdt, "jobvno": jobvno },
+                dataType: "JSON",
+                success: function (data) {
+                    if (data.result) {
+                        if (data.data == "-1") {
+                            $('#btnSave').prop('disabled', true);
+                        }
+                        else {
+                            $('#btnSave').prop('disabled', false);
+                        }
+                    }
+                    else {
+                        errorMessage(response);
+                    }
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+    }*@
+</script>
+<script>
+    $(document).ready(function () {
+        var ReturnId = '@Html.Raw(TempData["ReturnId"])';
+        var Savedone = '@Html.Raw(TempData["Savedone"])';
+        if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
+            window.open(
+                '/JobWorkEntry/JobWorkPrintDetials/'+ReturnId+'',
+                '_blank' // <- This is what makes it open in a new window.
+            );
+        }
+    })
+
+    $('#frmjobwork').submit(function (event) {
+        var unit = '';
+        var isAllow = false;
+        var value = $('#jobType').val();
+        if (value) {
+            if (value == 'SLIT' || value == 'Slit') {
+                $('#tblDisplay').children('tbody').children('tr.lastRow').each(function () {
+                    var weight = $(this).children("td").eq(4).children("input").val();
+                    if (weight == undefined || weight == null || weight == '' || weight == "") {
+                        isAllow = true;
+                    }
+                });
+            }
+            if (isAllow) {
+                showErrorMessage("Please Enter Weight");
+                event.preventDefault();
+                return;
+            }
+            else {
+                $('#txtIsPrint').val('1');
+                AddJobkWorkEntry(event);
+                $('#frmInward').unbind('submit');
+            }
+        }
+    });
+
+    $("#btnPrint").click(function () {
+        $('#txtIsPrint').val('1');
+        $('#frmjobwork').submit();
+    })
+
+    $("#btnSave").click(function () {
+        var unit = '';
+        var isAllow = false;
+        var value = $('#jobType').val();
+        if (value) {
+            if (value == 'SLIT' || value == 'Slit') {
+                $('#tblDisplay').children('tbody').children('tr.lastRow').each(function () {
+                    var weight = $(this).children("td").eq(4).children("input").val();
+                    if (weight == undefined || weight == null || weight == '' || weight == "") {
+                        isAllow = true;
+                    }
+                });
+            }
+            if (isAllow) {
+                showErrorMessage("Please Enter Weight");
+                event.preventDefault();
+                return;
+            }
+            else {
+                //$('#txtIsPrint').val('1');
+                AddJobkWorkEntry(event);
+            }
+        }
+    })
+</script>

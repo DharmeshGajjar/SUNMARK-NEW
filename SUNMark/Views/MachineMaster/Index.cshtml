@@ -1,0 +1,975 @@
+﻿@model SUNMark.Models.MachineMasterModel
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
+    List<SUNMark.Models.MachineMasterModel> machineList = ViewBag.machineList as List<SUNMark.Models.MachineMasterModel>;
+    List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
+    List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
+    ViewData["Title"] = userRight.ModuleNm;
+    string headerAdd = "";
+    string headerList = "";
+    string gridAdd = "";
+    string gridList = "";
+    bool headerAddTrue = false;
+    bool headerListTrue = false;
+
+    if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+    {
+        headerAdd = "active";
+        gridAdd = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+}
+
+<div class="card card-primary">
+    <div class="card-header" style="font-family:Verdana">
+        <h6> @ViewData["Title"]</h6>
+    </div>
+    <div class="card-body">
+        <div class="card card-primary card-tabs">
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                    @if (userRight != null && userRight.IsList)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerList" id="custom-tabs-three-list-tab" data-toggle="pill" href="#custom-tabs-three-list" role="tab" aria-controls="custom-tabs-three-list" aria-selected="@headerListTrue" style="font-family:Verdana;font-size:small" onclick="GoToListTab()">List (Alt+L)</a>
+                        </li>
+                    }
+                    @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerAdd" id="custom-tabs-three-add-tab" data-toggle="pill" href="#custom-tabs-three-add" role="tab" aria-controls="custom-tabs-three-add" aria-selected="@headerAddTrue" style="font-family:Verdana;font-size:small" onclick="GoToAddTab()">Add/Update (F2)</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="tab-content" id="custom-tabs-three-tabContent">
+                        @if (userRight != null && userRight.IsList)
+                        {
+                            <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
+                                <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
+
+                                    <div class="col-md-12 col-12 mb-2 mt-2">
+                                        <div class="row">
+                                            <div class="col-md-1 mb-2 float-left">
+                                                <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                                    @for (int i = 0; i < pageNoList.Count; i++)
+                                                    {
+                                                        string checkedd = "checked";
+                                                        <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                                        checkedd = string.Empty;
+                                                    }
+
+                                                </select>
+                                            </div>
+                                            <div class="col-md-5 col-12">
+                                                <div class="row">
+                                                    <div class="col-md-6 col">
+                                                        <select class="form-control select2 drpReportLayout" onchange="loadData()">
+                                                            <option value="" ; style="width:200px">--Select Layout--</option>
+                                                            @if (layoutList != null && layoutList.Count > 0)
+                                                            {
+                                                                foreach (var item in layoutList)
+                                                                {
+                                                                    <option value="@item.Value">@item.Text </option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                                        @if (isAdministrator == 1)
+                                                        {
+                                                            <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                                Edit
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                                        <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                                        <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                            <div class="col-md-3 col-12 float-right">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dataTable">
+
+                                    </div>
+                                    <div class="pager float-right"></div>
+                                </div>
+                            </div>
+                        }
+                        @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                        {
+                            <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
+                                <form method="post" class="mt-1">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Machine Type <span class="required">*</span>
+                                                        </label>
+                                                        <input type="hidden" name="MachineType" />
+                                                        <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                            @Html.DropDownListFor(x => x.MacTypeID, Model.MachineTypeList, "Select", new { @class = "form-control select2 MacTypeID", @tabindex = "1", style = "font-family: Verdana;font-size:small; height:30px; width:150px; ", @required = "required", @id = "txtMacType" })
+                                                            <a class="btn btn-outline-info ml-2" href="/MachineType/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3  font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Machine Name <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                            <input type="text" id="txtMacName" name="MacName" onfocus="this.select()" class="form-control form-control-lg " maxlength="30" placeholder="Machine Name" tabindex="2" value="@Model.MacName" style="font-family: Verdana;font-size:small; height:30px;width:300px" required />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3  font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Machine Code <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                            <input type="text" id="txtMacCd" name="MacCd" onfocus="this.select()" class="form-control form-control-lg uppercaseWithoutSpace" maxlength="10" placeholder="Machine Code" tabindex="3" value="@Model.MacCd" style="font-family: Verdana;font-size:small; height:30px;width:150px" required />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3  font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Godown <span class="required">*</span>
+                                                        </label>
+                                                        <input type="hidden" name="GdnName" />
+                                                        <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                            @Html.DropDownListFor(x => x.MacGdnVou, Model.GodownList, "Select", new { @class = "form-control select2 MacGdnVou", @tabindex = "4", style = "font-family: Verdana;font-size:small; height:30px; width:300px; ", @id = "txtMacGdnVou", @required = "required" })
+                                                            <a class="btn btn-outline-info ml-2" href="/GodownMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3  font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Location <span class="required"></span>
+                                                        </label>
+                                                        <input type="hidden" name="LocName" />
+                                                        <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                            @Html.DropDownListFor(x => x.MacLocVou, Model.LocationList, "Select", new { @class = "form-control select2 MacLocVou", @tabindex = "4", style = "font-family: Verdana;font-size:small; height:30px; width:300px;", @id = "txtMacLocVou" })
+                                                            <a class="btn btn-outline-info ml-2" href="/Location/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Prod.Cap. PerHr <span class="required"></span>
+                                                        </label>
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                            <input type="text" id="txtCapPerHr" name="MacCapHr" onfocus="this.select()" class="form-control form-control-lg" placeholder="Prod.Cap. PerHr" tabindex="5" value="@Model.MacCapHr" style="font-family: Verdana;font-size:small; height:30px;width:100px;text-align:right" required />
+                                                        </div>
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            (In KG) <span class="required"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Size Range From <span class="required"></span>
+                                                        </label>
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                            <input type="text" maxlength="10" id="txtSizeRangFr" name="MacSizeRngFr" onfocus="this.select()" onblur="checkSizeRange('Fr')" class="form-control form-control-lg allow_decimal" placeholder="Size Range From" tabindex="6" value="@Model.MacSizeRngFr" style="font-family: Verdana;font-size:small; height:30px;width:100px;text-align:right" required />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Size Range To <span class="required"></span>
+                                                        </label>
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                            <input type="text" maxlength="10" id="txtSizeRangTo" name="MacSizeRngTo" onfocus="this.select()"  onblur="checkSizeRange('To')" class="form-control form-control-lg allow_decimal" placeholder="Size Range To" tabindex="7" value="@Model.MacSizeRngTo" style="font-family: Verdana;font-size:small; height:30px;width:100px;text-align:right" required />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Description <span class="required"></span>
+                                                        </label>
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                            <input type="text" id="txtMacDesc" name="MacDesc" onfocus="this.select()" class="form-control form-control-lg" placeholder="Description" tabindex="8" value="@Model.MacDesc" style="font-family: Verdana;font-size:small; height:30px;width:300px" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:medium;color:blue">
+                                                            Shift 1 <span class="required"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Operator 1 <span class="required"></span>
+                                                        </label>
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                            @Html.DropDownListFor(x => x.MacS1Opr1EmpVou, new SelectList(Model.EmployeeListS1Opr1, "Value", "Text"), "Select", new { @class = "form-control select2 MacS1Opr1EmpVou", @tabindex = "9", style = "font-family: Verdana;font-size:small; height:30px; width:300px;", @id = "txtMacS1Opr1EmpVou" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Operator 2 <span class="required"></span>
+                                                        </label>
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                            @Html.DropDownListFor(x => x.MacS1Opr2EmpVou, new SelectList(Model.EmployeeListS1Opr2, "Value", "Text"), "Select", new { @class = "form-control select2 MacS1Opr2EmpVou", @tabindex = "10", style = "font-family: Verdana;font-size:small; height:30px; width:300px;", @id = "txtMacS1Opr2EmpVou" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Supervisor <span class="required"></span>
+                                                        </label>
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                            @Html.DropDownListFor(x => x.MacS1SuperEmpVou, new SelectList(Model.EmployeeSuperList1, "Value", "Text"), "Select", new { @class = "form-control select2 MacS1SuperEmpVou", @tabindex = "11", style = "font-family: Verdana;font-size:small; height:30px; width:300px;", @id = "txtMacS1SuperEmpVou" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:medium;color:blue">
+                                                            Shift 2 <span class="required"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Operator 1 <span class="required"></span>
+                                                        </label>
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                            @Html.DropDownListFor(x => x.MacS2Opr1EmpVou, new SelectList(Model.EmployeeListS2Opr1, "Value", "Text"), "Select", new { @class = "form-control select2 MacS2Opr1EmpVou", @tabindex = "12", style = "font-family: Verdana;font-size:small; height:30px; width:300px;", @id = "txtMacS2Opr1EmpVou" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Operator 2 <span class="required"></span>
+                                                        </label>
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                            @Html.DropDownListFor(x => x.MacS2Opr2EmpVou, new SelectList(Model.EmployeeListS2Opr2, "Value", "Text"), "Select", new { @class = "form-control select2 MacS2Opr2EmpVou", @tabindex = "13", style = "font-family: Verdana;font-size:small; height:30px; width:300px;", @id = "txtMacS2Opr2EmpVou" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Supervisor <span class="required"></span>
+                                                        </label>
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                            @Html.DropDownListFor(x => x.MacS2SuperEmpVou, new SelectList(Model.EmployeeSuperList2, "Value", "Text"), "Select", new { @class = "form-control select2 MacS2SuperEmpVou", @tabindex = "14", style = "font-family: Verdana;font-size:small; height:30px; width:300px;", @id = "txtMacS2SuperEmpVou" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-12 text-center">
+                                                    @if (userRight.IsEdit && Model != null && Model.MacVou > 0)
+                                                    {
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick="return checkSizeVal()">
+                                                            Save (F10)
+                                                        </button>
+                                                        <a href="/MachineMaster/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                            Cancel (Esc)
+                                                        </a>
+                                                    }
+                                                    else if (userRight.IsAdd && Model.MacVou == 0)
+                                                    {
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick="return checkSizeVal()">
+                                                            Save (F10)
+                                                        </button>
+                                                        <a href="/MachineMaster/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                            Cancel (Esc)
+                                                        </a>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        $(document).ready(function () {
+            var macTyp = '@Html.Raw(Model.MachineType)';
+            if (macTyp != null && macTyp != '') {
+                GoToAddTab()
+            }
+            else {
+                GoToListTab()
+            }
+
+        });
+
+    function GoToAddTab() {
+        $('#custom-tabs-three-list-tab').removeClass('active');
+        $('#custom-tabs-three-add-tab').addClass('active');
+
+        $('#custom-tabs-three-list').removeClass('active');
+        $('#custom-tabs-three-add').addClass('active');
+        $('#custom-tabs-three-add').addClass('show');
+        setTimeout(function () {
+            $("#txtMacType").focus();
+        },100)
+
+    }
+    function GoToListTab() {
+        $('#custom-tabs-three-list-tab').addClass('active');
+        $('#custom-tabs-three-add-tab').removeClass('active');
+
+        $('#custom-tabs-three-list').addClass('active');
+        $('#custom-tabs-three-list').addClass('show');
+        $('#custom-tabs-three-add').removeClass('active');
+        $('#custom-tabs-three-add').removeClass('show');
+        $('#txtReportSearchDataTable').focus();
+    }
+</script>
+<script>
+    var isRecentCalledEsc = false;
+    (function (code) {
+        code(window.jQuery, document, window);
+    }(function ($, document, window) {
+        $(function () {
+            $(window)
+                .initKeyboard({ debug: 1 })
+                .on('F2', function () {
+                    GoToAddTab()
+                }).on('F10', function () {
+                    $("#btnSave").click();
+                })
+                .on('Alt+L', function () {
+                    GoToListTab();
+                })
+                .on('Alt+C', function () {
+                    if (confirm("Do you want to exit without save?")) {
+                        location.href = '/MachineMaster/Index'
+                    }
+                    else {
+                        $('#txtMacType').focus();
+                    }
+
+                }).on('Escape', function () {
+                    if (!isRecentCalledEsc) {
+                        isRecentCalledEsc = true;
+                        if (confirm("Do you want to exit without save?")) {
+                            location.href = '/MachineMaster/Index'
+                        }
+                        else {
+                            $('#txtMacType').focus();
+                        }
+                        setTimeout(function () {
+                            isRecentCalledEsc = false;
+                        }, 500)
+                    }
+
+                })
+        });
+    }));
+</script>
+
+<script>
+
+    var isRecentCalled = false;
+
+
+    $(function () {
+
+        loadData();
+        var pageIndex = '';
+        var pageSize = '';
+        var totalRecord = '';
+        var isDelete = '@Html.Raw(userRight.IsDelete)';
+        var isEdit = '@Html.Raw(userRight.IsEdit)';
+    })
+
+    var timer = null;
+    $('#txtReportSearchDataTable').keyup(function (e) {
+        if (e.keyCode >= 112 && e.keyCode <= 123) {
+            e.preventDefault();
+            return false;
+        }
+        else {
+            clearTimeout(timer);
+
+            timer = setTimeout(loadData, 1000)
+        }
+
+    });
+
+    function loadData(pageIndex, columnName, sortBy) {
+            isRecentCalled = true;
+            if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
+                pageIndex = 1;
+            }
+            var layoutId = $('.drpReportLayout').val();
+
+            if (!layoutId) {
+                $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
+                //SetSelect2()
+
+            }
+            if (!columnName) {
+                columnName = '';
+            }
+            if (!sortBy) {
+                sortBy = '';
+            }
+            $('.dataTable').html();
+            $.ajax({
+                url: '/MachineMaster/GetReportView',
+                type: 'GET',
+                data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+                dataType: 'HTML',
+                traditional: true, // add this
+                success: function (data) {
+                    $('.dataTable').html(data);
+                    setTimeout(function () {
+                        isRecentCalled = false;
+                    }, 2000)
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+    }
+
+    $('#btnExportToExcel').click(function () {
+        window.location.href = "/MachineMaster/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+    })
+    $('#btnExportToPDF').click(function () {
+        window.location.href = "/MachineMaster/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+    })
+</script>
+
+<script>
+    $(function () {
+        var mactypname = $('#txtMacType').children('option:selected').text()
+        if (mactypname)
+            $('input[name="MachineType"]').val(mactypname);
+    })
+
+    $('#txtMacType').change(function () {
+        var mactypname = $('#txtMacType').children('option:selected').text()
+        if (mactypname)
+            $('input[name="MachineType"]').val(mactypname);
+    })
+</script>
+
+<script>
+    $(function () {
+        var godownname = $('#txtMacGdnVou').children('option:selected').text()
+        if (godownname)
+            $('input[name="GdnName"]').val(godownname);
+    })
+
+    $('#txtMacGdnVou').change(function () {
+        var godownname = $('#txtMacGdnVou').children('option:selected').text()
+        if (godownname)
+            $('input[name="GdnName"]').val(godownname);
+    })
+</script>
+
+<script>
+    $(function () {
+        var locationname = $('#txtMacLocVou').children('option:selected').text()
+        if (locationname)
+            $('input[name="LocName"]').val(locationname);
+    })
+
+    $('#txtMacLocVou').change(function () {
+        var locationname = $('#txtMacLocVou').children('option:selected').text()
+        if (locationname)
+            $('input[name="LocName"]').val(locationname);
+    })
+</script>
+
+@*<script>
+        function MachineTypeFillList() {
+            $.ajax({
+                url: '/MachineMaster/GetMachineTypeList',
+                type: 'POST',
+                data: {},
+                dataType: 'JSON',
+                traditional: true, // add this
+                success: function (data) {
+                    if (data.result) {
+                        if (data.data) {
+                            var oldData = $('#txtMacType').val();
+                            $('#txtMacType').children('option').remove();
+                            var html = `<option value="">---Select---</option>`
+                            for (var x = 0; x < data.data.length; x++) {
+                                if (oldData && oldData == data.data[x].value) {
+                                    html += `<option selected="selected" value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                                } else {
+                                    html += `<option value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                                }
+
+                            }
+                            $('#txtMacType').append(html);
+                            $('#txtMacType').select2();
+
+                        }
+                    }
+                    else {
+                        showErrorMessage(data.message);
+                    }
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+        }
+
+
+        function GodownFillList() {
+            $.ajax({
+                url: '/MachineMaster/GetGodownList',
+                type: 'POST',
+                data: {},
+                dataType: 'JSON',
+                traditional: true, // add this
+                success: function (data) {
+                    if (data.result) {
+                        if (data.data) {
+                            var oldData = $('#txtMacGdnVou').val();
+                            $('#txtMacGdnVou').children('option').remove();
+                            var html = `<option value="">---Select---</option>`
+                            for (var x = 0; x < data.data.length; x++) {
+                                if (oldData && oldData == data.data[x].value) {
+                                    html += `<option selected="selected" value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                                } else {
+                                    html += `<option value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                                }
+
+                            }
+                            $('#txtMacGdnVou').append(html);
+                            $('#txtMacGdnVou').select2();
+
+                        }
+                    }
+                    else {
+                        showErrorMessage(data.message);
+                    }
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+        }
+
+
+        function LocationFillList() {
+            $.ajax({
+                url: '/MachineMaster/GetLocationList',
+                type: 'POST',
+                data: {},
+                dataType: 'JSON',
+                traditional: true, // add this
+                success: function (data) {
+                    if (data.result) {
+                        if (data.data) {
+                            var oldData = $('#txtMacLocVou').val();
+                            $('#txtMacLocVou').children('option').remove();
+                            var html = `<option value="">---Select---</option>`
+                            for (var x = 0; x < data.data.length; x++) {
+                                if (oldData && oldData == data.data[x].value) {
+                                    html += `<option selected="selected" value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                                } else {
+                                    html += `<option value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                                }
+
+                            }
+                            $('#txtMacLocVou').append(html);
+                            $('#txtMacLocVou').select2();
+
+                        }
+                    }
+                    else {
+                        showErrorMessage(data.message);
+                    }
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+        }
+
+    </script>*@
+<script>
+    $(document).ready(function () {
+        $(".MacGdnVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/MachineMaster/GetGodown-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+
+        $('.MacGdnVou').select2({
+            placeholder: "---Select---",
+        });
+
+        $(".MacS1Opr1EmpVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/MachineMaster/GetOperator-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+
+        $('.MacS1Opr1EmpVou').select2({
+            placeholder: "---Select---",
+        });
+
+        $(".MacS1Opr2EmpVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/MachineMaster/GetOperator-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+
+        $('.MacS1Opr2EmpVou').select2({
+            placeholder: "---Select---",
+        });
+
+        $(".MacS1SuperEmpVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/MachineMaster/GetSuperVisor-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+
+        $('.MacS1SuperEmpVou').select2({
+            placeholder: "---Select---",
+        });
+
+        $(".MacS2Opr1EmpVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/MachineMaster/GetOperator-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+
+
+        $('.MacS2Opr1EmpVou').select2({
+            placeholder: "---Select---",
+        });
+
+        $(".MacS2Opr2EmpVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/MachineMaster/GetOperator-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+
+
+        $('.MacS2Opr2EmpVou').select2({
+            placeholder: "---Select---",
+        });
+
+        $(".MacS2SuperEmpVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/MachineMaster/GetSuperVisor-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+
+        $('.MacS2SuperEmpVou').select2({
+            placeholder: "---Select---",
+        });
+
+        $('.drpReportLayout').select2({
+            placeholder: "---Select---",
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".MacLocVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/MachineMaster/GetLocation-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+
+        $('.MacLocVou').select2({
+            placeholder: "---Select---",
+        });
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+        $(".MacTypeID").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/MachineMaster/GetMachineType-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+        if ('@Model.MacSizeRngTo' == '0') {
+            $('#txtSizeRangTo').val('');
+        }
+        if ('@Model.MacSizeRngFr' == '0') {
+            $('#txtSizeRangFr').val('');
+        }
+
+        
+
+        $('.MacTypeID').select2({
+            placeholder: "---Select---",
+        });
+        $('.numberonly').on('change drop paste', function (e) {
+
+            var charCode = (e.which) ? e.which : event.keyCode
+            if (String.fromCharCode(charCode).match(/[^0-9]/g))
+                return false;
+        });
+        $(".allow_decimal").bind("change keyup input", function () {
+            var position = this.selectionStart - 1;
+            //remove all but number and .
+            var fixed = this.value.replace(/[^0-9\.]/g, "");
+            if (fixed.charAt(0) === ".")
+                //can't start with .
+                fixed = fixed.slice(1);
+
+            var pos = fixed.indexOf(".") + 1;
+            if (pos == 0 && fixed.length > 10) {
+                return false;
+            }
+            if (pos >= 0)
+                //avoid more than one .
+                fixed = fixed.substr(0, pos) + fixed.slice(pos).replace(".", "");
+
+            if (this.value !== fixed) {
+                this.value = fixed;
+                this.selectionStart = position;
+                this.selectionEnd = position;
+            }
+        });
+    });
+
+    function checkSizeRange(inp) {
+        var txtSizeRangFr = $('#txtSizeRangFr').val();
+        var txtSizeRangTo = $('#txtSizeRangTo').val();
+        if (txtSizeRangFr != '' && txtSizeRangTo != '') {
+            if (txtSizeRangFr >= txtSizeRangTo) {
+                if (inp == 'Fr') {
+                    showErrorMessage("Size range is invalid");
+                    $('#txtSizeRangFr').val('');
+                }
+                else if (inp == 'To') {
+                    showErrorMessage("Size range is invalid");
+                    $('#txtSizeRangTo').val('');
+                }
+            }
+        }
+
+    }
+    function checkSizeVal() {
+        var txtSizeRangFr = $('#txtSizeRangFr').val();
+        var txtSizeRangTo = $('#txtSizeRangTo').val();
+        if ((txtSizeRangFr == '' && txtSizeRangTo != '') || (txtSizeRangFr != '' && txtSizeRangTo == '')) {
+            showErrorMessage("Please enter proper size range.");
+            return false;
+        }
+    }
+</script>

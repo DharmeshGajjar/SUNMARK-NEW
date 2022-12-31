@@ -1,0 +1,16 @@
+﻿@media print {
+    @page {
+        margin: 10px;
+    }
+
+    
+}
+@media print {
+    body {
+        -webkit-print-color-adjust: exact;
+    }
+}
+
+@page {
+    -webkit-print-color-adjust: exact;
+}

@@ -1,0 +1,2230 @@
+﻿@model SUNMark.Models.InwardModel
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
+    List<SUNMark.Models.InwardModel> inwardList = ViewBag.inwardList as List<SUNMark.Models.InwardModel>;
+    List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
+    List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
+    ViewData["Title"] = userRight.ModuleNm;
+    string headerAdd = "";
+    string headerList = "";
+    string gridAdd = "";
+    string gridList = "";
+    bool headerAddTrue = false;
+    bool headerListTrue = false;
+    
+
+    if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+    {
+        headerAdd = "active";
+        gridAdd = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+}
+
+<div class="card card-primary">
+    <div class="card-header" style="font-family:Verdana">
+        <h6> @ViewData["Title"] </h6>
+    </div>
+    <div class="card-body">
+        <div class="card card-primary card-tabs">
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                    @if (userRight != null && userRight.IsList)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerList" id="custom-tabs-three-list-tab" data-toggle="pill" href="#custom-tabs-three-list" role="tab" aria-controls="custom-tabs-three-list" aria-selected="@headerListTrue" style="font-family:Verdana;font-size:small" onclick="GoToListTab()">List (Alt+L)</a>
+                        </li>
+                    }
+                    @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerAdd" id="custom-tabs-three-add-tab" data-toggle="pill" href="#custom-tabs-three-add" role="tab" aria-controls="custom-tabs-three-add" aria-selected="@headerAddTrue" style="font-family:Verdana;font-size:small" onclick="GoToAddTab()">Add/Update (F2)</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="tab-content" id="custom-tabs-three-tabContent">
+                        @if (userRight != null && userRight.IsList)
+                        {
+                            <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
+                                <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
+                                    <div class="col-md-12 col-12 mb-2 mt-2">
+                                        <div class="row">
+                                            <div class="col-md-1 mb-2 float-left">
+                                                <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                                    @for (int i = 0; i < pageNoList.Count; i++)
+                                                    {
+                                                        string checkedd = "checked";
+                                                        <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                                        checkedd = string.Empty;
+                                                    }
+
+                                                </select>
+                                            </div>
+                                            <div class="col-md-5 col-12">
+                                                <div class="row">
+                                                    <div class="col-md-6 col">
+                                                        <select class="form-control select2 drpReportLayout" onchange="loadData()">
+                                                            <option value="" ; style="width:200px">--Select Layout--</option>
+                                                            @if (layoutList != null && layoutList.Count > 0)
+                                                            {
+                                                                foreach (var item in layoutList)
+                                                                {
+                                                                    <option value="@item.Value">@item.Text </option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                                        @if (isAdministrator == 1)
+                                                        {
+                                                            <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                                Edit
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                                        <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                                        <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                            <div class="col-md-3 col-12 float-right">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dataTable">
+
+                                    </div>
+                                    <div class="pager float-right"></div>
+                                </div>
+                            </div>
+                        }
+                        @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                        {
+                            <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
+                                @using (Html.BeginForm("Index", "Inward", FormMethod.Post, new { id = "frmInward" }))
+                                {
+                                    <input type="hidden" id="txtIsPrint" name="isPrint" value="0" />
+                                    <div class="container-fluid">
+                                        <div class="row">
+
+                                            <div class="d-none" id="dropdownGrade">
+                                                @if (Model != null && Model.Inward != null && Model.Inward.GradeList != null && Model.Inward.GradeList.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Inward.IntGrdVou, new SelectList(Model.Inward.GradeList, "Text", "Text"), "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
+
+                                            </div>
+                                            <div class="d-none" id="dropdownGradePipe">
+                                                @if (Model != null && Model.Inward != null && Model.Inward.GradeListPipe != null && Model.Inward.GradeListPipe.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Inward.IntGrdPipe, new SelectList(Model.Inward.GradeListPipe, "Text", "Text"), "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
+
+                                            </div>
+                                            <div class="d-none" id="dropdownspacification">
+                                                @if (Model != null && Model.Inward != null && Model.Inward.SpacificationList != null && Model.Inward.SpacificationList.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Inward.SpecifiName, new SelectList(Model.Inward.SpacificationList, "Text", "Text"), "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
+                                            </div>
+                                            <div class="d-none" id="dropdownfinishPipe">
+                                                @if (Model != null && Model.Inward != null && Model.Inward.FinishListPipe != null && Model.Inward.FinishListPipe.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Inward.IntFinshPipe, new SelectList(Model.Inward.FinishListPipe, "Text", "Text"), "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;", @name = "FinshPipe" })
+                                                }
+                                            </div>
+                                            <div class="d-none" id="dropdownPorcessPipe">
+                                                @if (Model != null && Model.Inward != null && Model.Inward.ProceListPipe != null && Model.Inward.ProceListPipe.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Inward.IntProcePipe, new SelectList(Model.Inward.ProceListPipe, "Text", "Text"), "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;", @name = "ProcePipe" })
+                                                }
+                                            </div>
+                                            <div class="d-none" id="dropdownproduct">
+                                                @if (Model != null && Model.Inward != null && Model.Inward.ProductList != null && Model.Inward.ProductList.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Inward.IntPrdVou, Model.Inward.ProductList, "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
+
+                                            </div>
+                                            <div class="d-none" id="dropdownGodownCoil">
+                                                @if (Model != null && Model.Inward != null && Model.Inward.GodownCoilList != null && Model.Inward.GodownCoilList.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Inward.IntGdnCoilVou, Model.Inward.GodownCoilList, "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
+
+                                            </div>
+                                            <div class="d-none" id="dropdownGodownPipe">
+                                                @if (Model != null && Model.Inward != null && Model.Inward.GodownPipeList != null && Model.Inward.GodownPipeList.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Inward.IntGdnPipeVou, Model.Inward.GodownPipeList, "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
+
+                                            </div>
+                                            <div class="d-none" id="dropdownGodownOther">
+                                                @if (Model != null && Model.Inward != null && Model.Inward.GodownOtherList != null && Model.Inward.GodownOtherList.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Inward.IntGdnOtherVou, Model.Inward.GodownOtherList, "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
+
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3  font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Company <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                                @Html.DropDownListFor(x => x.InwCmpVou, Model.CompanyList, "Select", new { @class = "form-control select2 InwCmpVou", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width:300px", @id = "txtInwCmpVou", @onchange = "GetOrderDetail()" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                V.No <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                @Html.TextBoxFor(x => x.InwVNo, new { @class = "form-control form-control-lg", @placeholder = "Bilty No", @tabindex = "2", @style = "font-family: Verdana;font-size:small; height:30px; width: 100px", @required = "required", @name = "InwVNo", @readonly = "readonly" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Date <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                @Html.TextBoxFor(x => x.InwDt, new { @class = "form-control form-control-lg", @placeholder = "Date", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px; width: 200px", @required = "required", @type = "date" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @*<div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                    Order No <span class="required"></span>
+                                                                </label>
+                                                                <input type="hidden" name="PtyName" />
+                                                                <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                    @Html.DropDownListFor(x => x.InwPOMVou, Model.PurchaseOrderList, "Select", new { @class = "form-control select2 InwPOMVou", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px; width:100px", @id = "txtInwPOMVou", onchange = "GetOrderList()" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                    Bill No. <span class="required"></span>
+                                                                </label>
+                                                                <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                    @Html.TextBoxFor(x => x.InwBillNo, new { @class = "form-control form-control-lg", @placeholder = "Bill No", @tabindex = "5", @style = "font-family: Verdana;font-size:small; height:30px; width: 170px", @name = "InwBillNo" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>*@
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Party <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                                @Html.DropDownListFor(x => x.InwAccVou, new SelectList(Model.AccountList, "Value", "Text"), "Select", new { @class = "form-control select2 InwAccVou", @tabindex = "6", style = "font-family: Verdana;font-size:small; height:30px; width:300px ", @id = "InwAccVou", @onchange = "GetAccountCity(this)", @required = "required" })
+                                                                <a class="btn btn-outline-info ml-2" href="/AccountMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                City <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                <input type="text" id="txtCtyName" name="CtyName" class="form-control form-control-lg" placeholder="City" tabindex="7" value="@Model.CtyName" style="font-family: Verdana;font-size:small; height:30px;width:170px" disabled="disabled" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Vehicle No <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                                <input type="text" id="txtInwVehNo" name="InwVehNo" class="form-control form-control-lg" placeholder="Vehicle No" tabindex="8" value="@Model.InwVehNo" style="font-family: Verdana;font-size:small; height:30px;width:170px" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Freight Rate <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                <input type="text" id="txtInwFrightRt" name="InwFrightRt" class="form-control form-control-lg" placeholder="Freight Rate" tabindex="9" value="@Model.InwFrightRt" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" onchange="numericFilter(this) " />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Transport <span class="required"></span>
+                                                            </label>
+                                                            <input type="hidden" name="InwTransNm" id="txtInwTransNm" value="@Model.InwTransNm" />
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                @Html.DropDownListFor(x => x.InwTrnVou, new SelectList(Model.TransportList, "Value", "Text"), "Select", new { @class = "form-control select2 InwTrnVou", @tabindex = "10", style = "font-family: Verdana;font-size:small; height:30px; width:300px" })
+                                                                <a class="btn btn-outline-info ml-2" href="/AccountMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                LR No. <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                                <input type="text" id="txtInwLRNo" name="InwLRNo" class="form-control form-control-lg" placeholder="LR No" tabindex="11" value="@Model.InwLRNo" style="font-family: Verdana;font-size:small; height:30px;width:170px" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                WB Slip No <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                <input type="text" id="txtInwWPNo" name="InwWPNo" class="form-control form-control-lg" placeholder="WP Slip No" tabindex="12" value="@Model.InwWPNo" style="font-family: Verdana;font-size:small; height:30px;width:170px" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                WB Weight <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                <input type="text" id="txtInwWPWeight" name="InwWPWeight" class="form-control form-control-lg" placeholder="WP Weight" tabindex="13" value="@Model.InwWPWeight" style="font-family: Verdana;font-size:small; height:30px;width:170px;text-align:right" onchange="numericFilter(this) " />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Product Type <span class="required">*</span>
+                                                            </label>
+                                                            <input type="hidden" name="InwPrdTyp" />
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                @Html.DropDownListFor(x => x.InwPtyVou, Model.ProductTypeList, "Select", new { @class = "form-control select2 InwPtyVou", @tabindex = "14", @style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @id = "txtInwPtyVou", onchange = "return HideShowGrid(true);" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Product <span class="required">*</span>
+                                                            </label>
+                                                            <input type="hidden" name="InwPrdTyp" />
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                @Html.DropDownListFor(x => x.InwPrdVou, Model.MainProductList, "Select", new { @class = "form-control select2 InwPrdVou", @tabindex = "15", @style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @id = "txtInwPrdVou" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Coil Type <span class="required">*</span>
+                                                            </label>
+                                                            <input type="hidden" name="CoilType" />
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                                @Html.DropDownListFor(x => x.InwCoilTypeVou, Model.CoilTypeList, "Select", new { @class = "form-control select2 InwCoilTypeVou", @tabindex = "16", @style = "font-family: Verdana;font-size:small; height:30px; width:300px", @id = "txtInwCoilTypeVou" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Remarks <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                                <input type="text" id="txtInwRem" name="InwRem" class="form-control form-control-lg" placeholder="Remarks" tabindex="17" value="@Model.InwRem" style="font-family: Verdana;font-size:small; height:30px;width:300px" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="table-responsive mt-5" style="overflow-x: scroll; white-space: nowrap;font-family:Verdana;font-size:small;font-display:inherit">
+                                                <table class="table table-bordered overflow-auto dynamicDataTable table-head-fixed"
+                                                       style="padding:0 0 0 0;margin:0 0 0 0" id="tblCoil">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:2% !important">
+                                                                Sr
+                                                            </th>
+                                                            <th style="width:10% !important">
+                                                                Bill No
+                                                            </th>
+                                                            <th style="width:10% !important">
+                                                                Godown <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:20% !important">
+                                                                Sup.Coil No <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:15% !important">
+                                                                Heat No <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:10% !important">
+                                                                Grade <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:12%;text-align:right !important">
+                                                                Width <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:10%;text-align:right !important">
+                                                                Thick <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:12%;text-align:right !important">
+                                                                Weight <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:20% !important">
+                                                                Remarks
+                                                            </th>
+                                                            <th style="width:12% !important">
+                                                                Coil No <span class="text-danger"></span>
+                                                            </th>
+                                                            <th style="width:5% !important">
+                                                                Actions
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    @if (Model != null && Model.Inward != null && Model.Inward.IntThickCoil != null && Model.Inward.IntThickCoil.Length > 0)
+                                                    {
+                                                        <tbody>
+                                                            @for (int y = 0; y < Model.Inward.IntThickCoil.Length; y++)
+                                                            {
+                                                                <tr class="AddRows">
+                                                                    <td>
+                                                                        @(y + 1)
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.BillNoCoil[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtBillNoCoil" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.GodownCoilList != null && Model.Inward.GodownCoilList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.IntGdnCoil[y], Model.Inward.GodownCoilList, "Select", new { @class = "form-control select2 IntGdnCoil", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.SupCoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtSupCoilNo", @onblur = "SuplierCoilCheck(this,true)" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.HeatNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtHeatNo" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.GradeList != null && Model.Inward.GradeList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.IntGrdCoil[y], new SelectList(Model.Inward.GradeList, "Text", "Text"), "Select", new { @class = "form-control select2 IntGrdCoil", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        @*@Html.TextBoxFor(x => x.Inward.IntWidth[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtWidth", @onKeyUp = "numericFilter(this);" })*@
+                                                                        @Html.TextBoxFor(x => x.Inward.IntWidth[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtWidth", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.IntThickCoil[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtThickCoil", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.IntQtyCoil[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtWeigth", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.IntRemksCoil[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:200px !important", @name = "txtRemarks" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.CoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo", @readonly = "readonly" })
+                                                                    </td>
+                                                                    <td>
+                                                                        <i class="fa fa-plus text-blue" onclick="AddRowsCoil(this)" style="font-size:18px"></i>
+                                                                        <i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsCoil(this)" style="font-size:18px"></i>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    }
+                                                    else
+                                                    {
+                                                        <tbody>
+                                                            <tr class="AddRows">
+                                                                <td>
+                                                                    1
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.BillNoCoil, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtBillNoCoil" })
+                                                                </td>
+                                                                <td>
+                                                                    @if (Model != null && Model.Inward != null && Model.Inward.GodownCoilList != null && Model.Inward.GodownCoilList.Count > 0)
+                                                                    {
+                                                                        @Html.DropDownListFor(x => x.Inward.IntGdnCoil, Model.Inward.GodownCoilList, "Select", new { @class = "form-control select2 IntGdnCoil", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.SupCoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtSupCoilNo", @onblur = "SuplierCoilCheck(this)" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.HeatNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtHeatNo" })
+                                                                </td>
+                                                                <td>
+                                                                    @if (Model != null && Model.Inward != null && Model.Inward.GradeList != null && Model.Inward.GradeList.Count > 0)
+                                                                    {
+                                                                        @Html.DropDownListFor(x => x.Inward.IntGrdCoil, new SelectList(Model.Inward.GradeList, "Text", "Text"), "Select", new { @class = "form-control select2 IntGrdCoil", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.IntWidth, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtWidth", @onKeyUp = "numericFilter(this);" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.IntThickCoil, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtThickCoil", @onKeyUp = "numericFilter(this);" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.IntQtyCoil, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtWeigth", @onKeyUp = "numericFilter(this);" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.IntRemksCoil, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:200px !important", @name = "txtRemarks" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.CoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo", @readonly = "readonly" })
+                                                                </td>
+                                                                <td>
+                                                                    <i class="fa fa-plus text-blue" onclick="AddRowsCoil(this)" style="font-size:18px"></i>
+                                                                    <i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsCoil(this)" style="font-size:18px"></i>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    }
+                                                </table>
+                                                <table class="table table-bordered overflow-auto dynamicDataTable table-head-fixed" id="tblPipe">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:2% !important">
+                                                                Sr
+                                                            </th>
+                                                            <th style="width:10% !important">
+                                                                Bill No
+                                                            </th>
+                                                            <th style="width:15% !important">
+                                                                Godown <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:15% !important">
+                                                                Specification <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:15% !important">
+                                                                Grade <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:13%;text-align:right !important">
+                                                                OD <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:13%;text-align:right !important">
+                                                                Thick <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:13%;text-align:right !important">
+                                                                Length(MTR) <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:10%;text-align:right !important">
+                                                                PCS <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:10%;text-align:right !important">
+                                                                Weight <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:10% !important">
+                                                                Finish <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:10% !important">
+                                                                Next Process <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:25% !important">
+                                                                Remarks
+                                                            </th>
+                                                            <th>
+                                                                Actions
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    @if (Model != null && Model.Inward != null && Model.Inward.IntThickPipe != null && Model.Inward.IntThickPipe.Length > 0)
+                                                    {
+                                                        <tbody>
+                                                            @for (int y = 0; y < Model.Inward.IntThickPipe.Length; y++)
+                                                            {
+                                                                <tr class="AddRows">
+                                                                    <td>
+                                                                        @(y + 1)
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.BillNoPipe[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtBillNoPipe", @id = "BillNoPipe" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.GodownPipeList != null && Model.Inward.GodownPipeList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.IntGdnPipe[y], Model.Inward.GodownPipeList, "Select", new { @class = "form-control select2 IntGdnPipe", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.SpacificationList != null && Model.Inward.SpacificationList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.SpecifiName[y], new SelectList(Model.Inward.SpacificationList, "Text", "Text"), "Select", new { @class = "form-control select2 SpecifiName", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.GradeListPipe != null && Model.Inward.GradeListPipe.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.IntGrdPipe[y], new SelectList(Model.Inward.GradeListPipe, "Text", "Text"), "Select", new { @class = "form-control select2 IntGrdPipe", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.IntOD[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtOD", @id = "IntOD", @onchange = "GetNBSCGValue(this)", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.IntThickPipe[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtThickPipe", @id = "IntThickPipe", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.IntLenghtPipe[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtThickPipe", @id = "IntLengthPipe", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.IntPcs[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtPcs", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.IntQtyPipe[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtThickPipe", @id = "IntWeightPipe", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.FinishListPipe != null && Model.Inward.FinishListPipe.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.IntFinshPipe[y], new SelectList(Model.Inward.FinishListPipe, "Text", "Text"), "Select", new { @class = "form-control select2 IntFinshPipe", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.ProceListPipe != null && Model.Inward.ProceListPipe.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.IntProcePipe[y], new SelectList(Model.Inward.ProceListPipe, "Text", "Text"), "Select", new { @class = "form-control select2 IntProcePipe", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.IntRemksPipe[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:200px !important", @name = "txtRemarks" })
+                                                                    </td>
+                                                                    <td>
+                                                                        <i class="fa fa-plus text-blue" onclick="AddRowsPipe(this)" style="font-size:18px"></i>
+                                                                        <i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsPipe(this)" style="font-size:18px"></i>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+
+                                                        </tbody>
+                                                    }
+                                                    else
+                                                    {
+                                                        <tbody>
+                                                            <tr class="AddRows">
+                                                                <td>
+                                                                    1
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.BillNoPipeStr, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtBillNoPipe", @id = "BillNoPipe" })
+                                                                </td>
+                                                                <td>
+                                                                    @if (Model != null && Model.Inward != null && Model.Inward.GodownPipeList != null && Model.Inward.GodownPipeList.Count > 0)
+                                                                    {
+                                                                        @Html.DropDownListFor(x => x.Inward.IntGdnPipe, Model.Inward.GodownPipeList, "Select", new { @class = "form-control select2 IntGdnPipe", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    @if (Model != null && Model.Inward != null && Model.Inward.SpacificationList != null && Model.Inward.SpacificationList.Count > 0)
+                                                                    {
+                                                                        @Html.DropDownListFor(x => x.Inward.SpecifiName, new SelectList(Model.Inward.SpacificationList, "Text", "Text"), "Select", new { @class = "form-control select2 SpecifiName", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    @if (Model != null && Model.Inward != null && Model.Inward.GradeListPipe != null && Model.Inward.GradeListPipe.Count > 0)
+                                                                    {
+                                                                        @Html.DropDownListFor(x => x.Inward.IntGrdPipe, new SelectList(Model.Inward.GradeListPipe, "Text", "Text"), "Select", new { @class = "form-control select2 IntGrdPipe", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.IntOD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtOD", @id = "OrdOD", @onchange = "GetNBSCGValue(this)", @onKeyUp = "numericFilter(this);" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.IntThickPipe, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtThickPipe", @id = "OrdThickPipe", @onKeyUp = "numericFilter(this);" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.IntLenghtPipe, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtLenghtPipe", @id = "IntLengthPipe", @onKeyUp = "numericFilter(this);" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.IntPcs, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtPcs", @onKeyUp = "numericFilter(this);" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.IntQtyPipe, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:100px !important", @onfocus = "this.select()", @name = "txtQtyPipe", @id = "IntWeightPipe", @onKeyUp = "numericFilter(this);" })
+                                                                </td>
+                                                                <td>
+                                                                    @if (Model != null && Model.Inward != null && Model.Inward.FinishListPipe != null && Model.Inward.FinishListPipe.Count > 0)
+                                                                    {
+                                                                        @*@Html.DropDownListFor(x => x.Inward.IntFinshPipe, Model.Inward.FinishListPipe, "Select", new { @class = "form-control select2 IntFinshPipe", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })*@
+
+                                                                        @Html.DropDownListFor(x => x.Inward.IntFinshPipe, new SelectList(Model.Inward.FinishListPipe, "Text", "Text"), "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    @if (Model != null && Model.Inward != null && Model.Inward.ProceListPipe != null && Model.Inward.ProceListPipe.Count > 0)
+                                                                    {
+                                                                        @Html.DropDownListFor(x => x.Inward.IntProcePipe, Model.Inward.ProceListPipe, "Select", new { @class = "form-control select2 IntProcePipe", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.IntRemksPipe, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:200px !important", @name = "txtRemarks" })
+                                                                </td>
+                                                                <td>
+                                                                    <i class="fa fa-plus text-blue" onclick="AddRowsPipe(this)" style="font-size:18px"></i>
+                                                                    <i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsPipe(this)" style="font-size:18px"></i>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    }
+                                                </table>
+
+                                                <table class="table table-bordered overflow-auto dynamicDataTable table-head-fixed" id="tblOther">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:2% !important">
+                                                                Sr
+                                                            </th>
+                                                            <th style="width:10% !important">
+                                                                Bill No
+                                                            </th>
+                                                            <th style="width:25% !important">
+                                                                Product <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:15% !important">
+                                                                Godown <span class="text-danger">*</span>
+                                                            </th>
+                                                            @*<th style="width:15% !important">
+                                                                    Location
+                                                                </th>*@
+                                                            <th style="width:15% !important">
+                                                                Quantity <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:25% !important">
+                                                                Remarks
+                                                            </th>
+                                                            <th>
+                                                                Actions
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    @if (Model != null && Model.Inward != null && Model.Inward.IntPrdVou != null && Model.Inward.IntPrdVou.Length > 0)
+                                                    {
+                                                        <tbody>
+                                                            @for (int y = 0; y < Model.Inward.IntPrdVou.Length; y++)
+                                                            {
+                                                                <tr class="AddRows">
+                                                                    <td>
+                                                                        @(y + 1);
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.BillNoOther[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtBillNoOther" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.ProductList != null && Model.Inward.ProductList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.IntPrdVou[y], Model.Inward.ProductList, "Select", new { @class = "form-control select2 IntPrdVou", @style = "font-family: Verdana;font-size:small; height:30px;width:350px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.GodownOtherList != null && Model.Inward.GodownOtherList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.IntGdnOther[y], Model.Inward.GodownOtherList, "Select", new { @class = "form-control select2 IntGdnOther", @style = "font-family: Verdana;font-size:small; height:30px;width:200px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    @*<td>
+                                                                            @if (Model != null && Model.Inward != null && Model.Inward.LocationOtherList != null && Model.Inward.LocationOtherList.Count > 0)
+                                                                            {
+                                                                                @Html.DropDownListFor(x => x.Inward.IntLocOther[y], Model.Inward.LocationOtherList, "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                                            }
+                                                                        </td>*@
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.IntQtyOther[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtWeigth", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.IntRemksOther[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:300px !important", @name = "txtRemarks" })
+                                                                    </td>
+                                                                    <td>
+                                                                        <i class="fa fa-plus text-blue" onclick="AddRowsOther(this)" style="font-size:18px"></i>
+                                                                        <i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsOther(this)" style="font-size:18px"></i>
+                                                                    </td>
+                                                                </tr>
+
+                                                            }
+                                                        </tbody>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <tbody>
+                                                            <tr class="AddRows">
+                                                                <td>
+                                                                    1
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.BillNoOtherStr, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtBillNoOther" })
+                                                                </td>
+                                                                <td>
+                                                                    @if (Model != null && Model.Inward != null && Model.Inward.ProductList != null && Model.Inward.ProductList.Count > 0)
+                                                                    {
+                                                                        @Html.DropDownListFor(x => x.Inward.IntPrdVou, Model.Inward.ProductList, "Select", new { @class = "form-control select2 IntPrdVou", @style = "font-family: Verdana;font-size:small; height:30px;width:350px !important" })
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    @if (Model != null && Model.Inward != null && Model.Inward.GodownOtherList != null && Model.Inward.GodownOtherList.Count > 0)
+                                                                    {
+                                                                        @Html.DropDownListFor(x => x.Inward.IntGdnOther, Model.Inward.GodownOtherList, "Select", new { @class = "form-control select2 IntGdnOther", @style = "font-family: Verdana;font-size:small; height:30px;width:200px !important" })
+                                                                    }
+                                                                </td>
+                                                                @*<td>
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.LocationOtherList != null && Model.Inward.LocationOtherList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.IntLocOther, Model.Inward.LocationOtherList, "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                                        }
+                                                                    </td>*@
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.IntQtyOther, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtWeigth", @onKeyUp = "numericFilter(this);" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.IntRemksOther, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:300px !important", @name = "txtRemarks" })
+                                                                </td>
+                                                                <td>
+                                                                    <i class="fa fa-plus text-blue" onclick="AddRowsOther(this)" style="font-size:18px"></i>
+                                                                    <i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsOther(this)" style="font-size:18px"></i>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    }
+                                                </table>
+                                            </div>
+
+
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-12 text-center">
+                                                        @if (userRight.IsEdit && Model != null && Model.InwVou > 0)
+                                                        {
+                                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave">
+                                                                Save (F10)
+                                                            </button>
+                                                            <a href="/Inward/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                                Cancel (Esc)
+                                                            </a>
+                                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
+                                                                Print (F9)
+                                                            </button>
+                                                        }
+                                                        else if (userRight.IsAdd && Model.InwVou == 0)
+                                                        {
+                                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave">
+                                                                Save (F10)
+                                                            </button>
+                                                            <a href="/Inward/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                                Cancel (Esc)
+                                                            </a>
+                                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
+                                                                Print (F9)
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        $(document).ready(function () {
+            var inwvou = '@Html.Raw(Model.InwVou)';
+            if (inwvou != null && inwvou != '' && inwvou != 0) {
+                GoToAddTab()
+            }
+            else {
+                GoToListTab()
+            }
+
+            var focusType = '@Html.Raw(ViewBag.FocusType)';
+            if (focusType != null && focusType != '' && focusType == 1) {
+                GoToAddTab();
+            }
+
+            CalculateCoil()
+            CalculatePipe();
+            CalculateOther();
+
+        });
+
+    function GoToAddTab() {
+        $('#custom-tabs-three-list-tab').removeClass('active');
+        $('#custom-tabs-three-add-tab').addClass('active');
+
+        $('#custom-tabs-three-list').removeClass('active');
+        $('#custom-tabs-three-add').addClass('active');
+        $('#custom-tabs-three-add').addClass('show');
+        document.getElementById('txtInwCmpVou').focus();
+        var id = '@Html.Raw(Model.InwVou)';
+        if(!id || id == 0)
+            GetVoucherNumber();
+        if ($('#txtInwCmpVou').children('option').length == 2) {
+            $('#txtInwCmpVou').val($('#txtInwCmpVou').children('option').eq(1).attr('value'));
+            SetSelect2()
+            //$('#txtBilDepVou').attr('disabled', true);
+            $('#txtInwCmpVou').focus();
+        }
+
+        HideShowGrid(false);
+    }
+
+    function GoToListTab() {
+        $('#custom-tabs-three-list-tab').addClass('active');
+        $('#custom-tabs-three-add-tab').removeClass('active');
+
+        $('#custom-tabs-three-list').addClass('active');
+        $('#custom-tabs-three-list').addClass('show');
+        $('#custom-tabs-three-add').removeClass('active');
+        $('#custom-tabs-three-add').removeClass('show');
+        $('#txtReportSearchDataTable').focus();
+    }
+</script>
+<script>
+    var isRecentCalledEsc = false;
+    var isRecentCalledAddRows = false;
+    var isRecentCalledSave = false;
+    (function (code) {
+        code(window.jQuery, document, window);
+    }(function ($, document, window) {
+        $(function () {
+            $(window)
+                .initKeyboard({ debug: 1 })
+                .on('F2', function () {
+                    GoToAddTab()
+                    GetVoucherNumber();
+                }).on('F9', function () {
+                    $("#btnPrint").click();
+                }).on('F10', function () {
+                    $("#btnSave").click();
+                })
+                .on('Alt+L', function () {
+                    GoToListTab();
+                })
+                .on('Pagedown', function () {
+                    if (!isRecentCalledAddRows) {
+                        isRecentCalledAddRows = true;
+                        AddRows();
+                        setTimeout(function () {
+                            isRecentCalledAddRows = false;
+                        }, 500)
+                    }
+                })
+                .on('Alt+I', function () {
+                    CheckRecordAddRows();
+                })
+                .on('Alt+C', function () {
+                    if (confirm("Do you want to exit without save?")) {
+                        isAdd == 2;
+                        location.href = '/Inward/Index'
+                    }
+                    else {
+                        $('#txtInwCmpVou').focus();
+                    }
+
+                }).on('Escape', function () {
+                    if (!isRecentCalledEsc) {
+                        isRecentCalledEsc = true;
+                        if (confirm("Do you want to exit without save?")) {
+                            localStorage.setItem("Inward", "2");
+                            location.href = '/Inward/Index'
+
+                        }
+                        else {
+                            $('#txtInwCmpVou').focus();
+                        }
+                        setTimeout(function () {
+                            isRecentCalledEsc = false;
+                        }, 500)
+                    }
+
+                })
+        });
+    }));
+</script>
+
+<script>
+
+    var isRecentCalled = false;
+
+
+    $(function () {
+
+        loadData();
+        SetNameCoil(true)
+        SetNamePipe()
+        SetNameOther()
+        var pageIndex = '';
+        var pageSize = '';
+        var totalRecord = '';
+        var isDelete = '@Html.Raw(userRight.IsDelete)';
+        var isEdit = '@Html.Raw(userRight.IsEdit)';
+    })
+
+    var timer = null;
+    $('#txtReportSearchDataTable').keyup(function (e) {
+        if (e.keyCode >= 112 && e.keyCode <= 123) {
+            e.preventDefault();
+            return false;
+        }
+        else {
+            clearTimeout(timer);
+
+            timer = setTimeout(loadData, 1000)
+        }
+
+    });
+
+    function GetVoucherNumber() {
+        var InwVou = "0";
+        if (InwVou == "0") {
+            $.ajax({
+                type: "POST",
+                url: '/Inward/GetLastVoucherNo',
+                data: "",
+                dataType: "JSON",
+                success: function (response) {
+                    $('input[name="InwVNo"]').val(response.inwVNo);
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+    }
+
+    //function GetNBSCGValue(obj) {
+    //    var odpipe = $(obj).val();
+    //    var thickpipe = $(obj).parent('td').prev('td').children('input').val();
+    //    var input = $(obj);
+    //    if (thickpipe != null && thickpipe != "" && odpipe != null && odpipe != "") {
+    //        $.ajax({
+    //            type: "POST",
+    //            url: '/Inward/GetNBSChValue',
+    //            data: { "thickpipe": thickpipe, "odpipe": odpipe },
+    //            dataType: "JSON",
+    //            success: function (response) {
+    //                if (response) {
+    //                    if (response.result) {
+    //                        $(obj).closest('tr').children("td").eq(7).children("input").val(response.ordNb)
+    //                        $(obj).closest('tr').children("td").eq(8).children("input").val(response.ordSch)
+
+    //                    }
+    //                    else {
+    //                        $(obj).closest('tr').children("td").eq(7).children("input").val("")
+    //                        $(obj).closest('tr').children("td").eq(8).children("input").val("")
+
+    //                    }
+    //                }
+    //                else {
+    //                    $(obj).closest('tr').children("td").eq(7).children("input").val("")
+    //                    $(obj).closest('tr').children("td").eq(8).children("input").val("")
+
+    //                }
+    //            },
+    //            error: function (response) {
+
+    //            }
+    //        });
+    //    }
+    //}
+
+
+    function GetAccountCity(obj) {
+        var accountList = JSON.parse('@Html.Raw(Json.Serialize(Model.AccountList))');
+        var statevalue = $(obj).val();
+        if (statevalue) {
+            if (accountList != null && accountList.length > 0) {
+                for (var x = 0; x < accountList.length; x++) {
+                    if (accountList[x].value == statevalue) {
+                        var cityname = accountList[x].value1;
+                        $('#txtCtyName').val(accountList[x].value1)
+                    }
+                }
+            }
+        }
+    }
+
+
+    function loadData(pageIndex, columnName, sortBy) {
+            isRecentCalled = true;
+            if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
+                pageIndex = 1;
+            }
+            var layoutId = $('.drpReportLayout').val();
+
+            if (!layoutId) {
+                $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
+                SetSelect2()
+
+            }
+            if (!columnName) {
+                columnName = '';
+            }
+            if (!sortBy) {
+                sortBy = '';
+            }
+            $('.dataTable').html();
+            $.ajax({
+                url: '/Inward/GetReportView',
+                type: 'GET',
+                data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+                dataType: 'HTML',
+                traditional: true, // add this
+                success: function (data) {
+                    $('.dataTable').html(data);
+                    setTimeout(function () {
+                        isRecentCalled = false;
+                    }, 2000)
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+    }
+
+    $('#btnExportToExcel').click(function () {
+        window.location.href = "/Inward/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+    })
+    $('#btnExportToPDF').click(function () {
+        window.location.href = "/Inward/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+    })
+</script>
+@*<script>
+        $(function () {
+            var vchtype = $('#txtOrmVchVou').children('option:selected').text()
+            if (vchtype)
+                $('input[name="VchType"]').val(vchtype);
+        })
+
+        $('#txtOrmVchVou').change(function () {
+            var vchtype = $('#txtOrmVchVou').children('option:selected').text()
+            if (vchtype)
+                $('input[name="VchType"]').val(vchtype);
+        })
+    </script>*@
+
+<script>
+    $(function () {
+        var inwPrdTyp = $('#txtInwPtyVou').children('option:selected').text()
+        if (inwPrdTyp)
+            $('input[name="InwPrdTyp"]').val(inwPrdTyp);
+    })
+
+    $('#txtInwPtyVou').change(function () {
+        var inwPrdTyp = $('#txtInwPtyVou').children('option:selected').text()
+        if (inwPrdTyp)
+            $('input[name="InwPrdTyp"]').val(inwPrdTyp);
+    })
+</script>
+<script type="text/javascript">
+    $('#txtInwRem').focusout(function () {
+        var value = $('#txtInwPtyVou').children('option:selected').html();
+        if (value) {
+            if (value == 'COIL' || value == 'coil') {
+                //$('#tblCoil').children('tbody').children('tr:first').children('td').eq(1).children('input').focus()
+                $('#tblCoil').children('tbody').children('tr:first').children('td').eq(1).children('input').focus()
+            }
+            else if (value == 'PIPE' || value == 'pipe' || value == 'SEAMLESS PIPE' || value == 'seamless pipe') {
+                //$('#tblPipe').children('tbody').children('tr:first').children('td').eq(1).children('select').focus()
+                $('#tblPipe').children('tbody').children('tr:first').children('td').eq(1).children('input').focus()
+            }
+            else {
+                //$('#tblOther').children('tbody').children('tr:first').children('td').eq(1).children('select').focus()
+                $('#tblOther').children('tbody').children('tr:first').children('td').eq(1).children('input').focus()
+            }
+        }
+    })
+
+
+</script>
+
+<script>
+    function HideShowGrid(flg) {
+        var inwCmpvou = '@Html.Raw(Model.InwCmpVou)';
+        var value = ''
+        if (inwCmpvou != null && inwCmpvou != '' && inwCmpvou != 0) {
+            value = $('#txtInwPtyVou').children('option:selected').html();
+        }
+        else {
+            value = $('#txtInwPtyVou').children('option:selected').html();
+            if (!flg && value && value=="Select" ) {
+                $('#txtInwPtyVou').children('option').each(function () {
+                    if ($(this).html() == 'COIL' || $(this).html() == 'coil') {
+                        $('#txtInwPtyVou').val($(this).val());
+                        SetSelect2()
+                    }
+                });
+            }
+            value = $('#txtInwPtyVou').children('option:selected').html();
+        }
+
+        if (value) {
+            if (value == 'COIL' || value == 'coil') {
+                $('#tblCoil').removeClass('d-none');
+                $('#tblPipe').addClass('d-none');
+                $('#tblOther').addClass('d-none');
+                $('select[name="InwCoilTypeVou"]').attr('disabled', false);
+            }
+            else if (value == 'PIPE' || value == 'pipe' || value == 'SEAMLESS PIPE' || value == 'seamless pipe') {
+                $('#tblCoil').addClass('d-none');
+                $('#tblPipe').removeClass('d-none');
+                $('#tblOther').addClass('d-none');
+                $('select[name="InwCoilTypeVou"]').attr('disabled', true);
+            }
+            else {
+                $('#tblCoil').addClass('d-none');
+                $('#tblPipe').addClass('d-none');
+                $('#tblOther').removeClass('d-none');
+                $('select[name="InwCoilTypeVou"]').attr('disabled', true);
+            }
+        }
+        else {
+            $('#tblCoil').removeClass('d-none');
+            $('#tblPipe').addClass('d-none');
+            $('#tblOther').addClass('d-none');
+        }
+        ProductFillList()
+
+    }
+
+    var isRecentCall = false;
+
+    function AddRowsCoil() {
+        if (!isRecentCall) {
+            ;
+            var previousRow = $('#tblCoil').children('tbody').children('tr:last');
+            if (previousRow != null) {
+                var billNoCoil = $(previousRow).children('td').eq(1).children('input').val();
+                var godown = $(previousRow).children('td').eq(2).children('select').val();
+                var supcoilno = $(previousRow).children('td').eq(3).children('input').val();
+                var heatno = $(previousRow).children('td').eq(4).children('input').val();
+                var grade = $(previousRow).children('td').eq(5).children('select').val();
+                var width = $(previousRow).children('td').eq(6).children('input').val();
+                var thick = $(previousRow).children('td').eq(7).children('input').val();
+                var qty = $(previousRow).children('td').eq(8).children('input').val();
+                if (heatno != null && grade != null && thick != null && godown != null && width != null && qty != null && heatno != "" && grade != "" && thick != "" && godown != "" && width != "" && qty != "") {
+                    var html = $('#tblCoil').children().find('tr.AddRows:first').html();
+
+                    $('#tblCoil').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
+                    $('#tblCoil').children('tbody').children('tr:last').addClass('AddRows');
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('select').remove();
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('span').remove();
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).html($('#dropdownGodownCoil').html());
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('select').addClass('select2');
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('select').val(godown);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(3).children('input').val(supcoilno);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(4).children('input').val(heatno);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('select').remove();
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('span').remove();
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).html($('#dropdownGrade').html());
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('select').addClass('select2');
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('select').val(grade);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(6).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(7).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(8).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(9).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('input').val('');
+                    SetSerialNumberCoil();
+                    SetNameCoil();
+                    SetSelect2()
+                    isRecentCall = true
+                    setTimeout(function () {
+                        isRecentCall = false;
+                    }, 500)
+                    CalculateCoil();
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                }
+                else {
+                    showErrorMessage("Please enter all required fields");
+                }
+            }
+        }
+
+
+    }
+
+    //function DeleteRowsCoil(obj) {
+    //    if ($('#tblCoil').children('tbody').children('tr:not(tr.lastRow)').length > 1) {
+    //        Swal.fire({
+    //            title: 'Are you sure want to delete row?',
+    //            showCancelButton: true,
+    //            confirmButtonText: 'Delete',
+    //        }).then((result) => {
+    //            if (result.isConfirmed) {
+    //                $(obj).closest('tr').remove();
+    //                CalculateCoil();
+    //                SetSerialNumberCoil();
+    //            } else if (result.isDenied) {
+    //            }
+    //        })
+    //    }
+    //    else {
+    //        showErrorMessage('Cannot delete first row');
+    //    }
+
+    //}
+
+    function DeleteRowsCoil(obj) {
+        if ($('#tblCoil').children('tbody').children('tr:not(tr.lastRow)').length > 1) {
+            var supcoilno = $(obj).closest('tr').children('td').eq(3).children('input').val();
+            if (supcoilno != '') {
+                $.ajax({
+                    url: '/Inward/GetDeleteSupCoil',
+                    type: 'POST',
+                    data: { 'supcoilno': supcoilno },
+                    dataType: 'JSON',
+                    traditional: true, // add this
+                    success: function (data) {
+                        if (data.result) {
+                            if (data.data == "1") {
+                                Swal.fire({
+                                    title: 'Are you sure want to delete row?',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Delete',
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        $(obj).closest('tr').remove();
+                                        CalculateCoil();
+                                        SetSerialNumberCoil();
+                                        if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                                            $('#tblDisplay').children('thead').remove();
+                                            $('#tblDisplay').children('tbody').remove();
+                                        }
+                                    } else if (result.isDenied) {
+                                    }
+                                })
+                            }
+                            else {
+                                showErrorMessage("You Can Not Delete Records This Record is Included Some Trasaction!");
+                            }
+                        }
+                    }
+                })
+            }
+        }
+        else {
+            showErrorMessage('Cannot delete first row');
+        }
+
+    }
+
+    function SetSerialNumberCoil() {
+        var count = 1;
+        $('#tblCoil').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+            $(this).children('td').eq(0).html(count);
+            $(this).children('td').eq(1).children('select').attr('id', 'drpGrade' + count);
+            count = parseInt(count) + 1;
+        });
+    }
+
+    function SetNameCoil(isRemove) {
+        $('#tblCoil').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
+            $(this).children("td").eq(1).children("input").attr("name", "Inward.BillNoCoil");
+            $(this).children("td").eq(1).children("input").attr("Id", "Inward.BillNoCoil" + i + "");
+            $(this).children("td").eq(2).children("select").attr("name", "Inward.IntGdnCoil");
+            $(this).children("td").eq(2).children("select").attr("Id", "Inward.IntGdnCoil" + i + "");
+            $(this).children("td").eq(3).children("input").attr("name", "Inward.SupCoilNo");
+            $(this).children("td").eq(3).children("input").attr("Id", "Inward.SupCoilNo" + i + "");
+            if (!isRemove)
+                $(this).children("td").eq(3).children("input").attr("onblur", 'SuplierCoilCheck(this)');
+            $(this).children("td").eq(4).children("input").attr("name", "Inward.HeatNo");
+            $(this).children("td").eq(4).children("input").attr("Id", "Inward.HeatNo" + i + "");
+            $(this).children("td").eq(5).children("select").attr("name", "Inward.IntGrdCoil");
+            $(this).children("td").eq(5).children("select").attr("Id", "Inward.IntGrdCoil" + i + "");
+            $(this).children("td").eq(6).children("input").attr("name", "Inward.IntWidth");
+            $(this).children("td").eq(6).children("input").attr("Id", "Inward.IntWidth" + i + "");
+            $(this).children("td").eq(7).children("input").attr("name", "Inward.IntThickCoil");
+            $(this).children("td").eq(7).children("input").attr("Id", "Inward.IntThickCoil" + i + "");
+            $(this).children("td").eq(8).children("input").attr("name", "Inward.IntQtyCoil");
+            $(this).children("td").eq(8).children("input").attr("Id", "Inward.IntQtyCoil" + i + "");
+            $(this).children("td").eq(9).children("input").attr("name", "Inward.IntRemksCoil");
+            $(this).children("td").eq(9).children("input").attr("Id", "Inward.IntRemksCoil" + i + "");
+            $(this).children("td").eq(10).children("input").attr("name", "Inward.CoilNo");
+            $(this).children("td").eq(10).children("input").attr("Id", "Inward.CoilNo" + i + "");
+        });
+    }
+
+    function AddRowsPipe() {
+        if (!isRecentCall) {
+            var previousRow = $('#tblPipe').children('tbody').children('tr:last');
+            if (previousRow != null) {
+                var billNoPipe = $(previousRow).children('td').eq(1).children('input').val();
+                var godown = $(previousRow).children('td').eq(2).children('select').val();
+                var spacifi = $(previousRow).children('td').eq(3).children('select').val();
+                var grade = $(previousRow).children('td').eq(4).children('select').val();
+                var od = $(previousRow).children('td').eq(5).children('input').val();
+                var thick = $(previousRow).children('td').eq(6).children('input').val();
+                var lenght = $(previousRow).children('td').eq(7).children('input').val();
+                var pcs = $(previousRow).children('td').eq(8).children('input').val();
+                var qty = $(previousRow).children('td').eq(9).children('input').val();
+                var finish = $(previousRow).children('td').eq(10).children('select').val();
+                var process = $(previousRow).children('td').eq(11).children('select').val();
+                if (spacifi != null && grade != null && thick != null && od != null && pcs != null && godown != null && lenght != null && qty != null && finish != null && process != null && spacifi != "" && grade != "" && thick != "" && od != "" && pcs != "" && godown != "" && lenght != "" && qty != "" && finish != "" && process != "") {
+                    var html = $('#tblPipe').children().find('tr.AddRows:first').html();
+
+                    $('#tblPipe').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
+                    $('#tblPipe').children('tbody').children('tr:last').addClass('AddRows');
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(1).children('input').val('');
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(2).children('select').remove();
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(2).children('span').remove();
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(2).html($('#dropdownGodownPipe').html());
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(2).children('select').addClass('select2');
+
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(3).children('select').remove();
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(3).children('span').remove();
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(3).html($('#dropdownspacification').html());
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(3).children('select').addClass('select2');
+
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(4).children('select').remove();
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(4).children('span').remove();
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(4).html($('#dropdownGradePipe').html());
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(4).children('select').addClass('select2');
+
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(5).children('input').val('');
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(6).children('input').val('')
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(7).children('input').val('');
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(8).children('input').val('');
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(9).children('input').val('');
+
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(10).children('select').remove();
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(10).children('span').remove();
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(10).html($('#dropdownfinishPipe').html());
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(10).children('select').addClass('select2');
+
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(11).children('select').remove();
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(11).children('span').remove();
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(11).html($('#dropdownPorcessPipe').html());
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(11).children('select').addClass('select2');
+
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(12).children('input').val('');
+                    SetSerialNumberPipe();
+                    SetNamePipe();
+                    SetSelect2()
+                    isRecentCall = true
+                    setTimeout(function () {
+                        isRecentCall = false;
+                    }, 500)
+                    CalculatePipe();
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                }
+                else {
+                    showErrorMessage("Please enter all required fields");
+                }
+            }
+        }
+
+
+    }
+
+    function DeleteRowsPipe(obj) {
+        if ($('#tblPipe').children('tbody').children('tr:not(tr.lastRow)').length > 1) {
+            Swal.fire({
+                title: 'Are you sure want to delete row?',
+                showCancelButton: true,
+                confirmButtonText: 'Delete',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(obj).closest('tr').remove();
+                    CalculatePipe();
+                    SetSerialNumberPipe();
+                } else if (result.isDenied) {
+                }
+            })
+        }
+        else {
+            showErrorMessage('Cannot delete first row');
+        }
+
+    }
+
+    function SetSerialNumberPipe() {
+        var count = 1;
+        $('#tblPipe').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+            $(this).children('td').eq(0).html(count);
+            $(this).children('td').eq(1).children('select').attr('id', 'dropdownspacification' + count);
+            count = parseInt(count) + 1;
+        });
+    }
+
+    function SetNamePipe() {
+        $('#Inward_IntFinshPipe').removeAttr('name');
+        $('#Inward_IntProcePipe').removeAttr('name');
+        $('#tblPipe').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
+            $(this).children("td").eq(1).children("input").attr("name", "Inward.BillNoPipe");
+            $(this).children("td").eq(1).children("input").attr("Id", "Inward.BillNoPipe" + i + "");
+            $(this).children("td").eq(2).children("select").attr("name", "Inward.IntGdnPipe");
+            $(this).children("td").eq(2).children("select").attr("Id", "Inward.IntGdnPipe" + i + "");
+            $(this).children("td").eq(3).children("select").attr("name", "Inward.SpecifiName");
+            $(this).children("td").eq(3).children("select").attr("Id", "Inward.SpecifiName" + i + "");
+            $(this).children("td").eq(4).children("select").attr("name", "Inward.IntGrdPipe");
+            $(this).children("td").eq(4).children("select").attr("Id", "Inward.IntGrdPipe" + i + "");
+            $(this).children("td").eq(5).children("input").attr("name", "Inward.IntOD");
+            $(this).children("td").eq(5).children("input").attr("Id", "Inward.IntOD" + i + "");
+            $(this).children("td").eq(6).children("input").attr("name", "Inward.IntThickPipe");
+            $(this).children("td").eq(6).children("input").attr("Id", "Inward.IntThickPipe" + i + "");
+            $(this).children("td").eq(7).children("input").attr("name", "Inward.IntLenghtPipe");
+            $(this).children("td").eq(7).children("input").attr("Id", "Inward.IntLenghtPipe" + i + "");
+            $(this).children("td").eq(8).children("input").attr("name", "Inward.IntPcs");
+            $(this).children("td").eq(8).children("input").attr("Id", "Inward.IntPcs" + i + "");
+            $(this).children("td").eq(9).children("input").attr("name", "Inward.IntQtyPipe");
+            $(this).children("td").eq(9).children("input").attr("Id", "Inward.IntQtyPipe" + i + "");
+            $(this).children("td").eq(10).children("select").attr("name", "Inward.IntFinshPipe");
+            $(this).children("td").eq(10).children("select").attr("Id", "Inward.IntFinshPipe" + i + "");
+            $(this).children("td").eq(11).children("select").attr("name", "Inward.IntProcePipe");
+            $(this).children("td").eq(11).children("select").attr("Id", "Inward.IntProcePipe" + i + "");
+            $(this).children("td").eq(12).children("input").attr("name", "Inward.IntRemksPipe");
+            $(this).children("td").eq(12).children("input").attr("Id", "Inward.IntRemksPipe" + i + "");
+        });
+    }
+
+    function AddRowsOther() {
+        if (!isRecentCall) {
+            var previousRow = $('#tblOther').children('tbody').children('tr:last');
+            if (previousRow != null) {
+                var billNoOther = $(previousRow).children('td').eq(1).children('input').val();
+                var product = $(previousRow).children('td').eq(2).children('select').val();
+                var godown = $(previousRow).children('td').eq(3).children('select').val();
+                var qty = $(previousRow).children('td').eq(4).children('input').val();
+                if (product != null && qty != null && godown != null && product != "" && qty != "" && godown != "") {
+                    var html = $('#tblOther').children().find('tr.AddRows:first').html();
+
+                    $('#tblOther').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
+                    $('#tblOther').children('tbody').children('tr:last').addClass('AddRows');
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(1).children('input').val('');
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(2).children('select').remove();
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(2).children('span').remove();
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(2).html($('#dropdownproduct').html());
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(2).children('select').addClass('select2');
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(3).children('select').remove();
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(3).children('span').remove();
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(3).html($('#dropdownGodownOther').html());
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(3).children('select').addClass('select2');
+                    //$('#tblOther').children('tbody').children('tr:last').children('td').eq(3).children('select').remove();
+                    //$('#tblOther').children('tbody').children('tr:last').children('td').eq(3).children('span').remove();
+                    //$('#tblOther').children('tbody').children('tr:last').children('td').eq(3).html($('#dropdownLocationOther').html());
+                    //$('#tblOther').children('tbody').children('tr:last').children('td').eq(3).children('select').addClass('select2');
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(4).children('input').val('');
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(5).children('input').val('');
+                    SetSerialNumberOther();
+                    SetNameOther();
+                    SetSelect2()
+                    isRecentCall = true
+                    setTimeout(function () {
+                        isRecentCall = false;
+                    }, 500)
+                    CalculateOther();
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                }
+                else {
+                    showErrorMessage("Please enter all required fields");
+                }
+            }
+        }
+
+
+    }
+
+    function DeleteRowsOther(obj) {
+        if ($('#tblOther').children('tbody').children('tr:not(tr.lastRow)').length > 1) {
+            Swal.fire({
+                title: 'Are you sure want to delete row?',
+                showCancelButton: true,
+                confirmButtonText: 'Delete',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(obj).closest('tr').remove();
+                    CalculateOther();
+                    SetSerialNumberOther();
+                } else if (result.isDenied) {
+                }
+            })
+        }
+        else {
+            showErrorMessage('Cannot delete first row');
+        }
+
+    }
+
+    function SetSerialNumberOther() {
+        var count = 1;
+        $('#tblOther').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+            $(this).children('td').eq(0).html(count);
+            $(this).children('td').eq(1).children('select').attr('id', 'dropdownproduct' + count);
+            count = parseInt(count) + 1;
+        });
+    }
+
+    function SetNameOther() {
+        $('#tblOther').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
+            $(this).children("td").eq(1).children("input").attr("name", "Inward.BillNoOther");
+            $(this).children("td").eq(1).children("input").attr("Id", "Inward.BillNoOther" + i + "");
+            $(this).children("td").eq(2).children("select").attr("name", "Inward.IntPrdVou");
+            $(this).children("td").eq(2).children("select").attr("Id", "Inward.IntPrdVou" + i + "");
+            $(this).children("td").eq(3).children("select").attr("name", "Inward.IntGdnOther");
+            $(this).children("td").eq(3).children("select").attr("Id", "Inward.IntGdnOther" + i + "");
+            $(this).children("td").eq(4).children("input").attr("name", "Inward.IntQtyOther");
+            $(this).children("td").eq(4).children("input").attr("Id", "Inward.IntQtyOther" + i + "");
+            $(this).children("td").eq(5).children("input").attr("name", "Inward.IntRemksOther");
+            $(this).children("td").eq(5).children("input").attr("Id", "Inward.IntRemksOther" + i + "");
+        });
+    }
+
+    function AddRows() {
+        var value = $('#txtInwPtyVou').children('option:selected').html();
+        if (value == 'COIL' || value == 'coil') {
+            ;
+            AddRowsCoil();
+        }
+        if (value == 'PIPE' || value == 'pipe' || value == 'SEAMLESS PIPE' || value == 'seamless pipe') {
+            AddRowsPipe();
+        }
+        else {
+            AddRowsOther();
+        }
+    }
+
+    function CalculateCoil() {
+        var totalWeight = 0;
+        $('#tblCoil').children('tbody').children('tr').each(function () {
+            totalWeight = parseFloat(totalWeight) + parseFloat($(this).children('td').eq(8).children('input').val());
+        })
+
+        $('#tblCoil').children('thead').children('tr').children('th').eq(8).html(`(<b style='text-align:right'>` + totalWeight +`</b>)</br>`+$('#tblCoil').children('thead').children('tr').children('th').eq(8).html());
+    }
+    function CalculatePipe() {
+        var totalWeight = 0;
+        $('#tblPipe').children('tbody').children('tr').each(function () {
+            totalWeight = parseFloat(totalWeight) + parseFloat($(this).children('td').eq(9).children('input').val());
+        })
+
+        $('#tblPipe').children('thead').children('tr').children('th').eq(9).html(`(<b style='text-align:right'>` + totalWeight + `</b>)</br>` + $('#tblCoil').children('thead').children('tr').children('th').eq(9).html());
+    }
+    function CalculateOther() {
+        var totalWeight = 0;
+        $('#tblOther').children('tbody').children('tr').each(function () {
+            totalWeight = parseFloat(totalWeight) + parseFloat($(this).children('td').eq(4).children('input').val());
+        })
+        $('#tblOther').children('thead').children('tr').children('th').eq(4).html(`(<b style='text-align:right'>` + totalWeight + `</b>)</br>` + $('#tblCoil').children('thead').children('tr').children('th').eq(4).html());
+    }
+
+
+
+    function CheckRecordAddRows() {
+        ;
+        if (!$('#tblCoil').hasClass('d-none')) {
+            AddRowsCoil();
+        }
+        if (!$('#tblPipe').hasClass('d-none')) {
+            AddRowsPipe();
+        } if (!$('#tblOther').hasClass('d-none')) {
+            AddRowsOther();
+        }
+    }
+
+    $("#btnSave").click(function () {
+        var value = $('#txtInwPtyVou').children('option:selected').html();
+        if (value) {
+            localStorage.setItem("Inward", "1");
+            if (value == 'COIL' || value == 'coil') {
+                $('#tblCoil').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
+                    if (!$(this).children("td").eq(9).children("input").val()) {
+                        $(this).children("td").eq(9).children("input").val("-1")
+                    }
+                });
+            }
+            else if (value == 'PIPE' || value == 'pipe' || value == 'SEAMLESS PIPE' || value == 'seamless pipe') {
+                $('#tblPipe').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
+                    if (!$(this).children("td").eq(12).children("input").val()) {
+                        $(this).children("td").eq(12).children("input").val("-1")
+                    }
+                });
+
+                $('#dropdownGradePipe').children('select').removeAttr('name')
+                $('#dropdownspacification').children('select').removeAttr('name')
+            }
+            else {
+                $('#tblOther').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
+                    if (!$(this).children("td").eq(5).children("input").val()) {
+                        $(this).children("td").eq(5).children("input").val("-1")
+                    }
+                });
+            }
+        }
+    })
+
+    @*$(function () {
+         var inwvou = '@Html.Raw(Model.InwVou)';
+        if (inwvou != null && inwvou != '' && inwvou != 0) {
+            GoToAddTab()
+        }
+        else {
+            var isAdd = localStorage.getItem("Inward");
+            if (isAdd && isAdd == "1") {
+                GoToAddTab();
+            }
+            else if (isAdd && isAdd == "2") {
+                GoToListTab();
+            }
+        }
+    })*@
+
+    function numericFilter(txb) {
+        txb.value = txb.value.replace(/[^\0-9]/ig, "");
+    }
+</script>
+<script>
+    //function AccountFillList() {
+    //    $.ajax({
+    //        url: '/Inward/GetAccountList',
+    //        type: 'POST',
+    //        data: {},
+    //        dataType: 'JSON',
+    //        traditional: true, // add this
+    //        success: function (data) {
+    //            if (data.result) {
+    //                if (data.data) {
+    //                    var oldData = $('#InwAccVou').val();
+    //                    $('#InwAccVou').children('option').remove();
+    //                    var html = `<option value="">---Select---</option>`
+    //                    for (var x = 0; x < data.data.length; x++) {
+    //                        if (oldData && oldData == data.data[x].value) {
+    //                            html += `<option selected="selected" value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+    //                        } else {
+    //                            html += `<option value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+    //                        }
+
+    //                    }
+    //                    $('#InwAccVou').append(html);
+    //                    $('#InwAccVou').select2();
+
+    //                }
+    //            }
+    //            else {
+    //                showErrorMessage(data.message);
+    //            }
+    //        },
+    //        failure: function (response) {
+    //            errorMessage(response);
+    //        }
+    //    });
+    //}
+
+    function GetOrderList() {
+        OrderList = [];
+        var InwPOMVou = $('select[name="InwPOMVou"]').val();
+        if (InwPOMVou != null && InwPOMVou != "") {
+            // $('#dvMain').addClass('preloader');
+            $.ajax({
+                type: "POST",
+                url: '/Inward/GetOrderListByAccount',
+                data: { "InwPOMVou": InwPOMVou },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response != null) {
+                        GetOrderList = response;
+                        $('#txtCtyName').val(response.ctyName)
+                        $('#txtInwPtyVou').val(response.inwPtyVou);
+                        $('#InwPrdTyp').val(response.inwPrdTyp);
+                        $('#InwAccVou').val(response.inwAccVou);
+                        if (response.inwPrdTyp == "COIL" || response.inwPrdTyp == "coil") {
+                            HideShowGrid();
+
+                            $("#tblCoil tbody").find("tr").remove();
+                            var Html = '';
+                            for (var x = 0; x < response.inwardList.length; x++) {
+                                Html += `<tr>
+                                        <td style="width:2%!important">` + (parseInt(x) + parseInt(1)) + `</td>
+                                        <td style="width:10%!important">` + $('#dropdownGrade').html() + `</td>
+                                        <td style="width:10%!important">` + $('#dropdownGodownCoil').html() + `</td>
+                                        <td style="width:10%!important"><input class="form-control" id="Inward.IntThickCoil0" name="Inward.IntThickCoil" onfocus="this.select()" onkeyup="numericFilter(this);" style="font-family: Verdana;font-size:small; height:30px;text-align:right;" type="text" value=""></td>
+                                        <td style="width:10%!important"><input class="form-control" id="Inward.IntWidth0" name="Inward.IntWidth" onfocus="this.select()" onkeyup="numericFilter(this);" style="font-family: Verdana;font-size:small; height:30px;text-align:right;" type="text" value=""></td>
+                                        <td style="width:10%!important"><input class="form-control" id="Inward.IntQtyCoil0" name="Inward.IntQtyCoil" onfocus="this.select()" onkeyup="numericFilter(this);" style="font-family: Verdana;font-size:small; height:30px;text-align:right;" type="text" value=""></td>
+                                        <td style="width:10%!important"><input class="form-control" id="Inward.IntRemksCoil0" name="Inward.IntRemksCoil" style="font-family: Verdana;font-size:small; height:30px;" type="text" value=""></td>
+                                       <td><i class="fa fa-plus text-blue" onclick="AddRowsOther(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsOther(this)" style="font-size:18px"></i></td></tr>`;
+                            }
+                            $("#tblCoil tbody").append(Html);
+                            for (var x = 0; x < response.inwardList.length; x++) {
+                                $("#tblCoil tbody").children('tr').eq(x).children('td').eq(4).children('select').val(response.inwardList[x].intGrdCoilStr)
+                                $("#tblCoil tbody").children('tr').eq(x).children('td').eq(6).children('input').val(response.inwardList[x].intThickCoilStr)
+                                $("#tblCoil tbody").children('tr').eq(x).children('td').eq(5).children('input').val(response.inwardList[x].intWidthStr)
+                                $("#tblCoil tbody").children('tr').eq(x).children('td').eq(7).children('input').val(response.inwardList[x].intQtyCoilStr)
+                                $("#tblCoil tbody").children('tr').eq(x).children('td').eq(8).children('input').val(response.inwardList[x].intRemksCoilStr)
+
+                            }
+
+                        }
+                        else if (response.inwPrdTyp == "PIPE" || response.inwPrdTyp == "pipe" || value == 'SEAMLESS PIPE' || value == 'seamless pipe') {
+                            HideShowGrid();
+                            $("#tblPipe tbody").find("tr").remove();
+                            var Html = '';
+                            for (var x = 0; x < response.inwardList.length; x++) {
+                                Html += `<tr>
+                                        <td style="width:2%!important">` + (parseInt(x) + parseInt(1)) + `</td>
+                                        <td style="width:10%!important">` + $('#dropdownspacification').html() + `</td>
+                                        <td style="width:10%!important">` + $('#dropdownGradePipe').html() + `</td>
+                                        <td style="width:10%!important">` + $('#dropdownGodownPipe').html() + `</td>
+                                        <td style="width:10%!important"><input class="form-control" id="Inward.IntThickPipe0" name="Inward.IntThickPipe" onfocus="this.select()" onkeyup="numericFilter(this);" style="font-family: Verdana;font-size:small; height:30px;text-align:right;" type="text" value=""></td>
+                                        <td style="width:10%!important"><input class="form-control" id="Inward.IntOD0" name="Inward.IntOD" onfocus="this.select()" onkeyup="numericFilter(this);" style="font-family: Verdana;font-size:small; height:30px;text-align:right;" type="text" value=""></td>
+                                        <td style="width:10%!important"><input class="form-control" id="Inward.IntPcs0" name="Inward.IntPcs" onfocus="this.select()" onkeyup="numericFilter(this);" style="font-family: Verdana;font-size:small; height:30px;text-align:right;" type="text" value=""></td>
+                                        <td style="width:10%!important"><input class="form-control" id="Inward.IntRemksPipe0" name="Inward.IntRemksPipe" style="font-family: Verdana;font-size:small; height:30px;" type="text" value=""></td>
+                                       <td><i class="fa fa-plus text-blue" onclick="AddRowsOther(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsOther(this)" style="font-size:18px"></i></td></tr>`;
+                            }
+                            $("#tblPipe tbody").append(Html);
+
+                            for (var x = 0; x < response.inwardList.length; x++) {
+                                $("#tblPipe tbody").children('tr').eq(x).children('td').eq(1).children('select').val(response.inwardList[x].specifiNameStr)
+                                $("#tblPipe tbody").children('tr').eq(x).children('td').eq(2).children('select').val(response.inwardList[x].intGrdPipeStr)
+                                $("#tblPipe tbody").children('tr').eq(x).children('td').eq(5).children('input').val(response.inwardList[x].intThickPipeStr)
+                                $("#tblPipe tbody").children('tr').eq(x).children('td').eq(6).children('input').val(response.inwardList[x].intODStr)
+
+                                $("#tblPipe tbody").children('tr').eq(x).children('td').eq(7).children('input').val(response.inwardList[x].intPcsStr)
+                                $("#tblPipe tbody").children('tr').eq(x).children('td').eq(8).children('input').val(response.inwardList[x].intRemksPipeStr)
+
+                            }
+                        }
+                        else {
+                            HideShowGrid();
+                            $("#tblOther tbody").find("tr").remove();
+                            var Html = '';
+                            for (var x = 0; x < response.inwardList.length; x++) {
+                                Html += `<tr>
+                                        <td style="width:2%!important">` + (parseInt(x) + parseInt(1)) + `</td>
+                                        <td style="width:10%!important">` + $('#dropdownproduct').html() + `</td>
+                                        <td style="width:10%!important">` + $('#dropdownGodownOther').html() + `</td>
+                                        <td style="width:10%!important"><input class="form-control" id="Inward.IntQtyOther0" name="Inward.IntQtyOther" onfocus="this.select()" onkeyup="numericFilter(this);" style="font-family: Verdana;font-size:small; height:30px;text-align:right;" type="text" value=""></td>
+                                        <td style="width:10%!important"><input class="form-control" id="Inward.IntRemksOther0" name="Inward.IntRemksOther" style="font-family: Verdana;font-size:small; height:30px;" type="text" value=""></td>
+                                       <td><i class="fa fa-plus text-blue" onclick="AddRowsOther(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsOther(this)" style="font-size:18px"></i></td></tr>`;
+                            }
+                            $("#tblOther tbody").append(Html);
+                            for (var x = 0; x < response.inwardList.length; x++) {
+                                $("#tblOther tbody").children('tr').eq(x).children('td').eq(1).children('select').val(response.inwardList[x].intPrdVouStr)
+                                $("#tblOther tbody").children('tr').eq(x).children('td').eq(4).children('input').val(response.inwardList[x].intQtyOtherStr)
+                                $("#tblOther tbody").children('tr').eq(x).children('td').eq(5).children('input').val(response.inwardList[x].intRemksOtherStr)
+                            }
+                        }
+
+
+
+                        SetSelect2()
+                    }
+                },
+                error: function (response) {
+                    alert("Something Went Wrong..!");
+                }
+            });
+        }
+        else {
+            showErrorMessage("Please Select Party Name");
+        }
+    }
+
+    function GetOrderDetail() {
+        var inwcmpvou = $('select[name="InwCmpVou"]').val();
+        if (inwcmpvou != null && inwcmpvou != "") {
+            $.ajax({
+                type: "POST",
+                url: '/Inward/GetOrderDetail',
+                data: { "InwCmpVou": inwcmpvou },
+                dataType: "JSON",
+                success: function (data) {
+                    if (data.result) {
+                        if (data.data) {
+                            var oldData = $('#txtInwPOMVou').val();
+                            $('#txtInwPOMVou').children('option').remove();
+                            var html = `<option value="">---Select---</option>`
+                            for (var x = 0; x < data.data.length; x++) {
+                                if (oldData && oldData == data.data[x].value) {
+                                    html += `<option selected="selected" value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                                } else {
+                                    html += `<option value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                                }
+
+                            }
+                            $('#txtInwPOMVou').append(html);
+                            $('#txtInwPOMVou').select2();
+
+                        }
+                    }
+                    else {
+                        showErrorMessage(data.message);
+                    }
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+        }
+    }
+
+
+    function ProductFillList() {
+        var prdtype = $('#txtInwPtyVou').children('option:selected').html();
+        $.ajax({
+            url: '/Inward/GetProductList',
+            type: 'POST',
+            data: { "PrdType": prdtype },
+            dataType: 'JSON',
+            traditional: true, // add this
+            success: function (data) {
+                if (data.result) {
+                    if (data.data) {
+                        mainProductList = data.data
+                        var oldData = $('#txtInwPrdVou').val();
+                        $('#txtInwPrdVou').children('option').remove();
+                        var html = `<option value="">---Select---</option>`
+                        for (var x = 0; x < data.data.length; x++) {
+                            if (oldData && oldData == data.data[x].value) {
+                                html += `<option selected="selected" value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            } else {
+                                html += `<option value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            }
+
+                        }
+                        $('#txtInwPrdVou').append(html);
+                        $('#txtInwPrdVou').select2();
+                    }
+                }
+                else {
+                    showErrorMessage(data.message);
+                }
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    }
+
+    @*$('#btnPrint').click(function () {
+        //window.open('/Inward/InwardPrintDetials/'+ @Html.Raw(Model.InwVou),'_blank')
+        window.open('/Inward/RawInwardPrintDetials/'+ @Html.Raw(Model.InwVou),'_blank')
+    })*@
+
+
+
+    function SuplierCoilCheck(previousRow,isExists) {
+            if (previousRow != null) {
+                var inwvou = '@Html.Raw(Model.InwVou)';
+                var srno1 = $(previousRow).closest('tr').children('td').eq(0).children('input').val();
+                var supcoil = $(previousRow).closest('tr').children('td').eq(3).children('input').val();
+                var inputId = $(previousRow).closest('tr').children('td').eq(3).children('input').attr('id');
+                var thick = $(previousRow).closest('tr').children('td').eq(7).children('input').attr('id');
+                if (thick != 0) {
+                    $.ajax({
+                        url: '/Inward/GetSupCoilCheck',
+                        type: 'POST',
+                        data: { 'supcoil': supcoil, 'inwvou': inwvou, 'srno1': srno1 },
+                        dataType: 'JSON',
+                        traditional: true, // add this
+                        success: function (data) {
+
+                            if (data.result) {
+                                if (data.data == "1" && !isExists) {
+                                    showErrorMessage("Supplier Coil No Already Exsits!");
+                                    $(previousRow).closest('tr').children('td').eq(3).children('input').focus();
+                                }
+                                else if (data.gdnVou != "0") {
+                                    //if (data.data != "-1") {
+                                        var isMatch = false;
+                                        $('#tblCoil').children('tbody').children('tr').each(function () {
+                                            if ($(this).children('td').eq(3).children('input').attr('id') != inputId) {
+                                                if ($(this).children('td').eq(3).children('input').val() == supcoil) {
+                                                    isMatch = true;
+                                                }
+                                            }
+                                        })
+                                        if (isMatch) {
+                                            showErrorMessage("Supplier Coil No Already Exsits!");
+                                            $('#tblCoil').children('tbody').children('tr').each(function () {
+                                                if ($(this).children('td').eq(3).children('input').attr('id') == inputId) {
+                                                    isMatch = true;
+                                                    $(this).closest('tr').children('td').eq(3).children('input').focus();
+                                                }
+                                            })
+                                        }
+                                        else {
+                                            $(previousRow).closest('tr').children('td').eq(4).children('input').val(data.heatNo);
+                                            $(previousRow).closest('tr').children('td').eq(5).children('select').val(data.grdVou);
+                                            $(previousRow).closest('tr').children('td').eq(5).children('select').val(data.grade);
+                                            $(previousRow).closest('tr').children('td').eq(6).children('input').val(data.width);
+                                            $(previousRow).closest('tr').children('td').eq(7).children('input').val(data.thick);
+                                            $(previousRow).closest('tr').children('td').eq(8).children('input').val(data.qty);
+                                            $(previousRow).closest('tr').children('td').eq(4).children('input').focus();
+                                        }
+                                    //}
+                                }
+                                else {
+                                    if (!isExists) {
+                                        var isMatch = false;
+                                        $('#tblCoil').children('tbody').children('tr').each(function () {
+                                            if ($(this).children('td').eq(3).children('input').attr('id') != inputId) {
+                                                if ($(this).children('td').eq(3).children('input').val() == supcoil) {
+                                                    isMatch = true;
+                                                }
+                                            }
+                                        })
+                                        if (isMatch) {
+                                            showErrorMessage("Supplier Coil No Already Exsits!");
+                                            $('#tblCoil').children('tbody').children('tr').each(function () {
+                                                if ($(this).children('td').eq(3).children('input').attr('id') == inputId) {
+                                                    isMatch = true;
+                                                    $(this).closest('tr').children('td').eq(3).children('input').focus();
+                                                }
+                                            })
+                                        }
+                                    }
+                                }
+
+                                SetSelect2()
+                            }
+                            else {
+                                errorMessage(response);
+                            }
+                        },
+                        failure: function (response) {
+                            errorMessage(response);
+                        }
+                    });
+                }
+            }
+    }
+
+    $(function () {
+        var trnasport = $('#InwTrnVou').children('option:selected').text()
+        if (trnasport)
+            $('input[name="InwTransNm"]').val(trnasport);
+    })
+
+    $('#InwTrnVou').change(function () {
+        var trnasport = $('#InwTrnVou').children('option:selected').text()
+        if (trnasport)
+            $('input[name="InwTransNm"]').val(trnasport);
+    })
+
+    $(function () {
+        var coiltype = $('#txtInwCoilTypeVou').children('option:selected').text()
+        if (coiltype)
+            $('input[name="CoilType"]').val(coiltype);
+    })
+
+    $('#txtInwCoilTypeVou').change(function () {
+        var coiltype = $('#txtInwCoilTypeVou').children('option:selected').text()
+        if (coiltype)
+            $('input[name="CoilType"]').val(coiltype);
+    })
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".InwAccVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/Inward/GetAccount-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+
+        $(".InwTrnVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/Inward/GetTransport-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+    });
+
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+
+</script>
+<script>
+    $(document).ready(function () {
+        var ReturnId = '@Html.Raw(TempData["ReturnId"])';
+        var Savedone = '@Html.Raw(TempData["Savedone"])';
+        var CopyType = '1';
+        if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
+            //window.open(
+            //    '/Inward/RawInwardPrintDetials/'+ReturnId+'',
+            //    '_blank' // <- This is what makes it open in a new window.
+            //);
+            //window.open(
+            //    '/Inward/RawInwardPrintDetials?Id=' + ReturnId + '&copyType=' + CopyType,
+            //    '_blank' // <- This is what makes it open in a new window.
+            //);
+            window.open(
+                '/Print/RawInwardPDFDetials?id=' + ReturnId + '&companyId=' +@Html.Raw(ViewBag.companyId) + '',
+                '_blank' // <- This is what makes it open in a new window.
+            );
+        }
+    })
+
+    $('#frmInward').submit(function (event) {
+        var unit = '';
+        var isAllow = false;
+        var value = $('#txtInwPtyVou').children('option:selected').html();
+        if (value) {
+            if (value == 'COIL' || value == 'coil') {
+                $('#tblCoil').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+                    var supcoilno = $(this).children("td").eq(3).children("input").val();
+                    if (supcoilno == undefined || supcoilno == null || supcoilno == '' || supcoilno == "") {
+                        isAllow = true;
+                    }
+                });
+                if (isAllow) {
+                    showErrorMessage("Please Enter Supplier Coil No");
+                    event.preventDefault();
+                    return;
+                }
+                else {
+                    $('#frmInward').unbind('submit');
+                }
+            }
+            else if (value == 'PIPE' || value == 'Pipe') {
+                $('#tblPipe').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+                    var grade = $(this).children("td").eq(4).children("select").val();
+                    if (grade == undefined || grade == null || grade == '' || grade == "") {
+                        isAllow = true;
+                    }
+                });
+                if (isAllow) {
+                    showErrorMessage("Please Enter Grade");
+                    event.preventDefault();
+                    return;
+                }
+                else {
+                    $('#frmInward').unbind('submit');
+                }
+            }
+            else {
+                $('#tblOther').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+                    var product = $(this).children("td").eq(1).children("select").val();
+                    if (product == undefined || product == null || product == '' || product == "") {
+                        isAllow = true;
+                    }
+                });
+                if (isAllow) {
+                    showErrorMessage("Please Enter Product");
+                    event.preventDefault();
+                    return;
+                }
+                else {
+                    $('#frmInward').unbind('submit');
+                }
+            }
+        }
+    });
+
+    $("#btnPrint").click(function () {
+        $('#txtIsPrint').val('1');
+        $('#frmInward').submit();
+        //window.open('/Inward/RawInwardPrintDetials/'+ @Html.Raw(Model.InwVou),'_blank')
+    })
+
+    $("#btnSave").click(function () {
+        $('#txtIsPrint').val('0');
+        $('#frmInward').submit();
+    })
+</script>

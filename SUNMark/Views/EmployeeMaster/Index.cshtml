@@ -1,0 +1,600 @@
+﻿@model SUNMark.Models.EmployeeMasterModel
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
+    List<SUNMark.Models.EmployeeMasterModel> employeemasterList = ViewBag.employeemasterList as List<SUNMark.Models.EmployeeMasterModel>;
+    List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
+    List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
+    ViewData["Title"] = userRight.ModuleNm;
+    string headerAdd = "";
+    string headerList = "";
+    string gridAdd = "";
+    string gridList = "";
+    bool headerAddTrue = false;
+    bool headerListTrue = false;
+
+    if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+    {
+        headerAdd = "active";
+        gridAdd = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+}
+
+<div class="card card-primary">
+    <div class="card-header" style="font-family:Verdana">
+        <h6> @ViewData["Title"]</h6>
+    </div>
+    <div class="card-body">
+        <div class="card card-primary card-tabs">
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                    @if (userRight != null && userRight.IsList)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerList" id="custom-tabs-three-list-tab" data-toggle="pill" href="#custom-tabs-three-list" role="tab" aria-controls="custom-tabs-three-list" aria-selected="@headerListTrue" style="font-family:Verdana;font-size:small" onclick="GoToListTab()">List (Alt+L)</a>
+                        </li>
+                    }
+                    @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerAdd" id="custom-tabs-three-add-tab" data-toggle="pill" href="#custom-tabs-three-add" role="tab" aria-controls="custom-tabs-three-add" aria-selected="@headerAddTrue" style="font-family:Verdana;font-size:small" onclick="GoToAddTab()">Add/Update (F2)</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="tab-content" id="custom-tabs-three-tabContent">
+                        @if (userRight != null && userRight.IsList)
+                        {
+                            <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
+                                <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
+                                    <div class="col-md-12 col-12 mb-2 mt-2">
+                                        <div class="row">
+                                            <div class="col-md-1 mb-2 float-left">
+                                                <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                                    @for (int i = 0; i < pageNoList.Count; i++)
+                                                    {
+                                                        string checkedd = "checked";
+                                                        <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                                        checkedd = string.Empty;
+                                                    }
+
+                                                </select>
+                                            </div>
+                                            <div class="col-md-5 col-12">
+                                                <div class="row">
+                                                    <div class="col-md-6 col">
+                                                        <select class="form-control select2 drpReportLayout" onchange="loadData()">
+                                                            <option value="" ; style="width:200px">--Select Layout--</option>
+                                                            @if (layoutList != null && layoutList.Count > 0)
+                                                            {
+                                                                foreach (var item in layoutList)
+                                                                {
+                                                                    <option value="@item.Value">@item.Text </option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                                        @if (isAdministrator == 1)
+                                                        {
+                                                            <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                                Edit
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                                        <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                                        <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                            <div class="col-md-3 col-12 float-right">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dataTable">
+
+                                    </div>
+                                    <div class="pager float-right"></div>
+                                </div>
+                            </div>
+                        }
+                        @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                        {
+                            <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
+                                <form method="post" class="mt-1" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <input type="hidden" value="@Model.ActiveYN" id="txtActiveYN" name="ActiveYN" />
+                                                <input type="hidden" value="@Model.EmpShift" id="txtEmpShift" name="EmpShift" />
+                                                <input type="hidden" value="@Model.EmpDsgNm" id="txtEmpDsgNm" name="EmpDsgNm" />
+                                                <input type="hidden" value="@Model.EmpDepNm" id="txtEmpDepNm" name="EmpDepNm" />
+
+                                                <label class="control-label col-md-3 col-sm-3  font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    Name <span class="required">*</span>
+                                                </label>
+
+                                                <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                    <input type="text" id="txtEmpName" name="EmpName" class="form-control form-control-lg" placeholder="Employee Name"
+                                                           tabindex="1" value="@Model.EmpName" style="font-family: Verdana;font-size:small; height:30px;width:300px" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    Code <span class="required">*</span>
+                                                </label>
+
+                                                <div class="col-md-auto col-12 form-outline form-white mb-2 ">
+                                                    <input type="text" id="txtEmpCode" name="EmpCode" class="form-control form-control-lg uppercaseWithoutSpace text-uppercase" maxlength="5" placeholder="Code"
+                                                           tabindex="2" value="@Model.EmpCode" style="font-family: Verdana;font-size:small; height:30px; width: 100px" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Shift <span class="required">*</span>
+                                                        </label>
+
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-1" tabindex=" = 3">
+                                                            @Html.DropDownListFor(x => x.EmpShtId, Model.EmpShiftList, "Select", new { @class = "form-control select2 EmpShtId", @tabindex = "3", style = "font-family: Verdana;font-size:small; height:30px; ", @required = "required" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Mobile <span class="required"></span>
+                                                        </label>
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                            <input type="text" id="txtEmpMobile" name="EmpMobile" class="form-control form-control-lg" placeholder="Mobile" tabindex="4" value="@Model.EmpMobile" style="font-family: Verdana;font-size:small; height:30px;" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Designation <span class="required">*</span>
+                                                        </label>
+
+                                                        <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                            @Html.DropDownListFor(x => x.EmpDsgMscId, new SelectList(Model.DesignationList, "Value", "Text"), "Select", new { @class = "form-control select2 EmpDsgMscId", @tabindex = "5", style = "font-family: Verdana;font-size:small; height:30px; width:200px ", @id = "EmpDsgMscId", @required = "required" })
+                                                            <a class="btn btn-outline-info ml-2" href="/Designation/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Department <span class="required"></span>
+                                                        </label>
+
+                                                        <div class="col-md-9 d-flex form-outline form-white mb-2">                              
+                                                            @Html.DropDownListFor(x => x.EmpDepMscId, new SelectList(Model.DepartmentMscList, "Value", "Text"), "Select", new { @class = "form-control select2 EmpDepMscId", @tabindex = "6", style = "font-family: Verdana;font-size:small; height:30px; width:200px ", @id = "EmpDepMscId" })
+                                                            <a class="btn btn-outline-info ml-2" href="/DepMst/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                    E-Mail <span class="required"></span>
+                                                                </label>
+
+                                                                <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                                    <input type="text" id="txtEmpEmail" name="EmpEmail" class="form-control form-control-lg" placeholder="Email"
+                                                                           tabindex="7" value="@Model.EmpEmail" style="font-family: Verdana;font-size:small; height:30px;width:300px" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                    Active <span class="required"></span>
+                                                                </label>
+
+                                                                <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                                    @Html.DropDownListFor(x => x.EmpActId, Model.EmpActiveList, "Select", new { @class = "form-control select2 EmpActId", @tabindex = "8", style = "font-family: Verdana;font-size:small; height:30px;width:100px" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                    User ID <span class="required"></span>
+                                                                </label>
+
+                                                                <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                                    <input type="text" id="txtUserID" name="UserID" class="form-control form-control-lg" placeholder="User ID" tabindex="9" value="@Model.UserID" style="font-family: Verdana;font-size:small; height:30px;width:300px" readonly="readonly" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Photo <span class="required"></span>
+                                                        </label>
+
+                                                        <div class="form-outline form-white mb-1">
+                                                            <input type="file" id="imgUpload" name="profilePhoto" accept="image/png, image/gif, image/jpeg" />
+                                                            <input type="hidden" id="imgUpload" name="ProfilePicture" value="@Model.ProfilePicture">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="img_wrp">
+                                                    <img id="blah" src="#" alt="your image" style="height:170px;width:170px;border-radius:10%;border:1px solid black" />
+                                                    <i class="fa fa-times closess" id="btnClose"></i>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 text-center">
+                                                    @if (userRight.IsEdit && Model != null && Model.EmpVou > 0)
+                                                    {
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave">
+                                                            Save (F10)
+                                                        </button>
+                                                        <a href="/EmployeeMaster/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                            Cancel (Esc)
+                                                        </a>
+                                                    }
+                                                    else if (userRight.IsAdd && Model.EmpVou == 0)
+                                                    {
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave">
+                                                            Save (F10)
+                                                        </button>
+                                                        <a href="/EmployeeMaster/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                            Cancel (Esc)
+                                                        </a>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#blah').hide();
+        $('#btnClose').hide();
+        let profilePicture = '@Html.Raw(@Model.ProfilePicture)';
+        if (profilePicture != null && profilePicture != '') {
+            $('#blah').attr('src','/Uploads/' + profilePicture);
+            $('#blah').show();
+            $('#btnClose').show();
+
+        }
+
+
+        var empName = '@Html.Raw(Model.EmpName)';
+        if (empName != null && empName != '') {
+            GoToAddTab()
+        }
+        else {
+            GoToListTab()
+        }
+        var status = '@Html.Raw(ViewBag.FocusType)';
+        if (status != null && status != '') {
+            if (status == "0") {
+                $("#txtEmpName").focus();
+            }
+            if (status == "1") {
+                $("#txtEmpName").focus();
+            }
+        }
+        else {
+            $("#txtEmpName").focus();
+        }
+    });
+
+    function GoToAddTab() {
+        $('#custom-tabs-three-list-tab').removeClass('active');
+        $('#custom-tabs-three-add-tab').addClass('active');
+
+        $('#custom-tabs-three-list').removeClass('active');
+        $('#custom-tabs-three-add').addClass('active');
+        $('#custom-tabs-three-add').addClass('show');
+        document.getElementById('txtEmpName').focus();
+    }
+    function GoToListTab() {
+        $('#custom-tabs-three-list-tab').addClass('active');
+        $('#custom-tabs-three-add-tab').removeClass('active');
+
+        $('#custom-tabs-three-list').addClass('active');
+        $('#custom-tabs-three-list').addClass('show');
+        $('#custom-tabs-three-add').removeClass('active');
+        $('#custom-tabs-three-add').removeClass('show');
+        $('#txtReportSearchDataTable').focus();
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#blah').show();
+                $('#btnClose').show();
+                $('#blah').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imgUpload").change(function () {
+        readURL(this);
+    });
+
+    $('#btnClose').click(function () {
+        $('#blah').attr('src', '');
+        $('#blah').hide();
+        $('#btnClose').hide();
+        $("#imgUpload").val("");
+        $('input[name="ProfilePicture"]').val("");
+    })
+
+
+</script>
+<script>
+    var isRecentCalledEsc = false;
+    (function (code) {
+        code(window.jQuery, document, window);
+    }(function ($, document, window) {
+        $(function () {
+            $(window)
+                .initKeyboard({ debug: 1 })
+                .on('F2', function () {
+                    GoToAddTab()
+                }).on('F10', function () {
+                    $("#btnSave").click();
+                })
+                .on('Alt+L', function () {
+                    GoToListTab();
+                })
+                .on('Alt+C', function () {
+                    if (confirm("Do you want to exit without save?")) {
+                        location.href = '/EmployeeMaster/Index'
+                    }
+                    else {
+                        $('#txtEmpName').focus();
+                    }
+
+                }).on('Escape', function () {
+                    if (!isRecentCalledEsc) {
+                        isRecentCalledEsc = true;
+                        if (confirm("Do you want to exit without save?")) {
+                            location.href = '/EmployeeMaster/Index'
+                        }
+                        else {
+                            $('#txtEmpName').focus();
+                        }
+                        setTimeout(function () {
+                            isRecentCalledEsc = false;
+                        }, 500)
+                    }
+
+                })
+        });
+    }));
+</script>
+
+<script>
+
+    var isRecentCalled = false;
+
+
+    $(function () {
+
+        loadData();
+        var pageIndex = '';
+        var pageSize = '';
+        var totalRecord = '';
+        var isDelete = '@Html.Raw(userRight.IsDelete)';
+        var isEdit = '@Html.Raw(userRight.IsEdit)';
+    })
+
+    var timer = null;
+    $('#txtReportSearchDataTable').keyup(function (e) {
+        if (e.keyCode >= 112 && e.keyCode <= 123) {
+            e.preventDefault();
+            return false;
+        }
+        else {
+            clearTimeout(timer);
+
+            timer = setTimeout(loadData, 1000)
+        }
+
+    });
+
+    function loadData(pageIndex, columnName, sortBy) {
+            isRecentCalled = true;
+            if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
+                pageIndex = 1;
+            }
+            var layoutId = $('.drpReportLayout').val();
+
+            if (!layoutId) {
+                $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
+                //SetSelect2()
+
+            }
+            if (!columnName) {
+                columnName = '';
+            }
+            if (!sortBy) {
+                sortBy = '';
+            }
+            $('.dataTable').html();
+            $.ajax({
+                url: '/EmployeeMaster/GetReportView',
+                type: 'GET',
+                data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+                dataType: 'HTML',
+                traditional: true, // add this
+                success: function (data) {
+                    $('.dataTable').html(data);
+                    setTimeout(function () {
+                        isRecentCalled = false;
+                    }, 2000)
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+    }
+
+    $('#btnExportToExcel').click(function () {
+        window.location.href = "/EmployeeMaster/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+    })
+    $('#btnExportToPDF').click(function () {
+        window.location.href = "/EmployeeMaster/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+    })
+</script>
+
+
+<script>
+    $(function () {
+        var activeyn = $('#EmpActId').children('option:selected').text()
+        if (activeyn)
+            $('input[name="ActiveYN"]').val(activeyn);
+    })
+
+    $('#EmpActId').change(function () {
+        var activeyn = $('#EmpActId').children('option:selected').text()
+        if (activeyn)
+            $('input[name="ActiveYN"]').val(activeyn);
+    })
+</script>
+
+<script>
+    $(function () {
+        var dsgnm = $('#EmpDsgMscId').children('option:selected').text()
+        if (dsgnm)
+            $('input[name="EmpDsgNm"]').val(dsgnm);
+    })
+
+    $('#EmpDsgMscId').change(function () {
+        var dsgnm = $('#EmpDsgMscId').children('option:selected').text()
+        if (dsgnm)
+            $('input[name="EmpDsgNm"]').val(dsgnm);
+    })
+</script>
+
+<script>
+    $(function () {
+        var depnm = $('#EmpDepMscId').children('option:selected').text()
+        if (depnm)
+            $('input[name="EmpDepNm"]').val(depnm);
+    })
+
+    $('#EmpDepMscId').change(function () {
+        var depnm = $('#EmpDepMscId').children('option:selected').text()
+        if (depnm)
+            $('input[name="EmpDepNm"]').val(depnm);
+    })
+</script>
+
+<script>
+    $(function () {
+        var shift = $('#EmpShtId').children('option:selected').text()
+        if (shift)
+            $('input[name="EmpShift"]').val(shift);
+    })
+
+    $('#EmpShtId').change(function () {
+        var shift = $('#EmpShtId').children('option:selected').text()
+        if (shift)
+            $('input[name="EmpShift"]').val(shift);
+    })
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".EmpDsgMscId").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/EmployeeMaster/designation-list',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+
+        $(".EmpDepMscId").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/EmployeeMaster/GetDepartmentMsc-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+
+
+    });
+
+    function SetSelect2() {
+        $(".select2").select2();
+    }
+
+</script>

@@ -1,0 +1,67 @@
+﻿ul.navbar-nav li {
+    white-space: nowrap;
+}
+
+.second-header {
+    transition: left .3s ease-in-out;
+    display: block;
+    position: absolute;
+    background: #FFF;
+    right: 0;
+    left: 250px;
+    padding: 10px 0;
+    overflow:hidden;
+}
+table th, table td {
+    white-space: nowrap;
+    min-width:35px !important;
+}
+.sidebar-collapse .second-header {
+    left: 75px;
+}
+.sidebar-closed .second-header {
+    left: 0;
+}
+.sidebar-open .second-header {
+    left: 0;
+}
+
+.second-header ul {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.cardBodyContent {
+    margin-top: 75px;
+}
+/*Small devices (landscape phones, 576px and lower)*/
+@media (max-width: 576px) {
+    .select2, input{
+        min-width:200px;
+    }
+    .pager span, .pager a {
+        display: inline-block;
+        float: left;
+        margin: 5px 10px !important;
+    }
+
+    .pager {
+        display: inline-table;
+        margin: 10px !important;
+    }
+}
+/*Small devices (landscape phones, 576px and up)*/
+@media (min-width: 576px) {
+}
+/*Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) {
+    .pager {
+        float: right;
+    }
+}
+/*Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) {
+}
+/*Extra large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) {
+}

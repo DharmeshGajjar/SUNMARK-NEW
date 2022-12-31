@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href="/Bilty/print.css" rel="stylesheet" />
+    <style>
+        body {
+            height: 842px;
+            width: 650px;
+            to centre page on screen margin-left: auto;
+            margin-right: auto;
+        }
+
+        @page {
+            margin: 1cm;
+            size: A4 portrait;
+        }
+    </style>
+</head>
+
+<body style="font-size: 10px;width: 720px;font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;margin-left:20px;margin-top:30px;position: relative;border:1px solid black;">
+    <div style="display: flex;width:100%;border-bottom:1px solid black;">
+        <div style="width:30%;"><img src="#*#*logo*#*#" style="width:70%;margin-left:30px;max-height:40px;" /></div>
+        <div style="width:70%;text-align: right;">
+            <div style="font-family:Verdana;font-size:25px;font-weight:bold;padding-right:5px;padding-top:5px;">
+                SUNMARK STAINLESS PVT. LTD.
+            </div>
+        </div>
+    </div>
+    <div style="display: flex;overflow:hidden;border-bottom:1px solid black;">
+        <div style="font-weight:bold;font-family:Verdana;font-size:medium;width:100%;margin-top:5px;margin-bottom:5px;" align="center"><b>SLITTING MACHINE REPORT</b></div>
+    </div>
+    <div style="display: flex;overflow:hidden;padding-left:5px;padding-top:5px;">
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:15%" align="left">
+            Coil No. :-
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:5%" align="left">
+            <input type="text" value="#*#*coilno*#*#" style="border-bottom:1px solid black;width:200px;border-left:none; border-right:none;
+                border-top:none; text-align:center; " />
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:35%" align="left">
+            &nbsp;
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:20%" align="left">
+            Date :-
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:5%;padding-right:5px;" align="left">
+            <input type="text" value="#*#*date*#*#" style="border-bottom:1px solid black;width:180px;border-left:none; border-right:none;
+                border-top:none; text-align:center; " />
+        </div>
+    </div>
+    <div style="display: flex;overflow:hidden;padding-left:5px;padding-top:5px;">
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:15%" align="left">
+            Party :-
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:5%" align="left">
+            <input type="text" value="#*#*party*#*#" style="border-bottom:1px solid black;width:200px;border-left:none; border-right:none;
+                border-top:none; text-align:center; " />
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:35%" align="left">
+            &nbsp;
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:20%" align="left">
+            Operator Name :-
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:5%" align="left">
+            <input type="text" value="#*#*opename*#*#" style="border-bottom:1px solid black;width:180px;border-left:none; border-right:none;
+                border-top:none; text-align:center; " />
+        </div>
+    </div>
+    <div style="display: flex;overflow:hidden;padding-left:5px;padding-top:5px;">
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:15%" align="left">
+            Party Coil No.
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:5%" align="left">
+            <input type="text" value="#*#*partycoil*#*#" style="border-bottom:1px solid black;width:200px;border-left:none; border-right:none;
+                border-top:none; text-align:center; " />
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:35%" align="left">
+            &nbsp;
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:20%" align="left">
+            Hardness :-
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:5%" align="left">
+            <input type="text" value="" style="border-bottom:1px solid black;width:180px;border-left:none; border-right:none;
+                border-top:none; text-align:center; " />
+        </div>
+    </div>
+    <div style="display: flex;overflow:hidden;padding-left:5px;padding-top:5px;">
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:15%" align="left">
+            Grade :-
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:5%" align="left">
+            <input type="text" value="#*#*grade*#*#" style="border-bottom:1px solid black;width:200px;border-left:none; border-right:none;
+                border-top:none; text-align:center; " />
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:35%" align="left">
+            &nbsp;
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:20%" align="left">
+            Party Weight :-
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:5%" align="left">
+            <input type="text" value="#*#*partywt*#*#" style="border-bottom:1px solid black;width:180px;border-left:none; border-right:none;
+                border-top:none; text-align:center; " />
+        </div>
+    </div>
+    <div style="display: flex;overflow:hidden;padding-left:5px;padding-top:5px;">
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:15%" align="left">
+            Width :-
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:5%" align="left">
+            <input type="text" value="#*#*width*#*#" style="border-bottom:1px solid black;width:200px;border-left:none; border-right:none;
+                border-top:none; text-align:center; " />
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:35%" align="left">
+            &nbsp;
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:20%" align="left">
+            Actual Weight :-
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:5%" align="left">
+            <input type="text" value="#*#*actwt*#*#" style="border-bottom:1px solid black;width:180px;border-left:none; border-right:none;
+                border-top:none; text-align:center; " />
+        </div>
+    </div>
+    <div style="display: flex;overflow:hidden;border-bottom:1px solid black;padding-left:5px;padding-top:5px;padding-bottom:5px;">
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:15%" align="left">
+            Thickness :-
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:5%" align="left">
+            <input type="text" value="#*#*thk*#*#" style="border-bottom:1px solid black;width:200px;border-left:none; border-right:none;
+                border-top:none; text-align:center; " />
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:35%" align="left">
+            &nbsp;
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:20%" align="left">
+            Diff. :-
+        </div>
+        <div style="font-weight:600;font-family:Verdana;font-size:small;width:5%" align="left">
+            <input type="text" value="#*#*diff*#*#" style="border-bottom:1px solid black;width:180px;border-left:none; border-right:none;
+                border-top:none; text-align:center; " />
+        </div>
+    </div>
+
+    <!--<br />-->
+
+    <div style="height:620px;">
+        #*#*datatable-keytable*#*#
+    </div>
+
+    <!--<div>
+        <table border="1" cellpadding="5" cellspacing="0" width="100%">
+            <tbody>
+                <tr style="border-left:none;">
+                    <td align="center" style="font-family: Verdana;font-size:small;color:black;width:8%;border-left:none;"><b>SR. NO.</b></td>
+                    <td align="center" style="font-family: Verdana;font-size:small;color:black;width:20%"><b>SM COIL NO.</b></td>
+                    <td align="center" style="font-family: Verdana;font-size:small;color:black;width:10%;"><b>WIDTH</b></td>
+                    <td align="center" style="font-family: Verdana;font-size:small;color:black;width:10%;"><b>THK</b></td>
+                    <td align="center" style="font-family: Verdana;font-size:small;color:black;width:10%;"><b>WEIGHT</b></td>
+                    <td align="center" style="font-family: Verdana;font-size:small;color:black;border-right:none;width:20%;"><b>REMARKS</b></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">1</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">2</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">3</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">4</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">5</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">6</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">7</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">8</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">9</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">10</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">11</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">12</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">13</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">14</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">15</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">16</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">17</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">18</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">19</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">20</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">21</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">22</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">23</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">24</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+                <tr style="border-left:none;">
+                    <td style="border-left:none;"><div style="text-align:center;">25</div></td>
+                    <td><div style="text-align:center;">#*#*r6*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r7*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r8*#*#</div></td>
+                    <td><div style="text-align:center;">#*#*r9*#*#</div></td>
+                    <td style="border-right:none;"><div style="text-align:left;">#*#*r10*#*#</div></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>-->
+    <div style="display: flex;overflow:hidden;border-bottom:1px solid black;">
+        <div style="font-weight:bold;font-family:Verdana;font-size:medium;width:100%;margin-top:5px;margin-bottom:5px;" align="center"><b>POLY CHECK</b></div>
+    </div>
+    <div style="display: flex;overflow:hidden;padding-bottom:7px;padding-top:5px;">
+        <div style="font-family:Verdana;font-size:9px;width:14%;padding-left:5px;" align="left">
+            Leader End :-
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            <input type="text" value="" style="border-bottom:1px solid black;border-left:none; border-right:none;border-top:none; text-align:center;width:125px;" />
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            &nbsp;
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:13%" align="left">
+            Grade :
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            <input type="text" value="#*#*grade*#*#" style="border-bottom:1px solid black;border-left:none; border-right:none;border-top:none; text-align:center;width:120px; " />
+        </div>
+    </div>
+    <div style="display: flex;overflow:hidden;padding-bottom:7px;padding-top:3px;">
+        <div style="font-family:Verdana;font-size:9px;width:14%;padding-left:5px;" align="left">
+            Patta :-
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            <input type="text" value="#*#*patta*#*#" style="border-bottom:1px solid black;border-left:none; border-right:none;border-top:none; text-align:center;width:125px;" />
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            &nbsp;
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:13%" align="left">
+            Colour :
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            <input type="text" value="" style="border-bottom:1px solid black;border-left:none; border-right:none;border-top:none; text-align:center;width:120px; " />
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            &nbsp;
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:15%" align="left">
+            Supervisor Sign :
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            <input type="text" value="" style="border-bottom:1px solid black;border-left:none; border-right:none;border-top:none; text-align:center;width:125px; " />
+        </div>
+    </div>
+    <div style="display: flex;overflow:hidden;padding-bottom:7px;padding-top:3px;">
+        <div style="font-family:Verdana;font-size:9px;width:14%;padding-left:5px;" align="left">
+            Scrap :-
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            <input type="text" value="#*#*scrap*#*#" style="border-bottom:1px solid black;border-left:none; border-right:none;border-top:none; text-align:center;width:125px;" />
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            &nbsp;
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:13%" align="left">
+            Checked By :
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            <input type="text" value="" style="border-bottom:1px solid black;border-left:none; border-right:none;border-top:none; text-align:center;width:120px; " />
+        </div>
+    </div>
+    <div style="display: flex;overflow:hidden;padding-bottom:7px;padding-top:3px;">
+        <div style="font-family:Verdana;font-size:9px;width:14%;padding-left:5px;" align="left">
+            &nbsp;
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            <input type="text" value="" style="border-bottom:1px solid black;border-left:none; border-right:none;border-top:none; text-align:center;width:125px;" />
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            &nbsp;
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:13%" align="left">
+            Date :
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            <input type="text" value="#*#*sdate*#*#" style="border-bottom:1px solid black;border-left:none; border-right:none;border-top:none; text-align:center;width:120px; " />
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            &nbsp;
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:15%" align="left">
+            Depart Head Sign :
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            <input type="text" value="" style="border-bottom:1px solid black;border-left:none; border-right:none;border-top:none; text-align:center;width:125px; " />
+        </div>
+    </div>
+    <div style="display: flex;overflow:hidden;padding-bottom:7px;padding-top:3px;">
+        <div style="font-family:Verdana;font-size:9px;width:14%;padding-left:5px;" align="left">
+            &nbsp;
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            <input type="text" value="" style="border-bottom:1px solid black;border-left:none; border-right:none;border-top:none; text-align:center;width:125px;" />
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            &nbsp;
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:13%" align="left">
+            Sign :
+        </div>
+        <div style="font-family:Verdana;font-size:9px;width:10%" align="left">
+            <input type="text" value="" style="border-bottom:1px solid black;border-left:none; border-right:none;border-top:none; text-align:center;width:120px; " />
+        </div>
+    </div>
+</body>
+
+</html>

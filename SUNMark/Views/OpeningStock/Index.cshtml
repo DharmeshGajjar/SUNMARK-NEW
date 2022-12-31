@@ -1,0 +1,1370 @@
+﻿@model SUNMark.Models.OpeningStokModel
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
+    List<SUNMark.Models.OpeningStokModel> openingstockList = ViewBag.openingstockList as List<SUNMark.Models.OpeningStokModel>;
+    List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
+    List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
+    ViewData["Title"] = userRight.ModuleNm;
+
+    string headerAdd = "";
+    string headerList = "";
+    string gridAdd = "";
+    string gridList = "";
+    bool headerAddTrue = false;
+    bool headerListTrue = false;
+
+    if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+    {
+        headerAdd = "active";
+        gridAdd = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    List<SelectListItem> statenameList = ViewBag.statename as List<SelectListItem>;
+}
+
+<style>
+    .clsrequied {
+        color: red;
+    }
+
+    .lblstyle {
+        font-family: Verdana;
+        font-size: small
+    }
+</style>
+<div class="card card-primary">
+    <div class="card-header" style="font-family:Verdana">
+        <h6> @ViewData["Title"]</h6>
+    </div>
+    <div class="card-body">
+        <div class="card card-primary card-tabs">
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                    @if (userRight != null && userRight.IsList)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerList" id="custom-tabs-three-list-tab" data-toggle="pill" href="#custom-tabs-three-list" role="tab" aria-controls="custom-tabs-three-list" aria-selected="@headerListTrue" style="font-family:Verdana;font-size:small" onclick="GoToListTab()">List (Alt+L)</a>
+                        </li>
+                    }
+                    @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerAdd" id="custom-tabs-three-add-tab" data-toggle="pill" href="#custom-tabs-three-add" role="tab" aria-controls="custom-tabs-three-add" aria-selected="@headerAddTrue" style="font-family:Verdana;font-size:small" onclick="GoToAddTab()">Add/Update (F2)</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="tab-content" id="custom-tabs-three-tabContent">
+                        @if (userRight != null && userRight.IsList)
+                        {
+                            <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
+                                <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
+                                    <div class="col-md-12 col-12 mb-2 mt-2">
+                                        <div class="row">
+                                            <div class="col-md-1 mb-2 float-left">
+                                                <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                                    @for (int i = 0; i < pageNoList.Count; i++)
+                                                    {
+                                                        string checkedd = "checked";
+                                                        <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                                        checkedd = string.Empty;
+                                                    }
+
+                                                </select>
+                                            </div>
+                                            <div class="col-md-5 col-12">
+                                                <div class="row">
+                                                    <div class="col-md-6 col">
+                                                        <select class="form-control select2 drpReportLayout" onchange="loadData()">
+                                                            <option value="" ; style="width:200px">--Select Layout--</option>
+                                                            @if (layoutList != null && layoutList.Count > 0)
+                                                            {
+                                                                foreach (var item in layoutList)
+                                                                {
+                                                                    <option value="@item.Value">@item.Text </option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                                        @if (isAdministrator == 1)
+                                                        {
+                                                            <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                                Edit
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                                        <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                                        <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                            <div class="col-md-3 col-12 float-right">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dataTable">
+
+                                    </div>
+                                    <div class="pager float-right"></div>
+                                </div>
+                            </div>
+                        }
+                        @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                        {
+                            <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
+                                <form method="post" class="mt-1">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Vno <span class="required clsrequied">*</span>
+                                                    </label>
+
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        @Html.TextBoxFor(x => x.OblNVno, new { @class = "form-control form-control-lg", @placeholder = "V. No", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width: 100px", @required = "required", @name = "OblNVno", @readonly = "readonly" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Date <span class="required clsrequied">*</span>
+                                                    </label>
+
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        @Html.TextBoxFor(x => x.OblDt, new { @class = "form-control form-control-lg", @placeholder = "Date", @tabindex = "2", @style = "font-family: Verdana;font-size:small; height:30px; width: 200px", @required = "required", @type = "date" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Job/Inv No <span class="required clsrequied"></span>
+                                                    </label>
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        <input type="text" id="OblRefNo" name="OblRefNo" class="form-control form-control-lg" placeholder="Memo No" tabindex="3" value="@Model.OblRefNo" style="font-family: Verdana;font-size:small; height:30px;width:150px" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-6">
+                                            <div class="row1">
+
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                            Company <span class="required clsrequied">*</span>
+                                                        </label>
+                                                        <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                            @Html.DropDownListFor(x => x.OblCmpVou, new SelectList(Model.OblCmpVouList, "Value", "Text"), "Select", new { @class = "form-control select2 ", @tabindex = "3", style = "font-family: Verdana;font-size:small; height:30px; width:300px ", @id = "txtOblCmpVou", @required = "required" })
+                                                            <a class="btn btn-outline-info ml-2" href="/Department/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="row1">
+
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                            Godown <span class="required clsrequied">*</span>
+                                                        </label>
+                                                        <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                            @Html.DropDownListFor(x => x.OblGdnVou, new SelectList(Model.OblGdnVouList, "Value", "Text"), "Select", new { @class = "form-control select2 ", @tabindex = "4", style = "font-family: Verdana;font-size:small; height:30px; width:150px ", @id = "txtOblGdnVou", @required = "required" })
+                                                            <a class="btn btn-outline-info ml-2" href="/GodownMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="row1">
+
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                            Location <span class="required clsrequied"></span>
+                                                        </label>
+                                                        <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                            @Html.DropDownListFor(x => x.OblLocVou, new SelectList(Model.OblLocVouList, "Value", "Text"), "Select", new { @class = "form-control select2 ", @tabindex = "5", style = "font-family: Verdana;font-size:small; height:30px; width:300px ", @id = "txtOblLocVou" })
+                                                            <a class="btn btn-outline-info ml-2" href="/Location/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid"></div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Coil Prefix <span class="required clsrequied"></span>
+                                                    </label>
+                                                    <input type="hidden" name="LotType" id="LotType" />
+                                                    <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                        @Html.DropDownListFor(x => x.LotType, new SelectList(Model.LotTypVouList, "Value", "Text"), "Select", new { @class = "form-control select2 ", @tabindex = "6", style = "font-family: Verdana;font-size:small; height:30px; width:300px ", @id = "txtLotTypVou" })
+                                                        <a class="btn btn-outline-info ml-2" href="/LotType/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Coil No <span class="required clsrequied">*</span>
+                                                    </label>
+                                                    <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                        @Html.TextBoxFor(x => x.CoilNo, new { @class = "form-control form-control-lg", @placeholder = "Coil No", @tabindex = "7", @style = "font-family: Verdana;font-size:small; height:30px; width: 150px", @required = "required", @type = "text", @onKeyUp = "numericFilter(this);" })
+
+                                                        @Html.TextBoxFor(x => x.LotSuffix, new { @class = "form-control form-control-lg", @placeholder = "Suffix", @tabindex = "8", @style = "font-family: Verdana;font-size:small; height:30px; width: 70px", @type = "text" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Supp. Coil No.
+                                                    </label>
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        <input type="text" id="LotSupCoilNo" name="LotSupCoilNo" class="form-control form-control-lg" placeholder="Supp. Coil No."
+                                                               tabindex="9" value="@Model.LotSupCoilNo" style="font-family: Verdana;font-size:small; height:30px;" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Heat No. <span class="required clsrequied">*</span>
+                                                    </label>
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        <input type="text" id="LotHeatNo" name="LotHeatNo" class="form-control form-control-lg" placeholder="Heat No."
+                                                               tabindex="10" value="@Model.LotHeatNo" style="font-family: Verdana;font-size:small; height:30px;width:150px" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Supplier <span class="required clsrequied">*</span>
+                                                    </label>
+                                                    <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                        @Html.DropDownListFor(x => x.OblAccVou, new SelectList(Model.OblAccVouList, "Value", "Text"), "Select", new { @class = "form-control select2 ", @tabindex = "11", style = "font-family: Verdana;font-size:small; height:30px; width:300px ", @id = "txtOblAccVou", @required = "required" })
+                                                        <a class="btn btn-outline-info ml-2" href="/AccountMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Product <span class="required clsrequied">*</span>
+                                                    </label>
+                                                    <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                        @Html.DropDownListFor(x => x.OblPrdVou, new SelectList(Model.OblPrdVouList, "Value", "Text"), "Select", new { @class = "form-control select2 ", @tabindex = "12", style = "font-family: Verdana;font-size:small; height:30px; width:150px ", @id = "txtOblPrdVou", @required = "required" })
+                                                        <a class="btn btn-outline-info ml-2" href="/ProductMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Grade <span class="required clsrequied">*</span>
+                                                    </label>
+                                                    <input type="hidden" name="Grade" id="Grade" />
+                                                    <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                        @Html.DropDownListFor(x => x.LotGrade, new SelectList(Model.LotGradeList, "Value", "Text"), "Select", new { @class = "form-control select2 ", @tabindex = "13", style = "font-family: Verdana;font-size:small; height:30px; width:300px ", @id = "txtLotGrade", @required = "required" })
+                                                        <a class="btn btn-outline-info ml-2" href="/GradeMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @*<div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Finish <span class="required clsrequied"></span>
+                                                    </label>
+                                                    <input type="hidden" name="Finish" id="Finish" />
+                                                    <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                        @Html.DropDownListFor(x => x.LotFinish, Model.LotFinishList, "Select", new { @class = "form-control select2 LotFinish", @tabindex = "14", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @id = "txtLotFinish" })
+                                                        <a class="btn btn-outline-info ml-2" href="/FinishMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>*@
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Coil Type <span class="required clsrequied">*</span>
+                                                    </label>
+                                                    <input type="hidden" name="CoilType" id="CoilType" />
+                                                    <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                        @Html.DropDownListFor(x => x.CoilTypeVou, Model.CoilTypeList, "Select", new { @class = "form-control select2 CoilTypeVou", @tabindex = "15", @style = "font-family: Verdana;font-size:small; height:30px; width:150px", @id = "txtCoilTypeVou", @onchange = "GetODDetails(this)", @required = "required" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Width <span class="required clsrequied">*</span>
+                                                    </label>
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        <input type="text" id="LotWidth" name="LotWidth" class="form-control form-control-lg" placeholder="Width" tabindex="16" value="@Model.LotWidth" style="font-family: Verdana;font-size:small; height:30px;text-align:right;width:130px" onKeyUp="numericFilter(this);" onchange="GetODDetails(this)" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Thick <span class="required clsrequied">*</span>
+                                                    </label>
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        <input type="text" id="LotThick" name="LotThick" class="form-control form-control-lg" placeholder="Thick " onKeyUp="numericFilter(this);" tabindex="17" value="@Model.LotThick" style="font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Weight <span class="required clsrequied">*</span>
+                                                    </label>
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        <input type="text" id="LotQty" name="LotQty" class="form-control form-control-lg" placeholder="Weight " onKeyUp="numericFilter(this);" tabindex="18" value="@Model.LotQty" style="font-family: Verdana;font-size:small; height:30px;text-align:right;width:130px" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Inward : Width <span class="required clsrequied"></span>
+                                                    </label>
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        <input type="text" id="LotInwWidth" name="LotInwWidth" class="form-control form-control-lg" placeholder="Inward : Width" onKeyUp="numericFilter(this);" tabindex="19" value="@Model.LotInwWidth" style="font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Inward : Thick
+                                                    </label>
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        <input type="text" id="LotInwThick" name="LotInwThick" class="form-control form-control-lg" placeholder="Thick" onKeyUp="numericFilter(this);" tabindex="20" value="@Model.LotInwThick" style="font-family: Verdana;font-size:small; height:30px;text-align:right;width:130px" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Inward : Weight
+                                                    </label>
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        <input type="text" id="LotInwQty" name="LotInwQty" class="form-control form-control-lg" placeholder="Weight" onKeyUp="numericFilter(this);" tabindex="21" value="@Model.LotInwQty" style="font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        OD Size
+                                                    </label>
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        <input type="text" id="LotOD" name="LotOD" class="form-control form-control-lg" placeholder="OD Size" onKeyUp="numericFilter(this);" tabindex="22" value="@Model.LotOD" style="font-family: Verdana;font-size:small; height:30px;text-align:right;width:130px" />
+                                                    </div>
+                                                    <label class="control-label pl-1" style="font-family: Verdana;font-size:small; height:30px;" id="ODVal"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        Remarks
+                                                    </label>
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        <input type="text" id="OblRem" name="OblRem" class="form-control form-control-lg" placeholder="Remarks" tabindex="23" value="@Model.OblRem" style="font-family: Verdana;font-size:small; height:30px;width:300px" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @*</div>
+                                            </div>*@
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            @if (userRight.IsEdit && Model != null && Model.OblVou > 0)
+                                            {
+                                                <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave">
+                                                    Save (F10)
+                                                </button>
+                                                <a href="/OpeningStock/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                    Cancel (Esc)
+                                                </a>
+                                            }
+                                            else if (userRight.IsAdd && Model.OblVou == 0)
+                                            {
+                                                <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave">
+                                                    Save (F10)
+                                                </button>
+                                                <a href="/OpeningStock/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                    Cancel (Esc)
+                                                </a>
+                                            }
+
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="stateMasterModal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add State</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label">Name</label>
+                        <input type="text" class="form-control" placeholder="State Name" id="txtStateNameModel" style="width: 200px" />
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label">Code</label>
+                        <input type="text" class="form-control" placeholder="State Code" id="txtStateCodeModel" style="width: 150px" />
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label">Position</label>
+                        <input type="text" class="form-control" placeholder="Position" id="txtStatePosModel" style="width: 80px" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="SaveState()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var oblVou = '@Html.Raw(Model.OblVou)';
+        if (oblVou != null && oblVou != '' && oblVou != 0 ) {
+            GoToAddTab()
+            GetVoucherNumber();
+        }
+        else {
+            GoToListTab()
+        }
+    });
+
+    function GoToAddTab() {
+        $('#custom-tabs-three-list-tab').removeClass('active');
+        $('#custom-tabs-three-add-tab').addClass('active');
+
+        $('#custom-tabs-three-list').removeClass('active');
+        $('#custom-tabs-three-add').addClass('active');
+        $('#custom-tabs-three-add').addClass('show');
+        document.getElementById('OblNVno').focus();
+        GetVoucherNumber();
+        
+    }
+    function GoToListTab() {
+        $('#custom-tabs-three-list-tab').addClass('active');
+        $('#custom-tabs-three-add-tab').removeClass('active');
+
+        $('#custom-tabs-three-list').addClass('active');
+        $('#custom-tabs-three-list').addClass('show');
+        $('#custom-tabs-three-add').removeClass('active');
+        $('#custom-tabs-three-add').removeClass('show');
+        $('#txtReportSearchDataTable').focus();
+    }
+</script>
+<script>
+    var isRecentCalledEsc = false;
+    (function (code) {
+        code(window.jQuery, document, window);
+    }(function ($, document, window) {
+        $(function () {
+            $(window)
+                .initKeyboard({ debug: 1 })
+                .on('F2', function () {
+                    GoToAddTab()
+                    GetVoucherNumber();
+                }).on('F10', function () {
+                    var oblVou = '@Html.Raw(Model.OblVou)';
+                    $("#btnSave").click();
+                    if (oblVou != null && oblVou != '' && oblVou != 0) {
+                        GoToListTab();
+                    }
+                    else {
+                        GoToAddTab();
+                    }
+
+                })
+                .on('Alt+L', function () {
+                    GoToListTab();
+                })
+                .on('Alt+C', function () {
+                    if (confirm("Do you want to exit without save?")) {
+                        location.href = '/OpeningStock/Index'
+                    }
+                    else {
+                        $('#OblNVno').focus();
+                    }
+
+                }).on('Escape', function () {
+                    if (!isRecentCalledEsc) {
+                        isRecentCalledEsc = true;
+                        if (confirm("Do you want to exit without save?")) {
+                            location.href = '/OpeningStock/Index'
+                        }
+                        else {
+                            $('#OblNVno').focus();
+                        }
+                        setTimeout(function () {
+                            isRecentCalledEsc = false;
+                        }, 500)
+                    }
+
+                })
+        });
+    }));
+</script>
+
+<script>
+
+    var isRecentCalled = false;
+
+    $(function () {
+
+        loadData();
+        var pageIndex = '';
+        var pageSize = '';
+        var totalRecord = '';
+        var isDelete = '@Html.Raw(userRight.IsDelete)';
+        var isEdit = '@Html.Raw(userRight.IsEdit)';
+    })
+
+    var timer = null;
+    $('#txtReportSearchDataTable').keyup(function (e) {
+        if (e.keyCode >= 112 && e.keyCode <= 123) {
+            e.preventDefault();
+            return false;
+        }
+        else {
+            clearTimeout(timer);
+
+            timer = setTimeout(loadData, 1000)
+        }
+
+    });
+
+    function loadData(pageIndex, columnName, sortBy) {
+            isRecentCalled = true;
+            if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
+                pageIndex = 1;
+            }
+            var layoutId = $('.drpReportLayout').val();
+            SetSelect2();
+
+            if (!layoutId) {
+                $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
+                //SetSelect2()
+
+            }
+            if (!columnName) {
+                columnName = '';
+            }
+            if (!sortBy) {
+                sortBy = '';
+            }
+            $('.dataTable').html();
+            $.ajax({
+                url: '/OpeningStock/GetReportView',
+                type: 'GET',
+                data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+                dataType: 'HTML',
+                traditional: true, // add this
+                success: function (data) {
+                    $('.dataTable').html(data);
+                    setTimeout(function () {
+                        isRecentCalled = false;
+                    }, 2000)
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+    }
+
+    $('#btnExportToExcel').click(function () {
+        window.location.href = "/OpeningStock/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+    })
+    $('#btnExportToPDF').click(function () {
+        window.location.href = "/OpeningStock/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+    })
+</script>
+<script>
+    function GetCompanyMasterDropdown() {
+        $.ajax({
+            url: '/OpeningStock/GetCompanyList',
+            type: 'POST',
+            data: {},
+            dataType: 'JSON',
+            traditional: true, // add this
+            success: function (data) {
+                if (data.result) {
+                    if (data.data) {
+                        var oldData = $('#txtOblCmpVou').val();
+                        $('#txtOblCmpVou').children('option').remove();
+                        var html = `<option value="">---Select---</option>`
+                        for (var x = 0; x < data.data.length; x++) {
+                            if (oldData && oldData == data.data[x].value) {
+                                html += `<option selected="selected" value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            } else {
+                                html += `<option value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            }
+
+                        }
+                        $('#txtOblCmpVou').append(html);
+                        $('#txtOblCmpVou').select2();
+
+                    }
+                }
+                else {
+                    showErrorMessage(data.message);
+                }
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    }
+
+    function GetGoDownMasterDropdown() {
+        $.ajax({
+            url: '/OpeningStock/GetGodownList',
+            type: 'POST',
+            data: {},
+            dataType: 'JSON',
+            traditional: true, // add this
+            success: function (data) {
+                if (data.result) {
+                    if (data.data) {
+                        var oldData = $('#txtOblGdnVou').val();
+                        $('#txtOblGdnVou').children('option').remove();
+                        var html = `<option value="">---Select---</option>`
+                        for (var x = 0; x < data.data.length; x++) {
+                            if (oldData && oldData == data.data[x].value) {
+                                html += `<option selected="selected" value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            } else {
+                                html += `<option value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            }
+
+                        }
+                        $('#txtOblGdnVou').append(html);
+                        $('#txtOblGdnVou').select2();
+
+                    }
+                }
+                else {
+                    showErrorMessage(data.message);
+                }
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    }
+
+    function GetLocationMasterDropdown() {
+        $.ajax({
+            url: '/OpeningStock/GetLocationList',
+            type: 'POST',
+            data: {},
+            dataType: 'JSON',
+            traditional: true, // add this
+            success: function (data) {
+                if (data.result) {
+                    if (data.data) {
+                        var oldData = $('#txtOblLocVou').val();
+                        $('#txtOblLocVou').children('option').remove();
+                        var html = `<option value="">---Select---</option>`
+                        for (var x = 0; x < data.data.length; x++) {
+                            if (oldData && oldData == data.data[x].value) {
+                                html += `<option selected="selected" value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            } else {
+                                html += `<option value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            }
+
+                        }
+                        $('#txtOblLocVou').append(html);
+                        $('#txtOblLocVou').select2();
+
+                    }
+                }
+                else {
+                    showErrorMessage(data.message);
+                }
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    }
+
+    function GetLotMasterDropdown() {
+        $.ajax({
+            url: '/OpeningStock/GetLotTypeList',
+            type: 'POST',
+            data: {},
+            dataType: 'JSON',
+            traditional: true, // add this
+            success: function (data) {
+                if (data.result) {
+                    if (data.data) {
+                        var oldData = $('#txtLotTypVou').val();
+                        $('#txtLotTypVou').children('option').remove();
+                        var html = `<option value="">---Select---</option>`
+                        for (var x = 0; x < data.data.length; x++) {
+                            if (oldData && oldData == data.data[x].value) {
+                                html += `<option selected="selected" value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            } else {
+                                html += `<option value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            }
+
+                        }
+                        $('#txtLotTypVou').append(html);
+                        $('#txtLotTypVou').select2();
+
+                    }
+                }
+                else {
+                    showErrorMessage(data.message);
+                }
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    }
+
+    function GetProductMasterDropdown() {
+        $.ajax({
+            url: '/OpeningStock/GetProductList',
+            type: 'POST',
+            data: {},
+            dataType: 'JSON',
+            traditional: true, // add this
+            success: function (data) {
+                if (data.result) {
+                    if (data.data) {
+                        var oldData = $('#txtOblPrdVou').val();
+                        $('#txtOblPrdVou').children('option').remove();
+                        var html = `<option value="">---Select---</option>`
+                        for (var x = 0; x < data.data.length; x++) {
+                            if (oldData && oldData == data.data[x].value) {
+                                html += `<option selected="selected" value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            } else {
+                                html += `<option value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            }
+
+                        }
+                        $('#txtOblPrdVou').append(html);
+                        $('#txtOblPrdVou').select2();
+
+                    }
+                }
+                else {
+                    showErrorMessage(data.message);
+                }
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    }
+
+    function GetGradeMasterDropdown() {
+        $.ajax({
+            url: '/OpeningStock/GetGradeList',
+            type: 'POST',
+            data: {},
+            dataType: 'JSON',
+            traditional: true, // add this
+            success: function (data) {
+                if (data.result) {
+                    if (data.data) {
+                        var oldData = $('#txtLotGrade').val();
+                        $('#txtLotGrade').children('option').remove();
+                        var html = `<option value="">---Select---</option>`
+                        for (var x = 0; x < data.data.length; x++) {
+                            if (oldData && oldData == data.data[x].value) {
+                                html += `<option selected="selected" value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            } else {
+                                html += `<option value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            }
+
+                        }
+                        $('#txtLotGrade').append(html);
+                        $('#txtLotGrade').select2();
+
+                    }
+                }
+                else {
+                    showErrorMessage(data.message);
+                }
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    }
+
+    function GetFinishMasterDropdown() {
+        $.ajax({
+            url: '/OpeningStock/GetFinishList',
+            type: 'POST',
+            data: {},
+            dataType: 'JSON',
+            traditional: true, // add this
+            success: function (data) {
+                if (data.result) {
+                    if (data.data) {
+                        var oldData = $('#txtLotFinish').val();
+                        $('#txtLotFinish').children('option').remove();
+                        var html = `<option value="">---Select---</option>`
+                        for (var x = 0; x < data.data.length; x++) {
+                            if (oldData && oldData == data.data[x].value) {
+                                html += `<option selected="selected" value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            } else {
+                                html += `<option value="` + data.data[x].value + `">` + data.data[x].text + `</option>`
+                            }
+
+                        }
+                        $('#txtLotFinish').append(html);
+                        $('#txtLotFinish').select2();
+
+                    }
+                }
+                else {
+                    showErrorMessage(data.message);
+                }
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    }
+
+    function numericFilter(txb) {
+        txb.value = txb.value.replace(/[^\0-9]/ig, "");
+    }
+
+    $(function () {
+        var grade = $('#txtLotGrade').children('option:selected').text()
+        if (grade)
+            $('input[name="Grade"]').val(grade);
+    })
+
+    $('#txtLotGrade').change(function () {
+        var grade = $('#txtLotGrade').children('option:selected').text()
+        if (grade)
+            $('input[name="Grade"]').val(grade);
+    })
+
+    $(function () {
+        var finish = $('#txtLotFinish').children('option:selected').text()
+        if (finish)
+            $('input[name="Finish"]').val(finish);
+    })
+
+    $('#txtLotFinish').change(function () {
+        var finish = $('#txtLotFinish').children('option:selected').text()
+        if (finish)
+            $('input[name="Finish"]').val(finish);
+    })
+
+    $(function () {
+        var lotType = $('#txtLotTypVou').children('option:selected').text()
+        if (lotType)
+            $('input[name="LotType"]').val(lotType);
+    })
+
+    $('#txtLotTypVou').change(function () {
+        var lotType = $('#txtLotTypVou').children('option:selected').text()
+        if (lotType)
+            $('input[name="LotType"]').val(lotType);
+    })
+
+    $(function () {
+        var vchtype = $('#txtOrmVchVou').children('option:selected').text()
+        if (vchtype)
+            $('input[name="VchType"]').val(vchtype);
+    })
+
+    $('#txtOrmVchVou').change(function () {
+        var vchtype = $('#txtOrmVchVou').children('option:selected').text()
+        if (vchtype)
+            $('input[name="VchType"]').val(vchtype);
+    })
+
+    $('#LotWidth').change(function () {
+        var width = $('#LotWidth').val()
+        if (width)
+            $('input[name="LotInwWidth"]').val(width);
+    })
+
+    $('#LotThick').change(function () {
+        var thick = $('#LotThick').val()
+        if (thick)
+            $('input[name="LotInwThick"]').val(thick);
+    })
+
+    $('#LotQty').change(function () {
+        var qty = $('#LotQty').val()
+        if (qty)
+            $('input[name="LotInwQty"]').val(qty);
+    })
+
+</script>
+<script>
+    function GetODDetails(obj) {
+        var coiltype = $('#txtCoilTypeVou').val();
+        var width = $('#LotWidth').val();
+        var input = $(obj);
+        if (width != null && width != "") {
+            $.ajax({
+                type: "POST",
+                url: '/OpeningStock/GetOD',
+                data: { "width": width },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            if (coiltype == "1") {
+                                $('input[name="LotOD"]').val(response.lotOD);
+                            }
+                            else {
+                                $('input[name="LotOD"]').val('');
+                            }
+                            $('#ODVal').text(response.lotOD);
+                        }
+                        else {
+                            if (coiltype == "1") {
+                                $('input[name="LotOD"]').val(response.lotOD);
+                            }                           
+                            else {
+                                $('input[name="LotOD"]').val('');
+                            }
+                            $('#ODVal').text(response.lotOD);
+                        }
+                    }
+                    else {
+                        if (coiltype == "1") {
+                            $('input[name="LotOD"]').val(response.lotOD);
+                        }                           
+                        else {
+                            $('input[name="LotOD"]').val('');
+                        }
+                        $('#ODVal').text(response.lotOD);
+                    }
+                },
+                error: function (response) {
+                }
+            });
+        }
+    }
+
+    function GetVoucherNumber() {
+        var oblPrdType = "COIL";
+        var OblVou = "0";
+        if (oblPrdType != null && oblPrdType != "" && OblVou == "0") {
+            var oblVou = '@Html.Raw(Model.OblVou)';
+            if (oblVou != null && oblVou != "" && oblVou == "0")
+                {
+                    $.ajax({
+                        type: "POST",
+                        url: '/OpeningStock/GetLastVoucherNo',
+                        data: { "OblPrdType": oblPrdType },
+                        dataType: "JSON",
+                        success: function (response) {
+                            $('input[name="OblNVno"]').val(response.oblNVno);
+                        },
+                        error: function (response) {
+
+                        }
+                    });
+                }
+
+        }
+    }
+
+    @*$(function () {
+        var oblvou = '@Html.Raw(Model.OblVou)';
+        if (oblvou != null || oblvou != '' || oblvou != 0) {
+            GoToAddTab()
+        }
+        else {
+            var isAdd = localStorage.getItem("OpeningStock");
+            if (isAdd && isAdd == "1") {
+                GoToAddTab();
+            }
+            else if (isAdd && isAdd == "2") {
+                GoToListTab();
+            }
+        }
+    })*@
+
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".OblCmpVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/OpeningStock/GetCompany-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+
+    });
+
+    function SetSelect2() {
+        $(".select2").select2();
+    }
+
+</script>
+<script>
+    $(document).ready(function () {
+        $(".OblGdnVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/OpeningStock/GetGodown-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+
+    });
+
+    function SetSelect2() {
+        $(".select2").select2();
+    }
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".OblLocVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/OpeningStock/GetLocation-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+            }
+        });
+    });
+
+
+    function SetSelect2() {
+        $(".select2").select2();
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".LotType").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/OpeningStock/GetLotType-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+            }
+        });
+    });
+
+    function SetSelect2() {
+        $(".select2").select2();
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".OblAccVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/OpeningStock/GetSupplier-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+            }
+        });
+    });
+
+    function SetSelect2() {
+        $(".select2").select2();
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".OblPrdVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/OpeningStock/GetProduct-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+            }
+        });
+    });
+
+    function SetSelect2() {
+        $(".select2").select2();
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".LotGrade").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/OpeningStock/GetGrade-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+            }
+        });
+    });
+
+    function SetSelect2() {
+        $(".select2").select2();
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".LotFinish").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/OpeningStock/GetFinish-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+            }
+        });
+    });
+
+    function SetSelect2() {
+        $(".select2").select2();
+    }
+
+
+    @*$(function () {
+        var oblvou = '@Html.Raw(Model.OblVou)';
+        if (oblvou != null && oblvou != '' && oblvou != 0) {
+            GoToListTab();
+        }
+        else {
+            var isAdd = localStorage.getItem("OpeningStock");
+            if (isAdd && isAdd == "1") {
+                GoToAddTab();
+            }
+            else if (isAdd && isAdd == "2") {
+                GoToListTab();
+            }
+        }
+
+
+    })*@
+
+</script>
+

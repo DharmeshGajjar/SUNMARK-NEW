@@ -1,0 +1,184 @@
+﻿@model SUNMark.Models.CoilMasterModel
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
+    List<SUNMark.Models.CoilMasterModel> coilList = ViewBag.coilList as List<SUNMark.Models.CoilMasterModel>;
+    List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
+    List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
+    ViewData["Title"] = userRight.ModuleNm;
+    string headerAdd = "";
+    string headerList = "";
+    string gridAdd = "";
+    string gridList = "";
+    bool headerAddTrue = false;
+    bool headerListTrue = false;
+
+    if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+    {
+        headerAdd = "active";
+        gridAdd = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+}
+
+<style>
+    #tblDisplay thead tr th {
+        padding: 5px !important;
+        text-align: center
+    }
+
+    #tblDisplay tbody tr td {
+        padding: 5px !important;
+        text-align: center
+    }
+</style>
+
+
+<div class="card card-primary">
+    <div class="card-header" style="font-family:Verdana">
+        <h6> @ViewData["Title"]</h6>
+    </div>
+    <div class="card-body">
+        <div class="col-md-12">
+            @if (userRight != null && userRight.IsList)
+            {
+                <div class="table-responsive mt-1" style="font-family:Verdana;font-size:small;font-display:inherit">
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                AS On Date <span class="required"></span>
+                            </label>
+                            <input type="hidden" id="txtCompanyVou" name="CompanyVou" value="0" />
+                            <input type="hidden" id="txtToDt" name="ToDt" value="" />
+                            <div class="form-outline form-white mb-2">
+                                @Html.TextBoxFor(x => x.ToRecDt, new { @class = "form-control form-control-lg", @placeholder = "To Rec.Dt", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                Company <span class="required"></span>
+                            </label>
+                            <div class="form-outline form-white mb-2">
+                                @Html.DropDownListFor(x => x.Company, Model.CompanyList, "Select", new { @class = "form-control select2 Company", @tabindex = "2", @style = "font-family: Verdana;font-size:small; height:30px; width:300px", @id = "Company" })
+                            </div>
+                        </div>
+                        <div class="col-md-5 mt-1 text-right">
+                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
+                                Print (F9)
+                            </button>
+                            <a href="/CoilStock/index" class="btn btn-warning px-4 text-dark" style="font-family:Verdana;font-size:medium">
+                                Cancel (Esc)
+                            </a>
+                        </div>
+                    </div>
+                    <div class="dataTable mt-3">
+
+                    </div>
+                    <div class="pager float-right"></div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#ToRecDt').focus();
+        SetSelect2();
+    });
+</script>
+<script>
+    var isRecentCalledEsc = false;
+    var isRecentCalledAddRows = false;
+    var isRecentCalledSave = false;
+    (function (code) {
+        code(window.jQuery, document, window);
+    }(function ($, document, window) {
+        $(function () {
+            $(window)
+                .initKeyboard({ debug: 1 })
+        }).on('F9', function () {
+            $("#btnPrint").click();
+        }).on('Alt+C', function () {
+            if (confirm("Do you want to exit?")) {
+                isAdd == 1;
+                location.href = '/ProductionSumm/Index'
+            }
+            else {
+                $('#ToRecDt').focus();
+            }
+        }).on('Escape', function () {
+            if (!isRecentCalledEsc) {
+                isRecentCalledEsc = true;
+                if (confirm("Do you want to exit?")) {
+                    localStorage.setItem("ProductionSumm", "1");
+                    location.href = '/ProductionSumm/Index'
+
+                }
+                else {
+                    $('#ToRecDt').focus();
+                }
+                setTimeout(function () {
+                    isRecentCalledEsc = false;
+                }, 500)
+            }
+
+        })
+    }));
+
+
+    $(function () {
+        var companyvou = $('#Company').children('option:selected').text()
+        if (companyvou)
+            $('input[name="CompanyVou"]').val(companyvou);
+    })
+
+    $('#Company').change(function () {
+        var companyvou = $('#Company').children('option:selected').text()
+        if (companyvou)
+            $('input[name="CompanyVou"]').val(companyvou);
+    })
+
+    $(function () {
+        var asondt = $('#ToRecDt').val()
+        $('input[name="ToDt"]').val(asondt);
+    })
+
+
+</script>
+<script>
+
+    $("#btnPrint").click(function () {
+        var CmpVou = $('#Company').children('option:selected').val()
+        var torecdt = $('#ToRecDt').val()
+        window.open('/Print/ProductionDailySummDetail?todt=' + torecdt + '&companyId=' + CmpVou, '_blank')
+    })
+
+    $('#myform').submit(function () {
+        var unit = '';
+    });
+
+
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+
+</script>
