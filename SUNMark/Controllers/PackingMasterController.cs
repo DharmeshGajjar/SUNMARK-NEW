@@ -318,6 +318,44 @@ namespace SUNMark.Controllers
                 throw;
             }
         }
+        [HttpPost]
+        public ActionResult GetDataByWONumber(string WONumber)
+        {
+            try
+            {
+                PackingMasterModel packingMasterModel = new PackingMasterModel();
+                SqlParameter[] parameter = new SqlParameter[1];
+                parameter[0] = new SqlParameter("@WONumber", WONumber);
+                DataSet ds = ObjDBConnection.GetDataSet("GetDataByWONumberPacking", parameter);
+                if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables.Count == 1)
+                {
+                    List<object> data = new List<object>();
+                    DataTable dtLotMst = ds.Tables[0];
+                    if (dtLotMst != null && dtLotMst.Rows.Count > 0)
+                    {
+                        data.Add(dtLotMst.Rows[0]["OrmPONo"].ToString());
+                    }
+                    
+                    if (data == null || data.Count <= 0)
+                    {
+                        return Json(new { result = false, message = "Invalid WO No!" });
+                    }
+                    else
+                    {
+                        return Json(new { result = true, data = data });
+                    }
+
+                }
+                else
+                {
+                    return Json(new { result = false, message = "Invalid WO No!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, message = "Invalid WO No!" });
+            }
+        }
 
     }
 }

@@ -64,6 +64,8 @@ namespace SUNMark.Models
         public string OutDate { get; set; }
 
         public string OutBy { get; set; }
+        public string NB { get; set; }
+        public string SCH { get; set; }
 
 
     }

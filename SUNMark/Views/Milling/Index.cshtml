@@ -291,8 +291,8 @@
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                            <label>Out Time<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                            @Html.TextBoxFor(x => x.OutTime, new { @class = "form-control ", @placeholder = "Out Time", @type = "time" })
+                                                        <label>Out Time<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.OutTime, new { @class = "form-control ", @placeholder = "Out Time", @type = "time" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
@@ -320,11 +320,11 @@
                                                     </div>
                                                 </div>
                                                 @*<div class="col-md-2 col-12">
-            <div class="form-group">
-                <label>Scrap Length<span class="text-danger" style="font-family: Verdana"></span></label>
-                @Html.TextBoxFor(x => x.ScrapLength, new { @class = "form-control ", @placeholder = "Scrap Length", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
-            </div>
-        </div>*@
+                                                        <div class="form-group">
+                                                            <label>Scrap Length<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                            @Html.TextBoxFor(x => x.ScrapLength, new { @class = "form-control ", @placeholder = "Scrap Length", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                        </div>
+                                                    </div>*@
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>Scrap Weight<span class="text-danger" style="font-family: Verdana"></span></label>
@@ -371,7 +371,7 @@
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>Read 1 Thick<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.Read1Thick, new { @class = "form-control ", @placeholder = "Read 1 Thick", @type = "text",  @style = "text-align:right" })
+                                                        @Html.TextBoxFor(x => x.Read1Thick, new { @class = "form-control ", @placeholder = "Read 1 Thick", @type = "text", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
@@ -395,7 +395,7 @@
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>Finish Date<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.FinishDate, new { @class = "form-control ", @placeholder = "Finish Date", @type = "date",@onblur = "return TDate()" })
+                                                        @Html.TextBoxFor(x => x.FinishDate, new { @class = "form-control ", @placeholder = "Finish Date", @type = "date", @onblur = "return TDate()" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 col-12">
@@ -407,7 +407,7 @@
                                                 <div class="col-md-12 text-center">
                                                     @if (userRight.IsEdit && id > 0)
                                                     {
-                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddMilling()">
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="return AddMilling()">
                                                             Save (F10)
                                                         </button>
                                                         <a href="/Milling/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
@@ -416,7 +416,7 @@
                                                     }
                                                     else if (userRight.IsAdd && id == 0)
                                                     {
-                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddMilling()">
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="return AddMilling()">
                                                             Save (F10)
                                                         </button>
                                                         <a href="/Milling/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
@@ -443,7 +443,8 @@
         if (Vou != null && Vou != '' && Vou != 0) {
             GoToAddTab()
             $('select[name="MillNo"]').attr('disabled', true)
-            $('input[name="IssueCoilNo"]').attr('disabled', true)
+            //$('input[name="IssueCoilNo"]').attr('disabled', true)
+            $('input[name="IssueCoilNo"]').prop("readonly", true);
         }
         else {
             GoToListTab()
@@ -643,35 +644,29 @@
 
     function GetDataByCoilNo(coilNo) {
         var mildt = $('input[name="Date"]').val();
+        var MacId = $('#MillNo').val();
         if (coilNo) {
             $.ajax({
                 type: "POST",
                 url: '/Milling/GetDataByCoilNo',
-                data: { "coilNo": coilNo,"mildt": mildt },
+                data: { "coilNo": coilNo, "mildt": mildt, "MacId": MacId },
                 dataType: "JSON",
                 success: function (response) {
                     if (response) {
                         if (response.result) {
-                            //var lotdt = response.data(7);
-                            //if (lotdt < mildt) {
-                            //    showErrorMessage("Invalid Coil No!");
-                            //}
-                            //else {
-                                $('input[name="Weight"]').val(response.data[5]);
-                                $('input[name="IssueCoilNoVou"]').val(response.data[1]);
-                                $('input[name="Grade"]').val(response.data[2]);
-                                $('input[name="Thick"]').val(response.data[3]);
-                                $('input[name="Width"]').val(response.data[4]);
-                                $('input[name="OD"]').val((response.data[4] / 3.14).toFixed(2));
-                                var weight = (((response.data[4] / 3.14).toFixed(2) - response.data[3]) * response.data[3] * 0.02503).toFixed(2);
-                                var pcs = (response.data[0] / weight).toFixed(0);
-                                $('#NoOfPipe').text(pcs);
-                                $('#PCSWeight').text((weight * pcs).toFixed(1));
-                                $('input[name="PCS"]').val(0);
-                                $('input[name="PCSWeight"]').val(0);
-                                GetNBSCHDetails();
-
-                            //}
+                            $('input[name="Weight"]').val(response.data[5]);
+                            $('input[name="IssueCoilNoVou"]').val(response.data[1]);
+                            $('input[name="Grade"]').val(response.data[2]);
+                            $('input[name="Thick"]').val(response.data[3]);
+                            $('input[name="Width"]').val(response.data[4]);
+                            $('input[name="OD"]').val((response.data[4] / 3.14).toFixed(2));
+                            var weight = (((response.data[4] / 3.14).toFixed(2) - response.data[3]) * response.data[3] * 0.02503).toFixed(2);
+                            var pcs = (response.data[0] / weight).toFixed(0);
+                            $('#NoOfPipe').text(pcs);
+                            $('#PCSWeight').text((weight * pcs).toFixed(1));
+                            $('input[name="PCS"]').val(0);
+                            $('input[name="PCSWeight"]').val(0);
+                            GetNBSCHDetails();
                         }
                         else {
                             showErrorMessage(response.message);
@@ -725,6 +720,7 @@
     }
 
     function AddMilling() {
+        var IsSubmit = 0;
         $('#txtNB').attr("disabled", false)
         $('#txtSCH').attr("disabled", false)
         $('#txtPCSWeight').attr("disabled", false)
@@ -732,11 +728,24 @@
         //$('#Operator1').attr("disabled", false)
         //$('#Operator2').attr("disabled", false)
         if (ValidateTextbox()) {
-            EnableTextbox();
-            $('#millingForm').submit();
+            IsSubmit = 1;
+            
         }
         else {
             showErrorMessage("Please enter all compulsory fields.");
+        }
+        if (TDate()) {
+
+        }
+        else {
+            $('#FinishDate').focus();
+            IsSubmit = 0;
+            return false;
+        }
+        if (IsSubmit == 1) {
+            $('select[name="MillNo"]').attr('disabled', false)
+            EnableTextbox();
+            $('#millingForm').submit();
         }
     }
 
@@ -1021,7 +1030,7 @@
         if (FromDate != '' && FromDate != null && FromDate != undefined) {
             if (new Date(Todate) < new Date(FromDate)) {
                 showErrorMessage("Finish date must be bigger or equal to date.");
-                $('#FinishDate').val('');
+                //$('#FinishDate').val('');
                 return false;
             }
         }
@@ -1033,7 +1042,7 @@
         if (Todate != '' && Todate != null && Todate != undefined) {
             if (new Date(Todate) < new Date(FromDate)) {
                 showErrorMessage("Date must be smaller or equal to finish date.");
-                $('#Date').val('');
+                //$('#Date').val('');
                 return false;
             }
         }

@@ -224,7 +224,7 @@
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                                                            Size Range From <span class="required"></span>
+                                                            Size Range From <span class="required">*</span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
                                                             <input type="text" maxlength="10" id="txtSizeRangFr" name="MacSizeRngFr" onfocus="this.select()" onblur="checkSizeRange('Fr')" class="form-control form-control-lg allow_decimal" placeholder="Size Range From" tabindex="6" value="@Model.MacSizeRngFr" style="font-family: Verdana;font-size:small; height:30px;width:100px;text-align:right" required />
@@ -234,7 +234,7 @@
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                                                            Size Range To <span class="required"></span>
+                                                            Size Range To <span class="required">*</span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
                                                             <input type="text" maxlength="10" id="txtSizeRangTo" name="MacSizeRngTo" onfocus="this.select()"  onblur="checkSizeRange('To')" class="form-control form-control-lg allow_decimal" placeholder="Size Range To" tabindex="7" value="@Model.MacSizeRngTo" style="font-family: Verdana;font-size:small; height:30px;width:100px;text-align:right" required />
@@ -905,6 +905,7 @@
 
             }
         });
+
         if ('@Model.MacSizeRngTo' == '0') {
             $('#txtSizeRangTo').val('');
         }
@@ -912,7 +913,7 @@
             $('#txtSizeRangFr').val('');
         }
 
-        
+
 
         $('.MacTypeID').select2({
             placeholder: "---Select---",
@@ -948,28 +949,46 @@
     });
 
     function checkSizeRange(inp) {
-        var txtSizeRangFr = $('#txtSizeRangFr').val();
-        var txtSizeRangTo = $('#txtSizeRangTo').val();
+        var txtSizeRangFr = $('#txtSizeRangFr').val().trim();
+        var txtSizeRangTo = $('#txtSizeRangTo').val().trim();
         if (txtSizeRangFr != '' && txtSizeRangTo != '') {
-            if (txtSizeRangFr >= txtSizeRangTo) {
+            if (parseFloat(txtSizeRangFr) >= parseFloat(txtSizeRangTo)) {
                 if (inp == 'Fr') {
                     showErrorMessage("Size range is invalid");
-                    $('#txtSizeRangFr').val('');
+                    return false;
+                    //$('#txtSizeRangFr').val('');
                 }
                 else if (inp == 'To') {
                     showErrorMessage("Size range is invalid");
-                    $('#txtSizeRangTo').val('');
+                    return false;
+                    //$('#txtSizeRangTo').val('');
                 }
+                else {
+                    return true;
+                }
+            }
+            else {
+                return true;
             }
         }
 
     }
     function checkSizeVal() {
-        var txtSizeRangFr = $('#txtSizeRangFr').val();
-        var txtSizeRangTo = $('#txtSizeRangTo').val();
-        if ((txtSizeRangFr == '' && txtSizeRangTo != '') || (txtSizeRangFr != '' && txtSizeRangTo == '')) {
-            showErrorMessage("Please enter proper size range.");
+        var txtSizeRangFr = $('#txtSizeRangFr').val().trim();
+        var txtSizeRangTo = $('#txtSizeRangTo').val().trim();
+        if (txtSizeRangFr == '') {
+            showErrorMessage("Please enter size range (From).");
+            $('#txtSizeRangFr').focus();
             return false;
         }
+        else if (txtSizeRangTo == '') {
+            showErrorMessage("Please enter size range (To).");
+            $('#txtSizeRangTo').focus();
+            return false;
+        }
+        if (!checkSizeRange('Fr')) {
+            return false;
+        };
+
     }
 </script>
