@@ -155,7 +155,7 @@ namespace SUNMark.Controllers
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int administrator = 0;
-                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblGdnVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblLocVou).ToString()))
+                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblGdnVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblLocVou).ToString()) && !string.IsNullOrWhiteSpace(obj.LotNB.ToString()) && !string.IsNullOrWhiteSpace(obj.LotSCH.ToString()))
                 {
                     SqlParameter[] sqlParameters = new SqlParameter[32];
                     sqlParameters[0] = new SqlParameter("@OblNVno", obj.OblNVno);

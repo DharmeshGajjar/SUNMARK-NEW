@@ -42,7 +42,7 @@ namespace SUNMark.Controllers
                     millingMasterModel.Supervisor = dtMill.Rows[0]["MilSupEmpVou"].ToString();
                     millingMasterModel.FeetPer = dtMill.Rows[0]["MilLenFeet"].ToString();
                     millingMasterModel.RecPrdVou = dtMill.Rows[0]["MilRecPrdVou"].ToString();
-                    millingMasterModel.ScrapPipeProductVou = dtMill.Rows[0]["MilScrPrdVou"].ToString();
+                    //millingMasterModel.ScrapPipeProductVou = dtMill.Rows[0]["MilScrPrdVou"].ToString();
                     millingMasterModel.ProcessVou = dtMill.Rows[0]["MilNextPrcVou"].ToString();
                     millingMasterModel.PrcVou = dtMill.Rows[0]["MilPrcVou"].ToString();
                 }
@@ -259,18 +259,21 @@ namespace SUNMark.Controllers
 
         }
 
-        public ActionResult GetDataByCoilNo(string coilNo, string mildt)
+        public ActionResult GetDataByCoilNo(string coilNo, string mildt,string MacId)
         {
             try
             {
                 MillingMasterModel millingMasterModel = new MillingMasterModel();
-                SqlParameter[] parameter = new SqlParameter[1];
+                SqlParameter[] parameter = new SqlParameter[2];
                 parameter[0] = new SqlParameter("@COILNO", coilNo);
+                parameter[1] = new SqlParameter("@MACVOU", MacId);
                 DataSet ds = ObjDBConnection.GetDataSet("GetDataByCoilNoMilling", parameter);
-                if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables.Count == 4)
+                if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables.Count == 6)
                 {
                     List<object> data = new List<object>();
                     DataTable dtLotMst = ds.Tables[0];
+                    DataTable dtMacMst = ds.Tables[4];
+                    DataTable dtNBSCH = ds.Tables[5];
                     if (dtLotMst != null && dtLotMst.Rows.Count > 0)
                     {
                         data.Add(dtLotMst.Rows[0]["LotQty"].ToString());
@@ -280,6 +283,28 @@ namespace SUNMark.Controllers
                         data.Add(dtLotMst.Rows[0]["LotWidth"].ToString());
                         data.Add(dtLotMst.Rows[0]["LotWeight"].ToString());
                         data.Add(Convert.ToDateTime(dtLotMst.Rows[0]["LotDt"].ToString()).ToString("yyyy-MM-dd"));
+
+                        if (Convert.ToDateTime(Convert.ToDateTime(dtLotMst.Rows[0]["LotDt"].ToString()).ToString("yyyy-MM-dd"))  >= Convert.ToDateTime(mildt))
+                        {
+                            return Json(new { result = false, message = "Lot Date Must Be Less Than Milling Date!" });
+                        }
+                        if (dtNBSCH != null && dtNBSCH.Rows.Count > 0)
+                        {
+                            data.Add(dtNBSCH.Rows[0]["NbsNB"].ToString());
+                            data.Add(dtNBSCH.Rows[0]["NbsSch"].ToString());
+                        }
+                    }
+                    
+                    if (dtMacMst != null && dtMacMst.Rows.Count > 0)
+                    {
+                        if (!(Convert.ToDecimal(dtLotMst.Rows[0]["LotOD"].ToString()) >= Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGFR"].ToString()) && Convert.ToDecimal(dtLotMst.Rows[0]["LotOD"].ToString()) <= Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGTO"].ToString())))
+                        {
+                            return Json(new { result = false, message = "Coil OD Size is Not Range to this Machine!" });
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { result = false, message = "Invalid Coil No!" });
                     }
                     if (data == null || data.Count <= 0)
                     {

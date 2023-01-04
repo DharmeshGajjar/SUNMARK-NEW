@@ -160,7 +160,8 @@
                                                             <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
                                                                 V.No <span class="required">*</span>
                                                             </label>
-                                                            <input type="hidden" name="IsCheckCoil" id="IsCheckCoil" value="@Model.IsCheckCoil"/>
+                                                            <input type="hidden" name="IsCheckCoil" id="IsCheckCoil" value="@Model.IsCheckCoil" />
+                                                            <input type="hidden" name="InstExl" id="InstExl" value="@Model.InstExl" />
                                                             <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
                                                                 @Html.TextBoxFor(x => x.InwVNo, new { @class = "form-control form-control-lg", @placeholder = "Bilty No", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width: 100px", @required = "required", @name = "InwVNo", @readonly = "readonly" })
                                                             </div>
@@ -1559,6 +1560,7 @@
     }
 
     $('#btnPasteCoilExcel').click(function () {
+        $('InstExl').val(2);
         $('#tblCoil').removeClass('d-none');
 
         $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').remove();

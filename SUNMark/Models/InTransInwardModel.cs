@@ -35,7 +35,7 @@ namespace SUNMark.Models
         public string IsCheckCoil { get; set; } = "0";
         public List<SelectListItem> MainProductList { get; set; }
         public string InwPrdNm { get; set; }
-
+        public int InstExl { get; set; } = 1;
         public List<InTransInwardGridModel> InwardList { get; set; }
         public InTransInwardGridModel Inward { get; set; }
 
