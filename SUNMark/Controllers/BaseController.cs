@@ -4,6 +4,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
 using iTextSharp.text;
@@ -189,7 +191,7 @@ namespace SUNMark.Controllers
                         if (dtGridMst != null && dtGridMst.Rows.Count > 0)
                         {
                             returnModel.ReportType = Convert.ToInt32(dtGridMst.Rows[0]["GrdType"].ToString());
-                            Query = "SELECT * FROM (" + dtGridMst.Rows[0]["GrdQryFields"].ToString() + " " + dtGridMst.Rows[0]["GrdQryJoin"].ToString(); 
+                            Query = "SELECT * FROM (" + dtGridMst.Rows[0]["GrdQryFields"].ToString() + " " + dtGridMst.Rows[0]["GrdQryJoin"].ToString();
                         }
 
                         if (!string.IsNullOrWhiteSpace(whereCondition))
@@ -205,13 +207,13 @@ namespace SUNMark.Controllers
                                 WQuery = whereCondition;
                                 Query = Query + WQuery + ") MyTable ";
                             }
-                       
+
                         }
                         else
                         {
                             Query = Query + ") MyTable ";
                         }
-                        
+
 
                         if (isAdministrator == 1 && !string.IsNullOrWhiteSpace(pageName) && pageName == "Client")
                         {
@@ -746,7 +748,7 @@ namespace SUNMark.Controllers
                     cell.PaddingBottom = 5f;
                     cell.BackgroundColor = BaseColor.WHITE;
                     table.AddCell(cell);
-                    table.CompleteRow(); 
+                    table.CompleteRow();
                 }
                 #endregion
 
@@ -980,6 +982,70 @@ namespace SUNMark.Controllers
             document.Close();
             return ms.ToArray();
         }
+        public bool SendEmail(string to, string subject, string body, string attachmentFile = null)
+        {
+            try
+            {
+                System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage();
+                foreach (var item in to.Split(','))
+                {
+                    mail.To.Add(item);
+                }
+                mail.From = new MailAddress(MailHelper.FromEmail, MailHelper.FromEmail, System.Text.Encoding.UTF8);
+                mail.Subject = subject;//"This mail is send from asp.net application";
+                mail.SubjectEncoding = System.Text.Encoding.UTF8;
+                mail.Body = body;// "This is Email Body Text";
+                mail.BodyEncoding = System.Text.Encoding.UTF8;
+                mail.IsBodyHtml = true;
+                //mail.Priority = MailPriority.High;
+                var smtpClient = new SmtpClient(MailHelper.Host)
+                {
+                    Port = MailHelper.Port,
+                    Credentials = new NetworkCredential(MailHelper.FromEmail, MailHelper.Password),
+                    EnableSsl = true,
+                };
+                if (!string.IsNullOrEmpty(attachmentFile))
+                {
+                    System.Net.Mail.Attachment attachment;
+                    foreach (var item in attachmentFile.Split(';'))
+                    {
+                        attachment = new System.Net.Mail.Attachment(item);
+                        mail.Attachments.Add(attachment);
+                    }
+                    
+                }
+                try
+                {
+                    smtpClient.Send(mail);
+                    return true;
 
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+                //using (SmtpClient client = new SmtpClient())
+                //{
+                //    client.Credentials = new System.Net.NetworkCredential(MailHelper.FromEmail, MailHelper.Password);
+                //    client.Port = MailHelper.Port;
+                //    client.Host = MailHelper.Host;
+                //    client.EnableSsl = true;
+                //    try
+                //    {
+                //        client.Send(mail);
+                //        return true;
+
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        return false;
+                //    }
+                //};
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

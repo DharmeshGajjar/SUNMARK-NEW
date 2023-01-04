@@ -6,6 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using iTextSharp.text;
+using iTextSharp.text.html.simpleparser;
+using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -703,10 +706,82 @@ namespace SUNMark.Controllers
         }
         public IActionResult JobWorkPrintDetials(long id, int copyType = 1)
         {
-            JobWorkPrintDetails obj = new JobWorkPrintDetails();
-
             try
             {
+                JobWorkPrintDetails obj =  GetJobWorkPrintData(id);
+                return View(obj);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            
+        }
+
+        public ActionResult GetCheckCompDtCoil(string isscoil)
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(isscoil))
+                {
+                    SqlParameter[] sqlParameters = new SqlParameter[1];
+                    sqlParameters[0] = new SqlParameter("@SupCoil", isscoil);
+                    DataTable dtJob = ObjDBConnection.CallStoreProcedure("GetCheckJobWorkCoil", sqlParameters);
+                    if (dtJob != null && dtJob.Rows.Count > 0)
+                    {
+                        int status = Convert.ToInt32(dtJob.Rows[0][0].ToString());
+                        if (status == 1)
+                        {
+                            return Json(new { result = true, data = "1" });
+                        }
+                        else
+                        {
+                            return Json(new { result = true, data = "-1" });
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, message = "Internal Error!" });
+            }
+            return Json(new { result = false, message = "" });
+        }
+
+
+
+        public IActionResult JobWorkSendMail(long id,string email="")
+        {
+            try
+            {
+                JobWorkPrintDetails obj = GetJobWorkPrintData(id);
+                string wwwroot = string.Empty;
+                string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
+
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/"+ dateTime + ".pdf";
+                var render = new IronPdf.ChromePdfRenderer();
+                using var doc = render.RenderHtmlAsPdf(obj.Html);
+                doc.SaveAs(wwwroot);
+
+                bool result = SendEmail(email, "SLITTING MACHINE REPORT", "Please find attachment", wwwroot);
+                if (result)
+                 return Json(new { result = result, message = "Please check your mail address" });
+                else
+                 return Json(new { result = result, message = "Internal server error" });
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        public JobWorkPrintDetails GetJobWorkPrintData(long id)
+        {
+            try
+            {
+                JobWorkPrintDetails obj = new JobWorkPrintDetails();
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
                 long userId = GetIntSession("UserId");
@@ -810,43 +885,13 @@ namespace SUNMark.Controllers
                         }
                     }
                 }
+                return obj;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
+
                 throw;
             }
-            return View(obj);
-        }
-
-        public ActionResult GetCheckCompDtCoil(string isscoil)
-        {
-            try
-            {
-                if (!string.IsNullOrWhiteSpace(isscoil))
-                {
-                    SqlParameter[] sqlParameters = new SqlParameter[1];
-                    sqlParameters[0] = new SqlParameter("@SupCoil", isscoil);
-                    DataTable dtJob = ObjDBConnection.CallStoreProcedure("GetCheckJobWorkCoil", sqlParameters);
-                    if (dtJob != null && dtJob.Rows.Count > 0)
-                    {
-                        int status = Convert.ToInt32(dtJob.Rows[0][0].ToString());
-                        if (status == 1)
-                        {
-                            return Json(new { result = true, data = "1" });
-                        }
-                        else
-                        {
-                            return Json(new { result = true, data = "-1" });
-                        }
-
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { result = false, message = "Internal Error!" });
-            }
-            return Json(new { result = false, message = "" });
         }
     }
 }
