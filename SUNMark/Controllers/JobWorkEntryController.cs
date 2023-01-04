@@ -760,7 +760,7 @@ namespace SUNMark.Controllers
                 string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
 
                 wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/"+ dateTime + ".pdf";
-                var render = new IronPdf.ChromePdfRenderer();
+                var render = new IronPdf.HtmlToPdf();
                 using var doc = render.RenderHtmlAsPdf(obj.Html);
                 doc.SaveAs(wwwroot);
 
