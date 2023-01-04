@@ -357,5 +357,52 @@ namespace SUNMark.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult GetDataByProductCode(string ProductCode)
+        {
+            try
+            {
+                PackingMasterModel packingMasterModel = new PackingMasterModel();
+                SqlParameter[] parameter = new SqlParameter[1];
+                parameter[0] = new SqlParameter("@ProductCode", ProductCode);
+                DataSet ds = ObjDBConnection.GetDataSet("GetDataByProductCodePacking", parameter);
+                if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables.Count == 1)
+                {
+                    List<object> data = new List<object>();
+                    DataTable dtLotMst = ds.Tables[0];
+                    if (dtLotMst != null && dtLotMst.Rows.Count > 0)
+                    {
+                        data.Add(dtLotMst.Rows[0]["MscVou"].ToString());
+                        data.Add(dtLotMst.Rows[0]["LotWidth"].ToString());
+                        data.Add(dtLotMst.Rows[0]["LotThick"].ToString());
+                        data.Add(dtLotMst.Rows[0]["LotOD"].ToString());
+                        data.Add(dtLotMst.Rows[0]["LotPCS"].ToString());
+                        data.Add(dtLotMst.Rows[0]["LotFeetPer"].ToString());
+                        data.Add(Convert.ToDecimal(dtLotMst.Rows[0]["LotPCS"].ToString())* Convert.ToDecimal(dtLotMst.Rows[0]["LotFeetPer"].ToString()));
+                        data.Add(Convert.ToDecimal(dtLotMst.Rows[0]["LotPCS"].ToString()) * Convert.ToDecimal(dtLotMst.Rows[0]["LotFeetPer"].ToString())* Convert.ToDecimal(0.3048));
+                        data.Add(dtLotMst.Rows[0]["LotNB"].ToString());
+                        data.Add(dtLotMst.Rows[0]["LotSch"].ToString());
+                    }
+
+                    if (data == null || data.Count <= 0)
+                    {
+                        return Json(new { result = false, message = "Invalid Product Code!" });
+                    }
+                    else
+                    {
+                        return Json(new { result = true, data = data });
+                    }
+
+                }
+                else
+                {
+                    return Json(new { result = false, message = "Invalid Product Code!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, message = "Invalid Product Code!" });
+            }
+        }
     }
 }

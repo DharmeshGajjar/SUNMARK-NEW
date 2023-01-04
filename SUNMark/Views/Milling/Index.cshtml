@@ -240,21 +240,21 @@
                                                 <div class="col-md-2 col-6">
                                                     <div class="form-group">
                                                         <label>OD<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.OD, new { @class = "form-control ", @placeholder = "OD", @type = "text", @onchange = "GetNBSCHDetails(this)", @disabled = "disabled", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                        @Html.TextBoxFor(x => x.OD, new { @class = "form-control ", @placeholder = "OD", @type = "text", @*@onchange = "GetNBSCHDetails(this)",*@ @disabled = "disabled", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>NB<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        <input type="hidden" id="NB" name="NB" class="form-control" value="" />
-                                                        @Html.DropDownListFor(x => x.NbVou, nbList, "Select", new { @class = "form-control select2", @style = "width:100% ", @disabled = "disabled" })
+                                                        <input type="hidden" readonly placeholder="NB" id="NB" name="NB" class="form-control" value="" />
+                                                        @Html.DropDownListFor(x => x.NbVou, nbList, "Select", new { @class = "form-control select2", @style = "width:100% " })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>SCH<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        <input type="hidden" id="SCH" name="SCH" class="form-control" value="" />
-                                                        @Html.DropDownListFor(x => x.SCHVou, schList, "Select", new { @class = "form-control select2", @style = "width:100% ", @disabled = "disabled" })
+                                                        <input type="hidden" readonly placeholder="SCH" id="SCH" name="SCH" class="form-control" value="" />
+                                                        @Html.DropDownListFor(x => x.SCHVou, schList, "Select", new { @class = "form-control select2", @style = "width:100% " })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
@@ -666,7 +666,10 @@
                             $('#PCSWeight').text((weight * pcs).toFixed(1));
                             $('input[name="PCS"]').val(0);
                             $('input[name="PCSWeight"]').val(0);
-                            GetNBSCHDetails();
+                            //alert(response.data[7]);
+                            $('#NbVou').val(response.data[7]).trigger('change');
+                            $('#SCHVou').val(response.data[8]).trigger('change');
+                            //GetNBSCHDetails();
                         }
                         else {
                             showErrorMessage(response.message);
@@ -866,7 +869,7 @@
                             $('input[name="IssueCoilNo"]').prop("readonly", true);
                             $('input[name="IssueCoilNoVou"]').val(response.lotVou);
                             $('input[name="NB"]').val(response.nb);
-                            $('select[name="NbVou"]').val(response.nbVou);
+                            $('select[name="NbVou"]').val(response.nb);
                             $('select[name="ProcessVou"]').val(response.nextPrcVou);
                             $('input[name="OD"]').val(response.od);
                             $('select[name="Operator1"]').val(response.opr1EmpVou);
@@ -894,10 +897,10 @@
                             $('input[name="RLPCS"]').val(response.rlPcs);
                             $('input[name="RLWeight"]').val(response.rlWeight);
                             $('input[name="SCH"]').val(response.sch);
-                            $('select[name="SCHVou"]').val(response.schVou);
+                            $('select[name="SCHVou"]').val(response.sch);
                             $('select[name="MilSupEmpVou"]').val(response.supEmpVou);
-                            $('select[name="ScrapPipeProductVou"]').val(response.scrPrdVou);
-                            $('input[name="ScrapWeight"]').val(response.scrQty);
+                            //$('select[name="ScrapPipeProductVou"]').val(response.scrPrdVou);
+                            //$('input[name="ScrapWeight"]').val(response.scrQty);
                             $('input[name="NoOfTourch"]').val(response.touNo);
                             $('input[name="AMP"]').val(response.weldAMP);
                             $('input[name="WeldingSpeed"]').val(response.weldSpeed);

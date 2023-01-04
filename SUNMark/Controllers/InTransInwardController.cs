@@ -221,35 +221,75 @@ namespace SUNMark.Controllers
                     int count = inwardModel.Inward.SupCoilNo.ToList().Distinct().Count();
                     if (id == 0)
                     {
-                        if (count != inwardModel.Inward.SupCoilNo.Length - 1)
+                        int instexl = inwardModel.InstExl;                       
+                        //int qty1 = inwardModel.Inward.IntQtyCoil.Length;
+                        //int supcoil = inwardModel.Inward.SupCoilNo.Length;
+                        if (instexl == 2)
                         {
-                            SetSuccessMessage("Supplier Coil No is Already Exists");
-                            ViewBag.FocusType = "1";
-                            return View(inwardModel);
-                        }
-                        else
-                        {
-                            //Database check
-                            for (int p = 0; p < inwardModel.Inward.SupCoilNo.Length; p++)
+                            if (count != inwardModel.Inward.SupCoilNo.Length)
                             {
-                                if (inwardModel.Inward.SupCoilNo[p] != null)
+                                SetSuccessMessage("Supplier Coil No is Already Exists");
+                                ViewBag.FocusType = "1";
+                                return View(inwardModel);
+                            }
+                            else
+                            {
+                                //Database check
+                                for (int p = 0; p < inwardModel.Inward.SupCoilNo.Length; p++)
                                 {
-                                    SqlParameter[] sqlParam = new SqlParameter[6];
-                                    sqlParam[0] = new SqlParameter("@SupCoil", inwardModel.Inward.SupCoilNo[p]);
-                                    sqlParam[1] = new SqlParameter("@cmpvou", companyId);
-                                    sqlParam[2] = new SqlParameter("@Type", "INTR");
-                                    sqlParam[3] = new SqlParameter("@Vou", "0");
-                                    sqlParam[4] = new SqlParameter("@Flg", "1");
-                                    sqlParam[5] = new SqlParameter("@MainVou", id);
-                                    DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotMstDetails1", sqlParam);
-                                    if (DtInw != null && DtInw.Columns.Count > 1)
+                                    if (inwardModel.Inward.SupCoilNo[p] != null)
                                     {
-                                        SetSuccessMessage("Supplier Coil No is Already Exists");
-                                        ViewBag.FocusType = "1";
-                                        return View(inwardModel);
+                                        SqlParameter[] sqlParam = new SqlParameter[6];
+                                        sqlParam[0] = new SqlParameter("@SupCoil", inwardModel.Inward.SupCoilNo[p]);
+                                        sqlParam[1] = new SqlParameter("@cmpvou", companyId);
+                                        sqlParam[2] = new SqlParameter("@Type", "INTR");
+                                        sqlParam[3] = new SqlParameter("@Vou", "0");
+                                        sqlParam[4] = new SqlParameter("@Flg", "1");
+                                        sqlParam[5] = new SqlParameter("@MainVou", id);
+                                        DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotMstDetails1", sqlParam);
+                                        if (DtInw != null && DtInw.Columns.Count > 1)
+                                        {
+                                            SetSuccessMessage("Supplier Coil No is Already Exists");
+                                            ViewBag.FocusType = "1";
+                                            return View(inwardModel);
+                                        }
                                     }
                                 }
                             }
+                        }
+                        else
+                        {
+                            if (count != inwardModel.Inward.SupCoilNo.Length - 1)
+                            {
+                                SetSuccessMessage("Supplier Coil No is Already Exists");
+                                ViewBag.FocusType = "1";
+                                return View(inwardModel);
+                            }
+                            else
+                            {
+                                //Database check
+                                for (int p = 0; p < inwardModel.Inward.SupCoilNo.Length; p++)
+                                {
+                                    if (inwardModel.Inward.SupCoilNo[p] != null)
+                                    {
+                                        SqlParameter[] sqlParam = new SqlParameter[6];
+                                        sqlParam[0] = new SqlParameter("@SupCoil", inwardModel.Inward.SupCoilNo[p]);
+                                        sqlParam[1] = new SqlParameter("@cmpvou", companyId);
+                                        sqlParam[2] = new SqlParameter("@Type", "INTR");
+                                        sqlParam[3] = new SqlParameter("@Vou", "0");
+                                        sqlParam[4] = new SqlParameter("@Flg", "1");
+                                        sqlParam[5] = new SqlParameter("@MainVou", id);
+                                        DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotMstDetails1", sqlParam);
+                                        if (DtInw != null && DtInw.Columns.Count > 1)
+                                        {
+                                            SetSuccessMessage("Supplier Coil No is Already Exists");
+                                            ViewBag.FocusType = "1";
+                                            return View(inwardModel);
+                                        }
+                                    }
+                                }
+                            }
+
                         }
                     }
                     else
@@ -305,7 +345,7 @@ namespace SUNMark.Controllers
                                     parameter[0] = new SqlParameter("@IntInwVou", masterId);
                                     parameter[1] = new SqlParameter("@IntSrNo", (i + 1));
                                     parameter[2] = new SqlParameter("@IntPrdVou", "0");
-                                    parameter[3] = new SqlParameter("@IntGrade", inwardModel.Inward.IntGrdCoil[i + 1]);
+                                    parameter[3] = new SqlParameter("@IntGrade", inwardModel.Inward.IntGrdCoil[i]);
                                     parameter[4] = new SqlParameter("@IntSpacifi", "");
                                     parameter[5] = new SqlParameter("@IntWidth", inwardModel.Inward.IntWidth[i]);
                                     parameter[6] = new SqlParameter("@IntThick", inwardModel.Inward.IntThickCoil[i]);

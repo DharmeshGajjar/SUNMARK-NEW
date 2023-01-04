@@ -187,7 +187,7 @@
                                                         @*@Html.DropDownListFor(x => x.ProductVou, new SelectList(productList, "Value", "Text"), "Select", new { @class = "form-control select2" })*@
 
 
-                                                        @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control ", @placeholder = "Product Code" })
+                                                        @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control ", @placeholder = "Product Code", @onchange = "GetDataByProductCode()" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-6">
@@ -652,6 +652,16 @@
         $('select[name="FinishVou"]').change();
         $('select[name="GradeVou"]').change();
         $('select[name="ProductVou"]').change();
+        $('#GradeVou').attr('disabled', true);
+        $('#Width').attr('readonly', true);
+        $('#Thick').attr('readonly', true);
+        $('#OD').attr('readonly', true);
+        $('#Qty').attr('readonly', true);
+        $('#FeetInPCS').attr('readonly', true);
+        $('#QtyInFeet').attr('readonly', true);
+        $('#QtyInMeter').attr('readonly', true);
+        $('#NB').attr('readonly', true);
+        $('#SCH').attr('readonly', true);
     });
 
     function GetDataByWONumber() {
@@ -690,6 +700,72 @@
         else {
             showErrorMessage("Enter WO No");
             $('#WONumber').focus();
+        }
+    }
+    function GetDataByProductCode() {
+        var ProductCode = $('#ProductCode').val();
+        if (ProductCode) {
+            $.ajax({
+                type: "POST",
+                url: '/PackingMaster/GetDataByProductCode',
+                data: { "ProductCode": ProductCode },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            //alert(response.data[0]);
+                            $('#GradeVou').val(response.data[0]);
+                            $('#Width').val(response.data[1]);
+                            $('#Thick').val(response.data[2]);
+                            $('#OD').val(response.data[3]);
+                            $('#Qty').val(response.data[4]);
+                            $('#FeetInPCS').val(response.data[5]);
+                            $('#QtyInFeet').val(response.data[6]);
+                            $('#QtyInMeter').val(response.data[7]);
+                            $('#NB').val(response.data[8]);
+                            $('#SCH').val(response.data[9]);
+
+                        }
+                        else {
+                            showErrorMessage(response.message);
+                            $('#GradeVou').val('');
+                            $('#Width').val('');
+                            $('#Thick').val('');
+                            $('#OD').val('');
+                            $('#Qty').val('');
+                            $('#FeetInPCS').val('');
+                            $('#QtyInFeet').val('');
+                            $('#QtyInMeter').val('');
+                            $('#NB').val('');
+                            $('#SCH').val('');
+
+                            $('#ProductCode').focus();
+                        }
+                    }
+                    else {
+                        showErrorMessage("Internal Error!");
+                        $('#GradeVou').val('');
+                        $('#Width').val('');
+                        $('#Thick').val('');
+                        $('#OD').val('');
+                        $('#Qty').val('');
+                        $('#FeetInPCS').val('');
+                        $('#QtyInFeet').val('');
+                        $('#QtyInMeter').val('');
+                        $('#NB').val('');
+                        $('#SCH').val('');
+
+                        $('#ProductCode').focus();
+                    }
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+        else {
+            showErrorMessage("Enter Product Code");
+            $('#ProductCode').focus();
         }
     }
 </script>

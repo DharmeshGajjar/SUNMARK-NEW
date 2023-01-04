@@ -42,7 +42,7 @@ namespace SUNMark.Controllers
                     millingMasterModel.Supervisor = dtMill.Rows[0]["MilSupEmpVou"].ToString();
                     millingMasterModel.FeetPer = dtMill.Rows[0]["MilLenFeet"].ToString();
                     millingMasterModel.RecPrdVou = dtMill.Rows[0]["MilRecPrdVou"].ToString();
-                    millingMasterModel.ScrapPipeProductVou = dtMill.Rows[0]["MilScrPrdVou"].ToString();
+                    //millingMasterModel.ScrapPipeProductVou = dtMill.Rows[0]["MilScrPrdVou"].ToString();
                     millingMasterModel.ProcessVou = dtMill.Rows[0]["MilNextPrcVou"].ToString();
                     millingMasterModel.PrcVou = dtMill.Rows[0]["MilPrcVou"].ToString();
                 }
@@ -268,11 +268,12 @@ namespace SUNMark.Controllers
                 parameter[0] = new SqlParameter("@COILNO", coilNo);
                 parameter[1] = new SqlParameter("@MACVOU", MacId);
                 DataSet ds = ObjDBConnection.GetDataSet("GetDataByCoilNoMilling", parameter);
-                if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables.Count == 5)
+                if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables.Count == 6)
                 {
                     List<object> data = new List<object>();
                     DataTable dtLotMst = ds.Tables[0];
                     DataTable dtMacMst = ds.Tables[4];
+                    DataTable dtNBSCH = ds.Tables[5];
                     if (dtLotMst != null && dtLotMst.Rows.Count > 0)
                     {
                         data.Add(dtLotMst.Rows[0]["LotQty"].ToString());
@@ -287,12 +288,18 @@ namespace SUNMark.Controllers
                         {
                             return Json(new { result = false, message = "Lot Date Must Be Less Than Milling Date!" });
                         }
+                        if (dtNBSCH != null && dtNBSCH.Rows.Count > 0)
+                        {
+                            data.Add(dtNBSCH.Rows[0]["NbsNB"].ToString());
+                            data.Add(dtNBSCH.Rows[0]["NbsSch"].ToString());
+                        }
                     }
+                    
                     if (dtMacMst != null && dtMacMst.Rows.Count > 0)
                     {
                         if (!(Convert.ToDecimal(dtLotMst.Rows[0]["LotOD"].ToString()) >= Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGFR"].ToString()) && Convert.ToDecimal(dtLotMst.Rows[0]["LotOD"].ToString()) <= Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGTO"].ToString())))
                         {
-                            return Json(new { result = false, message = "Invalid Coil No!" });
+                            return Json(new { result = false, message = "Coil OD Size is Not Range to this Machine!" });
                         }
                     }
                     else
