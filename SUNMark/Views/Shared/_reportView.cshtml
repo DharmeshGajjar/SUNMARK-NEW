@@ -3,9 +3,10 @@
     var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
 }
 <style>
-    table th, table td {
+    /*table th, table td {
         white-space: normal
-    }
+            white-space: nowrap
+    }*/
 </style>
 @if (Model != null)
 {
@@ -34,6 +35,7 @@
                             {
                                 hideClass = "d-none";
                             }
+                            string canGrow = item.GrdCanGrow.ToLower() == "false" ? "white-space: nowrap" : "white-space: normal";
                             string[] splitted = new string[0];
                             if (item.GrdATotYN == "1")
                             {
@@ -42,22 +44,22 @@
                                 {
                                     if (item.GrdAAlign == "2")
                                     {
-                                        <th class="@hideClass text-right" width="@item.GrdAWidth%"><a style="cursor:pointer;font-family:Verdana;font-size:small" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@splitted[0] <br />@splitted[1] <i class="text-primary"></i><i class=" text-primary"></i></a></th>
+                                        <th class="@hideClass text-right" width="@item.GrdAWidth%" style="@canGrow"><a style="cursor:pointer;font-family:Verdana;font-size:small" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@splitted[0] <br />@splitted[1] <i class="text-primary"></i><i class=" text-primary"></i></a></th>
                                     }
                                     else
                                     {
-                                        <th class="@hideClass" width="@item.GrdAWidth%"><a style="cursor:pointer;font-family:Verdana;font-size:small" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@splitted[0] <br />@splitted[1] <i class="text-primary"></i><i class=" text-primary"></i></a></th>
+                                        <th class="@hideClass" width="@item.GrdAWidth%" style="@canGrow"><a style="cursor:pointer;font-family:Verdana;font-size:small" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@splitted[0] <br />@splitted[1] <i class="text-primary"></i><i class=" text-primary"></i></a></th>
                                     }
                                 }
                                 else
                                 {
                                     if (item.GrdAAlign == "2")
                                     {
-                                        <th class="@hideClass text-right" width="@item.GrdAWidth%"><a style="cursor:pointer;font-family:Verdana;font-size:small" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@item.GrdANewColNm <i class="text-primary"></i><i class=" text-primary"></i></a></th>
+                                        <th class="@hideClass text-right" width="@item.GrdAWidth%" style="@canGrow"><a style="cursor:pointer;font-family:Verdana;font-size:small" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@item.GrdANewColNm <i class="text-primary"></i><i class=" text-primary"></i></a></th>
                                     }
                                     else
                                     {
-                                        <th class="@hideClass" width="@item.GrdAWidth%"><a style="cursor:pointer;font-family:Verdana;font-size:small" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@item.GrdANewColNm <i class="text-primary"></i><i class=" text-primary"></i></a></th>
+                                        <th class="@hideClass" width="@item.GrdAWidth%" style="@canGrow"><a style="cursor:pointer;font-family:Verdana;font-size:small" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@item.GrdANewColNm <i class="text-primary"></i><i class=" text-primary"></i></a></th>
                                     }
                                 }
                             }
@@ -65,11 +67,11 @@
                             {
                                 if (item.GrdAAlign == "2")
                                 {
-                                    <th class="@hideClass text-right" width="@item.GrdAWidth%"><a style="cursor:pointer;font-family:Verdana;font-size:small;text-align:right" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@item.GrdANewColNm <i class="text-primary"></i><i class=" text-primary"></i></a></th>
+                                    <th class="@hideClass text-right" width="@item.GrdAWidth%" style="@canGrow"><a style="cursor:pointer;font-family:Verdana;font-size:small;text-align:right" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@item.GrdANewColNm <i class="text-primary"></i><i class=" text-primary"></i></a></th>
                                 }
                                 else
                                 {
-                                    <th class="@hideClass" width="@item.GrdAWidth%"><a style="cursor:pointer;font-family:Verdana;font-size:small" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@item.GrdANewColNm <i class="text-primary"></i><i class=" text-primary"></i></a></th>
+                                    <th class="@hideClass" width="@item.GrdAWidth%" style="@canGrow"><a style="cursor:pointer;font-family:Verdana;font-size:small" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@item.GrdANewColNm <i class="text-primary"></i><i class=" text-primary"></i></a></th>
                                 }
 
                             }
@@ -167,6 +169,7 @@
                                         {
                                             hideClass = "d-none";
                                         }
+                                        string canGrow = Model.ColumnsData[y - 1].GrdCanGrow.ToLower() == "false" ? "white-space: nowrap" : "white-space: normal";
 
                                         string alignment = string.Empty;
                                         bool isDefault = true;
@@ -186,7 +189,7 @@
 
                                         if (Model.ColumnsData[y - 1].GrdALinkYN == "1")
                                         {
-                                            <td width="@Model.ColumnsData[y - 1].GrdAWidth%" class="@alignment @hideClass" style="font-family: Verdana; font-size: small"><a href="@item[y]" target="_blank">@item[y]</a></td>
+                                            <td width="@Model.ColumnsData[y - 1].GrdAWidth%" class="@alignment @hideClass" style="font-family: Verdana; font-size: small; @canGrow"><a href="@item[y]" target="_blank">@item[y]</a></td>
                                             isDefault = false;
                                         }
                                         @*if (Convert.ToInt32(Model.ColumnsData[y - 1].GrdADecUpTo) > 0 && Model.ColumnsData[y - 1].GrdADataType == "2")
@@ -196,12 +199,12 @@
                                             }*@
                                         if (Model.ColumnsData[y - 1].GrdADataType == "2")
                                         {
-                                            <td width="@Model.ColumnsData[y - 1].GrdAWidth%" class="@alignment @hideClass" style="font-family: Verdana; font-size: small"> @SUNMark.Classes.DbConnection.DynamicDecimalPoints(item[y], Convert.ToInt32(Model.ColumnsData[y - 1].GrdADecUpTo))</td>
+                                            <td width="@Model.ColumnsData[y - 1].GrdAWidth%" class="@alignment @hideClass" style="font-family: Verdana; font-size: small; @canGrow"> @SUNMark.Classes.DbConnection.DynamicDecimalPoints(item[y], Convert.ToInt32(Model.ColumnsData[y - 1].GrdADecUpTo))</td>
                                             isDefault = false;
                                         }
                                         if (isDefault)
                                         {
-                                            <td width="@Model.ColumnsData[y - 1].GrdAWidth%" class="@alignment @hideClass" style="font-family: Verdana; font-size: small">@item[y]</td>
+                                            <td width="@Model.ColumnsData[y - 1].GrdAWidth%" class="@alignment @hideClass" style="font-family: Verdana; font-size: small; @canGrow">@item[y]</td>
                                         }
 
                                     }
@@ -215,6 +218,7 @@
                                     {
                                         hideClass = "d-none";
                                     }
+                                    string canGrow = Model.ColumnsData[y].GrdCanGrow.ToLower() == "false" ? "white-space: nowrap" : "white-space: normal";
 
                                     string alignment = string.Empty;
                                     bool isDefault = true;
@@ -234,17 +238,17 @@
 
                                     if (Model.ColumnsData[y].GrdALinkYN == "1")
                                     {
-                                        <td width="@Model.ColumnsData[y].GrdAWidth%" class="@alignment @hideClass" style="font-family: Verdana; font-size: small"><a href="@item[y]" target="_blank">@item[y]</a></td>
+                                        <td width="@Model.ColumnsData[y].GrdAWidth%" class="@alignment @hideClass" style="font-family: Verdana; font-size: small; @canGrow"><a href="@item[y]" target="_blank">@item[y]</a></td>
                                         isDefault = false;
                                     }
                                     if (Model.ColumnsData[y].GrdADataType == "2")
                                     {
-                                        <td width="@Model.ColumnsData[y].GrdAWidth%" class="@alignment @hideClass" style="font-family: Verdana; font-size: small"> @SUNMark.Classes.DbConnection.DynamicDecimalPoints(item[y], Convert.ToInt32(Model.ColumnsData[y].GrdADecUpTo))</td>
+                                        <td width="@Model.ColumnsData[y].GrdAWidth%" class="@alignment @hideClass" style="font-family: Verdana; font-size: small; @canGrow"> @SUNMark.Classes.DbConnection.DynamicDecimalPoints(item[y], Convert.ToInt32(Model.ColumnsData[y].GrdADecUpTo))</td>
                                         isDefault = false;
                                     }
                                     if (isDefault)
                                     {
-                                        <td width="@Model.ColumnsData[y].GrdAWidth%" class="@alignment @hideClass" style="font-family: Verdana; font-size: small">@item[y]</td>
+                                        <td width="@Model.ColumnsData[y].GrdAWidth%" class="@alignment @hideClass" style="font-family: Verdana; font-size: small; @canGrow">@item[y]</td>
                                     }
 
                                 }

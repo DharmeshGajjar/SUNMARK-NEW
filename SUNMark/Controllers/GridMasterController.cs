@@ -71,6 +71,7 @@ namespace SUNMark.Controllers
                             gridMasterModel.Gridtransaction.GrdATotYN = new bool[DtGrdMst.Rows.Count];
                             gridMasterModel.Gridtransaction.GrdALinkYN = new bool[DtGrdMst.Rows.Count];
                             gridMasterModel.Gridtransaction.GrdAHideYN = new bool[DtGrdMst.Rows.Count];
+                            gridMasterModel.Gridtransaction.GrdCanGrow = new bool[DtGrdMst.Rows.Count];
                             gridMasterModel.Gridtransaction.GrdASuppressIFVal = new string[DtGrdMst.Rows.Count];
 
                             if (dtUniqueBDFld != null && dtUniqueBDFld.Rows.Count > 0)
@@ -132,6 +133,14 @@ namespace SUNMark.Controllers
                                 else
                                 {
                                     gridMasterModel.Gridtransaction.GrdAHideYN[i] = false;
+                                }
+                                if (DtGrdMst.Rows[i]["CanGrow"].ToString().ToLower() == "false")
+                                {
+                                    gridMasterModel.Gridtransaction.GrdCanGrow[i] = false;
+                                }
+                                else
+                                {
+                                    gridMasterModel.Gridtransaction.GrdCanGrow[i] = true;
                                 }
                                 gridMasterModel.Gridtransaction.GrdASuppressIFVal[i] = DtGrdMst.Rows[i]["GrdASuppressIFVal"].ToString();
                             }
@@ -209,6 +218,7 @@ namespace SUNMark.Controllers
                                     if (gridMasterModel.Gridtransaction.GrdADbFld != null)
                                     {
                                         string[] aTotYN = gridMasterModel.GrdATotYNString.TrimEnd(',').Split(',');
+                                        string[] canGrow = gridMasterModel.canGrowString.TrimEnd(',').Split(',');
                                         string[] aLinkYN = gridMasterModel.GrdALinkYNString.TrimEnd(',').Split(',');
                                         string[] aHideYN = gridMasterModel.GrdAHideYNString.TrimEnd(',').Split(',');
                                         for (int i = 0; i < gridMasterModel.Gridtransaction.GrdADbFld.Length; i++)
@@ -227,6 +237,7 @@ namespace SUNMark.Controllers
                                             //parameter[10] = new SqlParameter("@GrdALinkYN", gridMasterModel.Gridtransaction.GrdALinkYN[i] ? "1" : "0");
                                             //parameter[11] = new SqlParameter("@GrdAHideYN", gridMasterModel.Gridtransaction.GrdAHideYN[i] ? "1" : "0");
                                             parameter[9] = new SqlParameter("@GrdATotYN", aTotYN[i]);
+                                            parameter[9] = new SqlParameter("@GrdCanGrow", canGrow[i]);
                                             parameter[10] = new SqlParameter("@GrdALinkYN", aLinkYN[i]);
                                             parameter[11] = new SqlParameter("@GrdAHideYN", aHideYN[i]);
                                             parameter[12] = new SqlParameter("@GrdASuppressIFVal", gridMasterModel.Gridtransaction.GrdASuppressIFVal[i]);
