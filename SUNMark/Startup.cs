@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SUNMark.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,11 @@ namespace SUNMark
             });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            MailHelper.FromEmail = Configuration["SMTP:FromEmail"];
+            MailHelper.Password = Configuration["SMTP:Password"];
+            MailHelper.Port = Convert.ToInt32(Configuration["SMTP:Port"]);
+            MailHelper.Host = Configuration["SMTP:Host"];
 
         }
 
