@@ -7,6 +7,8 @@
     List<SUNMark.Models.CityModel> cityList = ViewBag.cityList as List<SUNMark.Models.CityModel>;
     List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
     List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    List<SelectListItem> nbList = ViewBag.nbList != null ? ViewBag.nbList as List<SelectListItem> : null;
+    List<SelectListItem> schList = ViewBag.schList != null ? ViewBag.schList as List<SelectListItem> : null;
     var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
     ViewData["Title"] = userRight.ModuleNm;
     string headerAdd = "";
@@ -218,10 +220,10 @@
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="control-label col-md-3 col-sm-3 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                                                            Heat No. <span class="required clsrequied">*</span>
+                                                            Heat No. <span class="required clsrequied"></span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotHeatNo" name="LotHeatNo" class="form-control form-control-lg" placeholder="Heat No." tabindex="6" value="@Model.LotHeatNo" style="font-family: Verdana;font-size:small; height:30px;width:150px" required />
+                                                            <input type="text" id="LotHeatNo" name="LotHeatNo" class="form-control form-control-lg" placeholder="Heat No." tabindex="6" value="@Model.LotHeatNo" style="font-family: Verdana;font-size:small; height:30px;width:150px" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -277,10 +279,10 @@
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="control-label col-md-3 col-sm-3 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                                                            Width <span class="required clsrequied">*</span>
+                                                            Width <span class="required clsrequied"></span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotWidth" name="LotWidth" class="form-control form-control-lg" placeholder="Thick " tabindex="10" value="@Model.LotWidth" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" required />
+                                                            <input type="text" id="LotWidth" name="LotWidth" class="form-control form-control-lg" placeholder="Width " tabindex="10" value="@Model.LotWidth" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -294,7 +296,7 @@
                                                             Thick <span class="required clsrequied">*</span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotThick" name="LotThick" class="form-control form-control-lg" placeholder="Thick " tabindex="11" value="@Model.LotThick" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" onchange="GetNBSCHDetails(this)" required />
+                                                            <input type="text" id="LotThick" name="LotThick" class="form-control form-control-lg" placeholder="Thick " tabindex="11" value="@Model.LotThick" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" @*onchange="GetNBSCHDetails(this)"*@ required />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -304,7 +306,7 @@
                                                             OD <span class="required clsrequied">*</span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotOD" name="LotOD" class="form-control form-control-lg" placeholder="OD" tabindex="12" value="@Model.LotOD" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" onchange="GetNBSCHDetails(this)" required />
+                                                            <input type="text" id="LotOD" name="LotOD" class="form-control form-control-lg" placeholder="OD" tabindex="12" value="@Model.LotOD" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" @*onchange="GetNBSCHDetails(this)"*@ required />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -317,8 +319,9 @@
                                                         <label class="control-label col-md-3 col-sm-3 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
                                                             NB <span class="required clsrequied">*</span>
                                                         </label>
-                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotNB" name="LotNB" class="form-control form-control-lg" placeholder="NB" tabindex="13" value="@Model.LotNB" style="font-family: Verdana;font-size:small; height:30px;width:150px" required />
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2" style="width: 29% !important;">
+                                                            @*<input type="text" id="LotNB" name="LotNB" class="form-control form-control-lg" placeholder="NB" tabindex="13" value="@Model.LotNB" style="font-family: Verdana;font-size:small; height:30px;width:150px" required />*@
+                                                            @Html.DropDownListFor(x => x.LotNB, nbList, "Select", new { @class = "form-control select2", @style = "width:100% ", @required = "required" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -328,8 +331,9 @@
                                                         <label class="control-label col-md-3 col-sm-3 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
                                                             SCH <span class="required clsrequied">*</span>
                                                         </label>
-                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotSCH" name="LotSCH" class="form-control form-control-lg" placeholder="SCH" tabindex="14" value="@Model.LotSCH" style="font-family: Verdana;font-size:small; height:30px;width:150px" required />
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2" style="width: 29% !important;">
+                                                            @*<input type="text" id="LotSCH" name="LotSCH" class="form-control form-control-lg" placeholder="SCH" tabindex="14" value="@Model.LotSCH" style="font-family: Verdana;font-size:small; height:30px;width:150px" required />*@
+                                                            @Html.DropDownListFor(x => x.LotSCH, schList, "Select", new { @class = "form-control select2", @style = "width:100% ", @required = "required" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -948,5 +952,42 @@
         $('.LotFinish').select2({
             placeholder: "---Select---",
         });
+        $('#LotThick').on('blur', function () {
+            AutofillNBSCHByODThick();
+        });
+        $('#LotOD').on('blur', function () {
+            AutofillNBSCHByODThick();
+        });
+        $(".select2").select2();
     });
+    function AutofillNBSCHByODThick() {
+        var thick = $('#LotThick').val();
+        var od = $('#LotOD').val();
+        if (thick != '' && od != '') {
+            $.ajax({
+                type: "POST",
+                url: '/OpeningStock/GetNBSCH',
+                data: { "thick": thick, "od": od },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            $('#LotNB').val(response.lotNB).trigger('change');
+                            $('#LotSCH').val(response.lotSCH).trigger('change');
+                        }
+                        else {
+
+                        }
+                    }
+                    else {
+
+                    }
+                },
+                error: function (response) {
+                }
+            });
+        }
+
+    }
+
 </script>

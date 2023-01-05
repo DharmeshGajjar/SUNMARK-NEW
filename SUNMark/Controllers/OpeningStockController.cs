@@ -15,11 +15,14 @@ namespace SUNMark.Controllers
         DbConnection ObjDBConnection = new DbConnection();
         ProductHelpers objProductHelper = new ProductHelpers();
         OpeningStokModel objOpeningStock = new OpeningStokModel();
+        AccountMasterHelpers ObjAccountMasterHelpers = new AccountMasterHelpers();
         public IActionResult Index(long id)
         {
-
+            //ViewBag.AddTab = "0";
+            ViewBag.AddTab = TempData["AddTab"];
             try
             {
+                
                 bool isreturn = false;
                 INIT(ref isreturn);
                 if (isreturn)
@@ -28,6 +31,8 @@ namespace SUNMark.Controllers
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int administrator = 0;
+                ViewBag.nbList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                ViewBag.schList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
                 SqlParameter[] sqlPara = new SqlParameter[4];
                 sqlPara[0] = new SqlParameter("@OblVou", id);
                 sqlPara[1] = new SqlParameter("@Flg", 4);
@@ -148,10 +153,14 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
+                TempData["AddTab"] = "0";
 
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int administrator = 0;
+
+                ViewBag.nbList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                ViewBag.schList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
 
                 SqlParameter[] sqlParameters = new SqlParameter[37];
                 sqlParameters[0] = new SqlParameter("@OblNVno", openingStokModel.OblNVno);
@@ -216,8 +225,8 @@ namespace SUNMark.Controllers
                     sqlParameters[29] = new SqlParameter("@Flg", 2);
                 sqlParameters[30] = new SqlParameter("@LotNo", openingStokModel.CoilNo);
                 sqlParameters[31] = new SqlParameter("@RefNo", openingStokModel.OblRefNo);
-                sqlParameters[32] = new SqlParameter("@NB", "");
-                sqlParameters[33] = new SqlParameter("@SCH", "");
+                sqlParameters[32] = new SqlParameter("@NB", openingStokModel.NB);
+                sqlParameters[33] = new SqlParameter("@SCH", openingStokModel.SCH);
                 sqlParameters[34] = new SqlParameter("@CoilType", openingStokModel.CoilType);
                 sqlParameters[35] = new SqlParameter("@CoilTypeVou", openingStokModel.CoilTypeVou);
                 sqlParameters[36] = new SqlParameter("@CoilSuffix", openingStokModel.LotSuffix);
@@ -227,6 +236,8 @@ namespace SUNMark.Controllers
                     int status = DbConnection.ParseInt32(DtState.Rows[0][0].ToString());
                     if (status == -1)
                     {
+                        TempData["AddTab"] = "1";
+                        ViewBag.AddTab = "1";
                         SetErrorMessage("Dulplicate Coil No");
                         ViewBag.FocusType = "-1";
                         openingStokModel.OblCmpVouList = objProductHelper.GetCompanyMasterDropdown(companyId, administrator);
@@ -247,16 +258,20 @@ namespace SUNMark.Controllers
                         if (status.Equals(0))
                         {
                             SetSuccessMessage("Inserted Sucessfully");
+                            TempData["AddTab"] = "1";
                         }
                         else
                         {
                             SetSuccessMessage("Updated Sucessfully");
+                            TempData["AddTab"] = "0";
                         }
                         return RedirectToAction("index", "OpeningStock", new { id = 0 });
                     }
                 }
                 else
                 {
+                    TempData["AddTab"] = "1";
+                    ViewBag.AddTab = "1";
                     SetErrorMessage("Please Enter the Value");
                     ViewBag.FocusType = "-1";
                     openingStokModel.OblCmpVouList = objProductHelper.GetCompanyMasterDropdown(companyId, administrator);
@@ -559,6 +574,32 @@ namespace SUNMark.Controllers
                 finishist = finishist.Where(x => x.Text.ToLower().StartsWith(q.ToLower())).ToList();
             }
             return Json(new { items = CommonHelpers.BindSelect2Model(finishist) });
+        }
+
+        public JsonResult GetNBSCH(string thick, string od)
+        {
+            OpeningStokModel obj = new OpeningStokModel();
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(thick) && !string.IsNullOrWhiteSpace(od))
+                {
+                    SqlParameter[] sqlParameters = new SqlParameter[2];
+                    sqlParameters[0] = new SqlParameter("@thickpipe", thick);
+                    sqlParameters[1] = new SqlParameter("@odpipe", od);
+                    DataTable dtNBSCH = ObjDBConnection.CallStoreProcedure("GetNBSCHDetails_New", sqlParameters);
+                    if (dtNBSCH != null && dtNBSCH.Rows.Count > 0)
+                    {
+                        string LotNB = dtNBSCH.Rows[0]["OrdNB"].ToString();
+                        string LotSCH = dtNBSCH.Rows[0]["OrdSCH"].ToString();
+                        return Json(new { result = true, lotNB = LotNB, lotSCH = LotSCH });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false });
+            }
+            return Json(new { result = false });
         }
 
     }

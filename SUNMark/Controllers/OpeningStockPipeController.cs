@@ -15,6 +15,7 @@ namespace SUNMark.Controllers
         DbConnection ObjDBConnection = new DbConnection();
         ProductHelpers objProductHelper = new ProductHelpers();
         OpeningStokPipeModel objOpeningStock = new OpeningStokPipeModel();
+        AccountMasterHelpers ObjAccountMasterHelpers = new AccountMasterHelpers();
         public IActionResult Index(long id)
         {
 
@@ -28,6 +29,8 @@ namespace SUNMark.Controllers
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int administrator = 0;
+                ViewBag.nbList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                ViewBag.schList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
                 SqlParameter[] sqlPara = new SqlParameter[4];
                 sqlPara[0] = new SqlParameter("@OblVou", id);
                 sqlPara[1] = new SqlParameter("@Flg", 4);
@@ -155,6 +158,8 @@ namespace SUNMark.Controllers
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int administrator = 0;
+                ViewBag.nbList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                ViewBag.schList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
                 if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblGdnVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblLocVou).ToString()) && !string.IsNullOrWhiteSpace(obj.LotNB.ToString()) && !string.IsNullOrWhiteSpace(obj.LotSCH.ToString()))
                 {
                     SqlParameter[] sqlParameters = new SqlParameter[32];
