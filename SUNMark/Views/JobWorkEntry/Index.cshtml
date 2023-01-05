@@ -1484,202 +1484,400 @@
                     recCoilNo = parseInt(recCoilNo) + parseInt(1);
                 }
             }
-            if (width != null && width != "" && parseFloat(width) > 0 && noOfCoil != null && noOfCoil != "" && parseFloat(noOfCoil) && actualWeight != null && actualWeight != "" && parseFloat(actualWeight) > 0 && actualWidth != null && actualWidth != "" && parseFloat(actualWidth) > 0 && type != null && type != "" && type != "---Select---" && recCoilNo != null && recCoilNo != "" && recCoilNo != "---Select---" && nb != null && nb != "" && nb != "---Select---" && sch != null && sch != "" && sch != "---Select---") {
+            if (type != "Scrap" && type != "SCRAP") {
+                if (width != null && width != "" && parseFloat(width) > 0 && noOfCoil != null && noOfCoil != "" && parseFloat(noOfCoil) && actualWeight != null && actualWeight != "" && parseFloat(actualWeight) > 0 && actualWidth != null && actualWidth != "" && parseFloat(actualWidth) > 0 && type != null && type != "" && type != "---Select---" && recCoilNo != null && recCoilNo != "" && recCoilNo != "---Select---" && nb != null && nb != "" && nb != "---Select---" && sch != null && sch != "" && sch != "---Select---") {
 
-                $('#tblDisplay').children('tbody').children('tr:last').remove();
-                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
-                    var html = $('#tblSlit').children('tbody').find('tr:first').html();
+                    $('#tblDisplay').children('tbody').children('tr:last').remove();
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        var html = $('#tblSlit').children('tbody').find('tr:first').html();
 
-                    if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
-                        $('#tblDisplay').append(`<thead>` + $('#tblSlit').children('thead').html() + `</thead><tbody></tbody>`);
+                        if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                            $('#tblDisplay').append(`<thead>` + $('#tblSlit').children('thead').html() + `</thead><tbody></tbody>`);
+                            if (type != 'COIL' && parseInt(noOfCoil) > 1) {
+                                showErrorMessage("Bal Patta and scrap are allowed only once.");
+                            }
+                            else {
+                                for (var x = 0; x < parseInt(noOfCoil); x++) {
+                                    $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
+                                }
+                            }
+                        }
+                        else {
+                            if (type != 'COIL' && parseInt(noOfCoil) > 1) {
+                                showErrorMessage("Bal Patta and scrap are allowed only once.");
+                            }
+                            else {
+                                for (var x = 0; x < parseInt(noOfCoil); x++) {
+                                    $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
+                                }
+                            }
+                        }
+                    }
+
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(2).children('input').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(3).children('input').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(4).children('input').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(6).children('select').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(7).children('select').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(8).children('select').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(9).children('input').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(10).children('input').val(0);
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(11).children('select').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(12).children('input').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(0).children('input').val('0');
+
+
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
                         if (type != 'COIL' && parseInt(noOfCoil) > 1) {
                             showErrorMessage("Bal Patta and scrap are allowed only once.");
                         }
                         else {
-                            for (var x = 0; x < parseInt(noOfCoil); x++) {
-                                $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
+                            for (var x = 0, y = parseInt(noOfCoil), z = parseInt(recCoilNo); x < parseInt(noOfCoil); x++, y--, z++) {
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(1).children('input').val(width);
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(1).children('input').removeClass('gridTextbox')
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(2).children('input').val(1);
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(2).children('input').removeClass('gridTextbox')
+
+                                var formulaWt = ((parseFloat(actualWeight) * parseFloat(width)) / parseFloat(actualWidth)).toFixed(2);
+                                formulaWt = Math.round(formulaWt)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(3).children('input').val(formulaWt);
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(3).children('input').removeClass('gridTextbox')
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(4).children('input').val(actualWt);
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(4).children('input').removeClass('gridTextbox')
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('span').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).html($('#dropdownSlitType').html());
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').val(type)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').addClass('select2');
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('span').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).html($('#dropdownRecCoilNoSlit').html());
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').addClass('select2');
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').val(z)
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('span').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).html($('#dropdownNBSlit').html());
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').append(`<option value="` + nb + `">` + nb + `</option>`);
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').removeAttr('disabled')
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').val(nb)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').addClass('select2');
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('span').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).html($('#dropdownSCHSlit').html());
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').removeAttr('disabled')
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').val(sch)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').addClass('select2');
+
+
+                                //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').remove();
+                                //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('span').remove();
+                                //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).html($('#dropdownODSlit').html());
+                                //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').removeAttr('disabled')
+                                //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').val(od)
+                                //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').addClass('select2');
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('input').val(od)
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(10).children('input').val(coilNo)
+
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('span').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).html($('#dropdownGodown').html());
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').val(godown)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').addClass('select2');
+
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(12).children('input').val(remarks);
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(12).children('input').removeClass('gridTextbox')
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(13).addClass('text-center')
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsSlit(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsSlit(this)" style="font-size:18px"></i>`)
+
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(0).children('input').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(1).children('input').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(2).children('input').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(3).children('input').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(4).children('input').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('input').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(10).children('input').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(12).children('input').attr('disabled', true)
                             }
                         }
+
+
+
+                        $('#tblDisplay').children('tbody').children().find('input').each(function () {
+                            $(this).removeAttr('onfocusin')
+                            $(this).removeAttr('onfocus')
+                            $(this).removeAttr('onfocusout')
+                            $(this).removeClass('focusIn')
+                        })
                     }
                     else {
-                        if (type != 'COIL' && parseInt(noOfCoil) > 1) {
-                            showErrorMessage("Bal Patta and scrap are allowed only once.");
+                        $('#tblDisplay').children('tbody').children('tr').each(function () {
+                            if ($(this).children('td').eq(0).children('input').val() == srNo) {
+                                $(this).children('td').eq(1).children('input').val(width);
+                                $(this).children('td').eq(2).children('input').val(noOfCoil);
+                                $(this).children('td').eq(3).children('input').val(formulawt);
+                                $(this).children('td').eq(4).children('input').val(actualWt);
+                                $(this).children('td').eq(5).children('select').val(type);
+                                $(this).children('td').eq(6).children('select').val(recCoilNo);
+                                $(this).children('td').eq(7).children('select').val(nb);
+                                $(this).children('td').eq(8).children('select').val(sch);
+                                $(this).children('td').eq(9).children('input').val(od);
+                                $(this).children('td').eq(10).children('select').val(coilNo);
+                                $(this).children('td').eq(11).children('select').val(godown);
+                                $(this).children('td').eq(12).children('input').val(remarks);
+                                $(this).children('td').eq(13).addClass('text-center')
+                                $(this).children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsSplit(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsSplit(this)" style="font-size:18px"></i>`)
+                            }
+                        })
+                        $('#tblSlit').children('tbody').children('tr').children('td').eq(2).children('input').attr('disabled', false);
+                    }
+
+                    SetSerialNumberSlit();
+                    SetSelect2();
+                    SetReceivedCoilNo();
+                    CalculateSlit();
+                    if (id && parseInt(id) > 0) {
+                        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(0).children('input').focus();
+                        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(0).children('input').select();
+                    }
+                    else {
+                        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').select();
+                    }
+
+
+                    if ($('input[name="completeDate"]').val()) {
+                        if ($('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val() && $('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val() != 'COIL') {
+                            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', false);
                         }
                         else {
-                            for (var x = 0; x < parseInt(noOfCoil); x++) {
-                                $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
-                            }
+                            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true);
                         }
                     }
-                }
-
-                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').val('');
-                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(2).children('input').val('');
-                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(3).children('input').val('');
-                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(4).children('input').val('');
-                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val('');
-                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(6).children('select').val('');
-                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(7).children('select').val('');
-                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(8).children('select').val('');
-                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(9).children('input').val('');
-                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(10).children('input').val(0);
-                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(11).children('select').val('');
-                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(12).children('input').val('');
-                $('#tblSlit').children('tbody').children('tr:last').children('td').eq(0).children('input').val('0');
-
-
-                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
-                    if (type != 'COIL' && parseInt(noOfCoil) > 1) {
-                        showErrorMessage("Bal Patta and scrap are allowed only once.");
-                    }
-                    else {
-                        for (var x = 0, y = parseInt(noOfCoil), z = parseInt(recCoilNo); x < parseInt(noOfCoil); x++, y--, z++) {
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(1).children('input').val(width);
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(1).children('input').removeClass('gridTextbox')
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(2).children('input').val(1);
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(2).children('input').removeClass('gridTextbox')
-
-                            var formulaWt = ((parseFloat(actualWeight) * parseFloat(width)) / parseFloat(actualWidth)).toFixed(2);
-                            formulaWt = Math.round(formulaWt)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(3).children('input').val(formulaWt);
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(3).children('input').removeClass('gridTextbox')
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(4).children('input').val(actualWt);
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(4).children('input').removeClass('gridTextbox')
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').remove();
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('span').remove();
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).html($('#dropdownSlitType').html());
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').val(type)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').addClass('select2');
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').remove();
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('span').remove();
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).html($('#dropdownRecCoilNoSlit').html());
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').addClass('select2');
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').val(z)
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').remove();
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('span').remove();
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).html($('#dropdownNBSlit').html());
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').append(`<option value="` + nb + `">` + nb + `</option>`);
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').removeAttr('disabled')
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').val(nb)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').addClass('select2');
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').remove();
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('span').remove();
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).html($('#dropdownSCHSlit').html());
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').removeAttr('disabled')
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').val(sch)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').addClass('select2');
-
-
-                            //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').remove();
-                            //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('span').remove();
-                            //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).html($('#dropdownODSlit').html());
-                            //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').removeAttr('disabled')
-                            //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').val(od)
-                            //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').addClass('select2');
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('input').val(od)
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(10).children('input').val(coilNo)
-
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').remove();
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('span').remove();
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).html($('#dropdownGodown').html());
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').val(godown)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').addClass('select2');
-
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(12).children('input').val(remarks);
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(12).children('input').removeClass('gridTextbox')
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(13).addClass('text-center')
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsSlit(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsSlit(this)" style="font-size:18px"></i>`)
-
-
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(0).children('input').attr('disabled', true)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(1).children('input').attr('disabled', true)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(2).children('input').attr('disabled', true)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(3).children('input').attr('disabled', true)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(4).children('input').attr('disabled', true)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').attr('disabled', true)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').attr('disabled', true)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').attr('disabled', true)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').attr('disabled', true)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('input').attr('disabled', true)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(10).children('input').attr('disabled', true)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').attr('disabled', true)
-                            $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(12).children('input').attr('disabled', true)
-                        }
-                    }
-
-
-
-                    $('#tblDisplay').children('tbody').children().find('input').each(function () {
-                        $(this).removeAttr('onfocusin')
-                        $(this).removeAttr('onfocus')
-                        $(this).removeAttr('onfocusout')
-                        $(this).removeClass('focusIn')
-                    })
                 }
                 else {
-                    $('#tblDisplay').children('tbody').children('tr').each(function () {
-                        if ($(this).children('td').eq(0).children('input').val() == srNo) {
-                            $(this).children('td').eq(1).children('input').val(width);
-                            $(this).children('td').eq(2).children('input').val(noOfCoil);
-                            $(this).children('td').eq(3).children('input').val(formulawt);
-                            $(this).children('td').eq(4).children('input').val(actualWt);
-                            $(this).children('td').eq(5).children('select').val(type);
-                            $(this).children('td').eq(6).children('select').val(recCoilNo);
-                            $(this).children('td').eq(7).children('select').val(nb);
-                            $(this).children('td').eq(8).children('select').val(sch);
-                            $(this).children('td').eq(9).children('input').val(od);
-                            $(this).children('td').eq(10).children('select').val(coilNo);
-                            $(this).children('td').eq(11).children('select').val(godown);
-                            $(this).children('td').eq(12).children('input').val(remarks);
-                            $(this).children('td').eq(13).addClass('text-center')
-                            $(this).children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsSplit(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsSplit(this)" style="font-size:18px"></i>`)
-                        }
-                    })
-                    $('#tblSlit').children('tbody').children('tr').children('td').eq(2).children('input').attr('disabled', false);
-                }
-
-                SetSerialNumberSlit();
-                SetSelect2();
-                SetReceivedCoilNo();
-                CalculateSlit();
-                if (id && parseInt(id) > 0) {
-                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(0).children('input').focus();
-                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(0).children('input').select();
-                }
-                else {
-                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
-                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').select();
-                }
-
-
-                if ($('input[name="completeDate"]').val()) {
-                    if ($('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val() && $('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val() != 'COIL') {
-                        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', false);
-                    }
-                    else {
-                        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true);
-                    }
+                    showErrorMessage("Please enter all required fields and actual weight and width!");
                 }
             }
             else {
-                showErrorMessage("Please enter all required fields and actual weight and width!");
-            }
+                if (width != null && width != "" && parseFloat(width) > 0 && noOfCoil != null && noOfCoil != "" && parseFloat(noOfCoil) && actualWeight != null && actualWeight != "" && parseFloat(actualWeight) > 0 && actualWidth != null && actualWidth != "" && parseFloat(actualWidth) > 0 && type != null && type != "" && type != "---Select---" && recCoilNo != null && recCoilNo != "" && recCoilNo != "---Select---") {
 
+                    $('#tblDisplay').children('tbody').children('tr:last').remove();
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        var html = $('#tblSlit').children('tbody').find('tr:first').html();
+
+                        if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                            $('#tblDisplay').append(`<thead>` + $('#tblSlit').children('thead').html() + `</thead><tbody></tbody>`);
+                            if (type != 'COIL' && parseInt(noOfCoil) > 1) {
+                                showErrorMessage("Bal Patta and scrap are allowed only once.");
+                            }
+                            else {
+                                for (var x = 0; x < parseInt(noOfCoil); x++) {
+                                    $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
+                                }
+                            }
+                        }
+                        else {
+                            if (type != 'COIL' && parseInt(noOfCoil) > 1) {
+                                showErrorMessage("Bal Patta and scrap are allowed only once.");
+                            }
+                            else {
+                                for (var x = 0; x < parseInt(noOfCoil); x++) {
+                                    $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
+                                }
+                            }
+                        }
+                    }
+
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(2).children('input').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(3).children('input').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(4).children('input').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(6).children('select').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(7).children('select').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(8).children('select').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(9).children('input').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(10).children('input').val(0);
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(11).children('select').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(12).children('input').val('');
+                    $('#tblSlit').children('tbody').children('tr:last').children('td').eq(0).children('input').val('0');
+
+
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        if (type != 'COIL' && parseInt(noOfCoil) > 1) {
+                            showErrorMessage("Bal Patta and scrap are allowed only once.");
+                        }
+                        else {
+                            for (var x = 0, y = parseInt(noOfCoil), z = parseInt(recCoilNo); x < parseInt(noOfCoil); x++, y--, z++) {
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(1).children('input').val(width);
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(1).children('input').removeClass('gridTextbox')
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(2).children('input').val(1);
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(2).children('input').removeClass('gridTextbox')
+
+                                var formulaWt = ((parseFloat(actualWeight) * parseFloat(width)) / parseFloat(actualWidth)).toFixed(2);
+                                formulaWt = Math.round(formulaWt)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(3).children('input').val(formulaWt);
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(3).children('input').removeClass('gridTextbox')
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(4).children('input').val(actualWt);
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(4).children('input').removeClass('gridTextbox')
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('span').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).html($('#dropdownSlitType').html());
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').val(type)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').addClass('select2');
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('span').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).html($('#dropdownRecCoilNoSlit').html());
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').addClass('select2');
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').val(z)
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('span').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).html($('#dropdownNBSlit').html());
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').append(`<option value="` + nb + `">` + nb + `</option>`);
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').removeAttr('disabled')
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').val(nb)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').addClass('select2');
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('span').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).html($('#dropdownSCHSlit').html());
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').removeAttr('disabled')
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').val(sch)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').addClass('select2');
+
+
+                                //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').remove();
+                                //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('span').remove();
+                                //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).html($('#dropdownODSlit').html());
+                                //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').removeAttr('disabled')
+                                //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').val(od)
+                                //$('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('select').addClass('select2');
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('input').val(od)
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(10).children('input').val(coilNo)
+
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('span').remove();
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).html($('#dropdownGodown').html());
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').val(godown)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').addClass('select2');
+
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(12).children('input').val(remarks);
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(12).children('input').removeClass('gridTextbox')
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(13).addClass('text-center')
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsSlit(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsSlit(this)" style="font-size:18px"></i>`)
+
+
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(0).children('input').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(1).children('input').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(2).children('input').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(3).children('input').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(4).children('input').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(5).children('select').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(6).children('select').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(7).children('select').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(8).children('select').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(9).children('input').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(10).children('input').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(11).children('select').attr('disabled', true)
+                                $('#tblDisplay').children('tbody').children('tr:nth-last-child(' + parseInt(y) + ')').children('td').eq(12).children('input').attr('disabled', true)
+                            }
+                        }
+
+
+
+                        $('#tblDisplay').children('tbody').children().find('input').each(function () {
+                            $(this).removeAttr('onfocusin')
+                            $(this).removeAttr('onfocus')
+                            $(this).removeAttr('onfocusout')
+                            $(this).removeClass('focusIn')
+                        })
+                    }
+                    else {
+                        $('#tblDisplay').children('tbody').children('tr').each(function () {
+                            if ($(this).children('td').eq(0).children('input').val() == srNo) {
+                                $(this).children('td').eq(1).children('input').val(width);
+                                $(this).children('td').eq(2).children('input').val(noOfCoil);
+                                $(this).children('td').eq(3).children('input').val(formulawt);
+                                $(this).children('td').eq(4).children('input').val(actualWt);
+                                $(this).children('td').eq(5).children('select').val(type);
+                                $(this).children('td').eq(6).children('select').val(recCoilNo);
+                                $(this).children('td').eq(7).children('select').val(nb);
+                                $(this).children('td').eq(8).children('select').val(sch);
+                                $(this).children('td').eq(9).children('input').val(od);
+                                $(this).children('td').eq(10).children('select').val(coilNo);
+                                $(this).children('td').eq(11).children('select').val(godown);
+                                $(this).children('td').eq(12).children('input').val(remarks);
+                                $(this).children('td').eq(13).addClass('text-center')
+                                $(this).children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsSplit(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsSplit(this)" style="font-size:18px"></i>`)
+                            }
+                        })
+                        $('#tblSlit').children('tbody').children('tr').children('td').eq(2).children('input').attr('disabled', false);
+                    }
+
+                    SetSerialNumberSlit();
+                    SetSelect2();
+                    SetReceivedCoilNo();
+                    CalculateSlit();
+                    if (id && parseInt(id) > 0) {
+                        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(0).children('input').focus();
+                        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(0).children('input').select();
+                    }
+                    else {
+                        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').select();
+                    }
+
+
+                    if ($('input[name="completeDate"]').val()) {
+                        if ($('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val() && $('#tblSlit').children('tbody').children('tr:last').children('td').eq(5).children('select').val() != 'COIL') {
+                            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', false);
+                        }
+                        else {
+                            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true);
+                        }
+                    }
+                }
+                else {
+                    showErrorMessage("Please enter all required fields and actual weight and width!");
+                }
+            }
         }
         setTimeout(function () {
             document.getElementById("jobType").scrollIntoView();

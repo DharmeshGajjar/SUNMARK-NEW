@@ -303,7 +303,7 @@ namespace SUNMark.Controllers
                                 sqlParam[0] = new SqlParameter("@SupCoil", inwardModel.Inward.SupCoilNo[p]);
                                 sqlParam[1] = new SqlParameter("@cmpvou", companyId);
                                 sqlParam[2] = new SqlParameter("@Type", "INTR");
-                                sqlParam[3] = new SqlParameter("@Vou", "0");
+                                sqlParam[3] = new SqlParameter("@Vou", p);
                                 sqlParam[4] = new SqlParameter("@Flg", "1");
                                 sqlParam[5] = new SqlParameter("@MainVou", id);
                                 DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotMstDetails1", sqlParam);

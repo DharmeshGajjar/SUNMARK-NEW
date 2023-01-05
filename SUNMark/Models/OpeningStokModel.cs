@@ -70,6 +70,9 @@ namespace SUNMark.Models
         public int LotPrcTypVou { get; set; }
         public decimal LotOD { get; set; }
         public decimal FeetPer { get; set; }
-        public int PCS { get; set; }
+        public int PCS { get; set; } 
+
+        public string NB { get; set; }
+        public string SCH { get; set; }
     }
 }

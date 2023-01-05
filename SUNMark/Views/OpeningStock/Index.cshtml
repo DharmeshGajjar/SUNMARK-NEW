@@ -36,6 +36,8 @@
         headerAddTrue = true;
     }
     List<SelectListItem> statenameList = ViewBag.statename as List<SelectListItem>;
+    List<SelectListItem> nbList = ViewBag.nbList != null ? ViewBag.nbList as List<SelectListItem> : null;
+    List<SelectListItem> schList = ViewBag.schList != null ? ViewBag.schList as List<SelectListItem> : null;
 }
 
 <style>
@@ -345,20 +347,20 @@
                                         </div>
 
                                         @*<div class="col-md-6">
-                                            <div class="container-fluid">
+            <div class="container-fluid">
 
-                                                <div class="row">
-                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
-                                                        Finish <span class="required clsrequied"></span>
-                                                    </label>
-                                                    <input type="hidden" name="Finish" id="Finish" />
-                                                    <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
-                                                        @Html.DropDownListFor(x => x.LotFinish, Model.LotFinishList, "Select", new { @class = "form-control select2 LotFinish", @tabindex = "14", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @id = "txtLotFinish" })
-                                                        <a class="btn btn-outline-info ml-2" href="/FinishMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>*@
+                <div class="row">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                        Finish <span class="required clsrequied"></span>
+                    </label>
+                    <input type="hidden" name="Finish" id="Finish" />
+                    <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                        @Html.DropDownListFor(x => x.LotFinish, Model.LotFinishList, "Select", new { @class = "form-control select2 LotFinish", @tabindex = "14", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @id = "txtLotFinish" })
+                        <a class="btn btn-outline-info ml-2" href="/FinishMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>*@
 
                                         <div class="col-md-6">
                                             <div class="container-fluid">
@@ -478,6 +480,36 @@
 
                                                 <div class="row">
                                                     <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        NB
+                                                    </label>
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2" style="width: 29% !important">
+                                                        @Html.DropDownListFor(x => x.NB, nbList, "Select", new { @class = "form-control select2 form-control-lg", @style = "width:100% " })
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
+                                                        SCH
+                                                    </label>
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2" style="width: 26% !important">
+                                                        @Html.DropDownListFor(x => x.SCH, schList, "Select", new { @class = "form-control select2", @style = "width:100% " })
+                                                    </div>
+                                                    <label class="control-label pl-1" style="font-family: Verdana;font-size:small; height:30px;" id="ODVal"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="container-fluid">
+
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel lblstyle">
                                                         Remarks
                                                     </label>
                                                     <div class="col-md-auto col-12 form-outline form-white mb-2">
@@ -488,7 +520,7 @@
                                         </div>
 
                                         @*</div>
-                                            </div>*@
+        </div>*@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
@@ -660,6 +692,17 @@
         var totalRecord = '';
         var isDelete = '@Html.Raw(userRight.IsDelete)';
         var isEdit = '@Html.Raw(userRight.IsEdit)';
+
+        var AddTab = '@ViewBag.AddTab';
+        if (AddTab == '1') {
+            $('#custom-tabs-three-add-tab').click();
+        }
+        $('#LotThick').on('blur', function () {
+            AutofillNBSCHByODThick();
+        });
+        $('#LotOD').on('blur', function () {
+            AutofillNBSCHByODThick();
+        });
     })
 
     var timer = null;
@@ -1347,6 +1390,35 @@
         $(".select2").select2();
     }
 
+    function AutofillNBSCHByODThick() {
+        var thick = $('#LotThick').val();
+        var od = $('#LotOD').val();
+        if (thick != '' && od != '') {
+            $.ajax({
+                type: "POST",
+                url: '/OpeningStock/GetNBSCH',
+                data: { "thick": thick, "od": od },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            $('#NB').val(response.lotNB).trigger('change');
+                            $('#SCH').val(response.lotSCH).trigger('change');
+                        }
+                        else {
+
+                        }
+                    }
+                    else {
+
+                    }
+                },
+                error: function (response) {
+                }
+            });
+        }
+        
+    }
 
     @*$(function () {
         var oblvou = '@Html.Raw(Model.OblVou)';
