@@ -129,6 +129,7 @@
                                                 <th style="width:2% !important">
                                                     Row.No
                                                     @Html.HiddenFor(x => x.GrdAHideYNString)
+                                                    @Html.HiddenFor(x => x.canGrowString)
                                                     @Html.HiddenFor(x => x.GrdALinkYNString)
                                                     @Html.HiddenFor(x => x.GrdATotYNString)
                                                 </th>
@@ -164,6 +165,9 @@
                                                 </th>
                                                 <th style="width:3% !important">
                                                     Hide Y/N
+                                                </th> 
+                                                <th style="width:3% !important">
+                                                  Can Grow Y/N
                                                 </th>
                                                 <th style="width:3% !important">
                                                     Suppress If Value
@@ -214,6 +218,9 @@
                                                         </td>
                                                         <td style="width:3% !important">
                                                             @Html.CheckBoxFor(x => x.Gridtransaction.GrdAHideYN[i], new { @class = "form-control AHideYN", @type = "checkbox", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                        </td>  
+                                                        <td style="width:3% !important">
+                                                            @Html.CheckBoxFor(x => x.Gridtransaction.GrdCanGrow[i], new { @class = "form-control canGrow", @type = "checkbox", @style = "font-family: Verdana;font-size:small; height:30px;" })
                                                         </td>
                                                         <td style="width:3% !important">
                                                             @Html.TextBoxFor(x => x.Gridtransaction.GrdASuppressIFVal[i], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px; text-align:right;" })
@@ -263,6 +270,9 @@
                                                     </td>
                                                     <td style="width:3% !important">
                                                         @Html.CheckBoxFor(x => x.Gridtransaction.GrdAHideYN[0], new { @class = "form-control AHideYN", @type = "checkbox", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                    </td> 
+                                                    <td style="width:3% !important">
+                                                        @Html.CheckBoxFor(x => x.Gridtransaction.GrdCanGrow[0], new { @class = "form-control canGrow", @type = "checkbox", @style = "font-family: Verdana;font-size:small; height:30px;" })
                                                     </td>
                                                     <td style="width:3% !important">
                                                         @Html.TextBoxFor(x => x.Gridtransaction.GrdASuppressIFVal, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px; text-align:right;" })
@@ -807,7 +817,8 @@
             $(this).children("td").eq(9).children("input").attr("name", "Gridtransaction.GrdATotYN");
             $(this).children("td").eq(10).children("input").attr("name", "Gridtransaction.GrdALinkYN");
             $(this).children("td").eq(11).children("input").attr("name", "Gridtransaction.GrdAHideYN");
-            $(this).children("td").eq(12).children("input").attr("name", "Gridtransaction.GrdASuppressIFVal");
+            $(this).children("td").eq(12).children("input").attr("name", "Gridtransaction.CanGrow");
+            $(this).children("td").eq(13).children("input").attr("name", "Gridtransaction.GrdASuppressIFVal");
         });
 
     }
@@ -888,11 +899,13 @@
     $("#btnSave").click(function () {
         var ATotYN = $('.ATotYN');
         var AHideYN = $('.AHideYN');
+        var canGrow = $('.canGrow');
         var ALinkYN = $('.ALinkYN');
 
         var ATotYNString = ''
         var AHideYNString = ''
         var ALinkYNString = ''
+        var canGrowString = ''
 
         $(ATotYN).each(function () {
             if ($(this).is(":checked")) {
@@ -911,6 +924,14 @@
                 AHideYNString += '0,';
             }
         });
+        $(canGrow).each(function () {
+            if ($(this).is(":checked")) {
+                canGrowString += '1,';
+            }
+            else {
+                canGrowString += '0,';
+            }
+        });
 
         $(ALinkYN).each(function () {
             if ($(this).is(":checked")) {
@@ -922,6 +943,7 @@
         });
 
         $('#GrdAHideYNString').val(AHideYNString);
+        $('#canGrowString').val(canGrowString);
         $('#GrdALinkYNString').val(ALinkYNString);
         $('#GrdATotYNString').val(ATotYNString);
     })

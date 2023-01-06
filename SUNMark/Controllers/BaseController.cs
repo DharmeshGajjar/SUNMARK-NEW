@@ -342,6 +342,7 @@ namespace SUNMark.Controllers
                                             GrdAPosition = drCheck[0]["GrdAPosition"].ToString(),
                                             GrdASuppressIfVal = drCheck[0]["GrdASuppressIfVal"].ToString(),
                                             GrdATotYN = drCheck[0]["GrdATotYN"].ToString(),
+                                            GrdCanGrow  = drCheck[0]["CanGrow"].ToString(),
                                             GrdAWidth = drCheck[0]["GrdAWidth"].ToString(),
                                             GrdADecUpTo = drCheck[0]["GrdADecUpTo"].ToString(),
                                             GrdAHideYN = drCheck[0]["GrdAHideYN"].ToString(),

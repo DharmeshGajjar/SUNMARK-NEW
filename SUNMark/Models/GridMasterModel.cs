@@ -27,6 +27,7 @@ namespace SUNMark.Models
         public string GrdALinkYNString { get; set; }
 
         public string GrdAHideYNString { get; set; }
+        public string canGrowString { get; set; }
 
 
         public GridTransactionGridModel Gridtransaction { get; set; }
@@ -72,8 +73,9 @@ namespace SUNMark.Models
         public List<SelectListItem> LinkYNList { get; set; }
         public string[] GrdASuppressIFVal { get; set; }
         public string GrdASuppressIFValStr { get; set; }
+        public bool[] GrdCanGrow { get; set; }
 
-        
+
     }
 
     public class GridShortGridModel

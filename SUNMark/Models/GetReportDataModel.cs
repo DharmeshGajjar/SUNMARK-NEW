@@ -49,6 +49,7 @@ namespace SUNMark.Models
         public string GrdADecUpTo { get; set; }
 
         public string GrdAHideYN { get; set; }
+        public string GrdCanGrow { get; set; }
 
         public string OrderBy { get; set; }
     }
