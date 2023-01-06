@@ -887,9 +887,11 @@
         $('#custom-tabs-three-list').removeClass('active');
         $('#custom-tabs-three-add').addClass('active');
         $('#custom-tabs-three-add').addClass('show');
-        setTimeout(function () {
-            document.getElementById('jobType').focus();
-        }, 100)
+        //$('#jobType').focus();
+        $('#jobType').select2('focus');
+        //setTimeout(function () {
+        //    document.getElementById('jobType').focus();
+        //}, 100)
     }
 
 
