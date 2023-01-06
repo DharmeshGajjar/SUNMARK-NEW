@@ -342,7 +342,7 @@ namespace SUNMark.Controllers
                 throw;
             }
         }
-   
+
         [Route("/MachineMaster/GetGodown-List")]
         public IActionResult GodownList(string q)
         {
@@ -355,7 +355,6 @@ namespace SUNMark.Controllers
             }
             return Json(new { items = CommonHelpers.BindSelect2Model(godownList) });
         }
-
 
         [Route("/MachineMaster/GetLocation-List")]
         public IActionResult LocationList(string q)
@@ -371,7 +370,7 @@ namespace SUNMark.Controllers
         }
 
         [Route("/MachineMaster/GetMachineType-List")]
-        public IActionResult MachTypeList(string q)
+        public IActionResult MachineTypeList(string q)
         {
             int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
             var mtypeList = ObjtaxMasterHelpers.GetMachineType(companyId);
@@ -383,30 +382,30 @@ namespace SUNMark.Controllers
             return Json(new { items = CommonHelpers.BindSelect2Model(mtypeList) });
         }
 
-        [Route("/MachineMaster/GetOperator-List")]
-        public IActionResult OperatorList(string q)
-        {
-            int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
-            var operList = ObjAccountMasterHelpers.GetOperatorCustomDropdown(companyId, 0);
+        //[Route("/MachineMaster/GetOperator-List")]
+        //public IActionResult OperatorList(string q)
+        //{
+        //    int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+        //    var operList = ObjAccountMasterHelpers.GetOperatorCustomDropdown(companyId, 0);
 
-            if (!(string.IsNullOrEmpty(q) || string.IsNullOrWhiteSpace(q)))
-            {
-                operList = operList.Where(x => x.Text.ToLower().StartsWith(q.ToLower())).ToList();
-            }
-            return Json(new { items = CommonHelpers.BindSelect2Model(operList) });
-        }
+        //    if (!(string.IsNullOrEmpty(q) || string.IsNullOrWhiteSpace(q)))
+        //    {
+        //        operList = operList.Where(x => x.Text.ToLower().StartsWith(q.ToLower())).ToList();
+        //    }
+        //    return Json(new { items = CommonHelpers.BindSelect2Model(operList) });
+        //}
 
-        [Route("/MachineMaster/GetSuperVisor-List")]
-        public IActionResult SupervisorList(string q)
-        {
-            int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
-            var superList = ObjAccountMasterHelpers.GetSupervisorCustomDropdown(companyId, 0);
+        //[Route("/MachineMaster/GetSuperVisor-List")]
+        //public IActionResult SupervisorList(string q)
+        //{
+        //    int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+        //    var superList = ObjAccountMasterHelpers.GetSupervisorCustomDropdown(companyId, 0);
 
-            if (!(string.IsNullOrEmpty(q) || string.IsNullOrWhiteSpace(q)))
-            {
-                superList = superList.Where(x => x.Text.ToLower().StartsWith(q.ToLower())).ToList();
-            }
-            return Json(new { items = CommonHelpers.BindSelect2Model(superList) });
-        }
+        //    if (!(string.IsNullOrEmpty(q) || string.IsNullOrWhiteSpace(q)))
+        //    {
+        //        superList = superList.Where(x => x.Text.ToLower().StartsWith(q.ToLower())).ToList();
+        //    }
+        //    return Json(new { items = CommonHelpers.BindSelect2Model(superList) });
+        //}
     }
 }

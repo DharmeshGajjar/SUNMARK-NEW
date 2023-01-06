@@ -168,6 +168,7 @@ namespace SUNMark.Controllers
                             SetErrorMessage("Dulplicate Account Code");
                             ViewBag.FocusType = "-1";
                             accountMasterModel.CityList = ObjaccountMasterHelpers.GetCityNameCustomDropdown(companyId);
+                            accountMasterModel.TypeList = ObjaccountMasterHelpers.GetAccountType();
                             return View(accountMasterModel);
                         }
                         else if (status == -2)
@@ -175,6 +176,7 @@ namespace SUNMark.Controllers
                             SetErrorMessage("Dulplicate Account");
                             ViewBag.FocusType = "-2";
                             accountMasterModel.CityList = ObjaccountMasterHelpers.GetCityNameCustomDropdown(companyId);
+                            accountMasterModel.TypeList = ObjaccountMasterHelpers.GetAccountType();
                             return View(accountMasterModel);
                         }
                         else
@@ -195,6 +197,7 @@ namespace SUNMark.Controllers
                         SetErrorMessage("Please Enter the Value");
                         ViewBag.FocusType = "-1";
                         accountMasterModel.CityList = ObjaccountMasterHelpers.GetCityNameCustomDropdown(companyId);
+                        accountMasterModel.TypeList = ObjaccountMasterHelpers.GetAccountType();
                         return View(accountMasterModel);
                     }
                 }
@@ -203,6 +206,7 @@ namespace SUNMark.Controllers
                     SetErrorMessage("Please Enter the Value");
                     ViewBag.FocusType = "-1";
                     accountMasterModel.CityList = ObjaccountMasterHelpers.GetCityNameCustomDropdown(companyId);
+                    accountMasterModel.TypeList = ObjaccountMasterHelpers.GetAccountType();
                     return View(accountMasterModel);
                 }
             }
