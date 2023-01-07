@@ -100,761 +100,760 @@
             <div class="card-body">
                 <div class="col-md-12">
                     <button type="button" id="modelPopup" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="Display:none">
-  Launch demo modal
-</button>
+                        Launch demo modal
+                    </button>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-check">
-            <div class="row">
-            <div class="col-md-12">
-              <input type="radio" class="form-check-input" id="radio1" name="printOption" value="Print" checked>
-              <label class="form-check-label" for="radio1">Print/View </label>
-            </div>
-            <div class="col-md-2 ">
-                  <input type="radio" class="form-check-input" id="radio2" name="printOption" value="Email">
-                  <label class="form-check-label" for="radio2">Email</label>
-             </div>
-           <div class="col-md-10 form-group">
-                  <input type="email" name="EmailAddress" Id="EmailAddress" class="from-control" style="display:none" required />
-             </div>
-           <div class="col-md-2">
-               <input type="radio" class="form-check-input" id="radio3" name="printOption" value="WhatApp">
-              <label class="form-check-label" for="radio2">WhatApp</label>
-           </div>
-           <div class="col-md-10 form-group">
-               <input type="text" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required />
-           </div>
-        </div>
-        </div>
-    
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Esc - Cancle</button>
-        <button type="button" class="btn btn-primary" id="btn_ViewMailWhatapp">Submit</button>
-      </div>
-    </div>
-  </div>
-</div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-check">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <input type="radio" class="form-check-input" id="radio1" name="printOption" value="Print" checked>
+                                                <label class="form-check-label" for="radio1">Print/View </label>
+                                            </div>
+                                            <div class="col-md-2 ">
+                                                <input type="radio" class="form-check-input" id="radio2" name="printOption" value="Email">
+                                                <label class="form-check-label" for="radio2">Email</label>
+                                            </div>
+                                            <div class="col-md-10 form-group">
+                                                <input type="email" name="EmailAddress" Id="EmailAddress" class="from-control" style="display:none" required />
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="radio" class="form-check-input" id="radio3" name="printOption" value="WhatApp">
+                                                <label class="form-check-label" for="radio2">WhatApp</label>
+                                            </div>
+                                            <div class="col-md-10 form-group">
+                                                <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "  />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"> Esc - Cancle</button>
+                                    <button type="button" class="btn btn-primary" id="btn_ViewMailWhatapp">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="tab-content" id="custom-tabs-three-tabContent">
                         @if (userRight != null && userRight.IsList)
                         {
-                            <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
-                                <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
-                                    <div class="col-md-12 col-12 mb-2 mt-2">
-                                        <div class="row">
+                        <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
+                            <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
+                                <div class="col-md-12 col-12 mb-2 mt-2">
+                                    <div class="row">
 
-                                            <div class="col-md-1 mb-2 float-left">
-                                                <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
-                                                    @for (int i = 0; i < pageNoList.Count; i++)
-                                                    {
-                                                        string checkedd = "checked";
-                                                        <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
-                                                        checkedd = string.Empty;
-                                                    }
+                                        <div class="col-md-1 mb-2 float-left">
+                                            <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                                @for (int i = 0; i < pageNoList.Count; i++)
+                                                {
+                                                string checkedd = "checked";
+                                                <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                                checkedd = string.Empty;
+                                                }
 
-                                                </select>
-                                            </div>
-                                            <div class="col-md-5 col-12">
-                                                <div class="row">
-                                                    <div class="col-md-6 col">
-                                                        <select class="form-control select2 drpReportLayout" onchange="loadData()">
-                                                            <option value="" ; style="width:200px">--Select Layout--</option>
-                                                            @if (layoutList != null && layoutList.Count > 0)
-                                                            {
-                                                                foreach (var item in layoutList)
-                                                                {
-                                                                    <option value="@item.Value">@item.Text </option>
-                                                                }
-                                                            }
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-2 col-auto mb-2 custommt-2-3">
-                                                        @if (isAdministrator == 1)
+                                            </select>
+                                        </div>
+                                        <div class="col-md-5 col-12">
+                                            <div class="row">
+                                                <div class="col-md-6 col">
+                                                    <select class="form-control select2 drpReportLayout" onchange="loadData()">
+                                                        <option value="" ; style="width:200px">--Select Layout--</option>
+                                                        @if (layoutList != null && layoutList.Count > 0)
                                                         {
-                                                            <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
-                                                                Edit
-                                                            </button>
+                                                        foreach (var item in layoutList)
+                                                        {
+                                                        <option value="@item.Value">@item.Text </option>
                                                         }
-                                                    </div>
-                                                    <div class="col-md-4 mb-2 custommt-2-3">
-                                                        <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
-                                                        <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
-                                                    </div>
-
+                                                        }
+                                                    </select>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-3"></div>
-                                            <div class="col-md-3 col-12 float-right">
-                                                <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                                <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                                    @if (isAdministrator == 1)
+                                                    {
+                                                    <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                        Edit
+                                                    </button>
+                                                    }
+                                                </div>
+                                                <div class="col-md-4 mb-2 custommt-2-3">
+                                                    <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                                    <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                </div>
+
                                             </div>
                                         </div>
+                                        <div class="col-md-3"></div>
+                                        <div class="col-md-3 col-12 float-right">
+                                            <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                        </div>
                                     </div>
-                                    <div class="dataTable">
-
-                                    </div>
-                                    <div class="pager float-right"></div>
                                 </div>
+                                <div class="dataTable">
+                                </div>
+                                <div class="pager float-right"></div>
                             </div>
+                        </div>
                         }
                         @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
                         {
-                            <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
-                                @using (Html.BeginForm("Index", "JobWorkEntry", FormMethod.Post, new { id = "frmjobwork" }))
-                                {
-                                    <input type="hidden" id="txtIsPrint" name="isPrint" value="0" />
-                                    <div class="row">
-                                        <div class="d-none" id="dropdownSlitType">
-                                            <select class="form-control" name="slitTypeGrid" id="slitTypeGrid" onchange="EnableDisableNBSCH(this)" style="width:130px !important">
-                                                <option>---Select---</option>
-                                                <option value="COIL">COIL</option>
-                                                <option value="BAL. PATTA">BAL. PATTA</option>
-                                                <option value="SCRAP">SCRAP</option>
-                                            </select>
+                        <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
+                            @using (Html.BeginForm("Index", "JobWorkEntry", FormMethod.Post, new { id = "frmjobwork" }))
+                            {
+                            <input type="hidden" id="txtIsPrint" name="isPrint" value="0" />
+                            <div class="row">
+                                <div class="d-none" id="dropdownSlitType">
+                                    <select class="form-control" name="slitTypeGrid" id="slitTypeGrid" onchange="EnableDisableNBSCH(this)" style="width:130px !important">
+                                        <option>---Select---</option>
+                                        <option value="COIL">COIL</option>
+                                        <option value="BAL. PATTA">BAL. PATTA</option>
+                                        <option value="SCRAP">SCRAP</option>
+                                    </select>
 
-                                        </div>
-                                        <div class="d-none" id="dropdownRecCoilNoSlit">
-                                            <select class="form-control" name="recCoilNoSlitGrid" id="recCoilNoSlitGrid" style="width:100px !important">
-                                                <option>---Select---</option>
-                                                <option value="1">01</option>
-                                                <option value="2">02</option>
-                                                <option value="3">03</option>
-                                                <option value="4">04</option>
-                                                <option value="5">05</option>
-                                                <option value="6">06</option>
-                                                <option value="7">07</option>
-                                                <option value="8">08</option>
-                                                <option value="9">09</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-                                                <option value="36">36</option>
-                                                <option value="37">37</option>
-                                                <option value="38">38</option>
-                                                <option value="39">39</option>
-                                                <option value="40">40</option>
-                                                <option value="41">41</option>
-                                                <option value="42">42</option>
-                                                <option value="43">43</option>
-                                                <option value="44">44</option>
-                                                <option value="45">45</option>
-                                                <option value="46">46</option>
-                                                <option value="47">47</option>
-                                                <option value="48">48</option>
-                                                <option value="49">49</option>
-                                                <option value="50">50</option>
-                                            </select>
+                                </div>
+                                <div class="d-none" id="dropdownRecCoilNoSlit">
+                                    <select class="form-control" name="recCoilNoSlitGrid" id="recCoilNoSlitGrid" style="width:100px !important">
+                                        <option>---Select---</option>
+                                        <option value="1">01</option>
+                                        <option value="2">02</option>
+                                        <option value="3">03</option>
+                                        <option value="4">04</option>
+                                        <option value="5">05</option>
+                                        <option value="6">06</option>
+                                        <option value="7">07</option>
+                                        <option value="8">08</option>
+                                        <option value="9">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
+                                        <option value="28">28</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="31">31</option>
+                                        <option value="32">32</option>
+                                        <option value="33">33</option>
+                                        <option value="34">34</option>
+                                        <option value="35">35</option>
+                                        <option value="36">36</option>
+                                        <option value="37">37</option>
+                                        <option value="38">38</option>
+                                        <option value="39">39</option>
+                                        <option value="40">40</option>
+                                        <option value="41">41</option>
+                                        <option value="42">42</option>
+                                        <option value="43">43</option>
+                                        <option value="44">44</option>
+                                        <option value="45">45</option>
+                                        <option value="46">46</option>
+                                        <option value="47">47</option>
+                                        <option value="48">48</option>
+                                        <option value="49">49</option>
+                                        <option value="50">50</option>
+                                    </select>
 
-                                        </div>
-                                        <div class="d-none" id="dropdownRecCoilNoSplit">
-                                            <select class="form-control" name="recCoilNoSplitGrid" id="recCoilNoSplitGrid">
-                                                <option>---Select---</option>
-                                                <option value="A">A</option>
-                                                <option value="B">B</option>
-                                                <option value="C">C</option>
-                                            </select>
+                                </div>
+                                <div class="d-none" id="dropdownRecCoilNoSplit">
+                                    <select class="form-control" name="recCoilNoSplitGrid" id="recCoilNoSplitGrid">
+                                        <option>---Select---</option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
+                                    </select>
 
-                                        </div>
-                                        <div class="d-none" id="dropdownSCHSlit">
-                                            <select class="form-control" name="schGrid" id="schGrid" disabled style="width:100px !important" onchange="GetNBSCHValue(this)">
-                                                <option>---Select---</option>
-                                                @if (schList != null && schList.Count > 0)
-                                                {
-                                                    foreach (var item in schList)
-                                                    {
-                                                        <option value="@item.Value">@item.Text</option>
-                                                    }
-                                                }
-                                            </select>
-                                        </div>
-                                        <div class="d-none" id="dropdownNBSlit" style="width:100px !important">
-                                            <select class="form-control" name="nbGrid" id="nbGrid" disabled style="width:100px !important" onchange="GetNBSCHValue(this)">
-                                                <option>---Select---</option>
-                                                @if (nbList != null && nbList.Count > 0)
-                                                {
-                                                    foreach (var item in nbList)
-                                                    {
-                                                        <option value="@item.Value">@item.Text</option>
-                                                    }
-                                                }
+                                </div>
+                                <div class="d-none" id="dropdownSCHSlit">
+                                    <select class="form-control" name="schGrid" id="schGrid" disabled style="width:100px !important" onchange="GetNBSCHValue(this)">
+                                        <option>---Select---</option>
+                                        @if (schList != null && schList.Count > 0)
+                                        {
+                                        foreach (var item in schList)
+                                        {
+                                        <option value="@item.Value">@item.Text</option>
+                                        }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="d-none" id="dropdownNBSlit" style="width:100px !important">
+                                    <select class="form-control" name="nbGrid" id="nbGrid" disabled style="width:100px !important" onchange="GetNBSCHValue(this)">
+                                        <option>---Select---</option>
+                                        @if (nbList != null && nbList.Count > 0)
+                                        {
+                                        foreach (var item in nbList)
+                                        {
+                                        <option value="@item.Value">@item.Text</option>
+                                        }
+                                        }
 
-                                            </select>
-                                        </div>
-                                        <div class="d-none" id="dropdownGodown">
-                                            <select class="form-control" name="godownGrid" id="godownGrid" style="width:150px !important">
-                                                <option>---Select---</option>
-                                                @if (godownList != null && godownList.Count > 0)
-                                                {
-                                                    foreach (var item in godownList)
-                                                    {
+                                    </select>
+                                </div>
+                                <div class="d-none" id="dropdownGodown">
+                                    <select class="form-control" name="godownGrid" id="godownGrid" style="width:150px !important">
+                                        <option>---Select---</option>
+                                        @if (godownList != null && godownList.Count > 0)
+                                        {
+                                        foreach (var item in godownList)
+                                        {
+                                        <option value="@item.Value">@item.Text</option>
+                                        }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="d-none" id="dropdownGodownSplit">
+                                    <select class="form-control" name="godownGridSplit" id="godownGridSplit">
+                                        <option>---Select---</option>
+                                        @if (godownList != null && godownList.Count > 0)
+                                        {
+                                        foreach (var item in godownList)
+                                        {
+                                        <option value="@item.Value">@item.Text</option>
+                                        }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="d-none" id="dropdownODSlit" style="width:100px !important">
+                                    <select class="form-control" name="odGrid" id="odGrid" style="width:100px !important">
+                                        <option>---Select---</option>
+                                        @if (odList != null && odList.Count > 0)
+                                        {
+                                        foreach (var item in odList)
+                                        {
+                                        <option value="@item.Value">@item.Text</option>
+                                        }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-2 col-12">
+                                    <label class="control-label">
+                                        Job Type <span class="required text-danger">*</span>
+                                    </label>
+                                    <input type="hidden" name="jobTypeN" id="txtjobTypeN" />
+                                    <select class="form-control select2" name="jobType" id="jobType" onchange="HideShowGrid(this.value)" required>
+                                        <option value="">Select</option>
+                                        <option value="SPLIT">SPLIT</option>
+                                        <option value="SLIT">SLIT</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-1 col-6">
+                                    <label class="control-label">
+                                        VNo <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="vno" name="vno" class="form-control" disabled value="@vNo" />
+                                        <input type="hidden" id="jobVou" name="jobVou" class="form-control" disabled value="0" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-6">
+                                    <label>
+                                        Date <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="date" id="date" name="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-12">
+                                    <label class="control-label">
+                                        Shift <span class="required text-danger"></span>
+                                    </label>
+                                    <input type="hidden" name="JobShiftN" id="JobShiftN" />
+                                    <select class="form-control select2" name="jobShift" id="jobShift" required>
+                                        <option value="">Select</option>
+                                        @if (shiftList != null && shiftList.Count > 0)
+                                        {
+                                        foreach (var item in shiftList)
+                                        {
+
+                                        <option value="@item.Value">@item.Text</option>
+                                        }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-2 col-12">
+                                    <label class="control-label">
+                                        Machine No <span class="required text-danger">*</span>
+                                    </label>
+                                    <input type="hidden" name="JobMacNoN" id="JobMacNoN" />
+                                    <select class="form-control select2" name="JobMacNo" id="JobMacNo" required>
+                                        <option value="">Select</option>
+                                        @if (machineList != null && machineList.Count > 0)
+                                        {
+                                        foreach (var item in machineList)
+                                        {
+
+                                        <option value="@item.Value">@item.Text</option>
+                                        }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-2 col-12">
+                                    <label class="control-label">
+                                        Operator <span class="required text-danger"></span>
+                                    </label>
+                                    <input type="hidden" name="JobOprMscVouN" id="JobOprMscVouN" />
+                                    <select class="form-control select2" name="JobOprMscVou" id="JobOprMscVou" required>
+                                        <option value="">Select</option>
+                                        @if (operatorList != null && operatorList.Count > 0)
+                                        {
+                                        foreach (var item in operatorList)
+                                        {
+
+                                        <option value="@item.Value">@item.Text</option>
+                                        }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-2 col-6">
+                                    <label>
+                                        Issue Coil No <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="issueCoilNo" name="issueCoilNo" class="form-control" onchange="GetCoilData(this.value)" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <label>
+                                        Job Worker <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="jobWorker" name="jobWorker" class="form-control" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-6">
+                                    <label>
+                                        Job No <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="jobNo" name="jobNo" class="form-control" value="@jobNo" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-6 mt-1">
+                                    <label>
+                                        Company Name <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="companyName" name="companyName" class="form-control" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-6  mt-1">
+                                    <label>
+                                        Company Code <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="companyCode" name="companyCode" class="form-control" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-6  mt-1">
+                                    <label>
+                                        Complete Date
+                                    </label>
+
+                                    <div>
+                                        <input type="date" id="completeDate" name="completeDate" class="form-control" onkeyup="CheckCompDate()" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-6  mt-1">
+                                    <label>
+                                        Rec Date <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="date" id="recDate" name="recDate" class="form-control" disabled />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 col-6  mt-1">
+                                    <label>
+                                        Finish <span class="required text-danger"></span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="finish" name="finish" class="form-control" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-12  mt-1">
+                                    <label>
+                                        Product Name <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="productName" name="productName" class="form-control" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-6  mt-1">
+                                    <label>
+                                        Grade <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="grade" name="grade" class="form-control" disabled />
+                                        <input type="hidden" id="gdnVou" name="gdnVou" class="form-control" disabled />
+                                        <input type="hidden" id="lotVou" name="lotVou" class="form-control" disabled />
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-2 col-6  mt-1">
+                                    <label>
+                                        Thickness <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="thickness" name="thickness" class="form-control" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-6  mt-1">
+                                    <label>
+                                        Weight <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="weight" name="weight" class="form-control" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-6  mt-1">
+                                    <label>
+                                        Width <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="width" name="width" class="form-control" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-6  mt-1">
+                                    <label>
+                                        Actual Weight <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="actualWeight" name="actualWeight" class="form-control" onchange="GetRemaining()" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-6  mt-1">
+                                    <label>
+                                        Actual Width <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="actualWidth" name="actualWidth" class="form-control" onchange="GetRemaining()" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-6  mt-1">
+                                    <label class="lblRemaining">
+                                        Remaining Weight <span class="required text-danger">*</span>
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="remaining" name="remaining" class="form-control" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-6 mt-1 d-none">
+                                    <label class="control-label">
+                                        Coil Prefix <span class="required text-danger"></span>
+                                    </label>
+
+                                    <select class="form-control select2" name="LotTypeVou" id="LotTypeVou">
+                                        <option value="">Select</option>
+                                        @if (lottypeList != null && lottypeList.Count > 0)
+                                        {
+                                        foreach (var item in lottypeList)
+                                        {
+
+                                        <option value="@item.Value">@item.Text</option>
+                                        }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 col-6  mt-1">
+                                    <label>
+                                        Remarks
+                                    </label>
+
+                                    <div>
+                                        <input type="text" id="remarks" name="remarks" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="row mt-3 table-responsive">
+                                    <table class="table table-borderless" id="tblSplit" style="padding:0 0 0 0;margin:0 0 0 0">
+                                        <thead>
+                                            <tr>
+                                                <th width="7%">
+                                                    Sr
+                                                </th>
+                                                <th width="10%">
+                                                    Formula Wt
+                                                </th>
+                                                <th width="10%">
+                                                    Vendor Wt
+                                                </th>
+                                                <th width="10%">
+                                                    Rec. Coil No
+                                                </th>
+                                                <th width="15%">
+                                                    Coil No
+                                                </th>
+                                                <th width="15%">
+                                                    Godown
+                                                </th>
+                                                <th width="20%">
+                                                    Reading
+                                                </th>
+                                                <th width="5%">
+                                                    Actions
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td width="7%">
+                                                    <input type="text" class="form-control" name="srNo" value="0" onfocus="this.select()" onchange="GetDataBySrNoSplit(this.value)" />
+                                                </td>
+                                                <td width="10%">
+                                                    <input type="text" class="form-control text-right gridTextbox" name="formulaWeight" onfocus="this.select()" />
+                                                </td>
+                                                <td width="10%">
+                                                    <input type="text" class="form-control text-right gridTextbox" name="vendorWeight" onfocus="this.select()" disabled />
+                                                </td>
+                                                <td width="10%">
+                                                    <select class="form-control select2" name="recCoilNoSplitGrid" id="recCoilNoSplitGrid">
+                                                        <option>---Select---</option>
+                                                        <option value="A">A</option>
+                                                        <option value="B">B</option>
+                                                        <option value="C">C</option>
+                                                    </select>
+                                                </td>
+                                                <td width="15%">
+                                                    <input type="text" class="form-control gridTextbox" name="coilNo" onfocus="this.select()" disabled />
+                                                </td>
+                                                <td width="20%">
+                                                    <select class="form-control select2" name="godownGridSplit" id="godownGridSplit">
+                                                        <option>---Select---</option>
+                                                        @if (godownList != null && godownList.Count > 0)
+                                                        {
+                                                        foreach (var item in godownList)
+                                                        {
                                                         <option value="@item.Value">@item.Text</option>
-                                                    }
-                                                }
-                                            </select>
-                                        </div>
-                                        <div class="d-none" id="dropdownGodownSplit">
-                                            <select class="form-control" name="godownGridSplit" id="godownGridSplit">
-                                                <option>---Select---</option>
-                                                @if (godownList != null && godownList.Count > 0)
-                                                {
-                                                    foreach (var item in godownList)
-                                                    {
+                                                        }
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td width="20%">
+                                                    <input type="text" class="form-control gridTextbox" name="remarks" onfocus="this.select()" />
+                                                </td>
+                                                <td width="5%" class="text-center">
+                                                    <i class="fa fa-plus text-primary mt-1" style="font-size:20px" onclick="AddRowsSplit()"></i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-borderless table-responsive" id="tblSlit" style="padding:0 0 0 0;margin:0 0 0 0">
+                                        <thead>
+                                            <tr>
+                                                <th width="7%">
+                                                    Sr
+                                                </th>
+                                                <th width="10%">
+                                                    Width
+                                                </th>
+                                                <th width="10%">
+                                                    No Of Coil
+                                                </th>
+                                                <th width="10%">
+                                                    Formula Wt
+                                                </th>
+                                                <th width="10%">
+                                                    Actual Wt
+                                                </th>
+                                                <th width="10%">
+                                                    Type
+                                                </th>
+                                                <th width="10%">
+                                                    Rec. Coil No
+                                                </th>
+                                                <th width="10%">
+                                                    NB
+                                                </th>
+                                                <th width="10%">
+                                                    SCH
+                                                </th>
+                                                <th width="10%">
+                                                    OD
+                                                </th>
+
+                                                <th width="10%">
+                                                    Coil No
+                                                </th>
+                                                <th>
+                                                    Godown
+                                                </th>
+                                                <th width="20%">
+                                                    Reading
+                                                </th>
+                                                <th width="5%">
+                                                    Actions
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td width="7%">
+                                                    <input type="text" class="form-control gridTextbox" name="srNo" value="0" onfocus="this.select()" onchange="GetDataBySrNoSlit(this.value)" style="width:50px !important" />
+                                                </td>
+                                                <td width="10%">
+                                                    <input type="text" class="form-control gridTextbox" name="gridWidth" onfocus="this.select()" style="width:100px !important" />
+                                                </td>
+                                                <td width="10%">
+                                                    <input type="text" class="form-control gridTextbox" name="noOfCoil" onfocus="this.select()" style="width:50px !important" />
+                                                </td>
+                                                <td width="10%">
+                                                    <input type="text" class="form-control gridTextbox" name="formulaWeight" onfocus="this.select()" disabled style="width:100px !important" />
+                                                </td>
+                                                <td width="10%">
+                                                    <input type="text" class="form-control gridTextbox" name="actualWeightGrid" onfocus="this.select()" disabled style="width:100px !important" />
+                                                </td>
+                                                <td width="10%">
+                                                    <select class="form-control select2" name="slitTypeGrid" id="slitTypeGrid" onchange="EnableDisableNBSCH(this)" style="width:130px !important">
+                                                        <option>---Select---</option>
+                                                        <option value="COIL">COIL</option>
+                                                        <option value="BAL. PATTA">BAL. PATTA</option>
+                                                        <option value="SCRAP">SCRAP</option>
+                                                    </select>
+                                                </td>
+                                                <td width="10%">
+                                                    <select class="form-control select2" name="recCoilNoSlitGrid" id="recCoilNoSlitGrid" style="width:100px !important">
+                                                        <option>---Select---</option>
+                                                    </select>
+                                                </td>
+                                                <td width="10%">
+                                                    <select class="form-control select2" name="nbGrid" id="nbGrid" style="width:100px !important" onchange="GetNBSCHValue(this)">
+                                                        <option>---Select---</option>
+                                                        @if (nbList != null && nbList.Count > 0)
+                                                        {
+                                                        foreach (var item in nbList)
+                                                        {
                                                         <option value="@item.Value">@item.Text</option>
-                                                    }
-                                                }
-                                            </select>
-                                        </div>
-                                        <div class="d-none" id="dropdownODSlit" style="width:100px !important">
-                                            <select class="form-control" name="odGrid" id="odGrid" style="width:100px !important">
-                                                <option>---Select---</option>
-                                                @if (odList != null && odList.Count > 0)
-                                                {
+                                                        }
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td width="10%">
+                                                    <select class="form-control select2" name="schGrid" id="schGrid" style="width:100px !important" onchange="GetNBSCHValue(this)">
+                                                        <option>---Select---</option>
+                                                        @if (schList != null && schList.Count > 0)
+                                                        {
+                                                        foreach (var item in schList)
+                                                        {
+                                                        <option value="@item.Value">@item.Text</option>
+                                                        }
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td width="10%">
+                                                    <input type="text" class="form-control gridTextbox" name="odGrid" onfocus="this.select()" style="width:100px !important" />
+                                                    @*<select class="form-control select2" name="odGrid" id="odGrid" style="width:100px !important">
+                                                    <option>---Select---</option>
+                                                    @if (odList != null && odList.Count > 0)
+                                                    {
                                                     foreach (var item in odList)
                                                     {
+                                                    <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                    }
+                                                    </select>*@
+                                                </td>
+
+                                                <td width="10%">
+                                                    <input type="text" class="form-control gridTextbox" name="coilNo" onfocus="this.select()" disabled style="width:100px !important" />
+                                                </td>
+                                                <td width="10%">
+                                                    <select class="form-control select2" name="godownGrid" id="godownGrid" style="width:150px !important">
+                                                        <option>---Select---</option>
+                                                        @if (godownList != null && godownList.Count > 0)
+                                                        {
+                                                        foreach (var item in godownList)
+                                                        {
                                                         <option value="@item.Value">@item.Text</option>
-                                                    }
-                                                }
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2 col-12">
-                                            <label class="control-label">
-                                                Job Type <span class="required text-danger">*</span>
-                                            </label>
-                                            <input type="hidden" name="jobTypeN" id="txtjobTypeN" />
-                                            <select class="form-control select2" name="jobType" id="jobType" onchange="HideShowGrid(this.value)" required>
-                                                <option value="">Select</option>
-                                                <option value="SPLIT">SPLIT</option>
-                                                <option value="SLIT">SLIT</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-1 col-6">
-                                            <label class="control-label">
-                                                VNo <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="vno" name="vno" class="form-control" disabled value="@vNo" />
-                                                <input type="hidden" id="jobVou" name="jobVou" class="form-control" disabled value="0" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 col-6">
-                                            <label>
-                                                Date <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="date" id="date" name="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 col-12">
-                                            <label class="control-label">
-                                                Shift <span class="required text-danger"></span>
-                                            </label>
-                                            <input type="hidden" name="JobShiftN" id="JobShiftN" />
-                                            <select class="form-control select2" name="jobShift" id="jobShift" required>
-                                                <option value="">Select</option>
-                                                @if (shiftList != null && shiftList.Count > 0)
-                                                {
-                                                    foreach (var item in shiftList)
-                                                    {
-
-                                                        <option value="@item.Value">@item.Text</option>
-                                                    }
-                                                }
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2 col-12">
-                                            <label class="control-label">
-                                                Machine No <span class="required text-danger">*</span>
-                                            </label>
-                                            <input type="hidden" name="JobMacNoN" id="JobMacNoN" />
-                                            <select class="form-control select2" name="JobMacNo" id="JobMacNo" required>
-                                                <option value="">Select</option>
-                                                @if (machineList != null && machineList.Count > 0)
-                                                {
-                                                    foreach (var item in machineList)
-                                                    {
-
-                                                        <option value="@item.Value">@item.Text</option>
-                                                    }
-                                                }
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2 col-12">
-                                            <label class="control-label">
-                                                Operator <span class="required text-danger"></span>
-                                            </label>
-                                            <input type="hidden" name="JobOprMscVouN" id="JobOprMscVouN" />
-                                            <select class="form-control select2" name="JobOprMscVou" id="JobOprMscVou" required>
-                                                <option value="">Select</option>
-                                                @if (operatorList != null && operatorList.Count > 0)
-                                                {
-                                                    foreach (var item in operatorList)
-                                                    {
-
-                                                        <option value="@item.Value">@item.Text</option>
-                                                    }
-                                                }
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2 col-6">
-                                            <label>
-                                                Issue Coil No <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="issueCoilNo" name="issueCoilNo" class="form-control" onchange="GetCoilData(this.value)" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 col-6">
-                                            <label>
-                                                Job Worker <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="jobWorker" name="jobWorker" class="form-control" disabled />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 col-6">
-                                            <label>
-                                                Job No <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="jobNo" name="jobNo" class="form-control" value="@jobNo" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 col-6 mt-1">
-                                            <label>
-                                                Company Name <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="companyName" name="companyName" class="form-control" disabled />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 col-6  mt-1">
-                                            <label>
-                                                Company Code <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="companyCode" name="companyCode" class="form-control" disabled />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 col-6  mt-1">
-                                            <label>
-                                                Complete Date
-                                            </label>
-
-                                            <div>
-                                                <input type="date" id="completeDate" name="completeDate" class="form-control" onkeyup="CheckCompDate()" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 col-6  mt-1">
-                                            <label>
-                                                Rec Date <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="date" id="recDate" name="recDate" class="form-control" disabled />
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-2 col-6  mt-1">
-                                            <label>
-                                                Finish <span class="required text-danger"></span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="finish" name="finish" class="form-control" disabled />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 col-12  mt-1">
-                                            <label>
-                                                Product Name <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="productName" name="productName" class="form-control" disabled />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 col-6  mt-1">
-                                            <label>
-                                                Grade <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="grade" name="grade" class="form-control" disabled />
-                                                <input type="hidden" id="gdnVou" name="gdnVou" class="form-control" disabled />
-                                                <input type="hidden" id="lotVou" name="lotVou" class="form-control" disabled />
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-2 col-6  mt-1">
-                                            <label>
-                                                Thickness <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="thickness" name="thickness" class="form-control" disabled />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 col-6  mt-1">
-                                            <label>
-                                                Weight <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="weight" name="weight" class="form-control" disabled />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 col-6  mt-1">
-                                            <label>
-                                                Width <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="width" name="width" class="form-control" disabled />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 col-6  mt-1">
-                                            <label>
-                                                Actual Weight <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="actualWeight" name="actualWeight" class="form-control" onchange="GetRemaining()" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 col-6  mt-1">
-                                            <label>
-                                                Actual Width <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="actualWidth" name="actualWidth" class="form-control" onchange="GetRemaining()" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 col-6  mt-1">
-                                            <label class="lblRemaining">
-                                                Remaining Weight <span class="required text-danger">*</span>
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="remaining" name="remaining" class="form-control" disabled />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 col-6 mt-1 d-none">
-                                            <label class="control-label">
-                                                Coil Prefix <span class="required text-danger"></span>
-                                            </label>
-
-                                            <select class="form-control select2" name="LotTypeVou" id="LotTypeVou">
-                                                <option value="">Select</option>
-                                                @if (lottypeList != null && lottypeList.Count > 0)
-                                                {
-                                                    foreach (var item in lottypeList)
-                                                    {
-
-                                                        <option value="@item.Value">@item.Text</option>
-                                                    }
-                                                }
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4 col-6  mt-1">
-                                            <label>
-                                                Remarks
-                                            </label>
-
-                                            <div>
-                                                <input type="text" id="remarks" name="remarks" class="form-control" />
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3 table-responsive">
-                                            <table class="table table-borderless" id="tblSplit" style="padding:0 0 0 0;margin:0 0 0 0">
-                                                <thead>
-                                                    <tr>
-                                                        <th width="7%">
-                                                            Sr
-                                                        </th>
-                                                        <th width="10%">
-                                                            Formula Wt
-                                                        </th>
-                                                        <th width="10%">
-                                                            Vendor Wt
-                                                        </th>
-                                                        <th width="10%">
-                                                            Rec. Coil No
-                                                        </th>
-                                                        <th width="15%">
-                                                            Coil No
-                                                        </th>
-                                                        <th width="15%">
-                                                            Godown
-                                                        </th>
-                                                        <th width="20%">
-                                                            Reading
-                                                        </th>
-                                                        <th width="5%">
-                                                            Actions
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td width="7%">
-                                                            <input type="text" class="form-control" name="srNo" value="0" onfocus="this.select()" onchange="GetDataBySrNoSplit(this.value)" />
-                                                        </td>
-                                                        <td width="10%">
-                                                            <input type="text" class="form-control text-right gridTextbox" name="formulaWeight" onfocus="this.select()" />
-                                                        </td>
-                                                        <td width="10%">
-                                                            <input type="text" class="form-control text-right gridTextbox" name="vendorWeight" onfocus="this.select()" disabled />
-                                                        </td>
-                                                        <td width="10%">
-                                                            <select class="form-control select2" name="recCoilNoSplitGrid" id="recCoilNoSplitGrid">
-                                                                <option>---Select---</option>
-                                                                <option value="A">A</option>
-                                                                <option value="B">B</option>
-                                                                <option value="C">C</option>
-                                                            </select>
-                                                        </td>
-                                                        <td width="15%">
-                                                            <input type="text" class="form-control gridTextbox" name="coilNo" onfocus="this.select()" disabled />
-                                                        </td>
-                                                        <td width="20%">
-                                                            <select class="form-control select2" name="godownGridSplit" id="godownGridSplit">
-                                                                <option>---Select---</option>
-                                                                @if (godownList != null && godownList.Count > 0)
-                                                                {
-                                                                    foreach (var item in godownList)
-                                                                    {
-                                                                        <option value="@item.Value">@item.Text</option>
-                                                                    }
-                                                                }
-                                                            </select>
-                                                        </td>
-                                                        <td width="20%">
-                                                            <input type="text" class="form-control gridTextbox" name="remarks" onfocus="this.select()" />
-                                                        </td>
-                                                        <td width="5%" class="text-center">
-                                                            <i class="fa fa-plus text-primary mt-1" style="font-size:20px" onclick="AddRowsSplit()"></i>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                            <table class="table table-borderless table-responsive" id="tblSlit" style="padding:0 0 0 0;margin:0 0 0 0">
-                                                <thead>
-                                                    <tr>
-                                                        <th width="7%">
-                                                            Sr
-                                                        </th>
-                                                        <th width="10%">
-                                                            Width
-                                                        </th>
-                                                        <th width="10%">
-                                                            No Of Coil
-                                                        </th>
-                                                        <th width="10%">
-                                                            Formula Wt
-                                                        </th>
-                                                        <th width="10%">
-                                                            Actual Wt
-                                                        </th>
-                                                        <th width="10%">
-                                                            Type
-                                                        </th>
-                                                        <th width="10%">
-                                                            Rec. Coil No
-                                                        </th>
-                                                        <th width="10%">
-                                                            NB
-                                                        </th>
-                                                        <th width="10%">
-                                                            SCH
-                                                        </th>
-                                                        <th width="10%">
-                                                            OD
-                                                        </th>
-
-                                                        <th width="10%">
-                                                            Coil No
-                                                        </th>
-                                                        <th>
-                                                            Godown
-                                                        </th>
-                                                        <th width="20%">
-                                                            Reading
-                                                        </th>
-                                                        <th width="5%">
-                                                            Actions
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td width="7%">
-                                                            <input type="text" class="form-control gridTextbox" name="srNo" value="0" onfocus="this.select()" onchange="GetDataBySrNoSlit(this.value)" style="width:50px !important" />
-                                                        </td>
-                                                        <td width="10%">
-                                                            <input type="text" class="form-control gridTextbox" name="gridWidth" onfocus="this.select()" style="width:100px !important" />
-                                                        </td>
-                                                        <td width="10%">
-                                                            <input type="text" class="form-control gridTextbox" name="noOfCoil" onfocus="this.select()" style="width:50px !important" />
-                                                        </td>
-                                                        <td width="10%">
-                                                            <input type="text" class="form-control gridTextbox" name="formulaWeight" onfocus="this.select()" disabled style="width:100px !important" />
-                                                        </td>
-                                                        <td width="10%">
-                                                            <input type="text" class="form-control gridTextbox" name="actualWeightGrid" onfocus="this.select()" disabled style="width:100px !important" />
-                                                        </td>
-                                                        <td width="10%">
-                                                            <select class="form-control select2" name="slitTypeGrid" id="slitTypeGrid" onchange="EnableDisableNBSCH(this)" style="width:130px !important">
-                                                                <option>---Select---</option>
-                                                                <option value="COIL">COIL</option>
-                                                                <option value="BAL. PATTA">BAL. PATTA</option>
-                                                                <option value="SCRAP">SCRAP</option>
-                                                            </select>
-                                                        </td>
-                                                        <td width="10%">
-                                                            <select class="form-control select2" name="recCoilNoSlitGrid" id="recCoilNoSlitGrid" style="width:100px !important">
-                                                                <option>---Select---</option>
-                                                            </select>
-                                                        </td>
-                                                        <td width="10%">
-                                                            <select class="form-control select2" name="nbGrid" id="nbGrid" style="width:100px !important" onchange="GetNBSCHValue(this)">
-                                                                <option>---Select---</option>
-                                                                @if (nbList != null && nbList.Count > 0)
-                                                                {
-                                                                    foreach (var item in nbList)
-                                                                    {
-                                                                        <option value="@item.Value">@item.Text</option>
-                                                                    }
-                                                                }
-                                                            </select>
-                                                        </td>
-                                                        <td width="10%">
-                                                            <select class="form-control select2" name="schGrid" id="schGrid" style="width:100px !important" onchange="GetNBSCHValue(this)">
-                                                                <option>---Select---</option>
-                                                                @if (schList != null && schList.Count > 0)
-                                                                {
-                                                                    foreach (var item in schList)
-                                                                    {
-                                                                        <option value="@item.Value">@item.Text</option>
-                                                                    }
-                                                                }
-                                                            </select>
-                                                        </td>
-                                                        <td width="10%">
-                                                            <input type="text" class="form-control gridTextbox" name="odGrid" onfocus="this.select()" style="width:100px !important" />
-                                                            @*<select class="form-control select2" name="odGrid" id="odGrid" style="width:100px !important">
-                                                                    <option>---Select---</option>
-                                                                    @if (odList != null && odList.Count > 0)
-                                                                    {
-                                                                        foreach (var item in odList)
-                                                                        {
-                                                                            <option value="@item.Value">@item.Text</option>
-                                                                        }
-                                                                    }
-                                                                </select>*@
-                                                        </td>
-
-                                                        <td width="10%">
-                                                            <input type="text" class="form-control gridTextbox" name="coilNo" onfocus="this.select()" disabled style="width:100px !important" />
-                                                        </td>
-                                                        <td width="10%">
-                                                            <select class="form-control select2" name="godownGrid" id="godownGrid" style="width:150px !important">
-                                                                <option>---Select---</option>
-                                                                @if (godownList != null && godownList.Count > 0)
-                                                                {
-                                                                    foreach (var item in godownList)
-                                                                    {
-                                                                        <option value="@item.Value">@item.Text</option>
-                                                                    }
-                                                                }
-                                                            </select>
-                                                        </td>
-                                                        <td width="20%">
-                                                            <input type="text" class="form-control gridTextbox" name="remarks" onfocus="this.select()" style="width:100px !important" />
-                                                        </td>
-                                                        <td width="5%" class="text-center">
-                                                            <i class="fa fa-plus text-primary mt-1" style="font-size:20px" onclick="AddRowsSlit()"></i>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="table-responsive md-12 mt-2">
-                                            <table class="table table-bordered table-responsive table-head-fixed" id="tblDisplay">
-                                            </table>
-                                        </div>
-                                        <div class="col-md-12 mt-3">
-                                            <div class="row">
-                                                <div class="col-md-12 text-center">
-                                                    @if (userRight.IsEdit && id > 0)
-                                                    {
-                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick="AddJobkWorkEntry(this)" type="button">
-                                                            Save (F10)
-                                                        </button>
-                                                        <a href="/JobWorkEntry/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
-                                                            Cancel (Esc)
-                                                        </a>
-                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
-                                                            Print (F9)
-                                                        </button>
-                                                    }
-                                                    else if (userRight.IsAdd && id == 0)
-                                                    {
-                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick="AddJobkWorkEntry(this)" type="button">
-                                                            Save (F10)
-                                                        </button>
-                                                        <a href="/JobWorkEntry/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
-                                                            Cancel (Esc)
-                                                        </a>
-                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
-                                                            Print (F9)
-                                                        </button>
-                                                    }
-                                                </div>
-                                            </div>
+                                                        }
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td width="20%">
+                                                    <input type="text" class="form-control gridTextbox" name="remarks" onfocus="this.select()" style="width:100px !important" />
+                                                </td>
+                                                <td width="5%" class="text-center">
+                                                    <i class="fa fa-plus text-primary mt-1" style="font-size:20px" onclick="AddRowsSlit()"></i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="table-responsive md-12 mt-2">
+                                    <table class="table table-bordered table-responsive table-head-fixed" id="tblDisplay">
+                                    </table>
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            @if (userRight.IsEdit && id > 0)
+                                            {
+                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick="AddJobkWorkEntry(this)" type="button">
+                                                Save (F10)
+                                            </button>
+                                            <a href="/JobWorkEntry/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                Cancel (Esc)
+                                            </a>
+                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
+                                                Print (F9)
+                                            </button>
+                                            }
+                                            else if (userRight.IsAdd && id == 0)
+                                            {
+                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick="AddJobkWorkEntry(this)" type="button">
+                                                Save (F10)
+                                            </button>
+                                            <a href="/JobWorkEntry/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                Cancel (Esc)
+                                            </a>
+                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
+                                                Print (F9)
+                                            </button>
+                                            }
                                         </div>
                                     </div>
-                                }
+                                </div>
                             </div>
+                            }
+                        </div>
                         }
                     </div>
                 </div>
@@ -922,17 +921,17 @@
                     $("#btnPrint").click();
                 }).on('F10', function () {
                     //if (!isRecentCalledSave) {
-                        //if (!$("#btnSave").is(":disabled")) {
-                            $("#btnSave").click();
-                            //$('#btnSave').prop('disabled', true);
-                            //isRecentCalledSave = true;
-                        //    setTimeout(function () {
-                        //        isRecentCalledSave = false;
-                        //    }, 1000)
-                        //}
-                        //else {
-                        //    location.href = '/JobWorkEntry/Index'
-                        //}
+                    //if (!$("#btnSave").is(":disabled")) {
+                    $("#btnSave").click();
+                    //$('#btnSave').prop('disabled', true);
+                    //isRecentCalledSave = true;
+                    //    setTimeout(function () {
+                    //        isRecentCalledSave = false;
+                    //    }, 1000)
+                    //}
+                    //else {
+                    //    location.href = '/JobWorkEntry/Index'
+                    //}
                     //}
                 })
                 .on('Alt+L', function () {
@@ -1093,7 +1092,7 @@
         GetRemaining();
         setTimeout(function () {
             document.getElementById('date').focus();
-        },300)
+        }, 300)
 
     }
 
@@ -1313,7 +1312,7 @@
                     setTimeout(function () {
                         $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
                         $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').select();
-                    },100)
+                    }, 100)
 
                 }
                 CalculateSplit();
@@ -2125,7 +2124,7 @@
                             errorMessage(response);
                         }
                     },
-                        failure: function (response) {
+                    failure: function (response) {
                         errorMessage(response);
                     }
                 });
@@ -2166,8 +2165,7 @@
             }
         }
         else {
-            if ($(this).val())
-            {
+            if ($(this).val()) {
                 $('#tblSplit').children('tbody').children('tr:last').children('td').eq(2).children('input').attr('disabled', false);
                 $('#tblSplit').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true);
             }
@@ -2204,12 +2202,12 @@
 
 
     function AddJobkWorkEntry(event) {
-        
+
         if (!isSaveCalled) {
             isSaveCalled = true;
             setTimeout(function () {
                 isSaveCalled = false;
-            },1000)
+            }, 1000)
             if (ValidateGrid() && ValidateTextbox()) {
                 if ($('input[name="completeDate"]').val()) {
                     if (parseFloat($('input[name="remaining"]').val()) > 0) {
@@ -2229,13 +2227,11 @@
                     showErrorMessage("Vendor Weight does not match to formula weight");
                     return false;
                 }
-                if (!ValidateSlitType())
-                {
+                if (!ValidateSlitType()) {
                     showErrorMessage("Bal Patta and scrap are allowed only once.");
                     return false;
                 }
-                if (!ValidateReceiveCoilNo())
-                {
+                if (!ValidateReceiveCoilNo()) {
                     showErrorMessage("Duplicate recieve coil no");
                     return false;
                 }
@@ -2539,7 +2535,7 @@
             }
         }
         else
-           return true;
+            return true;
     }
 
     function ValidateSlitType() {
@@ -2650,7 +2646,7 @@
                             $('input[name="finish"]').val(response.finish);
                             $('input[name="productName"]').val(response.productName);
                             $('input[name="thickness"]').val(response.thick);
-                            HideShowGrid(response.jobType,response);
+                            HideShowGrid(response.jobType, response);
 
                             if (response.jobType == 'SPLIT') {
                                 for (var x = 0; x < response.jobWorkEntrySplitsList.length; x++) {
@@ -2715,7 +2711,7 @@
                     if (response.result) {
                         var html = `<option value="">---Select---</option>`;
                         for (var x = 0; x < response.data.length; x++) {
-                            html += `<option value="` + response.data[x].value + `">` + response.data[x].text +`</option>`
+                            html += `<option value="` + response.data[x].value + `">` + response.data[x].text + `</option>`
                         }
                         $('select[name="JobMacNo"]').append(html);
                         if (res) {
@@ -2861,107 +2857,140 @@
         }
     }
 
-    @*function GetSaveButton() {
+                                                                                    @*function GetSaveButton() {
         var compdt = $('#completeDate').val();
         var jobvno = '@Html.Raw(id)'
         if (compdt != '' && jobvno != "0") {
-            $.ajax({
-                type: "POST",
-                url: '/JobWorkEntry/GetCoilDetails',
-                data: { "compdt": compdt, "jobvno": jobvno },
-                dataType: "JSON",
-                success: function (data) {
-                    if (data.result) {
-                        if (data.data == "-1") {
-                            $('#btnSave').prop('disabled', true);
+        $.ajax({
+        type: "POST",
+        url: '/JobWorkEntry/GetCoilDetails',
+        data: { "compdt": compdt, "jobvno": jobvno },
+        dataType: "JSON",
+        success: function (data) {
+        if (data.result) {
+        if (data.data == "-1") {
+        $('#btnSave').prop('disabled', true);
+        }
+        else {
+        $('#btnSave').prop('disabled', false);
+        }
+        }
+        else {
+        errorMessage(response);
+        }
+        },
+        error: function (response) {
+
+        }
+        });
+        }
+        }*@
+</script>
+<script>
+        $(document).ready(function () {
+
+            var ReturnId = '@Html.Raw(TempData["ReturnId"])';
+            var Savedone = '@Html.Raw(TempData["Savedone"])';
+            if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
+               // $("#modelPopup").click();
+
+                //window.open(
+                //    '/JobWorkEntry/JobWorkPrintDetials/'+ReturnId+'',
+                //    '_blank' // <- This is what makes it open in a new window.
+                //);
+            }
+
+            $("#btn_ViewMailWhatapp").click(function () {
+                let optionVal = $('input:radio[name=printOption]:checked').val();
+                if (optionVal == "Print") {
+                    window.open(
+                        '/JobWorkEntry/JobWorkPrintDetials/' + ReturnId + '',
+                        '_blank' // <- This is what makes it open in a new window.
+                    );
+                }
+                else if (optionVal == "Email") {
+                    if ($("#EmailAddress").val() != "" && $("#EmailAddress").val() != null) {
+                        $.ajax({
+                            type: "POST",
+                            url: '/JobWorkEntry/JobWorkSendMail',
+                            data: { "id": ReturnId, "email": $("#EmailAddress").val() },
+                            dataType: "JSON",
+                            success: function (data) {
+                                if (data.result) {
+                                     showSuccessMessage(data.message);
+                                }
+                                else {
+                                    showErrorMessage(data.message);
+                                }
+                                $('#radio1').prop('checked', true);
+                                $("#EmailAddress").val("");
+$('#exampleModal').modal('toggle');                            },
+                            error: function (response) {
+                                 $("#EmailAddress").val("");
+                            }
+                        });
+                    }
+                    else {
+                        alert("Please Enter Email Address")
+                    }
+
+
+                    //window.location.href = "/JobWorkEntry/JobWorkSendMail?id=" + ReturnId + "&email=" + $("#EmailAddress").val();
+
+                }
+                else if (optionVal == "WhatApp") {
+                    let whNO = $("#WhatappNo").val();
+                    if (whNO != "" && whNO != null) {
+                        if (whNO.length == 10) {
+                            $.ajax({
+                                type: "POST",
+                                url:  '/JobWorkEntry/JobWorkWhatApp',
+                                data: { "id": ReturnId, "whatappNo": whNO },
+                                dataType: "JSON",
+                                success: function (data) {
+                                    debugger
+                                    if (data.result == "error") {
+                                        showErrorMessage(data.message)
+                                    }
+                                    else {
+                                        showSuccessMessage(data.message);
+                                    }
+                                    $('#radio1').prop('checked', true);
+                                    $("#WhatappNo").val("");
+                                    $('#exampleModal').modal('toggle');
+                                },
+                                error: function (data) {
+                                    $("#WhatappNo").val("");
+                                }
+                            });
                         }
                         else {
-                            $('#btnSave').prop('disabled', false);
+                            alert("Please enter 10 digit number")
                         }
                     }
                     else {
-                        errorMessage(response);
+                        alert("Please enter what app number")
                     }
-                },
-                error: function (response) {
 
+                }
+
+            });
+
+            $(".form-check input[name='printOption']").click(function () {
+                $("#EmailAddress").hide();
+                $("#WhatappNo").hide();
+                let optionVal = $('input:radio[name=printOption]:checked').val();
+                if (optionVal == "Print") {
+
+                }
+                else if (optionVal == "WhatApp") {
+                    $("#WhatappNo").show();
+                }
+                else {
+                    $("#EmailAddress").show();
                 }
             });
-        }
-    }*@
-</script>
-<script>
-    $(document).ready(function () {
-        
-        var ReturnId = '@Html.Raw(TempData["ReturnId"])';
-        var Savedone = '@Html.Raw(TempData["Savedone"])';
-        if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
-            $("#modelPopup").click();
-            
-            //window.open(
-            //    '/JobWorkEntry/JobWorkPrintDetials/'+ReturnId+'',
-            //    '_blank' // <- This is what makes it open in a new window.
-            //);
-        }
-
-        $("#btn_ViewMailWhatapp").click(function(){
-        let optionVal = $('input:radio[name=printOption]:checked').val();
-        if(optionVal == "Print")
-        {
-            window.open(
-                '/JobWorkEntry/JobWorkPrintDetials/'+ReturnId+'',
-                '_blank' // <- This is what makes it open in a new window.
-            );
-        }
-                else if (optionVal == "Email") {
-                    if($("#EmailAddress").val() != "" && $("#EmailAddress").val() != null)
-                    {
-                        $.ajax({
-                        type: "POST",
-                        url: '/JobWorkEntry/JobWorkSendMail',
-                        data: { "id": ReturnId, "email": $("#EmailAddress").val() },
-                        dataType: "JSON",
-                        success: function (data) {
-                            if (data.result) {
-                                showErrorMessage(data.message)
-                            }
-                            else {
-                                showErrorMessage(response);
-                            }
-                           location.reload();
-                        },
-                        error: function (response) {
-
-                        }
-                    });
-                }
-                else
-                    {
-                    alert("Please Enter Email Address")
-                    }
-                    //window.location.href = "/JobWorkEntry/JobWorkSendMail?id=" + ReturnId + "&email=" + $("#EmailAddress").val();
-            
-        }
-
-        });
-
-  $(".form-check input[name='printOption']").click(function(){
-        $("#EmailAddress").hide();
-        $("#WhatappNo").hide();
-   let optionVal = $('input:radio[name=printOption]:checked').val();
-    if( optionVal == "Print"){
-       
-    }
-    else if(optionVal == "WhatApp")
-    {
-        $("#WhatappNo").show();
-    }
-    else
-    {
-     $("#EmailAddress").show();
-    }
-        });
-    })
+        })
 
     $('#frmjobwork').submit(function (event) {
         var unit = '';
@@ -2990,8 +3019,9 @@
     });
 
     $("#btnPrint").click(function () {
-        $('#txtIsPrint').val('1');
-        $('#frmjobwork').submit();
+        //$('#txtIsPrint').val('1');
+        //$('#frmjobwork').submit();
+        $("#modelPopup").click();
     })
 
     $("#btnSave").click(function () {

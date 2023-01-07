@@ -45,6 +45,11 @@ namespace SUNMark
             MailHelper.Port = Convert.ToInt32(Configuration["SMTP:Port"]);
             MailHelper.Host = Configuration["SMTP:Host"];
 
+            WhatAppHelper.skrumessage = Configuration["WHATAPP:skrumessage"];
+            WhatAppHelper.SURL = Configuration["WHATAPP:SURL"];
+            WhatAppHelper.SInstanceID =Configuration["WHATAPP:SInstanceID"];
+            WhatAppHelper.SToken = Configuration["WHATAPP:SToken"];
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
