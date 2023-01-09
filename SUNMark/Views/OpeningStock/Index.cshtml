@@ -700,7 +700,7 @@
         $('#LotThick').on('blur', function () {
             AutofillNBSCHByODThick();
         });
-        $('#LotOD').on('blur', function () {
+        $('#LotWidth').on('blur', function () {
             AutofillNBSCHByODThick();
         });
     })
@@ -1392,7 +1392,7 @@
 
     function AutofillNBSCHByODThick() {
         var thick = $('#LotThick').val();
-        var od = $('#LotOD').val();
+        var od = $('#LotWidth').val();
         if (thick != '' && od != '') {
             $.ajax({
                 type: "POST",

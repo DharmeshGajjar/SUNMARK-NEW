@@ -233,6 +233,13 @@
                                                         @Html.TextBoxFor(x => x.Weight, new { @class = "form-control ", @placeholder = "Weight", @type = "text", @disabled = "disabled", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
                                                     </div>
                                                 </div>
+                                                <div class="col-md-2 col-6">
+                                                    <div class="form-group">
+                                                        <label>Remaining Weight<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        <input class="form-control decimal" type="text" id="RemainWeight" value="" style="text-align:right" placeholder="Remaining Weight" readonly />
+                                                        @*@Html.TextBoxFor(x => x.PCSWeight, new { @class = "form-control decimal", @placeholder = "Weight", @type = "text", name = "PCSWeight", @id = "txtPCSWeight", @onkeyup = "numericFilter(this)", @style = "text-align:right" })*@
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
@@ -240,7 +247,7 @@
                                                 <div class="col-md-2 col-6">
                                                     <div class="form-group">
                                                         <label>OD<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.OD, new { @class = "form-control ", @placeholder = "OD", @type = "text", @*@onchange = "GetNBSCHDetails(this)",*@ @disabled = "disabled", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                        @Html.TextBoxFor(x => x.OD, new { @class = "form-control ", @placeholder = "OD", @type = "text", @*@onchange = "GetNBSCHDetails(this)",*@@disabled = "disabled", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
@@ -283,6 +290,7 @@
                                                         @Html.TextBoxFor(x => x.PCSWeight, new { @class = "form-control decimal", @placeholder = "Weight", @type = "text", name = "PCSWeight", @id = "txtPCSWeight", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
                                                     </div>
                                                 </div>
+                                                
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>In Time<span class="text-danger" style="font-family: Verdana"></span></label>
@@ -320,11 +328,11 @@
                                                     </div>
                                                 </div>
                                                 @*<div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Scrap Length<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                            @Html.TextBoxFor(x => x.ScrapLength, new { @class = "form-control ", @placeholder = "Scrap Length", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
-                                                        </div>
-                                                    </div>*@
+            <div class="form-group">
+                <label>Scrap Length<span class="text-danger" style="font-family: Verdana"></span></label>
+                @Html.TextBoxFor(x => x.ScrapLength, new { @class = "form-control ", @placeholder = "Scrap Length", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+            </div>
+        </div>*@
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>Scrap Weight<span class="text-danger" style="font-family: Verdana"></span></label>
@@ -661,9 +669,12 @@
                             $('input[name="Width"]').val(response.data[4]);
                             $('input[name="OD"]').val((response.data[4] / 3.14).toFixed(2));
                             var weight = (((response.data[4] / 3.14).toFixed(2) - response.data[3]) * response.data[3] * 0.02503).toFixed(2);
+                            var weight2 = (((response.data[4] / 3.14).toFixed(8) - response.data[3]) * response.data[3] * 0.02503).toFixed(8);
                             var pcs = (response.data[0] / weight).toFixed(0);
                             $('#NoOfPipe').text(pcs);
-                            $('#PCSWeight').text((weight * pcs).toFixed(1));
+                            //alert((weight * pcs).toFixed(1));
+                            $('#PCSWeight').text((weight2 * pcs).toFixed(1));
+                            $('#RemainWeight').val((weight2 * pcs).toFixed(1));
                             $('input[name="PCS"]').val(0);
                             $('input[name="PCSWeight"]').val(0);
                             //alert(response.data[7]);
@@ -681,6 +692,7 @@
                             $('input[name="OD"]').val("");
                             $('#NoOfPipe').text('');
                             $('#PCSWeight').text('');
+                            $('#RemainWeight').val('');
                             $('input[name="IssueCoilNo"]').focus();
                         }
                     }
@@ -697,6 +709,7 @@
                         $('input[name="OD"]').val("");
                         $('#NoOfPipe').text('');
                         $('#PCSWeight').text('');
+                        $('#RemainWeight').val('');
                         $('input[name="IssueCoilNo"]').focus();
                     }
                 },
@@ -787,6 +800,7 @@
         var thick = $('#Thick').val();
         var od = $('#OD').val();
         var pcs = $('#PCS').val();
+       
         if (thick != null && thick != "" && od != null && od != "" && pcs != null && pcs != "") {
             $('input[name="PCSWeight"]').val((((od - thick) * thick * 0.02503) * pcs).toFixed(1));
         }
@@ -810,6 +824,12 @@
         var sch = $('#SCHVou').children('option:selected').text()
         if (sch)
             $('input[name="SCH"]').val(sch);
+        if ('@Model.Vou' != '' && '@Model.Vou' != '0') {
+            alert(@Model.Vou);
+            var weight2 = (((response.data[4] / 3.14).toFixed(8) - response.data[3]) * response.data[3] * 0.02503).toFixed(8);
+            var pcs = (response.data[0] / weight).toFixed(0);
+        }
+
     })
 
     $('#SCHVou').change(function () {
@@ -876,8 +896,9 @@
                             $('select[name="Operator2"]').val(response.opr2EmpVou);
                             $('input[name="OutTime"]').val(response.outTime);
                             var weight = (((response.width / 3.14).toFixed(2) - response.thick) * response.thick * 0.02503).toFixed(2);
+                            var weight2 = (((response.width / 3.14).toFixed(8) - response.thick) * response.thick * 0.02503).toFixed(8);
                             var pcss = (response.lotQty / weight).toFixed(0);
-                            var pcsWeightt = ((weight * pcss).toFixed(1));
+                            var pcsWeightt = ((weight2 * pcss).toFixed(1));
                             var totMilqty = response.milQtyS;
                             var totscrqty = response.milScrQty;
                             var totqty = (parseFloat(totMilqty) + parseFloat(totscrqty)).toFixed(1);
@@ -887,6 +908,7 @@
                             $('select[name="PrcVou"]').val(response.prcVou);
                             $('select[name="RecPrdVou"]').val(response.product);
                             $('#PCSWeight').text(milQty);
+                            $('#RemainWeight').val(milQty);
                             $('input[name="PCS"]').val(0);
                             $('input[name="PCSWeight"]').val(0);
                             $('input[name="Read1OD"]').val(response.redOD1);
@@ -918,15 +940,16 @@
                             $('input[name="IssueCoilNoVou"]').val('');
                             $('input[name="NB"]').val('');
                             $('select[name="NbVou"]').val('');
-                            $('select[name="ProcessVou"]').val('');
+                            //$('select[name="ProcessVou"]').val('');
                             $('input[name="OD"]').val('');
                             $('select[name="Operator1"]').val('');
                             $('select[name="Operator2"]').val('');
                             $('input[name="OutTime"]').val('');
                             $('input[name="PCS"]').val('');
-                            $('select[name="PrcVou"]').val('');
+                            //$('select[name="PrcVou"]').val('');
                             $('select[name="RecPrdVou"]').val('');
                             $('input[name="PCSWeight"]').val('');
+                            $('#RemainWeight').val('');
                             $('#NoOfPipe').text('');
                             $('Weight').text('');
                             $('input[name="Read1OD"]').val('');
@@ -959,13 +982,13 @@
                         $('input[name="IssueCoilNoVou"]').val('');
                         $('input[name="NB"]').val('');
                         $('select[name="NbVou"]').val('');
-                        $('select[name="ProcessVou"]').val('');
+                        //$('select[name="ProcessVou"]').val('');
                         $('input[name="OD"]').val('');
                         $('select[name="Operator1"]').val('');
                         $('select[name="Operator2"]').val('');
                         $('input[name="OutTime"]').val('');
                         $('input[name="PCS"]').val('');
-                        $('select[name="PrcVou"]').val('');
+                        //$('select[name="PrcVou"]').val('');
                         $('select[name="RecPrdVou"]').val('');
                         $('input[name="PCSWeight"]').val('');
                         $('#NoOfPipe').text('');

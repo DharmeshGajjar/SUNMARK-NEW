@@ -282,7 +282,7 @@
                                                             Width <span class="required clsrequied"></span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotWidth" name="LotWidth" class="form-control form-control-lg" placeholder="Width " tabindex="10" value="@Model.LotWidth" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" />
+                                                            <input type="text" id="LotWidth" name="LotWidth" class="form-control form-control-lg" placeholder="Width " tabindex="10" value="@Model.LotWidth" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" onchange="GetODDetails(this)"/>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -307,6 +307,7 @@
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
                                                             <input type="text" id="LotOD" name="LotOD" class="form-control form-control-lg" placeholder="OD" tabindex="12" value="@Model.LotOD" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" @*onchange="GetNBSCHDetails(this)"*@ required />
+                                                            <label class="control-label pl-1" style="font-family: Verdana;font-size:small; height:30px;" id="ODVal"></label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -955,14 +956,14 @@
         $('#LotThick').on('blur', function () {
             AutofillNBSCHByODThick();
         });
-        $('#LotOD').on('blur', function () {
+        $('#LotWidth').on('blur', function () {
             AutofillNBSCHByODThick();
         });
         $(".select2").select2();
     });
     function AutofillNBSCHByODThick() {
         var thick = $('#LotThick').val();
-        var od = $('#LotOD').val();
+        var od = $('#LotWidth').val();
         if (thick != '' && od != '') {
             $.ajax({
                 type: "POST",
@@ -989,5 +990,42 @@
         }
 
     }
+
+    function GetODDetails(obj) {
+        var width = $('#LotWidth').val();
+        if (width != null && width != "") {
+            $.ajax({
+                type: "POST",
+                url: '/OpeningStock/GetOD',
+                data: { "width": width },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            $('#ODVal').text(response.lotOD);
+                            $('#LotOD').val(response.lotOD);
+                        }
+                        else {
+                            if (coiltype == "1") {
+                                $('input[name="LotOD"]').val(response.lotOD);
+                            }
+                            else {
+                                $('input[name="LotOD"]').val('');
+                            }
+                            $('#LotOD').text(response.lotOD);
+                        }
+                    }
+                    else {
+                        $('input[name="LotOD"]').val(response.lotOD);
+                        
+                        $('#ODVal').text(response.lotOD);
+                    }
+                },
+                error: function (response) {
+                }
+            });
+        }
+    }
+
 
 </script>
