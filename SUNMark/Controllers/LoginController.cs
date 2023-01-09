@@ -17,7 +17,7 @@ namespace SUNMark.Controllers
         DbConnection ObjDBConnection = new DbConnection();
         public IActionResult Index()
         {
-
+           // SendWhatAppMessage("918200137917","Hello Anand", "E:/04012023095916.pdf");
             return View();
         }
 

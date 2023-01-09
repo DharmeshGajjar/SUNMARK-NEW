@@ -6,14 +6,20 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Policy;
+using System.Text;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
+using Newtonsoft.Json;
 using SUNMark.Classes;
+using SUNMark.Common;
 using SUNMark.Models;
 using Document = iTextSharp.text.Document;
 using Font = iTextSharp.text.Font;
@@ -342,7 +348,7 @@ namespace SUNMark.Controllers
                                             GrdAPosition = drCheck[0]["GrdAPosition"].ToString(),
                                             GrdASuppressIfVal = drCheck[0]["GrdASuppressIfVal"].ToString(),
                                             GrdATotYN = drCheck[0]["GrdATotYN"].ToString(),
-                                            GrdCanGrow  = drCheck[0]["CanGrow"].ToString(),
+                                            GrdCanGrow = drCheck[0]["CanGrow"].ToString(),
                                             GrdAWidth = drCheck[0]["GrdAWidth"].ToString(),
                                             GrdADecUpTo = drCheck[0]["GrdADecUpTo"].ToString(),
                                             GrdAHideYN = drCheck[0]["GrdAHideYN"].ToString(),
@@ -1013,7 +1019,7 @@ namespace SUNMark.Controllers
                         attachment = new System.Net.Mail.Attachment(item);
                         mail.Attachments.Add(attachment);
                     }
-                    
+
                 }
                 try
                 {
@@ -1048,5 +1054,182 @@ namespace SUNMark.Controllers
                 throw ex;
             }
         }
+
+        //public IActionResult SaudaWhatsAppDetails(long id, int companyId, int copyType, int logoType)
+        //{
+        //    try
+        //    {
+        //        var Renderer = new IronPdf.ChromePdfRenderer();
+
+        //        Renderer.RenderingOptions.SetCustomPaperSizeInInches(8.27, 11.69);
+        //        Renderer.RenderingOptions.PaperOrientation = IronPdf.Rendering.PdfPaperOrientation.Portrait;
+        //        Renderer.RenderingOptions.Zoom = 100;
+
+        //        // Supports margin customization!
+        //        Renderer.RenderingOptions.MarginTop = 0;  //millimeters
+        //        Renderer.RenderingOptions.MarginLeft = 10;  //millimeters
+        //        Renderer.RenderingOptions.MarginRight = 10;  //millimeters
+        //        Renderer.RenderingOptions.MarginBottom = 0;  //millimeters
+
+        //        // Can set FirstPageNumber if you have a coverpage
+        //        Renderer.RenderingOptions.FirstPageNumber = 1; // use 2 if a coverpage will be appended
+
+        //        // Create a PDF from a URL or local file path
+        //        var pdf = Renderer.RenderUrlAsPdf("http://broker.pioerp.com/Print/SaudaPrintDetails?id=" + id + "&companyId=" + companyId + "&copyType=" + copyType + "&logoType=" + logoType);
+
+        //        //var pdf = Renderer.RenderHtmlAsPdf("/Print/SaudaPrintDetails/" + id);
+        //        //var pdf = Renderer.RenderUrlAsPdf("https://localhost:44318//Print/SaudaPrintDetails?id=" + id + "&companyId=" + companyId + "&copyType=" + copyType + "&logoType="+ logoType);
+
+        //        SqlParameter[] sqlParameters = new SqlParameter[2];
+        //        sqlParameters[0] = new SqlParameter("@CmpVou", companyId);
+        //        sqlParameters[1] = new SqlParameter("@Flg", 2);
+        //        DataTable DtCom = ObjDBConnection.CallStoreProcedure("GetCompanyDetails", sqlParameters);
+        //        if (DtCom != null && DtCom.Rows.Count > 0)
+        //        {
+
+        //            string companynm = DtCom.Rows[0]["CmpName"].ToString().Substring(0, 4);
+        //            string path = _iwebhostenviroment.WebRootPath + "/PDF";
+        //            string filnm = companynm + "-" + id + ".pdf";
+        //            string pdfpath = path + "/" + companynm + "-" + id + ".pdf";
+        //            // Export to a file or Stream
+        //            pdf.SaveAs(pdfpath);
+        //            //if (System.IO.File.Exists(pdfpath))
+        //            //{
+        //            //    return File(System.IO.File.OpenRead(pdfpath), "application/octet-stream", Path.GetFileName(pdfpath));
+        //            //}
+        //            //return NotFound();
+
+        //            // start whatsapp code
+        //            string sMessage = "WhatsApp Send Successfully \n\n *Pioneer Systems*";
+        //            string sMobile = "";
+        //            string sInstanceID = "637B3D89B1989"; // chirag number 8866156938
+        //            string sToken = "6e4a79abdbdf438fb19ac7e787a13e62"; // chirag number 8866156938
+        //            string sURL = "broker.pioerp.com";
+        //            string sSaudaNo = "";
+        //            string bSubject = "Revised";
+        //            string sDate = "";
+
+        //            SqlParameter[] sqlParametersWA = new SqlParameter[2];
+        //            sqlParametersWA[0] = new SqlParameter("@Flg", 8);
+        //            sqlParametersWA[1] = new SqlParameter("@cmpvou", companyId);
+        //            DataTable DtWA = ObjDBConnection.CallStoreProcedure("GetSaudaEntryDetails", sqlParametersWA);
+        //            if (DtWA != null && DtWA.Rows.Count > 0)
+        //            {
+        //                sInstanceID = DtWA.Rows[0]["WAInstanceID"].ToString();
+        //                sToken = DtWA.Rows[0]["WATokenID"].ToString();
+        //            }
+
+        //            string sSeller = "", sBuyer = "", sSellMob = "", sBuyMob = "";
+
+        //            SqlParameter[] sqlParametersSauda = new SqlParameter[3];
+        //            sqlParametersSauda[0] = new SqlParameter("@SauMstVou", id);
+        //            sqlParametersSauda[1] = new SqlParameter("@Flg", 7);
+        //            sqlParametersSauda[2] = new SqlParameter("@cmpvou", companyId);
+        //            DataTable DtSauda = ObjDBConnection.CallStoreProcedure("GetSaudaEntryDetails", sqlParametersSauda);
+        //            if (DtSauda != null && DtSauda.Rows.Count > 0)
+        //            {
+        //                sSeller = DtSauda.Rows[0]["SellerNm"].ToString();
+        //                sBuyer = DtSauda.Rows[0]["BuyerNm"].ToString();
+        //                sSaudaNo = DtSauda.Rows[0]["VNo"].ToString();
+        //                sDate = DateTime.Parse(DtSauda.Rows[0]["Dt"].ToString()).ToString("dd/MM/yyyy");
+        //                sSellMob = DtSauda.Rows[0]["SalWhatsApp"].ToString();
+        //                   = DtSauda.Rows[0]["BuyWhatsApp"].ToString();
+        //            }
+
+        //            sMessage = "Dear Sir, " + sSeller.Replace("&", "and") + " \n\n" +
+        //            "Please check the below of " + bSubject + " Contract No.: *" + sSaudaNo + "* Dated: *" + sDate.Replace("/", "-") + "*. \n\n" +
+        //            "Please send your selling confirmation at the earliest.\n\n" +
+        //            "Thanking you.";
+        //            sMobile = sSellMob;
+        //            //sMobile = "9624592233";
+
+        //            if (copyType == 2)
+        //            {
+        //                sMessage = "Dear Sir, " + sBuyer.Replace("&", "and") + " \n\n" +
+        //            "Please check the below of " + bSubject + " Contract No.: *" + sSaudaNo + "* Dated: *" + sDate.Replace("/", "-") + "*. \n\n" +
+        //            "Please send your PO for the same at the earliest.\n\n" +
+        //            "Thanking you.";
+        //                sMobile = sBuyMob;
+        //                //sMobile = "7990942500";
+        //            }
+
+        //            if (sMobile.Length == 10)
+        //                sMobile = "91" + sMobile;
+
+
+        //            // end whatsapp code
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        string path = _iwebhostenviroment.WebRootPath + "/PDF";
+        //        using var sw = new StreamWriter(path + "/error.text");
+        //        sw.WriteLine(ex.Message);
+        //        throw;
+        //    }
+        //    //return View("Close");
+        //    //return View();
+        //    return RedirectToAction("index", "SaudaEntry", new { id = 0 });
+        //}
+
+        public WhatAppAPIResponse SendWhatAppMessage(string sMobile, string sMessage, string filnm)
+        {
+            try
+            {
+                WhatAppAPIResponse apiResponse = new WhatAppAPIResponse();
+                if (sMobile.Length == 10)
+                {
+                    sMobile = "91" + sMobile;
+                    string result = "";
+                    WebRequest request = null;
+                    HttpWebResponse response = null;
+
+                    try
+                    {
+                        string resultMsg = "";
+                        WebRequest requestFile = null;
+                        HttpWebResponse responseFile = null;
+                        if (filnm != "")
+                        {
+
+                            string sFileAPI = WhatAppHelper.skrumessage + "?number=" + sMobile + "&type=media&message=" + sMessage + "&media_url=" + WhatAppHelper.SURL + "&instance_id=" + WhatAppHelper.SInstanceID + "&access_token=" + WhatAppHelper.SToken + "&filename=" + filnm;
+                            requestFile = WebRequest.Create(sFileAPI);
+                            responseFile = (HttpWebResponse)requestFile.GetResponse();
+                            Stream streamF = responseFile.GetResponseStream();
+                            Encoding ecF = System.Text.Encoding.GetEncoding("utf-8");
+                            StreamReader readerF = new System.IO.StreamReader(streamF, ecF);
+                            resultMsg = readerF.ReadToEnd();
+                            readerF.Close();
+                            streamF.Close();
+                            if (!string.IsNullOrEmpty(resultMsg))
+                            {
+                                apiResponse = JsonConvert.DeserializeObject<WhatAppAPIResponse>(resultMsg);
+                                return apiResponse;
+                            }
+
+
+                        }
+                        //return Json(new { result = true, maxVno = 1 });
+                        apiResponse.status = "error";
+                        apiResponse.message = "Something went to wrong";
+                        return apiResponse;
+                    }
+                    catch (Exception exp)
+                    {
+                        apiResponse.status = "error";
+                        apiResponse.message = exp.ToString();
+                        return apiResponse;
+                    }
+                }
+                apiResponse.status = "error";
+                apiResponse.message = "Please enter 10 digit number";
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

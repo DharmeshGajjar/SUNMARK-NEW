@@ -2,12 +2,7 @@
 @{
     var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
 }
-<style>
-    /*table th, table td {
-        white-space: normal
-            white-space: nowrap
-    }*/
-</style>
+
 @if (Model != null)
 {
     <div class="col-md-12 table-responsive gridViewTableResponsive">
@@ -67,11 +62,11 @@
                             {
                                 if (item.GrdAAlign == "2")
                                 {
-                                    <th class="@hideClass text-right" width="@item.GrdAWidth%" style="@canGrow"><a style="cursor:pointer;font-family:Verdana;font-size:small;text-align:right" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@item.GrdANewColNm <i class="text-primary"></i><i class=" text-primary"></i></a></th>
+                                    <th class="@hideClass text-right" width="@item.GrdAWidth%" style="@canGrow"><a style="cursor:pointer;font-family:Verdana;font-size:small;text-align:right" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@Html.Raw(item.GrdANewColNm.Replace(";","<br>")) <i class="text-primary"></i><i class=" text-primary"></i></a></th>
                                 }
                                 else
                                 {
-                                    <th class="@hideClass" width="@item.GrdAWidth%" style="@canGrow"><a style="cursor:pointer;font-family:Verdana;font-size:small" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@item.GrdANewColNm <i class="text-primary"></i><i class=" text-primary"></i></a></th>
+                                    <th class="@hideClass" width="@item.GrdAWidth%" style="@canGrow"><a style="cursor:pointer;font-family:Verdana;font-size:small" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@Html.Raw(item.GrdANewColNm.Replace(";","<br>")) <i class="text-primary"></i><i class=" text-primary"></i></a></th>
                                 }
 
                             }

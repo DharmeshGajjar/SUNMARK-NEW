@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SUNMark.Classes;
+using SUNMark.Common;
 using SUNMark.Models;
 
 namespace SUNMark.Controllers
@@ -62,13 +63,14 @@ namespace SUNMark.Controllers
                     }
                 }
                 ViewBag.odList = odList;
+                if(id > 0 )
+                    TempData["ReturnId"] = Convert.ToString(id);
                 return View();
             }
             catch (Exception ex)
             {
                 throw;
             }
-            return View();
         }
 
         private void INIT(ref bool isReturn)
@@ -708,14 +710,14 @@ namespace SUNMark.Controllers
         {
             try
             {
-                JobWorkPrintDetails obj =  GetJobWorkPrintData(id);
+                JobWorkPrintDetails obj = GetJobWorkPrintData(id);
                 return View(obj);
             }
             catch (Exception ex)
             {
                 throw;
             }
-            
+
         }
 
         public ActionResult GetCheckCompDtCoil(string isscoil)
@@ -751,7 +753,7 @@ namespace SUNMark.Controllers
 
 
 
-        public IActionResult JobWorkSendMail(long id,string email="")
+        public IActionResult JobWorkSendMail(long id, string email = "")
         {
             try
             {
@@ -759,17 +761,39 @@ namespace SUNMark.Controllers
                 string wwwroot = string.Empty;
                 string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
 
-                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/"+ dateTime + ".pdf";
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
                 var render = new IronPdf.HtmlToPdf();
                 using var doc = render.RenderHtmlAsPdf(obj.Html);
                 doc.SaveAs(wwwroot);
 
                 bool result = SendEmail(email, "SLITTING MACHINE REPORT", "Please find attachment", wwwroot);
                 if (result)
-                 return Json(new { result = result, message = "Please check your mail address" });
+                    return Json(new { result = result, message = "Please check your mail address" });
                 else
-                 return Json(new { result = result, message = "Internal server error" });
+                    return Json(new { result = result, message = "Internal server error" });
 
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        public IActionResult JobWorkWhatApp(long id, string whatappNo = "")
+        {
+            try
+            {
+                JobWorkPrintDetails obj = GetJobWorkPrintData(id);
+                string wwwroot = string.Empty;
+                string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
+
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                var render = new IronPdf.HtmlToPdf();
+                using var doc = render.RenderHtmlAsPdf(obj.Html);
+                doc.SaveAs(wwwroot);
+
+                WhatAppAPIResponse apiResponse = SendWhatAppMessage(whatappNo, "SLITTING MACHINE REPORT", wwwroot);
+                return Json(new { result = apiResponse.status, message = apiResponse.message });
             }
             catch (Exception ex)
             {
