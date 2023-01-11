@@ -654,6 +654,31 @@ namespace SUNMark.Controllers
             }
             return Json(new { result = false, message = "" });
         }
+
+        public ActionResult GetNBSCHDetails(string thick, string od)
+        {
+            List<SelectListItem> nbList = new List<SelectListItem>();
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(thick) && !string.IsNullOrWhiteSpace(od))
+                {
+                    SqlParameter[] sqlParameters = new SqlParameter[2];
+                    sqlParameters[0] = new SqlParameter("@od", od);
+                    sqlParameters[1] = new SqlParameter("@thick", thick);
+                    DataTable dtNBSCH = ObjDBConnection.CallStoreProcedure("GetThickODValueByNBSCH", sqlParameters);
+                    if (dtNBSCH != null && dtNBSCH.Rows.Count > 0)
+                    {
+                        return Json(new { result = true, nbText = dtNBSCH.Rows[0][0], schText = dtNBSCH.Rows[0][1] });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, message = "Internal Error!" });
+            }
+            return Json(new { result = false, message = "" });
+        }
+
         public ActionResult GetCoilDetails(string compdt, string jobvno)
         {
             try

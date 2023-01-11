@@ -172,7 +172,12 @@
                                                     <div class="form-group">
                                                         <label>Mill No<span class="text-danger" style="font-family: Verdana"> *</span></label>
                                                         @Html.DropDownListFor(x => x.MillNo, new SelectList(milprocessList, "Value", "Text"), "Select", new { @class = "form-control select2", onchange = "GetSupervisor()", @style = "width:100% !important" })
-
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label><span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        <input type="text" id="SizeFromTo" name="SizeFromTo" class="form-control" disabled value=""  />
                                                     </div>
                                                 </div>
                                             </div>
@@ -236,7 +241,7 @@
                                                 <div class="col-md-2 col-6">
                                                     <div class="form-group">
                                                         <label>Remaining Weight<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        <input class="form-control decimal" type="text" id="RemainWeight" value="" style="text-align:right" placeholder="Remaining Weight" readonly />
+                                                        <input class="form-control decimal" type="text" name="RemainingWeight" id="RemainWeight" value="@Model.RemainingWeight" style="text-align:right" placeholder="Remaining Weight" readonly />
                                                         @*@Html.TextBoxFor(x => x.PCSWeight, new { @class = "form-control decimal", @placeholder = "Weight", @type = "text", name = "PCSWeight", @id = "txtPCSWeight", @onkeyup = "numericFilter(this)", @style = "text-align:right" })*@
                                                     </div>
                                                 </div>
@@ -287,7 +292,7 @@
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>Weight<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.PCSWeight, new { @class = "form-control decimal", @placeholder = "Weight", @type = "text", name = "PCSWeight", @id = "txtPCSWeight", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                        @Html.TextBoxFor(x => x.PCSWeight, new { @class = "form-control decimal", @placeholder = "Weight", @type = "text", name = "PCSWeight",@onchange = "changeRemainingval()", @onblur = "changeRemainingval()", @id = "txtPCSWeight", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 
@@ -336,7 +341,7 @@
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>Scrap Weight<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.ScrapWeight, new { @class = "form-control decimal", @placeholder = "Scrap Weight", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                        @Html.TextBoxFor(x => x.ScrapWeight, new { @class = "form-control decimal", @placeholder = "Scrap Weight", @type = "text", @onchange = "changeRemainingval()", @onblur = "changeRemainingval()", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
@@ -758,6 +763,13 @@
             IsSubmit = 0;
             return false;
         }
+        var RemainWeight = $('#RemainWeight').val();
+        if (parseFloat(RemainWeight) < 0) {
+            showErrorMessage("Total weight can not be exceeded remaining weight");
+            $('#PCS').focus();
+            IsSubmit = 0;
+            return false;
+        }
         if (IsSubmit == 1) {
             $('select[name="MillNo"]').attr('disabled', false)
             EnableTextbox();
@@ -803,7 +815,30 @@
        
         if (thick != null && thick != "" && od != null && od != "" && pcs != null && pcs != "") {
             $('input[name="PCSWeight"]').val((((od - thick) * thick * 0.02503) * pcs).toFixed(1));
+            changeRemainingval();
         }
+    }
+    function changeRemainingval() {
+        var txtPCSWeight = $('#txtPCSWeight').val();
+        if (txtPCSWeight == '' || txtPCSWeight == '0') {
+            txtPCSWeight = '0';
+        }
+        var ScrapWeight = $('#ScrapWeight').val();
+        if (ScrapWeight == '' || ScrapWeight == '0') {
+            ScrapWeight = '0';
+        }
+        var RemainWeight = $('label#PCSWeight').text();
+        if (parseFloat(RemainWeight) - parseFloat(txtPCSWeight) - parseFloat(ScrapWeight) < 0) {
+            showErrorMessage("Total weight can not be exceeded remaining weight");
+            $('#RemainWeight').val((parseFloat(RemainWeight) - parseFloat(txtPCSWeight) - parseFloat(ScrapWeight)).toFixed(1))
+            $('#PCS').focus();
+        }
+        else {
+            $('#RemainWeight').val((parseFloat(RemainWeight) - parseFloat(txtPCSWeight) - parseFloat(ScrapWeight)).toFixed(1))
+
+        }
+        //if (RemainWeight != '' && RemainWeight != '0') {
+        //}
     }
 
 </script>
@@ -825,9 +860,16 @@
         if (sch)
             $('input[name="SCH"]').val(sch);
         if ('@Model.Vou' != '' && '@Model.Vou' != '0') {
-            alert(@Model.Vou);
-            var weight2 = (((response.data[4] / 3.14).toFixed(8) - response.data[3]) * response.data[3] * 0.02503).toFixed(8);
-            var pcs = (response.data[0] / weight).toFixed(0);
+            $('#NbVou').val('@Model.NB').trigger('change');
+            $('#SCHVou').val('@Model.SCH').trigger('change');
+
+            var weight = (((parseFloat('@Model.Width') / 3.14).toFixed(2) - parseFloat('@Model.Thick')) * parseFloat('@Model.Thick') * 0.02503).toFixed(2);
+            var weight2 = (((parseFloat('@Model.Width') / 3.14).toFixed(8) - parseFloat('@Model.Thick')) * parseFloat('@Model.Thick') * 0.02503).toFixed(8);
+            var pcs = (parseFloat('@Model.Weight') / weight).toFixed(0);
+            var pcsWeightt = ((weight2 * pcs).toFixed(1));
+            $('#PCSWeight').text(pcsWeightt);
+            $('#NoOfPipe').text(pcs);
+            changeRemainingval();
         }
 
     })
@@ -855,6 +897,7 @@
                             $('#Supervisor').val(data.sup);
                             $('#Operator1').val(data.opr1);
                             $('#Operator2').val(data.op2);
+                            $('#SizeFromTo').val(data.frSize+' - '+data.toSize);
                             SetSelect2();
 
                         }
@@ -1074,5 +1117,4 @@
         }
         return true;
     }
-
-</script>
+NB</script>

@@ -72,6 +72,10 @@ namespace SUNMark.Controllers
                         accountMasterModel.AccConPerEmail4 = DtAcc.Rows[0]["AccConPerEmail4"].ToString();
                     }
                 }
+                else
+                {
+                    accountMasterModel.AccType = Convert.ToInt32(HttpContext.Request.Cookies["Last_Type_Account"]);
+                }
                 accountMasterModel.CityList = ObjaccountMasterHelpers.GetCityNameCustomDropdown(companyId);
                 accountMasterModel.TypeList = ObjaccountMasterHelpers.GetAccountType();
                 return View(accountMasterModel);
@@ -188,6 +192,7 @@ namespace SUNMark.Controllers
                             else
                             {
                                 SetSuccessMessage("Inserted Sucessfully");
+                                HttpContext.Response.Cookies.Append("Last_Type_Account", Convert.ToString(accountMasterModel.AccType));
                             }
                             return RedirectToAction("index", "AccountMaster", new { id = 0 });
                         }

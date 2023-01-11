@@ -223,7 +223,7 @@ namespace SUNMark.Controllers
                                         string[] aHideYN = gridMasterModel.GrdAHideYNString.TrimEnd(',').Split(',');
                                         for (int i = 0; i < gridMasterModel.Gridtransaction.GrdADbFld.Length; i++)
                                         {
-                                            SqlParameter[] parameter = new SqlParameter[14];
+                                            SqlParameter[] parameter = new SqlParameter[15];
                                             parameter[0] = new SqlParameter("@GrdAGrdVou", masterId);
                                             parameter[1] = new SqlParameter("@GrdADbFld", gridMasterModel.Gridtransaction.GrdADbFld[i]);
                                             parameter[2] = new SqlParameter("@GrdAColNm", gridMasterModel.Gridtransaction.GrdAColNm[i]);
@@ -237,11 +237,11 @@ namespace SUNMark.Controllers
                                             //parameter[10] = new SqlParameter("@GrdALinkYN", gridMasterModel.Gridtransaction.GrdALinkYN[i] ? "1" : "0");
                                             //parameter[11] = new SqlParameter("@GrdAHideYN", gridMasterModel.Gridtransaction.GrdAHideYN[i] ? "1" : "0");
                                             parameter[9] = new SqlParameter("@GrdATotYN", aTotYN[i]);
-                                            parameter[9] = new SqlParameter("@GrdCanGrow", canGrow[i]);
-                                            parameter[10] = new SqlParameter("@GrdALinkYN", aLinkYN[i]);
-                                            parameter[11] = new SqlParameter("@GrdAHideYN", aHideYN[i]);
-                                            parameter[12] = new SqlParameter("@GrdASuppressIFVal", gridMasterModel.Gridtransaction.GrdASuppressIFVal[i]);
-                                            parameter[13] = new SqlParameter("@SrNo", (i + 1));
+                                            parameter[10] = new SqlParameter("@GrdCanGrow", canGrow[i]);
+                                            parameter[11] = new SqlParameter("@GrdALinkYN", aLinkYN[i]);
+                                            parameter[12] = new SqlParameter("@GrdAHideYN", aHideYN[i]);
+                                            parameter[13] = new SqlParameter("@GrdASuppressIFVal", gridMasterModel.Gridtransaction.GrdASuppressIFVal[i]);
+                                            parameter[14] = new SqlParameter("@SrNo", (i + 1));
                                             DataTable DtGrdTrn = ObjDBConnection.CallStoreProcedure("GridTransaction_Insert", parameter);
                                         }
                                     }

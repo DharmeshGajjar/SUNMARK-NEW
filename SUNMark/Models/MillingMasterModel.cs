@@ -79,6 +79,7 @@ namespace SUNMark.Models
 
         public string FinishDate { get; set; }
         public string Reason { get; set; }
+        public string RemainingWeight { get; set; }
 
     }
 }

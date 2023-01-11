@@ -125,7 +125,7 @@ namespace SUNMark.Controllers
                 }
                 //if (ModelState.IsValid)
                 //{
-                    SqlParameter[] parameter = new SqlParameter[41];
+                    SqlParameter[] parameter = new SqlParameter[42];
                     parameter[0] = new SqlParameter("@MilVou", millingMasterModel.Vou);
                     parameter[1] = new SqlParameter("@MilCmpVou", millingMasterModel.CompanyVou);
                     parameter[2] = new SqlParameter("@MilVno", millingMasterModel.Vno);
@@ -167,6 +167,7 @@ namespace SUNMark.Controllers
                     parameter[38] = new SqlParameter("@MilPrcVou", millingMasterModel.PrcVou);
                     parameter[39] = new SqlParameter("@MIlFinishDt", millingMasterModel.FinishDate);
                     parameter[40] = new SqlParameter("@MilReason", millingMasterModel.Reason);
+                    parameter[41] = new SqlParameter("@MilRemainingWeight", millingMasterModel.RemainingWeight);
                     DataTable dt = ObjDBConnection.CallStoreProcedure("AddMilling", parameter);
                     if (dt != null && dt.Rows.Count > 0)
                     {
@@ -281,7 +282,7 @@ namespace SUNMark.Controllers
                         data.Add(dtLotMst.Rows[0]["LotGrade"].ToString());
                         data.Add(dtLotMst.Rows[0]["LotThick"].ToString());
                         data.Add(dtLotMst.Rows[0]["LotWidth"].ToString());
-                        data.Add(dtLotMst.Rows[0]["LotWeight"].ToString());
+                        data.Add(dtLotMst.Rows[0]["LotQty"].ToString());
                         data.Add(Convert.ToDateTime(dtLotMst.Rows[0]["LotDt"].ToString()).ToString("yyyy-MM-dd"));
 
                         if (Convert.ToDateTime(Convert.ToDateTime(dtLotMst.Rows[0]["LotDt"].ToString()).ToString("yyyy-MM-dd"))  >= Convert.ToDateTime(mildt))
@@ -456,7 +457,7 @@ namespace SUNMark.Controllers
             DataTable dt = ObjDBConnection.CallStoreProcedure("GetSupByShiftMacNo", parameter);
             if (dt != null && dt.Rows.Count > 0)
             {
-                return Json(new { result = true, Sup1 = dt.Rows[0]["Sup"].ToString(), Opr1 = dt.Rows[0]["Opr2"].ToString(), Opr2 = dt.Rows[0]["Opr2"].ToString() });
+                return Json(new { result = true, Sup1 = dt.Rows[0]["Sup"].ToString(), Opr1 = dt.Rows[0]["Opr2"].ToString(), Opr2 = dt.Rows[0]["Opr2"].ToString(), FrSize = dt.Rows[0]["FromSize"].ToString(), ToSize = dt.Rows[0]["ToSize"].ToString() });
             }
             else
             {
