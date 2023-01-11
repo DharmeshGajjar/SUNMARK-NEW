@@ -601,8 +601,9 @@ namespace SUNMark.Controllers
                 {
                     long userId = GetIntSession("UserId");
                     int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
-                    SqlParameter[] sqlParameters = new SqlParameter[1];
+                    SqlParameter[] sqlParameters = new SqlParameter[2];
                     sqlParameters[0] = new SqlParameter("@SupCoil", supcoilno);
+                    sqlParameters[1] = new SqlParameter("@Type", "INTR");
                     DataTable DtInw = ObjDBConnection.CallStoreProcedure("DeleteSupCoilMst", sqlParameters);
                     if (DtInw != null && DtInw.Rows.Count > 0)
                     {

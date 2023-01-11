@@ -396,8 +396,7 @@
     }
 
     function ExportToExcel() {
-        
-        var isAllow = $('#query').attr('data-id');
+        var isAllow = $('#txtQueryId').val();
         if (isAllow != null && isAllow != '' && isAllow != undefined && isAllow != '0') {
             window.location.href = "/Query/ExportToExcel/" + isAllow;
         }
