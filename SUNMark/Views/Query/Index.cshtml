@@ -142,7 +142,7 @@
     });
 
     function RunQuery() {
-        $('#query').attr('data-id', '0');
+        //$('#query').attr('data-id', '0');
         var query = $('#query').val();
         if (query == null || query == '' || query == undefined) {
             alert("Please enter query!");
@@ -152,14 +152,17 @@
         $('#QueryListDiv').addClass('d-none')
         $('#AddNewQueryDiv').addClass('d-none')
 
-        $('#RunQueryListDiv').children('table').children('thead').remove();
-        $('#RunQueryListDiv').children('table').children('tbody').remove();
+        //$('#RunQueryListDiv').children('table').children('thead').remove();
+        //$('#RunQueryListDiv').children('table').children('tbody').remove();
+        $('#RunQueryListDiv .table').html("");
         $.ajax({
             type: "POST",
             url: '/Query/RunQuery',
             data: { "query": query },
             dataType: "JSON",
             success: function (response) {
+                
+                $('#RunQueryListDiv .table').html("");
                 if (response.isDisallow == "true") {
                     alert("Only select query will work!");
                     return false;
@@ -296,6 +299,7 @@
     }
 
     function LoadData() {
+        
         $('#query').attr('data-id', '0');
         $('#QueryListDiv').removeClass('d-none')
         $('#RunQueryListDiv').addClass('d-none')
@@ -323,15 +327,18 @@
     }
 
     function QueryClick(obj) {
+        debugger    
         var query = $(obj).parent('td').parent('tr').children('td').eq(5).html();
         //var query1 = query.Replace('&gt;', '>')
         //var querynew = query1.Replace('&lt;', '>')
+        var decodedText = $("<p/>").html(query).text(); 
         queryCode = $(obj).parent('td').parent('tr').children('td').eq(2).html();
-        $('#query').val(query);
+        $('#query').val(decodedText);
         $('#query').attr('data-id', $(obj).attr('data-id'));
     }
 
     function EditQuery(Id) {
+        
         $('#query').attr('data-id', '0');
         $('#RunQueryListDiv').addClass('d-none')
         $('#QueryListDiv').addClass('d-none')
@@ -343,6 +350,7 @@
             data: { "id": Id },
             dataType: "JSON",
             success: function (response) {
+                
                 if (response != null && response != '' && response != undefined) {
                     ClearTextbox();
                     $('#txtFlg').val(response.queryFlg)
