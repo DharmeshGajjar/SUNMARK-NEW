@@ -255,6 +255,7 @@
                                                         @Html.TextBoxFor(x => x.OD, new { @class = "form-control ", @placeholder = "OD", @type = "text", @*@onchange = "GetNBSCHDetails(this)",*@@disabled = "disabled", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
                                                     </div>
                                                 </div>
+                                                <input type="hidden" value="1" id="ODValidCheck"/>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>NB<span class="text-danger" style="font-family: Verdana"></span></label>
@@ -675,21 +676,32 @@
                             $('input[name="OD"]').val((response.data[4] / 3.14).toFixed(2));
                             var weight = (((response.data[4] / 3.14).toFixed(2) - response.data[3]) * response.data[3] * 0.02503).toFixed(2);
                             var weight2 = (((response.data[4] / 3.14).toFixed(8) - response.data[3]) * response.data[3] * 0.02503).toFixed(8);
+                            var weight3 = (((response.data[4] / 3.14).toFixed(3) - response.data[3]) * response.data[3] * 0.02503).toFixed(3);
                             var pcs = parseInt(response.data[0] / weight);
                             $('#NoOfPipe').text(pcs);
                             //alert((weight * pcs).toFixed(1));
                             $('#PCSWeight').text((weight2 * pcs).toFixed(1));
+                            //alert(response.data[9]);
                             if (response.data[9] == '' || response.data[9] == undefined) {
                                 $('#RemainWeight').val((weight2 * pcs).toFixed(1));
                             }
                             else {
                                 $('#RemainWeight').val(response.data[9]);
+                                $('#PCSWeight').text(response.data[9]);
+                                $('#NoOfPipe').text(parseInt(response.data[9] / weight3));
                             }
                             $('input[name="PCS"]').val(0);
                             $('input[name="PCSWeight"]').val(0);
                             //alert(response.data[7]);
                             $('#NbVou').val(response.data[7]).trigger('change');
                             $('#SCHVou').val(response.data[8]).trigger('change');
+                            if (response.isValidOD == '0' || response.isValidOD == 0) {
+                                showErrorMessage('Coil OD Size is Not Range to this Machine!');
+                                $('#ODValidCheck').val('0');
+                            }
+                            else {
+                                $('#ODValidCheck').val('1');
+                            }
                             //GetNBSCHDetails();
                         }
                         else {
@@ -753,6 +765,11 @@
         //$('#Supervisor').attr("disabled", false)
         //$('#Operator1').attr("disabled", false)
         //$('#Operator2').attr("disabled", false)
+        if ($('#ODValidCheck').val() == '0' || $('#ODValidCheck').val() == 0) {
+            showErrorMessage('Coil OD Size is Not Range to this Machine!');
+            IsSubmit = 0;
+            return false;
+        }
         if (ValidateTextbox()) {
             IsSubmit = 1;
             
@@ -893,7 +910,7 @@
     })
 
     function GetSupervisor() {
-
+        $('#ODValidCheck').val('1');
         var macNo = $('#MillNo').val();
         var shift = $('#ShiftVou').val();
         $('input[name="IssueCoilNo"]').prop("readonly", false);
@@ -938,6 +955,7 @@
                 success: function (response) {
                     if (response) {
                         if (response.result) {
+                            $('#ODValidCheck').val('1');
                             $('input[name="InTime"]').val(response.inTime);
                             $('input[name="FeetPer"]').val(response.lenFeet);
                             $('input[name="IssueCoilNo"]').val(response.lotNo);
