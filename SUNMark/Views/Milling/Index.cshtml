@@ -675,11 +675,16 @@
                             $('input[name="OD"]').val((response.data[4] / 3.14).toFixed(2));
                             var weight = (((response.data[4] / 3.14).toFixed(2) - response.data[3]) * response.data[3] * 0.02503).toFixed(2);
                             var weight2 = (((response.data[4] / 3.14).toFixed(8) - response.data[3]) * response.data[3] * 0.02503).toFixed(8);
-                            var pcs = (response.data[0] / weight).toFixed(0);
+                            var pcs = parseInt(response.data[0] / weight);
                             $('#NoOfPipe').text(pcs);
                             //alert((weight * pcs).toFixed(1));
                             $('#PCSWeight').text((weight2 * pcs).toFixed(1));
-                            $('#RemainWeight').val((weight2 * pcs).toFixed(1));
+                            if (response.data[9] == '' || response.data[9] == undefined) {
+                                $('#RemainWeight').val((weight2 * pcs).toFixed(1));
+                            }
+                            else {
+                                $('#RemainWeight').val(response.data[9]);
+                            }
                             $('input[name="PCS"]').val(0);
                             $('input[name="PCSWeight"]').val(0);
                             //alert(response.data[7]);
@@ -864,12 +869,19 @@
             $('#SCHVou').val('@Model.SCH').trigger('change');
 
             var weight = (((parseFloat('@Model.Width') / 3.14).toFixed(2) - parseFloat('@Model.Thick')) * parseFloat('@Model.Thick') * 0.02503).toFixed(2);
-            var weight2 = (((parseFloat('@Model.Width') / 3.14).toFixed(8) - parseFloat('@Model.Thick')) * parseFloat('@Model.Thick') * 0.02503).toFixed(8);
-            var pcs = (parseFloat('@Model.Weight') / weight).toFixed(0);
+            var weight2 = (((parseFloat('@Model.Width') / 3.14).toFixed(3) - parseFloat('@Model.Thick')) * parseFloat('@Model.Thick') * 0.02503).toFixed(3);
+            var pcs = parseInt(parseFloat('@Model.Weight') / weight);
             var pcsWeightt = ((weight2 * pcs).toFixed(1));
-            $('#PCSWeight').text(pcsWeightt);
-            $('#NoOfPipe').text(pcs);
-            changeRemainingval();
+            if ('@Model.RemainingWeight' != '') {
+                @*alert('@Model.RemainingWeight');
+                alert(weight2);*@
+                $('#PCSWeight').text('@Model.RemainingWeight');
+                $('#NoOfPipe').text(parseInt(parseFloat('@Model.RemainingWeight') / parseFloat(weight2)));
+                changeRemainingval();
+            }
+            //$('#PCSWeight').text(pcsWeightt);
+            //$('#NoOfPipe').text(pcs);
+
         }
 
     })
@@ -940,7 +952,7 @@
                             $('input[name="OutTime"]').val(response.outTime);
                             var weight = (((response.width / 3.14).toFixed(2) - response.thick) * response.thick * 0.02503).toFixed(2);
                             var weight2 = (((response.width / 3.14).toFixed(8) - response.thick) * response.thick * 0.02503).toFixed(8);
-                            var pcss = (response.lotQty / weight).toFixed(0);
+                            var pcss = parseInt(response.lotQty / weight);
                             var pcsWeightt = ((weight2 * pcss).toFixed(1));
                             var totMilqty = response.milQtyS;
                             var totscrqty = response.milScrQty;

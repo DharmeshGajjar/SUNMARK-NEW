@@ -100,6 +100,7 @@ namespace SUNMark.Controllers
                         millingMasterModel.PrcVou = dt.Rows[0]["MilPrcVou"].ToString();
                         millingMasterModel.FinishDate = !string.IsNullOrWhiteSpace(dt.Rows[0]["MilFinishDt"].ToString()) ? Convert.ToDateTime(dt.Rows[0]["MilFinishDt"].ToString()).ToString("yyyy-MM-dd") : null;
                         millingMasterModel.Reason = dt.Rows[0]["MilReason"].ToString();
+                        millingMasterModel.RemainingWeight = (Convert.ToDecimal(dt.Rows[0]["RemainingWeight"].ToString()) + Convert.ToDecimal(dt.Rows[0]["MilRecQty"].ToString()) + Convert.ToDecimal(dt.Rows[0]["MilScrQty"].ToString())).ToString();
                     }
                 }
             }
@@ -294,6 +295,12 @@ namespace SUNMark.Controllers
                             data.Add(dtNBSCH.Rows[0]["NbsNB"].ToString());
                             data.Add(dtNBSCH.Rows[0]["NbsSch"].ToString());
                         }
+                        else
+                        {
+                            data.Add("");
+                            data.Add("");
+                        }
+                        data.Add(dtLotMst.Rows[0]["LotRemaining"].ToString());
                     }
                     
                     if (dtMacMst != null && dtMacMst.Rows.Count > 0)
