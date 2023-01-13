@@ -307,6 +307,7 @@ namespace SUNMark.Controllers
                             return Json(new { result = false, message = "Remaining coil weight is not sufficiant to make a process!" });
                         }
                     }
+
                     
                     if (dtMacMst != null && dtMacMst.Rows.Count > 0)
                     {
