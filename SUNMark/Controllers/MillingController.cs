@@ -302,7 +302,11 @@ namespace SUNMark.Controllers
                             data.Add("");
                         }
                         data.Add(dtLotMst.Rows[0]["LotRemaining"].ToString());
-                        if (Convert.ToDecimal(dtLotMst.Rows[0]["LotRemaining"].ToString()) <= 0)
+                        if (dtLotMst.Rows[0]["LotRemaining"].ToString() == "")
+                        {
+                            return Json(new { result = false, message = "Invalid Coil No!" });
+                        }
+                        else if (Convert.ToDecimal(dtLotMst.Rows[0]["LotRemaining"].ToString()) <= 0)
                         {
                             return Json(new { result = false, message = "Remaining coil weight is not sufficiant to make a process!" });
                         }
