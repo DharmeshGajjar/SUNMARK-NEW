@@ -1341,14 +1341,22 @@ namespace SUNMark.Controllers
                 DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotMstDetails1", sqlParameters);
                 if (DtInw != null && DtInw.Columns.Count > 1)
                 {
-                    string GdnVou = DtInw.Rows[0]["LotGdnVou"].ToString();
-                    string Grade = DtInw.Rows[0]["LotGrade"].ToString();
-                    string GrdVou = DtInw.Rows[0]["LotGrdMscVou"].ToString();
-                    string Width = DtInw.Rows[0]["LotWidth"].ToString();
-                    string Thick = DtInw.Rows[0]["LotThick"].ToString();
-                    string Qty = DtInw.Rows[0]["LotQty"].ToString();
-                    string HeatNo = DtInw.Rows[0]["LotHeatNo"].ToString();
-                    return Json(new { result = true, gdnVou = GdnVou, grade = Grade, grdVou = GrdVou, width = Width, thick = Thick, qty = Qty, heatNo = HeatNo });
+                    if (DtInw.Rows.Count > 0)
+                    {
+                        string GdnVou = DtInw.Rows[0]["LotGdnVou"].ToString();
+                        string Grade = DtInw.Rows[0]["LotGrade"].ToString();
+                        string GrdVou = DtInw.Rows[0]["LotGrdMscVou"].ToString();
+                        string Width = DtInw.Rows[0]["LotWidth"].ToString();
+                        string Thick = DtInw.Rows[0]["LotThick"].ToString();
+                        string Qty = DtInw.Rows[0]["LotQty"].ToString();
+                        string HeatNo = DtInw.Rows[0]["LotHeatNo"].ToString();
+                        return Json(new { result = true, gdnVou = GdnVou, grade = Grade, grdVou = GrdVou, width = Width, thick = Thick, qty = Qty, heatNo = HeatNo });
+
+                    }
+                    else
+                    {
+                        return Json(new { result = true, data = "1" });
+                    }
                 }
                 else
                 {

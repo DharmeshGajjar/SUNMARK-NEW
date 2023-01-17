@@ -100,6 +100,7 @@ namespace SUNMark.Controllers
                         millingMasterModel.PrcVou = dt.Rows[0]["MilPrcVou"].ToString();
                         millingMasterModel.FinishDate = !string.IsNullOrWhiteSpace(dt.Rows[0]["MilFinishDt"].ToString()) ? Convert.ToDateTime(dt.Rows[0]["MilFinishDt"].ToString()).ToString("yyyy-MM-dd") : null;
                         millingMasterModel.Reason = dt.Rows[0]["MilReason"].ToString();
+                        millingMasterModel.RemainingWeight = (Convert.ToDecimal(dt.Rows[0]["RemainingWeight"].ToString()) + Convert.ToDecimal(dt.Rows[0]["MilRecQty"].ToString()) + Convert.ToDecimal(dt.Rows[0]["MilScrQty"].ToString())).ToString();
                     }
                 }
             }
@@ -272,6 +273,7 @@ namespace SUNMark.Controllers
                 if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables.Count == 6)
                 {
                     List<object> data = new List<object>();
+                    int IsValidOD = 1;
                     DataTable dtLotMst = ds.Tables[0];
                     DataTable dtMacMst = ds.Tables[4];
                     DataTable dtNBSCH = ds.Tables[5];
@@ -294,13 +296,29 @@ namespace SUNMark.Controllers
                             data.Add(dtNBSCH.Rows[0]["NbsNB"].ToString());
                             data.Add(dtNBSCH.Rows[0]["NbsSch"].ToString());
                         }
+                        else
+                        {
+                            data.Add("");
+                            data.Add("");
+                        }
+                        data.Add(dtLotMst.Rows[0]["LotRemaining"].ToString());
+                        if (dtLotMst.Rows[0]["LotRemaining"].ToString() == "")
+                        {
+                            return Json(new { result = false, message = "Invalid Coil No!" });
+                        }
+                        else if (Convert.ToDecimal(dtLotMst.Rows[0]["LotRemaining"].ToString()) <= 0)
+                        {
+                            return Json(new { result = false, message = "Remaining coil weight is not sufficiant to make a process!" });
+                        }
                     }
+
                     
                     if (dtMacMst != null && dtMacMst.Rows.Count > 0)
                     {
                         if (!(Convert.ToDecimal(dtLotMst.Rows[0]["LotOD"].ToString()) >= Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGFR"].ToString()) && Convert.ToDecimal(dtLotMst.Rows[0]["LotOD"].ToString()) <= Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGTO"].ToString())))
                         {
-                            return Json(new { result = false, message = "Coil OD Size is Not Range to this Machine!" });
+                            IsValidOD = 0;
+                            //return Json(new { result = false, message = "Coil OD Size is Not Range to this Machine!" });
                         }
                     }
                     else
@@ -313,7 +331,7 @@ namespace SUNMark.Controllers
                     }
                     else
                     {
-                        return Json(new { result = true, data = data });
+                        return Json(new { result = true, data = data, IsValidOD = IsValidOD });
                     }
 
                 }

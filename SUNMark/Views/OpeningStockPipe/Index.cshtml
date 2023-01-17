@@ -959,11 +959,44 @@
         $('#LotWidth').on('blur', function () {
             AutofillNBSCHByODThick();
         });
+        $('#LotOD').on('change', function () {
+            var od1 = $('#LotOD').val();
+            //$('#LotWidth').val(parseFloat(parseFloat(od) * 3.14));
+            var thick = $('#LotThick').val();
+            var od = parseFloat(parseFloat(od1) * 3.14);
+            if (thick != '' && od != '') {
+                $.ajax({
+                    type: "POST",
+                    url: '/OpeningStock/GetNBSCH',
+                    data: { "thick": thick, "od": od },
+                    dataType: "JSON",
+                    success: function (response) {
+                        if (response) {
+                            if (response.result) {
+                                $('#LotNB').val(response.lotNB).trigger('change');
+                                $('#LotSCH').val(response.lotSCH).trigger('change');
+                            }
+                            else {
+
+                            }
+                        }
+                        else {
+
+                        }
+                    },
+                    error: function (response) {
+                    }
+                });
+            }
+        });
         $(".select2").select2();
     });
     function AutofillNBSCHByODThick() {
+
+        var od1 = $('#LotOD').val();
         var thick = $('#LotThick').val();
-        var od = $('#LotWidth').val();
+        //var od = $('#LotWidth').val();
+        var od = parseFloat(parseFloat(od1) * 3.14);
         if (thick != '' && od != '') {
             $.ajax({
                 type: "POST",
