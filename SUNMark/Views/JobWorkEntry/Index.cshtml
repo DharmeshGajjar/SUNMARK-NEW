@@ -105,7 +105,7 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Print Option</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -1476,7 +1476,7 @@
                     recCoilNo = parseInt(recCoilNo) + parseInt(1);
                 }
             }
-            if (type != "Scrap" && type != "SCRAP") {
+            if (type == "Coil" && type == "COIL") {
                 if (width != null && width != "" && parseFloat(width) > 0 && noOfCoil != null && noOfCoil != "" && parseFloat(noOfCoil) && actualWeight != null && actualWeight != "" && parseFloat(actualWeight) > 0 && actualWidth != null && actualWidth != "" && parseFloat(actualWidth) > 0 && type != null && type != "" && type != "---Select---" && recCoilNo != null && recCoilNo != "" && recCoilNo != "---Select---" && nb != null && nb != "" && nb != "---Select---" && sch != null && sch != "" && sch != "---Select---") {
 
                     $('#tblDisplay').children('tbody').children('tr:last').remove();
@@ -2018,8 +2018,8 @@
         });
         $('#tblDisplay').children('tbody').children('tr:last').after("<tr><td><b>Total</b></td><td class='text-left'><b>" + totalWidth + "</b></td><td class='text-left'><b>" + totalNoOfCoil + "</b></td><td class='text-right'><b>" + formulaWt + "</b></td><td class='text-right'><b>" + actualWt + "</b></td><td class='text-right' colspan='3'></td></tr>");
         var remaining = parseFloat(actualWidth) - parseFloat(totalWidth);
-        $('input[name="remaining"]').val(remaining);
-        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').val(remaining);
+        $('input[name="remaining"]').val(parseFloat(remaining).toFixed(2));
+        $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').val(parseFloat(remaining).toFixed(2));
     }
 
     function AllowAddRowsSlit() {
@@ -2033,7 +2033,7 @@
         });
         totalWidth = parseFloat(totalWidth) + (parseFloat($('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').val()) * parseFloat($('#tblSlit').children('tbody').children('tr:last').children('td').eq(2).children('input').val()));
         if (parseFloat(totalWidth) > parseFloat(actualWidth)) {
-            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').val(remaining);
+            $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').val(parseFloat(remaining).toFixed(2));
             $('#tblSlit').children('tbody').children('tr:last').children('td').eq(2).children('input').val(0);
             $('#tblSlit').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
             return false;
@@ -2239,10 +2239,10 @@
                     if (lottupevou == '---Select---') {
                         lottupevou = '';
                     }
-                    if (parseFloat(remaining) < 0) {
+                    if (parseFloat(remaining+1) < 0) {
                         showErrorMessage("Remaining cannot be less than 0!");
                     }
-                    else if (parseFloat(remaining) > 0) {
+                    else if (parseFloat(remaining-1) > 0) {
                         showErrorMessage("Remaining cannot be grater than 0!");
                     }
                     else if (completeDate < newDate) {
