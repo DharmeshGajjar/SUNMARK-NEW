@@ -787,9 +787,14 @@ namespace SUNMark.Controllers
                 string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
 
                 wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
-                var render = new IronPdf.HtmlToPdf();
-                using var doc = render.RenderHtmlAsPdf(obj.Html);
-                doc.SaveAs(wwwroot);
+                //var render = new IronPdf.HtmlToPdf();
+                //using var doc = render.RenderHtmlAsPdf(obj.Html);
+                //doc.SaveAs(wwwroot);
+
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Save(wwwroot);
+                doc.Close();
 
                 bool result = SendEmail(email, "SLITTING MACHINE REPORT", "Please find attachment", wwwroot);
                 if (result)
@@ -813,9 +818,11 @@ namespace SUNMark.Controllers
                 string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
 
                 wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
-                var render = new IronPdf.HtmlToPdf();
-                using var doc = render.RenderHtmlAsPdf(obj.Html);
-                doc.SaveAs(wwwroot);
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Margins.Left = 25;
+                doc.Save(wwwroot);
+                doc.Close();
 
                 WhatAppAPIResponse apiResponse = SendWhatAppMessage(whatappNo, "SLITTING MACHINE REPORT", wwwroot);
                 return Json(new { result = apiResponse.status, message = apiResponse.message });
@@ -928,6 +935,7 @@ namespace SUNMark.Controllers
                             newbody = newbody.Replace("#*#*datatable-keytable*#*#", sb.ToString());
 
                             newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
+                            //newbody = newbody.Replace("#*#*logo*#*#", "http://localhost:6954/Uploads/0026.jpeg");
 
                             obj.Html = newbody;
                             obj.Id = id.ToString();

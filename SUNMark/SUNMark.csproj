@@ -26,6 +26,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NReco.PdfGenerator" Version="1.2.0" />
     <PackageReference Include="PdfSharp" Version="1.50.5147" />
+    <PackageReference Include="Select.HtmlToPdf.NetCore" Version="22.2.0" />
     <PackageReference Include="Spire.XLS" Version="12.7.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
   </ItemGroup>
