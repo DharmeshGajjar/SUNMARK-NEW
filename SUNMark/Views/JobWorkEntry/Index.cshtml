@@ -101,7 +101,7 @@
                     </button>
 
                     <!-- Modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="exampleModal" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -129,7 +129,7 @@
                                                 <label class="form-check-label" for="radio2">WhatApp</label>
                                             </div>
                                             <div class="col-md-10 form-group">
-                                                <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "      />
+                                                <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "        />
                                             </div>
                                         </div>
                                     </div>
@@ -137,7 +137,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal"> Esc - Cancle</button>
-                                    <button type="button" class="btn btn-primary" id="btn_ViewMailWhatapp">Submit</button>
+                                    <button type="button" class="btn btn-primary" id="btn_ViewMailWhatapp">Submit (F9)</button>
                                 </div>
                             </div>
                         </div>
@@ -909,7 +909,12 @@
                 .on('F2', function () {
                     GoToAddTab()
                 }).on('F9', function () {
-                    $("#btnPrint").click();
+                    if ($('.modal.show').length != 0) {
+                        $("#btn_ViewMailWhatapp").click();
+                    }
+                    else {
+                        $("#btnPrint").click();
+                    }
                 }).on('F10', function () {
                     //if (!isRecentCalledSave) {
                     //if (!$("#btnSave").is(":disabled")) {
@@ -945,19 +950,24 @@
                         $('#jobType').focus();
                     }
 
-                }).on('Escape', function () {
-                    if (!isRecentCalledEsc) {
-                        isRecentCalledEsc = true;
-                        if (confirm("Do you want to exit without save?")) {
-                            location.href = '/JobWorkEntry/Index'
-                        }
-                        //else {
-                        //    $('#jobType').focus();
-                        //}
-                        setTimeout(function () {
-                            isRecentCalledEsc = false;
-                        }, 500)
+                }).on('#frmjobwork Escape', function () {
+                    if ($('.modal.show').length != 0) {
+                        $('#exampleModal').modal('hide');
                     }
+                    //else {
+                    //    if (!isRecentCalledEsc) {
+                    //        isRecentCalledEsc = true;
+                    //        if (confirm("Do you want to exit without save?")) {
+                    //            location.href = '/JobWorkEntry/Index'
+                    //        }
+                    //        //else {
+                    //        //    $('#jobType').focus();
+                    //        //}
+                    //        setTimeout(function () {
+                    //            isRecentCalledEsc = false;
+                    //        }, 500)
+                    //    }
+                    //}
 
                 })
         });
@@ -2933,6 +2943,7 @@
             $("#btn_ViewMailWhatapp").click(function () {
                 let optionVal = $('input:radio[name=printOption]:checked').val();
                 if (optionVal == "Print") {
+                    $('#exampleModal').modal('hide');
                     window.open(
                         '/JobWorkEntry/JobWorkPrintDetials/' + ReturnId + '',
                         '_blank' // <- This is what makes it open in a new window.
