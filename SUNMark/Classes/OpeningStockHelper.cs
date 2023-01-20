@@ -74,7 +74,7 @@ namespace SUNMark.Classes
                         try
                         {
                             string voucherNo = GetVoucherNo(sessionCompanyId);
-                            SqlParameter[] sqlParameters = new SqlParameter[29];
+                            SqlParameter[] sqlParameters = new SqlParameter[37];
                             sqlParameters[0] = new SqlParameter("@OblNVno", voucherNo);
                             sqlParameters[1] = new SqlParameter("@OblDt", DateTime.Parse(dt.Rows[i]["INWARD DATE"].ToString()));
                             sqlParameters[2] = new SqlParameter("@OblCmpVou", companyId);
@@ -184,6 +184,14 @@ namespace SUNMark.Classes
 
                             sqlParameters[27] = new SqlParameter("@RefNo", dt.Rows[i]["MEMO NO"].ToString());
                             sqlParameters[28] = new SqlParameter("@LotOD", dt.Rows[i]["SIZE"].ToString());
+                            sqlParameters[29] = new SqlParameter("@LotPrcTypCD", 0);
+                            sqlParameters[30] = new SqlParameter("@LotPCS", 0);
+                            sqlParameters[31] = new SqlParameter("@LotFeetPer", 0);
+                            sqlParameters[32] = new SqlParameter("@NB", "");
+                            sqlParameters[33] = new SqlParameter("@SCH", "");
+                            sqlParameters[34] = new SqlParameter("@CoilType", "");
+                            sqlParameters[35] = new SqlParameter("@CoilTypeVou", 0);
+                            sqlParameters[36] = new SqlParameter("@CoilSuffix", "");
 
                             if (!string.IsNullOrWhiteSpace(gradeId) && !string.IsNullOrWhiteSpace(partyId) && !string.IsNullOrWhiteSpace(godownId))
                             {

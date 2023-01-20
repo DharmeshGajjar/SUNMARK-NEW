@@ -373,6 +373,30 @@ namespace SUNMark.Controllers
                                 }
                             }
                         }
+                        else if (type == "DEL")
+                        {
+                            if (status == -1)
+                            {
+                                return Json(new { result = false, Message = "Duplicate Code" });
+                            }
+                            else if (status == -2)
+                            {
+                                return Json(new { result = false, Message = "Duplicate Name" });
+                            }
+                            else
+                            {
+                                if (id > 0)
+                                {
+                                    SetSuccessMessage("Update Sucessfully");
+                                    return Json(new { result = true, RedirectURL = "/DeliveryAt/Index" });
+                                }
+                                else
+                                {
+                                    SetSuccessMessage("Delivery inserted successfully");
+                                    return Json(new { result = true, RedirectURL = "/DeliveryAt/Index" });
+                                }
+                            }
+                        }
                     }
 
                 }
