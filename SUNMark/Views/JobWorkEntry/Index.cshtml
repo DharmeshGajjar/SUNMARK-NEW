@@ -129,7 +129,7 @@
                                                 <label class="form-check-label" for="radio2">WhatApp</label>
                                             </div>
                                             <div class="col-md-10 form-group">
-                                                <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "        />
+                                                <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "         />
                                             </div>
                                         </div>
                                     </div>
@@ -854,6 +854,7 @@
 </div>
 
 <script>
+    let activeEle;
     $(document).ready(function () {
         var issueCoilNo = $('#issueCoilNo').val();
         if (issueCoilNo != null && issueCoilNo != '') {
@@ -909,6 +910,7 @@
                 .on('F2', function () {
                     GoToAddTab()
                 }).on('F9', function () {
+                    activeEle = document.activeElement.name;
                     if ($('.modal.show').length != 0) {
                         $("#btn_ViewMailWhatapp").click();
                     }
@@ -953,6 +955,7 @@
                 }).on('#frmjobwork Escape', function () {
                     if ($('.modal.show').length != 0) {
                         $('#exampleModal').modal('hide');
+                        $("[name=" + activeEle + "]").focus();
                     }
                     //else {
                     //    if (!isRecentCalledEsc) {
@@ -2944,10 +2947,28 @@
                 let optionVal = $('input:radio[name=printOption]:checked').val();
                 if (optionVal == "Print") {
                     $('#exampleModal').modal('hide');
-                    window.open(
-                        '/JobWorkEntry/JobWorkPrintDetials/' + ReturnId + '',
-                        '_blank' // <- This is what makes it open in a new window.
-                    );
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("JobWorkPrintDetials", "JobWorkEntry")',
+                        data: { "id": ReturnId},
+                        dataType: "JSON",
+                        success: function (data) {
+                            debugger
+                            var host = window.location.origin + data;
+                            $('#exampleModal').modal('hide');
+                            $("[name=" + activeEle + "]").focus();
+                            var win = window.open(host, '_blank');
+                            if (win) {
+                                win.focus();
+                            } else {
+                                alert('Please allow popups for this website');
+                            }
+                        },
+                        error: function (response) {
+                            $("#EmailAddress").val("");
+                        }
+                    });
                 }
                 else if (optionVal == "Email") {
                     if ($("#EmailAddress").val() != "" && $("#EmailAddress").val() != null) {
@@ -2957,6 +2978,7 @@
                             data: { "id": ReturnId, "email": $("#EmailAddress").val() },
                             dataType: "JSON",
                             success: function (data) {
+                                $("[name=" + activeEle + "]").focus();
                                 if (data.result) {
                                      showSuccessMessage(data.message);
                                 }
@@ -2965,7 +2987,8 @@
                                 }
                                 $('#radio1').prop('checked', true);
                                 $("#EmailAddress").val("");
-$('#exampleModal').modal('toggle');                            },
+                                $('#exampleModal').modal('toggle');
+                            },
                             error: function (response) {
                                  $("#EmailAddress").val("");
                             }
@@ -2990,6 +3013,7 @@ $('#exampleModal').modal('toggle');                            },
                                 dataType: "JSON",
                                 success: function (data) {
                                     debugger
+                                    $("[name=" + activeEle + "]").focus();
                                     if (data.result == "error") {
                                         showErrorMessage(data.message)
                                     }
@@ -2998,6 +3022,7 @@ $('#exampleModal').modal('toggle');                            },
                                     }
                                     $('#radio1').prop('checked', true);
                                     $("#WhatappNo").val("");
+                                    $("#WhatappNo").hide();
                                     $('#exampleModal').modal('toggle');
                                 },
                                 error: function (data) {
