@@ -1667,9 +1667,9 @@
 
         if (!isSaveCalled) {
             isSaveCalled = true;
-            setTimeout(function () {
-                isSaveCalled = false;
-            }, 1000)
+            //setTimeout(function () {
+            //    isSaveCalled = false;
+            //}, 10000)
             if (ValidateGrid() && ValidateTextbox()) {
                 if ($('select[name="fromGodownVou"]').val() == $('select[name="toGodownVou"]').val()) {
                     showErrorMessage("From godown and to godown cannot be same!")
@@ -1780,7 +1780,7 @@
                 showErrorMessage("Please enter all compulsory fields!");
             }
         }
-
+        //sSaveCalled = false;
     }
 
     function ValidateTextbox() {

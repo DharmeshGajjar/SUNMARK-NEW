@@ -173,8 +173,8 @@
                                                         </label>
                                                         <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
                                                             @Html.DropDownListFor(x => x.OblCmpVou, Model.OblCmpVouList, "Select", new { @class = "form-control select2 OblCmpVou", @tabindex = "3", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @ID = "txtOblCmpVou" })
-                                                            <a class="btn btn-outline-info ml-2" href="/Department/index" target="_blank"><i class="fa fa-plus"></i></a>
-                                                            <a class="btn btn-outline-info ml-2" onclick="GetCompanyMasterDropdown()"><i class="fa fa-sync"></i></a>
+                                                            @*<a class="btn btn-outline-info ml-2" href="/Department/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                            <a class="btn btn-outline-info ml-2" onclick="GetCompanyMasterDropdown()"><i class="fa fa-sync"></i></a>*@
                                                             @*<a class="btn btn-outline-info ml-2" onclick="OpenStateModal()"><i class="fa fa-plus"></i></a>*@
                                                         </div>
 
@@ -192,8 +192,8 @@
                                                         </label>
                                                         <div class="col-md-9 d-flex form-outline form-white mb-2">
                                                             @Html.DropDownListFor(x => x.OblGdnVou, Model.OblGdnVouList, "Select", new { @class = "form-control select2 OblGdnVou", @tabindex = "4", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @ID = "txtOblGdnVou" })
-                                                            <a class="btn btn-outline-info ml-2" href="/GodownMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
-                                                            <a class="btn btn-outline-info ml-2" onclick="GetGoDownMasterDropdown()"><i class="fa fa-sync"></i></a>
+                                                            @*<a class="btn btn-outline-info ml-2" href="/GodownMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                            <a class="btn btn-outline-info ml-2" onclick="GetGoDownMasterDropdown()"><i class="fa fa-sync"></i></a>*@
                                                             @*<a class="btn btn-outline-info ml-2" onclick="OpenStateModal()"><i class="fa fa-plus"></i></a>*@
                                                         </div>
                                                     </div>
@@ -253,8 +253,8 @@
                                                         </label>
                                                         <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
                                                             @Html.DropDownListFor(x => x.LotPrcTypVou, Model.LotPrcTypVouList, "Select", new { @class = "form-control select2 LotPrcTypVou", @tabindex = "8", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @ID = "txtLotPrcTypVou" })
-                                                            <a class="btn btn-outline-info ml-2" href="#" target="_blank"><i class="fa fa-plus"></i></a>
-                                                            <a class="btn btn-outline-info ml-2" onclick="GetLotPrcTypMasterDropdown()"><i class="fa fa-sync"></i></a>
+                                                            @*<a class="btn btn-outline-info ml-2" href="#" target="_blank"><i class="fa fa-plus"></i></a>
+                                                            <a class="btn btn-outline-info ml-2" onclick="GetLotPrcTypMasterDropdown()"><i class="fa fa-sync"></i></a>*@
                                                             @*<a class="btn btn-outline-info ml-2" onclick="OpenStateModal()"><i class="fa fa-plus"></i></a>*@
                                                         </div>
                                                     </div>
@@ -282,7 +282,7 @@
                                                             Width <span class="required clsrequied"></span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotWidth" name="LotWidth" class="form-control form-control-lg" placeholder="Width " tabindex="10" value="@Model.LotWidth" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" onchange="GetODDetails(this)"/>
+                                                            <input type="text" id="LotWidth" name="LotWidth" class="form-control form-control-lg 9-2DGT" onkeypress = "return isNumberKey(event)" placeholder="Width " tabindex="10" value="@Model.LotWidth" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" onchange="GetODDetails(this)"/>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -296,7 +296,7 @@
                                                             Thick <span class="required clsrequied">*</span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotThick" name="LotThick" class="form-control form-control-lg" placeholder="Thick " tabindex="11" value="@Model.LotThick" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" @*onchange="GetNBSCHDetails(this)"*@ required />
+                                                            <input type="text" id="LotThick" name="LotThick" class="form-control form-control-lg 9-2DGT" placeholder="Thick " tabindex="11" value="@Model.LotThick" onkeypress = "return isNumberKey(event)" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" @*onchange="GetNBSCHDetails(this)"*@ required />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -306,7 +306,7 @@
                                                             OD <span class="required clsrequied">*</span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotOD" name="LotOD" class="form-control form-control-lg" placeholder="OD" tabindex="12" value="@Model.LotOD" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" @*onchange="GetNBSCHDetails(this)"*@ required />
+                                                            <input type="text" id="LotOD" name="LotOD" class="form-control form-control-lg 9-2DGT" onkeypress = "return isNumberKey(event)" placeholder="OD" tabindex="12" value="@Model.LotOD" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" @*onchange="GetNBSCHDetails(this)"*@ required />
                                                             <label class="control-label pl-1" style="font-family: Verdana;font-size:small; height:30px;" id="ODVal"></label>
                                                         </div>
                                                     </div>
@@ -348,7 +348,7 @@
                                                             Feet Per <span class="required clsrequied">*</span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="FeetPer" name="FeetPer" class="form-control form-control-lg" placeholder="Length" tabindex="15" value="@Model.FeetPer" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" required />
+                                                            <input type="text" id="FeetPer" name="FeetPer" class="form-control form-control-lg 9-2DGT" onkeypress = "return isNumberKey(event)" placeholder="Length" tabindex="15" value="@Model.FeetPer" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" required />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -364,8 +364,8 @@
                                                         <input type="hidden" name="Finish" id="Finish" />
                                                         <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
                                                             @Html.DropDownListFor(x => x.LotFinish, Model.LotFinishList, "Select", new { @class = "form-control select2 LotFinish", @tabindex = "16", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @ID = "txtLotFinish" })
-                                                            <a class="btn btn-outline-info ml-2" href="/FinishMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
-                                                            <a class="btn btn-outline-info ml-2" onclick="GetFinishMasterDropdown()"><i class="fa fa-sync"></i></a>
+                                                            @*<a class="btn btn-outline-info ml-2" href="/FinishMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                            <a class="btn btn-outline-info ml-2" onclick="GetFinishMasterDropdown()"><i class="fa fa-sync"></i></a>*@
                                                             @*<a class="btn btn-outline-info ml-2" onclick="OpenStateModal()"><i class="fa fa-plus"></i></a>*@
                                                         </div>
                                                     </div>
@@ -381,7 +381,7 @@
                                                             PCS <span class="required clsrequied">*</span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="PCS" name="PCS" class="form-control form-control-lg" placeholder="PCS" tabindex="17" value="@Model.PCS" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" required />
+                                                            <input type="text" id="PCS" name="PCS" class="form-control form-control-lg 9-2DGT" onkeypress = "return isNumberKey(event)" placeholder="PCS" tabindex="17" value="@Model.PCS" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" required />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -391,7 +391,7 @@
                                                             Weight <span class="required clsrequied">*</span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotQty" name="LotQty" class="form-control form-control-lg" placeholder="Weight" tabindex="18" value="@Model.LotQty" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" required />
+                                                            <input type="text" id="LotQty" name="LotQty" class="form-control form-control-lg 9-2DGT" onkeypress = "return isNumberKey(event)" placeholder="Weight" tabindex="18" value="@Model.LotQty" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" required />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -416,7 +416,7 @@
                                         <div class="col-md-12">
                                             @if (userRight.IsEdit && Model != null && Model.OblVou > 0)
                                             {
-                                                <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave">
+                                                <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick="return checkVal()">
                                                     Save (F10)
                                                 </button>
                                                 <a href="/OpeningStockPipe/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
@@ -425,7 +425,7 @@
                                             }
                                             else if (userRight.IsAdd && Model.OblVou == 0)
                                             {
-                                                <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave">
+                                                <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick="return checkVal()">
                                                     Save (F10)
                                                 </button>
                                                 <a href="/OpeningStockPipe/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
@@ -486,6 +486,7 @@
 </div>
 
 <script>
+
     $(document).ready(function () {
         var oblVou = '@Html.Raw(Model.OblVou)';
         if (oblVou != null && oblVou != '' && oblVou != 0 ) {
@@ -495,8 +496,87 @@
         else {
             GoToListTab()
         }
-    });
+        if (parseFloat('@Model.LotThick') == 0.00) {
+            $('#LotThick').val('');
+        }
+        if (parseFloat('@Model.LotOD') == 0.00) {
+            $('#LotOD').val('');
+        }
+        if (parseFloat('@Model.FeetPer') == 0.00) {
+            $('#FeetPer').val('');
+        }
+        if (parseFloat('@Model.PCS') == 0.00) {
+            $('#PCS').val('');
+        }
+        if (parseFloat('@Model.LotQty') == 0.00) {
+            $('#LotQty').val('');
+        }
+        $('.9-2DGT').on('keyup drop paste', function (evt) {
+            var self = $(this).val();
 
+
+            let count = 0;
+
+            for (let i = 0; i < self.length; i++) {
+
+                // check if the character is at that position
+                if (self.charAt(i) == '.') {
+                    count += 1;
+                }
+            }
+            if (count >= 2) {
+                $(this).val(self.substring(0, self.length - 1));
+            }
+
+            if (parseFloat(self) >= 1000) {
+                //$(this).val(self.substring(0, 3));
+            }
+            else if (parseFloat(self) < 999.999999) {
+
+            }
+            else {
+                $(this).val(self.substring(0, self.length - 1));
+            }
+
+        });
+    });
+    function checkVal() {
+        if (parseFloat($('#LotThick').val()).toFixed(2) == 0.00) {
+            $('#LotThick').val('');
+            $('#LotThick').focus();
+            return false;
+        }
+        if (parseFloat($('#LotOD').val()).toFixed(2) == 0.00) {
+            $('#LotOD').val('');
+            $('#LotOD').focus();
+            return false;
+        }
+        if (parseFloat($('#FeetPer').val()).toFixed(2) == 0.00) {
+            $('#FeetPer').val('');
+            $('#FeetPer').focus();
+            return false;
+        }
+        if (parseFloat($('#PCS').val()).toFixed(2) == 0.00) {
+            $('#PCS').val('');
+            $('#PCS').focus();
+            return false;
+        }
+        if (parseFloat($('#LotQty').val()).toFixed(2) == 0.00) {
+            $('#LotQty').val('');
+            $('#LotQty').focus();
+            return false;
+        }
+    }
+    function isNumberKey(e) {
+        if ((e.which < 48 || e.which > 57)) {
+            if (e.which == 8 || e.which == 46 || e.which == 0) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
     function GoToAddTab() {
         $('#custom-tabs-three-list-tab').removeClass('active');
         $('#custom-tabs-three-add-tab').addClass('active');
@@ -1041,11 +1121,11 @@
                         else {
                             if (coiltype == "1") {
                                 $('input[name="LotOD"]').val(response.lotOD);
-                            }
+                  LotODotOD         }
                             else {
                                 $('input[name="LotOD"]').val('');
                             }
-                            $('#LotOD').text(response.lotOD);
+                            $('#LotOD').textLLotFeetPertFeetPerresponse.lotOD);
                         }
                     }
                     else {
