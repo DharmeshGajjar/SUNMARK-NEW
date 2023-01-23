@@ -955,8 +955,8 @@
                 }).on('#frmjobwork Escape', function () {
                     if ($('.modal.show').length != 0) {
                         $('#exampleModal').modal('hide');
-                        $("[name=" + activeEle + "]").focus();
                     }
+                        $("[name=" + activeEle + "]").focus();
                     //else {
                     //    if (!isRecentCalledEsc) {
                     //        isRecentCalledEsc = true;
@@ -3012,7 +3012,6 @@
                                 data: { "id": ReturnId, "whatappNo": whNO },
                                 dataType: "JSON",
                                 success: function (data) {
-                                    debugger
                                     $("[name=" + activeEle + "]").focus();
                                     if (data.result == "error") {
                                         showErrorMessage(data.message)
