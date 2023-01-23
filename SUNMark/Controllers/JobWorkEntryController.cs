@@ -736,7 +736,15 @@ namespace SUNMark.Controllers
             try
             {
                 JobWorkPrintDetails obj = GetJobWorkPrintData(id);
-                return View(obj);
+
+                string wwwroot = string.Empty;
+                string filePath = "/PrintPDF/" + id + ".pdf";
+                wwwroot = _iwebhostenviroment.WebRootPath + filePath;
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Save(wwwroot);
+                doc.Close();
+                return Json(filePath);
             }
             catch (Exception ex)
             {
