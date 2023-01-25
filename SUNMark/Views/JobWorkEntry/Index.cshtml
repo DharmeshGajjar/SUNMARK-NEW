@@ -129,7 +129,7 @@
                                                 <label class="form-check-label" for="radio2">WhatApp</label>
                                             </div>
                                             <div class="col-md-10 form-group">
-                                                <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "         />
+                                                <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "          />
                                             </div>
                                         </div>
                                     </div>
@@ -953,10 +953,21 @@
                     }
 
                 }).on('#frmjobwork Escape', function () {
-                    if ($('.modal.show').length != 0) {
-                        $('#exampleModal').modal('hide');
-                    }
+                    if (!isRecentCalledEsc) {
+                            isRecentCalledEsc = true;
+                        if ($('.modal.show').length != 0) {
+                            $('#exampleModal').modal('hide');
+                        }
+                        else {
+                            if (confirm("Do you want to exit without save?")) {
+                                location.href = '/JobWorkEntry/Index'
+                            }
+                        }
                         $("[name=" + activeEle + "]").focus();
+                            setTimeout(function () {
+                                isRecentCalledEsc = false;
+                            }, 500)
+                    }
                     //else {
                     //    if (!isRecentCalledEsc) {
                     //        isRecentCalledEsc = true;
@@ -2954,7 +2965,6 @@
                         data: { "id": ReturnId},
                         dataType: "JSON",
                         success: function (data) {
-                            debugger
                             var host = window.location.origin + data;
                             $('#exampleModal').modal('hide');
                             $("[name=" + activeEle + "]").focus();
