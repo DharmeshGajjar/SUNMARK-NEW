@@ -48,6 +48,18 @@
         font-size: small
     }
 </style>
+<script>
+    function isNumberKey(e) {
+        if ((e.which < 48 || e.which > 57)) {
+            if (e.which == 8 || e.which == 46 || e.which == 0) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+</script>
 <div class="card card-primary">
     <div class="card-header" style="font-family:Verdana">
         <h6> @ViewData["Title"]</h6>
@@ -511,7 +523,7 @@
         if (parseFloat('@Model.LotQty') == 0.00) {
             $('#LotQty').val('');
         }
-        $('.9-2DGT').on('keyup drop paste', function (evt) {
+        $('.9-2DGT').on('keyup', function (evt) {
             var self = $(this).val();
 
 
@@ -567,16 +579,7 @@
             return false;
         }
     }
-    function isNumberKey(e) {
-        if ((e.which < 48 || e.which > 57)) {
-            if (e.which == 8 || e.which == 46 || e.which == 0) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-    }
+    
     function GoToAddTab() {
         $('#custom-tabs-three-list-tab').removeClass('active');
         $('#custom-tabs-three-add-tab').addClass('active');
@@ -1125,7 +1128,7 @@
                             else {
                                 $('input[name="LotOD"]').val('');
                             }
-                            $('#LotOD').textLLotFeetPertFeetPerresponse.lotOD);
+                            $('#LotOD').val(textLLotFeetPertFeetPerresponse.lotOD);
                         }
                     }
                     else {
