@@ -213,7 +213,7 @@
                                                 </div>
                                                 <div class="col-md-2 col-6">
                                                     <div class="form-group">
-                                                        <label>Width<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                        <label>Width<span class="text-danger" style="font-family: Verdana"></span></label>
                                                         @Html.TextBoxFor(x => x.Width, new { @class = "form-control ", @placeholder = "Width", @type = "text" })
                                                     </div>
                                                 </div>
@@ -254,14 +254,14 @@
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>In Time</label>
-                                                        @Html.TextBoxFor(x => x.InTime, new { @class = "form-control ", @placeholder = "In Time", @type = "text" })
+                                                        @Html.TextBoxFor(x => x.InTime, new { @class = "form-control ", @placeholder = "In Time", @type = "time" })
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>Out Time</label>
-                                                        @Html.TextBoxFor(x => x.OutTime, new { @class = "form-control ", @placeholder = "OutTime", @type = "text" })
+                                                        @Html.TextBoxFor(x => x.OutTime, new { @class = "form-control ", @placeholder = "OutTime", @type = "time" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
@@ -513,58 +513,19 @@
         if (!$('select[name="MachineNo"]').val()) {
             isAllow = false;
         }
-        //if (!$('select[name="SupEmpVou"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('select[name="ManEmpVou"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('select[name="IssuePrdVou"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('select[name="FinishVou"]').val()) {
-        //    isAllow = false;
-        //}
         if (!$('select[name="GradeVou"]').val()) {
-            isAllow = false;
-        }
-        if (!$('input[name="Width"]').val()) {
             isAllow = false;
         }
         if (!$('input[name="Thick"]').val()) {
             isAllow = false;
         }
-        //if (!$('input[name="OD"]').val()) {
-        //    isAllow = false;
-        //}
         if (!$('input[name="NoOfPipe"]').val()) {
             isAllow = false;
         }
-        //if (!$('input[name="Weight"]').val()) {
-        //    isAllow = false;
-        //}
         if (!$('select[name="RecPrdVou"]').val()) {
             isAllow = false;
         }
-        //if (!$('input[name="InTime"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('input[name="OutTime"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('input[name="OilLevel"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('input[name="LDOQty"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('input[name="Hours"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('input[name="RPM"]').val()) {
-        //    isAllow = false;
-        //}
-        
+
         return isAllow;
     }
     

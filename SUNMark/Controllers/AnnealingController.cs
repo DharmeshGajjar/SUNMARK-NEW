@@ -169,7 +169,7 @@ namespace SUNMark.Controllers
             ViewBag.companyList = objProductHelper.GetCompanyMasterDropdown(companyId, administrator); ;
             ViewBag.employeeList = ObjAccountMasterHelpers.GetOperatorCustomDropdown(companyId, 0); ;
             ViewBag.supervisorList = ObjAccountMasterHelpers.GetSupervisorCustomDropdown(companyId, 0); ;
-            ViewBag.productList = objProductHelper.GetProductMasterDropdown(companyId); ;
+            ViewBag.productList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "PIPE"); ;
             ViewBag.shiftList = objProductHelper.GetShiftNew(); ;
             ViewBag.milprocessList = ObjAccountMasterHelpers.GetMachineMasterDropdown(companyId);
             ViewBag.gradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);

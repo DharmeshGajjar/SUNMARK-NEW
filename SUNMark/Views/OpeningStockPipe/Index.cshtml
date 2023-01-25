@@ -1109,10 +1109,11 @@
 
     function GetODDetails(obj) {
         var width = $('#LotWidth').val();
+        var input = $(obj);
         if (width != null && width != "") {
             $.ajax({
                 type: "POST",
-                url: '/OpeningStock/GetOD',
+                url: '/OpeningStockPipe/GetOD',
                 data: { "width": width },
                 dataType: "JSON",
                 success: function (response) {
@@ -1124,7 +1125,7 @@
                         else {
                             if (coiltype == "1") {
                                 $('input[name="LotOD"]').val(response.lotOD);
-                  LotODotOD         }
+                  LotODotOD}
                             else {
                                 $('input[name="LotOD"]').val('');
                             }

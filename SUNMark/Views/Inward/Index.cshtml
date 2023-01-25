@@ -435,7 +435,7 @@
                                                                 Sup.Coil No <span class="text-danger">*</span>
                                                             </th>
                                                             <th style="width:15% !important">
-                                                                Heat No <span class="text-danger">*</span>
+                                                                Heat No <span class="text-danger"></span>
                                                             </th>
                                                             <th style="width:10% !important">
                                                                 Grade <span class="text-danger">*</span>
@@ -1312,7 +1312,7 @@
                 var width = $(previousRow).children('td').eq(6).children('input').val();
                 var thick = $(previousRow).children('td').eq(7).children('input').val();
                 var qty = $(previousRow).children('td').eq(8).children('input').val();
-                if (heatno != null && grade != null && thick != null && godown != null && width != null && qty != null && heatno != "" && grade != "" && thick != "" && godown != "" && width != "" && qty != "") {
+                if (grade != null && thick != null && godown != null && width != null && qty != null && grade != "" && thick != "" && godown != "" && width != "" && qty != "") {
                     var html = $('#tblCoil').children().find('tr.AddRows:first').html();
 
                     $('#tblCoil').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
@@ -2148,20 +2148,21 @@
     $(document).ready(function () {
         $(".InwAccVou").select2({
             placeholder: "---Select---",
-            ajax: {
-                url: '/Inward/GetAccount-List',
-                data: function (params) {
-                    return {
-                        q: params.term// search term
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data.items
-                    }
-                },
+            // added by anand on 25-01-2023 point no 19 from anand point
+            //ajax: {
+            //    url: '/Inward/GetAccount-List',
+            //    data: function (params) {
+            //        return {
+            //            q: params.term// search term
+            //        };
+            //    },
+            //    processResults: function (data) {
+            //        return {
+            //            results: data.items
+            //        }
+            //    },
 
-            }
+            //}
         });
 
         $(".InwTrnVou").select2({
