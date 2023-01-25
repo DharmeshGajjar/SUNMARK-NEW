@@ -181,7 +181,6 @@ namespace SUNMark.Classes
                             string _strLotCoilNo = string.Format("{0}", dt.Rows[i]["COIL NO"].ToString());
                             sqlParameters[25] = new SqlParameter("@CoilNo", _strLotCoilNo);
                             sqlParameters[26] = new SqlParameter("@Flg", 1);
-
                             sqlParameters[27] = new SqlParameter("@RefNo", dt.Rows[i]["MEMO NO"].ToString());
                             sqlParameters[28] = new SqlParameter("@LotOD", dt.Rows[i]["SIZE"].ToString());
                             sqlParameters[29] = new SqlParameter("@LotPrcTypCD", 0);
