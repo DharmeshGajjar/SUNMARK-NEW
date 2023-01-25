@@ -280,7 +280,7 @@ namespace SUNMark.Controllers
                 var prdtype = inwardModel.InwPrdTyp;
                 if (prdtype == "COIL" || prdtype == "Coil")
                 {
-                    if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwVNo).ToString()) && !string.IsNullOrWhiteSpace(inwardModel.InwDt) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwAccVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwPtyVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwCoilTypeVou).ToString()) && inwardModel.Inward.IntGrdCoil.Length > 0 && inwardModel.Inward.IntGdnCoil.Length > 0 && inwardModel.Inward.IntThickCoil.Length > 0 && inwardModel.Inward.IntWidth.Length > 0 && inwardModel.Inward.IntQtyCoil.Length > 0 && inwardModel.Inward.HeatNo.Length > 0)
+                    if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwVNo).ToString()) && !string.IsNullOrWhiteSpace(inwardModel.InwDt) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwAccVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwPtyVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwCoilTypeVou).ToString()) && inwardModel.Inward.IntGrdCoil.Length > 0 && inwardModel.Inward.IntGdnCoil.Length > 0 && inwardModel.Inward.IntThickCoil.Length > 0 && inwardModel.Inward.IntWidth.Length > 0 && inwardModel.Inward.IntQtyCoil.Length > 0)
                     {
                         int count = inwardModel.Inward.SupCoilNo.ToList().Distinct().Count();
                         if (id == 0)
@@ -392,7 +392,14 @@ namespace SUNMark.Controllers
                         sqlParameters[8] = new SqlParameter("@InwLRNo", inwardModel.InwLRNo);
                         sqlParameters[9] = new SqlParameter("@InwWPNo", inwardModel.InwWPNo);
                         sqlParameters[10] = new SqlParameter("@InwVehNo", inwardModel.InwVehNo);
-                        sqlParameters[11] = new SqlParameter("@InwTransNm", inwardModel.InwTransNm);
+                        if (inwardModel.InwTransNm == "Select")
+                        {
+                            sqlParameters[11] = new SqlParameter("@InwTransNm", "");
+                        }
+                        else
+                        {
+                            sqlParameters[11] = new SqlParameter("@InwTransNm", inwardModel.InwTransNm);
+                        }                        
                         sqlParameters[12] = new SqlParameter("@InwBillNo", inwardModel.InwBillNo);
                         sqlParameters[13] = new SqlParameter("@UsrVou", userId);
                         sqlParameters[14] = new SqlParameter("@FLG", 1);
