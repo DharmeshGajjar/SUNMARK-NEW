@@ -191,6 +191,13 @@
                                                 }
 
                                             </div>
+                                            <div class="d-none" id="dropdownCoilPrefix">
+                                                @if (Model != null && Model.Inward != null && Model.Inward.CoilPrefixList != null && Model.Inward.CoilPrefixList.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Inward.IntCoilPrefixVou, Model.Inward.CoilPrefixList, "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
+
+                                            </div>
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -230,34 +237,34 @@
                                                 </div>
                                             </div>
                                             @*<div class="col-md-12">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="row">
-                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                                                                    Order No <span class="required"></span>
-                                                                </label>
-                                                                <input type="hidden" name="PtyName" />
-                                                                <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
-                                                                    @Html.DropDownListFor(x => x.InwPOMVou, Model.PurchaseOrderList, "Select", new { @class = "form-control select2 InwPOMVou", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px; width:100px", @id = "txtInwPOMVou", onchange = "GetOrderList()" })
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="row">
-                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                                                                    Bill No. <span class="required"></span>
-                                                                </label>
-                                                                <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
-                                                                    @Html.TextBoxFor(x => x.InwBillNo, new { @class = "form-control form-control-lg", @placeholder = "Bill No", @tabindex = "5", @style = "font-family: Verdana;font-size:small; height:30px; width: 170px", @name = "InwBillNo" })
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>*@
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                            Order No <span class="required"></span>
+                        </label>
+                        <input type="hidden" name="PtyName" />
+                        <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                            @Html.DropDownListFor(x => x.InwPOMVou, Model.PurchaseOrderList, "Select", new { @class = "form-control select2 InwPOMVou", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px; width:100px", @id = "txtInwPOMVou", onchange = "GetOrderList()" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                            Bill No. <span class="required"></span>
+                        </label>
+                        <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                            @Html.TextBoxFor(x => x.InwBillNo, new { @class = "form-control form-control-lg", @placeholder = "Bill No", @tabindex = "5", @style = "font-family: Verdana;font-size:small; height:30px; width: 170px", @name = "InwBillNo" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -428,7 +435,7 @@
                                                                 Sup.Coil No <span class="text-danger">*</span>
                                                             </th>
                                                             <th style="width:15% !important">
-                                                                Heat No <span class="text-danger">*</span>
+                                                                Heat No <span class="text-danger"></span>
                                                             </th>
                                                             <th style="width:10% !important">
                                                                 Grade <span class="text-danger">*</span>
@@ -446,7 +453,13 @@
                                                                 Remarks
                                                             </th>
                                                             <th style="width:12% !important">
-                                                                Coil No <span class="text-danger"></span>
+                                                                Coil Prefix <span class="text-danger"></span>
+                                                            </th>
+                                                            <th style="width:12% !important">
+                                                                Coil No <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:12% !important">
+                                                                SuFix <span class="text-danger"></span>
                                                             </th>
                                                             <th style="width:5% !important">
                                                                 Actions
@@ -497,7 +510,16 @@
                                                                         @Html.TextBoxFor(x => x.Inward.IntRemksCoil[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:200px !important", @name = "txtRemarks" })
                                                                     </td>
                                                                     <td>
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.CoilPrefixList != null && Model.Inward.CoilPrefixList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.IntCoilPrefix[y], new SelectList(Model.Inward.CoilPrefixList, "Text", "Text"), "Select", new { @class = "form-control select2 IntGrdCoil", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td>
                                                                         @Html.TextBoxFor(x => x.Inward.CoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo", @readonly = "readonly" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBoxFor(x => x.Inward.IntSufix[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo", @readonly = "readonly" })
                                                                     </td>
                                                                     <td>
                                                                         <i class="fa fa-plus text-blue" onclick="AddRowsCoil(this)" style="font-size:18px"></i>
@@ -548,7 +570,16 @@
                                                                     @Html.TextBoxFor(x => x.Inward.IntRemksCoil, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:200px !important", @name = "txtRemarks" })
                                                                 </td>
                                                                 <td>
+                                                                    @if (Model != null && Model.Inward != null && Model.Inward.CoilPrefixList != null && Model.Inward.CoilPrefixList.Count > 0)
+                                                                    {
+                                                                        @Html.DropDownListFor(x => x.Inward.IntCoilPrefix, new SelectList(Model.Inward.CoilPrefixList, "Text", "Text"), "Select", new { @class = "form-control select2 IntGrdCoil", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                    }
+                                                                </td>
+                                                                <td>
                                                                     @Html.TextBoxFor(x => x.Inward.CoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo", @readonly = "readonly" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBoxFor(x => x.Inward.IntSufix, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo", @readonly = "readonly" })
                                                                 </td>
                                                                 <td>
                                                                     <i class="fa fa-plus text-blue" onclick="AddRowsCoil(this)" style="font-size:18px"></i>
@@ -759,8 +790,8 @@
                                                                 Godown <span class="text-danger">*</span>
                                                             </th>
                                                             @*<th style="width:15% !important">
-                                                                    Location
-                                                                </th>*@
+                            Location
+                        </th>*@
                                                             <th style="width:15% !important">
                                                                 Quantity <span class="text-danger">*</span>
                                                             </th>
@@ -797,11 +828,11 @@
                                                                         }
                                                                     </td>
                                                                     @*<td>
-                                                                            @if (Model != null && Model.Inward != null && Model.Inward.LocationOtherList != null && Model.Inward.LocationOtherList.Count > 0)
-                                                                            {
-                                                                                @Html.DropDownListFor(x => x.Inward.IntLocOther[y], Model.Inward.LocationOtherList, "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;" })
-                                                                            }
-                                                                        </td>*@
+                                    @if (Model != null && Model.Inward != null && Model.Inward.LocationOtherList != null && Model.Inward.LocationOtherList.Count > 0)
+                                    {
+                                        @Html.DropDownListFor(x => x.Inward.IntLocOther[y], Model.Inward.LocationOtherList, "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                    }
+                                </td>*@
                                                                     <td>
                                                                         @Html.TextBoxFor(x => x.Inward.IntQtyOther[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtWeigth", @onKeyUp = "numericFilter(this);" })
                                                                     </td>
@@ -841,11 +872,11 @@
                                                                     }
                                                                 </td>
                                                                 @*<td>
-                                                                        @if (Model != null && Model.Inward != null && Model.Inward.LocationOtherList != null && Model.Inward.LocationOtherList.Count > 0)
-                                                                        {
-                                                                            @Html.DropDownListFor(x => x.Inward.IntLocOther, Model.Inward.LocationOtherList, "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;" })
-                                                                        }
-                                                                    </td>*@
+                                @if (Model != null && Model.Inward != null && Model.Inward.LocationOtherList != null && Model.Inward.LocationOtherList.Count > 0)
+                                {
+                                    @Html.DropDownListFor(x => x.Inward.IntLocOther, Model.Inward.LocationOtherList, "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                }
+                            </td>*@
                                                                 <td>
                                                                     @Html.TextBoxFor(x => x.Inward.IntQtyOther, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtWeigth", @onKeyUp = "numericFilter(this);" })
                                                                 </td>
@@ -1281,7 +1312,7 @@
                 var width = $(previousRow).children('td').eq(6).children('input').val();
                 var thick = $(previousRow).children('td').eq(7).children('input').val();
                 var qty = $(previousRow).children('td').eq(8).children('input').val();
-                if (heatno != null && grade != null && thick != null && godown != null && width != null && qty != null && heatno != "" && grade != "" && thick != "" && godown != "" && width != "" && qty != "") {
+                if (grade != null && thick != null && godown != null && width != null && qty != null && grade != "" && thick != "" && godown != "" && width != "" && qty != "") {
                     var html = $('#tblCoil').children().find('tr.AddRows:first').html();
 
                     $('#tblCoil').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
@@ -1303,7 +1334,13 @@
                     $('#tblCoil').children('tbody').children('tr:last').children('td').eq(7).children('input').val('');
                     $('#tblCoil').children('tbody').children('tr:last').children('td').eq(8).children('input').val('');
                     $('#tblCoil').children('tbody').children('tr:last').children('td').eq(9).children('input').val('');
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('select').remove();
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('span').remove();
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).html($('#dropdownCoilPrefix').html());
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('select').addClass('select2');
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('select').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('input').val('');
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(12).children('input').val('');
                     SetSerialNumberCoil();
                     SetNameCoil();
                     SetSelect2()
@@ -1419,8 +1456,12 @@
             $(this).children("td").eq(8).children("input").attr("Id", "Inward.IntQtyCoil" + i + "");
             $(this).children("td").eq(9).children("input").attr("name", "Inward.IntRemksCoil");
             $(this).children("td").eq(9).children("input").attr("Id", "Inward.IntRemksCoil" + i + "");
-            $(this).children("td").eq(10).children("input").attr("name", "Inward.CoilNo");
-            $(this).children("td").eq(10).children("input").attr("Id", "Inward.CoilNo" + i + "");
+            $(this).children("td").eq(10).children("input").attr("name", "Inward.IntCoilPrefix");
+            $(this).children("td").eq(10).children("input").attr("Id", "Inward.IntCoilPrefix" + i + "");
+            $(this).children("td").eq(11).children("input").attr("name", "Inward.CoilNo");
+            $(this).children("td").eq(11).children("input").attr("Id", "Inward.CoilNo" + i + "");
+            $(this).children("td").eq(12).children("input").attr("name", "Inward.IntSufix");
+            $(this).children("td").eq(12).children("input").attr("Id", "Inward.IntSufix" + i + "");
         });
     }
 

@@ -150,7 +150,15 @@ namespace SUNMark.Models
         public string IntLocOtherVouStr { get; set; }
         public List<SelectListItem> LocationOtherList { get; set; }
         public string[] LocationOther { get; set; }
+
+        public int[] IntCoilPrefixVou { get; set; }
+        public string[] IntCoilPrefix { get; set; }
+
+        public string IntCoilPrefixVouStr { get; set; }
+        public List<SelectListItem> CoilPrefixList { get; set; }
+        public string[] CoilPrefix { get; set; }
         public string[] CoilNo { get; set; }
+
         public decimal[] IntThickCoil { get; set; }
         public string IntThickCoilStr { get; set; }
         public decimal[] IntODCoil { get; set; }
@@ -193,6 +201,9 @@ namespace SUNMark.Models
         public string IntRemksPipeStr { get; set; }
         public string[] IntRemksOther { get; set; }
         public string IntRemksOtherStr { get; set; }
+
+        public string[] IntSufix { get; set; }
+        public string IntSufixStr { get; set; }
     }
 
     public class InwardPrintDetails
