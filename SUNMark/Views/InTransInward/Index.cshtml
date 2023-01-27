@@ -298,7 +298,7 @@
                                                                 Sup.Coil No <span class="text-danger">*</span>
                                                             </th>
                                                             <th style="width:15% !important">
-                                                                Heat No <span class="text-danger">*</span>
+                                                                Heat No <span class="text-danger"></span>
                                                             </th>
                                                             <th style="width:10% !important">
                                                                 Grade <span class="text-danger">*</span>
@@ -456,7 +456,7 @@
                                                                     Sup.Coil No <span class="text-danger">*</span>
                                                                 </th>
                                                                 <th style="width:15% !important">
-                                                                    Heat No <span class="text-danger">*</span>
+                                                                    Heat No <span class="text-danger"></span>
                                                                 </th>
                                                                 <th style="width:10% !important">
                                                                     Grade <span class="text-danger">*</span>
@@ -900,7 +900,7 @@
                 var coilpowidth = $(previousRow).children('td').eq(12).children('input').val();
                 var coilpothick = $(previousRow).children('td').eq(13).children('input').val();
                 var srNo = $(previousRow).children('td').eq(0).children('input').val();
-                if (coilgodown != null && coilsupno != null && coilHeatno != null && coilgrade != null && coilthick != null && coilwidth != null && coilqty != null && coilgodown != "" && coilsupno != "" && coilHeatno != "" && coilgrade != "" && coilthick != "" && coilwidth != "" && coilqty != "") {
+                if (coilgodown != null && coilsupno != null && coilgrade != null && coilthick != null && coilwidth != null && coilqty != null && coilgodown != "" && coilsupno != "" && coilgrade != "" && coilthick != "" && coilwidth != "" && coilqty != "") {
 
                     if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
                         var html = $('#tblCoil').children().find('tr.AddRows:first').html();

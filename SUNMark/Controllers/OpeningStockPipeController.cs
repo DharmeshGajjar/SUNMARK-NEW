@@ -427,6 +427,35 @@ namespace SUNMark.Controllers
             return Json(new { result = false });
         }
 
+        public JsonResult GetOD(string width)
+        {
+            OpeningStokModel obj = new OpeningStokModel();
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(width))
+                {
+                    SqlParameter[] sqlParameters = new SqlParameter[1];
+                    sqlParameters[0] = new SqlParameter("@width", width);
+                    DataTable dtNBSCH = ObjDBConnection.CallStoreProcedure("GetODDetails", sqlParameters);
+                    if (dtNBSCH != null && dtNBSCH.Rows.Count > 0)
+                    {
+                        string LotOD = dtNBSCH.Rows[0]["od"].ToString();
+                        return Json(new { result = true, lotOD = LotOD });
+                    }
+                    else
+                    {
+                        decimal lotwidth = Convert.ToDecimal(width) / Convert.ToDecimal("3.14");
+                        return Json(new { result = true, lotOD = (lotwidth.ToString("0.##")) });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Json(new { result = false });
+        }
+
         [Route("/OpeningStockPipe/GetCompany-List")]
         public IActionResult CompanyList(string q)
         {
