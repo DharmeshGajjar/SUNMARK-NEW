@@ -516,7 +516,7 @@
                                                                         }
                                                                     </td>
                                                                     <td>
-                                                                        @Html.TextBoxFor(x => x.Inward.CoilNo[y], new { @class = "form-control InwardCoilNo"+y+"", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo" })
+                                                                        @Html.TextBoxFor(x => x.Inward.CoilNo[y], new { @class = "form-control InwardCoilNo InwardCoilNo" + y+"", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo" })
                                                                     </td>
                                                                     <td>
                                                                         @Html.TextBoxFor(x => x.Inward.IntSufix[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo" })
@@ -576,7 +576,7 @@
                                                                     }
                                                                 </td>
                                                                 <td>
-                                                                    @Html.TextBoxFor(x => x.Inward.CoilNo, new { @class = "form-control InwardCoilNo0", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo" })
+                                                                    @Html.TextBoxFor(x => x.Inward.CoilNo, new { @class = "form-control InwardCoilNo0 InwardCoilNo", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo" })
                                                                 </td>
                                                                 <td>
                                                                     @Html.TextBoxFor(x => x.Inward.IntSufix, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo" })
@@ -1299,7 +1299,31 @@
     }
 
     var isRecentCall = false;
-
+    function checkArrayCoilNo() {
+        var arry = [];
+        $('input[type="text"].InwardCoilNo').each(function () {
+            arry.push($(this).val());
+        });
+        let resultToReturn = false;
+        for (let i = 0; i < arry.length; i++) { // nested for loop
+            for (let j = 0; j < arry.length; j++) {
+                // prevents the element from comparing with itself
+                if (i !== j) {
+                    // check if elements' values are equal
+                    if (arry[i] === arry[j]) {
+                        // duplicate element present 
+                        showErrorMessage("Duplicate Coil No");
+                        return false;
+                        // terminate inner loop
+                        break;
+                    }
+                }
+            }
+            // terminate outer loop                                                                      
+            
+        }
+        return true;
+    }
     function AddRowsCoil() {
         if (!isRecentCall) {
             ;
@@ -1343,6 +1367,7 @@
                     $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('select').val('');
                     $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('input').val('');
                     $('#tblCoil').children('tbody').children('tr:last').children('td').eq(12).children('input').val('');
+                    
                     SetSerialNumberCoil();
                     SetNameCoil();
                     SetSelect2()
@@ -1352,6 +1377,10 @@
                     }, 500)
                     CalculateCoil();
                     $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                    GetNewCoilNo(($('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('input').attr('id')).replace('Inward.CoilNo', ''));
+                    $('.InwardCoilNo').on('blur', function () {
+                        checkArrayCoilNo();
+                    });
                 }
                 else {
                     showErrorMessage("Please enter all required fields");
@@ -1691,6 +1720,9 @@
             $(this).children("td").eq(5).children("input").attr("Id", "Inward.IntRemksOther" + i + "");
         });
     }
+    function SetNewAddCoilNo() {
+        alert($('#tblOther tr:last').attr('id'));
+    }
 
     function AddRows() {
         var value = $('#txtInwPtyVou').children('option:selected').html();
@@ -1744,8 +1776,15 @@
         }
     }
 
-    $("#btnSave").click(function () {
+    $("#btnSave").click(function (event) {
         var value = $('#txtInwPtyVou').children('option:selected').html();
+        debugger;
+        if (!checkArrayCoilNo()) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        }
+        
         if (value) {
             localStorage.setItem("Inward", "1");
             if (value == 'COIL' || value == 'coil') {
@@ -2184,6 +2223,9 @@
 
             }
         });
+        $('.InwardCoilNo').on('blur', function () {
+            checkArrayCoilNo();
+        });
     });
 
     function SetSelect2() {
@@ -2191,8 +2233,11 @@
             placeholder: "---Select---",
         });
     }
-    function GetNewCoilNo() {
+    function GetNewCoilNo(i) {
         //var prdtype = $('#txtInwPtyVou').children('option:selected').html();
+        if (i == '' || i == undefined) {
+            i = "0";
+        }
         $.ajax({
             url: '/Inward/GetNewCoilNo',
             type: 'POST',
@@ -2200,7 +2245,14 @@
             dataType: 'JSON',
             traditional: true, // add this
             success: function (data) {
-                $('.InwardCoilNo0').val(data.data);
+                if (i == '' || i == "0" || i == undefined) {
+                    //$('.InwardCoilNo0').val(data.data);
+                    $('#Inward\\.CoilNo' + i + '').val(data.data);
+                }
+                else {
+                    $('#Inward\\.CoilNo' + i + '').val(parseInt(data.data) + parseInt(i));
+                }
+                
                     //alert(data.data)
                 
                 
