@@ -194,7 +194,7 @@
                                             <div class="d-none" id="dropdownCoilPrefix">
                                                 @if (Model != null && Model.Inward != null && Model.Inward.CoilPrefixList != null && Model.Inward.CoilPrefixList.Count > 0)
                                                 {
-                                                    @Html.DropDownListFor(x => x.Inward.IntCoilPrefixVou, Model.Inward.CoilPrefixList, "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                    @Html.DropDownListFor(x => x.Inward.IntCoilPrefix, Model.Inward.CoilPrefixList, "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
                                                 }
 
                                             </div>
@@ -512,14 +512,14 @@
                                                                     <td>
                                                                         @if (Model != null && Model.Inward != null && Model.Inward.CoilPrefixList != null && Model.Inward.CoilPrefixList.Count > 0)
                                                                         {
-                                                                            @Html.DropDownListFor(x => x.Inward.IntCoilPrefix[y], new SelectList(Model.Inward.CoilPrefixList, "Text", "Text"), "Select", new { @class = "form-control select2 IntGrdCoil", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                            @Html.DropDownListFor(x => x.Inward.IntCoilPrefix[y], new SelectList(Model.Inward.CoilPrefixList, "Text", "Text"), "Select", new { @class = "form-control select2 IntCoilPrefix", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important",@name = "Inward.IntCoilPrefix" })
                                                                         }
                                                                     </td>
                                                                     <td>
-                                                                        @Html.TextBoxFor(x => x.Inward.CoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo", @readonly = "readonly" })
+                                                                        @Html.TextBoxFor(x => x.Inward.CoilNo[y], new { @class = "form-control InwardCoilNo InwardCoilNo" + y+"", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo" })
                                                                     </td>
                                                                     <td>
-                                                                        @Html.TextBoxFor(x => x.Inward.IntSufix[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo", @readonly = "readonly" })
+                                                                        @Html.TextBoxFor(x => x.Inward.IntSufix[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo" })
                                                                     </td>
                                                                     <td>
                                                                         <i class="fa fa-plus text-blue" onclick="AddRowsCoil(this)" style="font-size:18px"></i>
@@ -572,14 +572,14 @@
                                                                 <td>
                                                                     @if (Model != null && Model.Inward != null && Model.Inward.CoilPrefixList != null && Model.Inward.CoilPrefixList.Count > 0)
                                                                     {
-                                                                        @Html.DropDownListFor(x => x.Inward.IntCoilPrefix, new SelectList(Model.Inward.CoilPrefixList, "Text", "Text"), "Select", new { @class = "form-control select2 IntGrdCoil", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                        @Html.DropDownListFor(x => x.Inward.IntCoilPrefix, new SelectList(Model.Inward.CoilPrefixList, "Text", "Text"), "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
                                                                     }
                                                                 </td>
                                                                 <td>
-                                                                    @Html.TextBoxFor(x => x.Inward.CoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo", @readonly = "readonly" })
+                                                                    @Html.TextBoxFor(x => x.Inward.CoilNo, new { @class = "form-control InwardCoilNo0 InwardCoilNo", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo" })
                                                                 </td>
                                                                 <td>
-                                                                    @Html.TextBoxFor(x => x.Inward.IntSufix, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo", @readonly = "readonly" })
+                                                                    @Html.TextBoxFor(x => x.Inward.IntSufix, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo" })
                                                                 </td>
                                                                 <td>
                                                                     <i class="fa fa-plus text-blue" onclick="AddRowsCoil(this)" style="font-size:18px"></i>
@@ -944,6 +944,7 @@
             }
             else {
                 GoToListTab()
+                GetNewCoilNo();
             }
 
             var focusType = '@Html.Raw(ViewBag.FocusType)';
@@ -1298,7 +1299,31 @@
     }
 
     var isRecentCall = false;
-
+    function checkArrayCoilNo() {
+        var arry = [];
+        $('input[type="text"].InwardCoilNo').each(function () {
+            arry.push($(this).val());
+        });
+        let resultToReturn = false;
+        for (let i = 0; i < arry.length; i++) { // nested for loop
+            for (let j = 0; j < arry.length; j++) {
+                // prevents the element from comparing with itself
+                if (i !== j) {
+                    // check if elements' values are equal
+                    if (arry[i] === arry[j]) {
+                        // duplicate element present 
+                        showErrorMessage("Duplicate Coil No");
+                        return false;
+                        // terminate inner loop
+                        break;
+                    }
+                }
+            }
+            // terminate outer loop                                                                      
+            
+        }
+        return true;
+    }
     function AddRowsCoil() {
         if (!isRecentCall) {
             ;
@@ -1312,7 +1337,8 @@
                 var width = $(previousRow).children('td').eq(6).children('input').val();
                 var thick = $(previousRow).children('td').eq(7).children('input').val();
                 var qty = $(previousRow).children('td').eq(8).children('input').val();
-                if (grade != null && thick != null && godown != null && width != null && qty != null && grade != "" && thick != "" && godown != "" && width != "" && qty != "") {
+                var Coil = $(previousRow).children('td').eq(11).children('input').val();
+                if (grade != null && thick != null && godown != null && width != null && qty != null && grade != "" && thick != "" && godown != "" && width != "" && qty != "" && Coil != "") {
                     var html = $('#tblCoil').children().find('tr.AddRows:first').html();
 
                     $('#tblCoil').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
@@ -1341,6 +1367,7 @@
                     $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('select').val('');
                     $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('input').val('');
                     $('#tblCoil').children('tbody').children('tr:last').children('td').eq(12).children('input').val('');
+                    
                     SetSerialNumberCoil();
                     SetNameCoil();
                     SetSelect2()
@@ -1350,6 +1377,10 @@
                     }, 500)
                     CalculateCoil();
                     $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                    GetNewCoilNo(($('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('input').attr('id')).replace('Inward.CoilNo', ''));
+                    $('.InwardCoilNo').on('blur', function () {
+                        checkArrayCoilNo();
+                    });
                 }
                 else {
                     showErrorMessage("Please enter all required fields");
@@ -1689,6 +1720,9 @@
             $(this).children("td").eq(5).children("input").attr("Id", "Inward.IntRemksOther" + i + "");
         });
     }
+    function SetNewAddCoilNo() {
+        alert($('#tblOther tr:last').attr('id'));
+    }
 
     function AddRows() {
         var value = $('#txtInwPtyVou').children('option:selected').html();
@@ -1742,8 +1776,15 @@
         }
     }
 
-    $("#btnSave").click(function () {
+    $("#btnSave").click(function (event) {
         var value = $('#txtInwPtyVou').children('option:selected').html();
+        debugger;
+        if (!checkArrayCoilNo()) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        }
+        
         if (value) {
             localStorage.setItem("Inward", "1");
             if (value == 'COIL' || value == 'coil') {
@@ -2182,6 +2223,9 @@
 
             }
         });
+        $('.InwardCoilNo').on('blur', function () {
+            checkArrayCoilNo();
+        });
     });
 
     function SetSelect2() {
@@ -2189,7 +2233,35 @@
             placeholder: "---Select---",
         });
     }
-
+    function GetNewCoilNo(i) {
+        //var prdtype = $('#txtInwPtyVou').children('option:selected').html();
+        if (i == '' || i == undefined) {
+            i = "0";
+        }
+        $.ajax({
+            url: '/Inward/GetNewCoilNo',
+            type: 'POST',
+            //data: { "PrdType": prdtype },
+            dataType: 'JSON',
+            traditional: true, // add this
+            success: function (data) {
+                if (i == '' || i == "0" || i == undefined) {
+                    //$('.InwardCoilNo0').val(data.data);
+                    $('#Inward\\.CoilNo' + i + '').val(data.data);
+                }
+                else {
+                    $('#Inward\\.CoilNo' + i + '').val(parseInt(data.data) + parseInt(i));
+                }
+                
+                    //alert(data.data)
+                
+                
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    }
 </script>
 <script>
     $(document).ready(function () {
@@ -2210,6 +2282,7 @@
                 '_blank' // <- This is what makes it open in a new window.
             );
         }
+        
     })
 
     $('#frmInward').submit(function (event) {
