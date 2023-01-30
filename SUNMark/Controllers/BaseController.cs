@@ -725,6 +725,14 @@ namespace SUNMark.Controllers
                 Font _tableDataFontStyle = FontFactory.GetFont("calibri", 8f, BaseColor.BLACK);
 
                 Document document = new Document(PageSize.A4, 10f, 10f, 30f, 20f);
+                if (columnCount > 8 && 13 < columnCount)
+                {
+                 document = new Document(PageSize.A4_LANDSCAPE, 10f, 10f, 30f, 20f);
+                }
+                else if (columnCount > 13)
+                {
+                    document = new Document(PageSize.LEGAL_LANDSCAPE, 10f, 10f, 30f, 20f);
+                }
                 PdfWriter.GetInstance(document, _stream);
                 document.Open();
 
