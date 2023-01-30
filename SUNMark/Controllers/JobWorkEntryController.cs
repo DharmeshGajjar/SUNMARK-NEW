@@ -63,7 +63,7 @@ namespace SUNMark.Controllers
                     }
                 }
                 ViewBag.odList = odList;
-                if(id > 0 )
+                if (id > 0)
                     TempData["ReturnId"] = Convert.ToString(id);
                 return View();
             }
@@ -957,6 +957,13 @@ namespace SUNMark.Controllers
 
                 throw;
             }
+        }
+
+        [HttpPost]
+        public ActionResult SetTempData(int tempDataValue)
+        {
+            TempData["ReturnId"] = tempDataValue;
+            return Json(true);
         }
     }
 }
