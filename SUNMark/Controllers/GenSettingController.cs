@@ -27,27 +27,28 @@ namespace SUNMark.Controllers
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int administrator = 0;
-                GenSettingModel GenSettingModel = new GenSettingModel();
+                GenSettingModel genSettingModel = new GenSettingModel();
                 if (true)
                 {
-                    GenSettingModel.GenVou = Convert.ToInt64(1);
+                    genSettingModel.GenVou = Convert.ToInt64(1);
                     SqlParameter[] sqlParameters = new SqlParameter[2];
                     sqlParameters[0] = new SqlParameter("@Flg", 2);
                     sqlParameters[1] = new SqlParameter("@GenCmpVou", companyId);
                     DataTable DtEmp = ObjDBConnection.CallStoreProcedure("GetSetGenSettingDetails", sqlParameters);
                     if (DtEmp != null && DtEmp.Rows.Count > 0)
                     {
-                        GenSettingModel.GenVou = Convert.ToInt32(DtEmp.Rows[0]["GenVou"].ToString());
-                        GenSettingModel.GenEmail = DtEmp.Rows[0]["GenEmail"].ToString();
-                        GenSettingModel.GenPass = DtEmp.Rows[0]["GenPass"].ToString();
-                        GenSettingModel.GenSMTP = Convert.ToInt32(DtEmp.Rows[0]["GenSMTP"].ToString());
-                        GenSettingModel.GenWhtMob = DtEmp.Rows[0]["GenWhtMob"].ToString();
-                        GenSettingModel.GenTokenID = DtEmp.Rows[0]["GenTokenID"].ToString();
-                        GenSettingModel.GenInstID = DtEmp.Rows[0]["GenInstID"].ToString();
+                        genSettingModel.GenVou = Convert.ToInt32(DtEmp.Rows[0]["GenVou"].ToString());
+                        genSettingModel.GenCmpVou = Convert.ToInt32(DtEmp.Rows[0]["GenCmpVou"].ToString());
+                        genSettingModel.GenEmail = DtEmp.Rows[0]["GenEmail"].ToString();
+                        genSettingModel.GenPass = DtEmp.Rows[0]["GenPass"].ToString();
+                        genSettingModel.GenSMTP = Convert.ToInt32(DtEmp.Rows[0]["GenSMTP"].ToString());
+                        genSettingModel.GenWhtMob = DtEmp.Rows[0]["GenWhtMob"].ToString();
+                        genSettingModel.GenTokenID = DtEmp.Rows[0]["GenTokenID"].ToString();
+                        genSettingModel.GenInstID = DtEmp.Rows[0]["GenInstID"].ToString();
                     }
                 }
 
-                return View(GenSettingModel);
+                return View(genSettingModel);
             }
             catch (Exception ex)
             {
@@ -99,49 +100,25 @@ namespace SUNMark.Controllers
                 int administrator = 0;
                 if (!string.IsNullOrWhiteSpace(genSettingModel.GenEmail) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(genSettingModel.GenVou).ToString()))
                 {
-                    SqlParameter[] sqlParameters = new SqlParameter[6];
-                    sqlParameters[0] = new SqlParameter("@CtyName", GenSettingModel.CtyName);
-                    sqlParameters[1] = new SqlParameter("@CtyStaVou", GenSettingModel.CtyStaVou);
-                    sqlParameters[2] = new SqlParameter("@CtyState", GenSettingModel.State);
-                    sqlParameters[3] = new SqlParameter("@CtyVou", id);
-                    sqlParameters[4] = new SqlParameter("@UsrVou", userId);
-                    sqlParameters[5] = new SqlParameter("@FLG", "1");
+                    SqlParameter[] sqlParameters = new SqlParameter[8];
+                    sqlParameters[0] = new SqlParameter("@GenEmail", genSettingModel.GenEmail);
+                    sqlParameters[1] = new SqlParameter("@GenPass", genSettingModel.GenPass);
+                    sqlParameters[2] = new SqlParameter("@GenSMTP", genSettingModel.GenSMTP);
+                    sqlParameters[3] = new SqlParameter("@GenWhtMob", genSettingModel.GenWhtMob);
+                    sqlParameters[4] = new SqlParameter("@GenTokenID", genSettingModel.GenTokenID);
+                    sqlParameters[5] = new SqlParameter("@GenInstID", genSettingModel.GenInstID);
+                    sqlParameters[6] = new SqlParameter("@Flg", 1);
+                    sqlParameters[7] = new SqlParameter("@GenCmpVou", companyId);
 
-                    DataTable DtCity = ObjDBConnection.CallStoreProcedure("CityMst_Insert", sqlParameters);
-                    if (DtCity != null && DtCity.Rows.Count > 0)
-                    {
-                        int status = DbConnection.ParseInt32(DtCity.Rows[0][0].ToString());
-                        if (status == -1)
-                        {
-                            SetErrorMessage("Dulplicate City Details");
-                            ViewBag.FocusType = "-1";
-                            GenSettingModel.StateList = objProductHelper.GetStateMasterDropdown(companyId, administrator); return View(GenSettingModel);
-                        }
-                        else
-                        {
-                            if (id > 0)
-                            {
-                                SetSuccessMessage("Update Sucessfully");
-                            }
-                            else
-                            {
-                                SetSuccessMessage("Inserted Sucessfully");
-                            }
-                            return RedirectToAction("index", "City", new { id = 0 });
-                        }
-                    }
-                    else
-                    {
-                        SetErrorMessage("Please Enter the Value");
-                        ViewBag.FocusType = "-1";
-                        GenSettingModel.StateList = objProductHelper.GetStateMasterDropdown(companyId, administrator); return View(GenSettingModel);
-                    }
+                    DataTable Dt = ObjDBConnection.CallStoreProcedure("GetSetGenSettingDetails", sqlParameters);
+                    SetSuccessMessage("Saved Sucessfully");
+                    return RedirectToAction("index", "GenSetting");
+                    
                 }
                 else
                 {
                     SetErrorMessage("Please Enter the Value");
                     ViewBag.FocusType = "-1";
-                    GenSettingModel.StateList = objProductHelper.GetStateMasterDropdown(companyId, administrator); return View(GenSettingModel);
                 }
             }
             catch (Exception ex)
@@ -155,29 +132,25 @@ namespace SUNMark.Controllers
         {
             try
             {
-                GenSettingModel GenSettingModel = new GenSettingModel();
+                GenSettingModel genSettingModel = new GenSettingModel();
                 if (id > 0)
                 {
                     long userId = GetIntSession("UserId");
                     int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
-                    SqlParameter[] sqlParameters = new SqlParameter[6];
-                    sqlParameters[0] = new SqlParameter("@CtyName", "");
-                    sqlParameters[1] = new SqlParameter("@CtyStaVou", "0");
-                    sqlParameters[2] = new SqlParameter("@CtyState", "");
-                    sqlParameters[3] = new SqlParameter("@CtyVou", id);
-                    sqlParameters[4] = new SqlParameter("@UsrVou", userId);
-                    sqlParameters[5] = new SqlParameter("@FLG", "2");
-                    DataTable DtCity = ObjDBConnection.CallStoreProcedure("CityMst_Insert", sqlParameters);
-                    if (DtCity != null && DtCity.Rows.Count > 0)
+                    SqlParameter[] sqlParameters = new SqlParameter[2];
+                    sqlParameters[0] = new SqlParameter("@Flg", 3);
+                    sqlParameters[1] = new SqlParameter("@GenCmpVou", companyId);
+                    DataTable Dt = ObjDBConnection.CallStoreProcedure("GetSetGenSettingDetails", sqlParameters);
+                    if (Dt != null && Dt.Rows.Count > 0)
                     {
-                        int @value = DbConnection.ParseInt32(DtCity.Rows[0][0].ToString());
+                        int @value = DbConnection.ParseInt32(Dt.Rows[0][0].ToString());
                         if (value == 0)
                         {
                             SetErrorMessage("You Can Not Delete Records This Record is Included Some Trasaction");
                         }
                         else
                         {
-                            SetSuccessMessage("City Deleted Successfully");
+                            SetSuccessMessage("General Setting Deleted Successfully");
                         }
                     }
                 }

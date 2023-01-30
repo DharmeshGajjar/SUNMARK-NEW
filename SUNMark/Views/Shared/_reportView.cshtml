@@ -112,10 +112,13 @@
                                         @if (Model.ControllerName == "Inward")
                                         {
                                             <a target="_blank" href="/@Model.ControllerName/RawInwardPrintDetials/@item[0]"> <i class="fa fa-print text-orange pr-2"></i></a>
+                                            
                                         }
                                         @if (Model.ControllerName == "JobWorkEntry")
-                                        {
-                                            <a target="_blank" href="/@Model.ControllerName/JobWorkPrintDetials/@item[0]"> <i class="fa fa-print text-orange pr-2"></i></a>
+                                            {
+                                               
+                                            @*<a target="_blank" href="/@Model.ControllerName/JobWorkPrintDetials/@item[0]"> <i class="fa fa-print text-orange pr-2"></i></a>*@
+                                            <a href="#" onclick="PrintJobWorkReport(@item[0])"> <i class="fa fa-print text-orange pr-2"></i></a>
                                         }
                                         @if (Model.ControllerName == "GodownTransfer")
                                         {

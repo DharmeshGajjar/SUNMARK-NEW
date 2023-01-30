@@ -8,6 +8,7 @@ namespace SUNMark.Models
     public class GenSettingModel
     {
         public long GenVou { get; set; }
+        public long GenCmpVou { get; set; }
         public string GenEmail { get; set; }
         public string GenPass { get; set; }
         public int GenSMTP { get; set; }
