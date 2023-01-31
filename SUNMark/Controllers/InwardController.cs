@@ -19,6 +19,7 @@ using Rectangle = iTextSharp.text.Rectangle;
 using System.Web;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
+using SUNMark.Common;
 
 namespace SUNMark.Controllers
 {
@@ -209,6 +210,8 @@ namespace SUNMark.Controllers
 
                     }
                 }
+                if (id > 0)
+                    TempData["ReturnId"] = Convert.ToString(id);
                 return View(inwardModel);
             }
             catch (Exception ex)
@@ -1564,16 +1567,130 @@ namespace SUNMark.Controllers
         }
         public IActionResult RawInwardPrintDetials(long id, int companyid, int copyType = 1)
         {
+            try
+            {
+                InwardPrintDetails obj = GetDetailsById(id);
+
+                return View(obj);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        public IActionResult InwardPrintDetials(long id)
+        {
+            try
+            {
+                InwardPrintDetails obj = GetDetailsById(id);
+
+                string wwwroot = string.Empty;
+                string filePath = "/PrintPDF/" + id + ".pdf";
+                wwwroot = _iwebhostenviroment.WebRootPath + filePath;
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Save(wwwroot);
+                doc.Close();
+                return Json(filePath);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public IActionResult GetNewCoilNo()
+        {
+            try
+            {
+                string CoilNo = "";
+                SqlParameter[] sqlParameters = new SqlParameter[0];
+                //sqlParameters[0] = new SqlParameter("@InwVou", id);
+                DataTable DtInwMst = ObjDBConnection.CallStoreProcedure("GetNewCoilNoForInward", sqlParameters);
+                if (DtInwMst != null && DtInwMst.Rows.Count > 0)
+                {
+                    CoilNo = DtInwMst.Rows[0]["NewLotNo"].ToString();
+                }
+                    return Json(new { data = CoilNo });
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public IActionResult InwardSendMail(long id, string email = "")
+        {
+            try
+            {
+                InwardPrintDetails obj = GetDetailsById(id);
+                string wwwroot = string.Empty;
+                string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
+
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                //var render = new IronPdf.HtmlToPdf();
+                //using var doc = render.RenderHtmlAsPdf(obj.Html);
+                //doc.SaveAs(wwwroot);
+
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Save(wwwroot);
+                doc.Close();
+
+                bool result = SendEmail(email, "INWARD REPORT", "Please find attachment", wwwroot);
+                if (result)
+                    return Json(new { result = result, message = "Mail Send Sucessfully" });
+                else
+                    return Json(new { result = result, message = "Internal server error" });
+
+
+                //return Json(new { result = result, message = "Please check your mail address" });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        public IActionResult InwardWhatApp(long id, string whatappNo = "")
+        {
+            try
+            {
+                InwardPrintDetails obj = GetDetailsById(id);
+                string wwwroot = string.Empty;
+                string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
+
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Margins.Left = 25;
+                doc.Save(wwwroot);
+                doc.Close();
+
+                WhatAppAPIResponse apiResponse = SendWhatAppMessage(whatappNo, "INWARD REPORT", wwwroot);
+                return Json(new { result = apiResponse.status, message = apiResponse.message });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
+        public InwardPrintDetails GetDetailsById(long Id)
+        {
             InwardPrintDetails obj = new InwardPrintDetails();
 
             try
             {
                 StringBuilder sb = new StringBuilder();
-
+                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 SqlParameter[] sqlParameters = new SqlParameter[3];
-                sqlParameters[0] = new SqlParameter("@InwVou", id);
+                sqlParameters[0] = new SqlParameter("@InwVou", Id);
                 sqlParameters[1] = new SqlParameter("@Flg", 5);
-                sqlParameters[2] = new SqlParameter("@cmpvou", companyid);
+                sqlParameters[2] = new SqlParameter("@cmpvou", companyId);
                 DataTable DtInward = ObjDBConnection.CallStoreProcedure("GetInwardDetails", sqlParameters);
                 if (DtInward != null && DtInward.Rows.Count > 0)
                 {
@@ -1691,7 +1808,7 @@ namespace SUNMark.Controllers
                         newbody = newbody.Replace("#*#*datatable-keytable*#*#", sb.ToString());
 
                         obj.Html = newbody;
-                        obj.Id = id.ToString();
+                        obj.Id = Id.ToString();
                     }
 
                 }
@@ -1700,26 +1817,8 @@ namespace SUNMark.Controllers
             {
                 throw;
             }
-            return View(obj);
+            return obj;
         }
-        public IActionResult GetNewCoilNo()
-        {
-            try
-            {
-                string CoilNo = "";
-                SqlParameter[] sqlParameters = new SqlParameter[0];
-                //sqlParameters[0] = new SqlParameter("@InwVou", id);
-                DataTable DtInwMst = ObjDBConnection.CallStoreProcedure("GetNewCoilNoForInward", sqlParameters);
-                if (DtInwMst != null && DtInwMst.Rows.Count > 0)
-                {
-                    CoilNo = DtInwMst.Rows[0]["NewLotNo"].ToString();
-                }
-                    return Json(new { data = CoilNo });
-            }
-            catch(Exception ex)
-            {
-                throw;
-            }
-        }
+
     }
 }

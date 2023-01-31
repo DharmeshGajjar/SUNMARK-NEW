@@ -359,8 +359,8 @@
                     contentType: false,  // tell jQuery not to set contentType
                     success: function (data) {
                         if (data != null) {
-                            if (!data.result) {
-                                showErrorMessage(data.message)
+                            if (data.result) {
+                                showSuccessMessage(data.message)
                                 $('#fileUpload').val("");
                             }
                             else {
@@ -379,13 +379,13 @@
                                 if (type && (type == 'COIL' || type == 'coil')) {
                                     var alertHTML = '';
                                     if (notFoundItemList != null && notFoundItemList.length > 0) {
-                                        alertHTML = '<b style="font-size:20px !important">Following unique grade and specification not found!</b><div class="table-responsive"><table style="font-size:16px !important" class="table table-boredered mt-3"><thead><tr><th>#</th><th>Grade</th><th>Party</th><th>Godown</th><th>Finish</th></tr></thead><tbody>';
+                                        alertHTML = '<b style="font-size:20px !important">Following unique grade and specification not found!</b><div class="table-responsive"><table style="font-size:16px !important" class="table table-boredered mt-3"><thead><tr><th>#</th><th>Grade</th><th>Party</th><th>Godown</th><th>Coil Prefix</th></tr></thead><tbody>';
                                         for (var x = 0; x < notFoundItemList.length; x++) {
                                             alertHTML += "<tr><td>" + (parseInt(x) + 1) + "</td>";
                                             alertHTML += "<td>" + notFoundItemList[x].value2 + "</td>";
                                             alertHTML += "<td>" + notFoundItemList[x].value3 + "</td>";
                                             alertHTML += "<td>" + notFoundItemList[x].value1 + "</td>";
-                                            alertHTML += "<td>" + notFoundItemList[x].text + "</td>";
+                                            alertHTML += "<td>" + notFoundItemList[x].value4 + "</td>";
                                             alertHTML += "</tr>";
                                         }
                                         alertHTML += "</tbody</table></div>";

@@ -63,6 +63,53 @@
             <div class="card-body">
                 <div class="col-md-12">
                     <div class="tab-content" id="custom-tabs-three-tabContent">
+
+                        <button type="button" id="modelPopup" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="Display:none">
+                            Launch demo modal
+                        </button>
+
+                        <div class="modal fade" id="exampleModal" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Print Option</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-check">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <input type="radio" class="form-check-input" id="radio1" name="printOption" value="Print" checked>
+                                                    <label class="form-check-label" for="radio1">Print/View </label>
+                                                </div>
+                                                <div class="col-md-2 ">
+                                                    <input type="radio" class="form-check-input" id="radio2" name="printOption" value="Email">
+                                                    <label class="form-check-label" for="radio2">Email</label>
+                                                </div>
+                                                <div class="col-md-10 form-group">
+                                                    <input type="email" name="EmailAddress" Id="EmailAddress" class="from-control" style="display:none" required />
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="radio" class="form-check-input" id="radio3" name="printOption" value="WhatApp">
+                                                    <label class="form-check-label" for="radio2">WhatApp</label>
+                                                </div>
+                                                <div class="col-md-10 form-group">
+                                                    <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Esc - Cancle</button>
+                                        <button type="button" class="btn btn-primary" id="btn_ViewMailWhatapp">Submit (F9)</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         @if (userRight != null && userRight.IsList)
                         {
                             <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
@@ -237,34 +284,34 @@
                                                 </div>
                                             </div>
                                             @*<div class="col-md-12">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="row">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                            Order No <span class="required"></span>
-                        </label>
-                        <input type="hidden" name="PtyName" />
-                        <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
-                            @Html.DropDownListFor(x => x.InwPOMVou, Model.PurchaseOrderList, "Select", new { @class = "form-control select2 InwPOMVou", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px; width:100px", @id = "txtInwPOMVou", onchange = "GetOrderList()" })
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="row">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                            Bill No. <span class="required"></span>
-                        </label>
-                        <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
-                            @Html.TextBoxFor(x => x.InwBillNo, new { @class = "form-control form-control-lg", @placeholder = "Bill No", @tabindex = "5", @style = "font-family: Verdana;font-size:small; height:30px; width: 170px", @name = "InwBillNo" })
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>*@
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                Order No <span class="required"></span>
+                                            </label>
+                                            <input type="hidden" name="PtyName" />
+                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                @Html.DropDownListFor(x => x.InwPOMVou, Model.PurchaseOrderList, "Select", new { @class = "form-control select2 InwPOMVou", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px; width:100px", @id = "txtInwPOMVou", onchange = "GetOrderList()" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                Bill No. <span class="required"></span>
+                                            </label>
+                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                @Html.TextBoxFor(x => x.InwBillNo, new { @class = "form-control form-control-lg", @placeholder = "Bill No", @tabindex = "5", @style = "font-family: Verdana;font-size:small; height:30px; width: 170px", @name = "InwBillNo" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -512,11 +559,11 @@
                                                                     <td>
                                                                         @if (Model != null && Model.Inward != null && Model.Inward.CoilPrefixList != null && Model.Inward.CoilPrefixList.Count > 0)
                                                                         {
-                                                                            @Html.DropDownListFor(x => x.Inward.IntCoilPrefix[y], new SelectList(Model.Inward.CoilPrefixList, "Text", "Text"), "Select", new { @class = "form-control select2 IntCoilPrefix", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important",@name = "Inward.IntCoilPrefix" })
+                                                                            @Html.DropDownListFor(x => x.Inward.IntCoilPrefix[y], new SelectList(Model.Inward.CoilPrefixList, "Text", "Text"), "Select", new { @class = "form-control select2 IntCoilPrefix", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important", @name = "Inward.IntCoilPrefix" })
                                                                         }
                                                                     </td>
                                                                     <td>
-                                                                        @Html.TextBoxFor(x => x.Inward.CoilNo[y], new { @class = "form-control InwardCoilNo InwardCoilNo" + y+"", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo" })
+                                                                        @Html.TextBoxFor(x => x.Inward.CoilNo[y], new { @class = "form-control InwardCoilNo InwardCoilNo" + y + "", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo" })
                                                                     </td>
                                                                     <td>
                                                                         @Html.TextBoxFor(x => x.Inward.IntSufix[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtCoilNo" })
@@ -790,8 +837,8 @@
                                                                 Godown <span class="text-danger">*</span>
                                                             </th>
                                                             @*<th style="width:15% !important">
-                            Location
-                        </th>*@
+                                                Location
+                                            </th>*@
                                                             <th style="width:15% !important">
                                                                 Quantity <span class="text-danger">*</span>
                                                             </th>
@@ -828,11 +875,11 @@
                                                                         }
                                                                     </td>
                                                                     @*<td>
-                                    @if (Model != null && Model.Inward != null && Model.Inward.LocationOtherList != null && Model.Inward.LocationOtherList.Count > 0)
-                                    {
-                                        @Html.DropDownListFor(x => x.Inward.IntLocOther[y], Model.Inward.LocationOtherList, "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;" })
-                                    }
-                                </td>*@
+                                                        @if (Model != null && Model.Inward != null && Model.Inward.LocationOtherList != null && Model.Inward.LocationOtherList.Count > 0)
+                                                        {
+                                                            @Html.DropDownListFor(x => x.Inward.IntLocOther[y], Model.Inward.LocationOtherList, "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                        }
+                                                    </td>*@
                                                                     <td>
                                                                         @Html.TextBoxFor(x => x.Inward.IntQtyOther[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtWeigth", @onKeyUp = "numericFilter(this);" })
                                                                     </td>
@@ -872,11 +919,11 @@
                                                                     }
                                                                 </td>
                                                                 @*<td>
-                                @if (Model != null && Model.Inward != null && Model.Inward.LocationOtherList != null && Model.Inward.LocationOtherList.Count > 0)
-                                {
-                                    @Html.DropDownListFor(x => x.Inward.IntLocOther, Model.Inward.LocationOtherList, "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;" })
-                                }
-                            </td>*@
+                                                    @if (Model != null && Model.Inward != null && Model.Inward.LocationOtherList != null && Model.Inward.LocationOtherList.Count > 0)
+                                                    {
+                                                        @Html.DropDownListFor(x => x.Inward.IntLocOther, Model.Inward.LocationOtherList, "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                    }
+                                                </td>*@
                                                                 <td>
                                                                     @Html.TextBoxFor(x => x.Inward.IntQtyOther, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtWeigth", @onKeyUp = "numericFilter(this);" })
                                                                 </td>
@@ -937,6 +984,7 @@
 </div>
 
 <script>
+    let activeEle;
         $(document).ready(function () {
             var inwvou = '@Html.Raw(Model.InwVou)';
             if (inwvou != null && inwvou != '' && inwvou != 0) {
@@ -1004,7 +1052,14 @@
                     GoToAddTab()
                     GetVoucherNumber();
                 }).on('F9', function () {
-                    $("#btnPrint").click();
+                    //$("#btnPrint").click();
+                    activeEle = document.activeElement.name;
+                    if ($('.modal.show').length != 0) {
+                        $("#btn_ViewMailWhatapp").click();
+                    }
+                    else {
+                        $("#btnPrint").click();
+                    }
                 }).on('F10', function () {
                     $("#btnSave").click();
                 })
@@ -1778,7 +1833,6 @@
 
     $("#btnSave").click(function (event) {
         var value = $('#txtInwPtyVou').children('option:selected').html();
-        debugger;
         if (!checkArrayCoilNo()) {
             event.preventDefault();
             event.stopPropagation();
@@ -2342,13 +2396,145 @@
     });
 
     $("#btnPrint").click(function () {
-        $('#txtIsPrint').val('1');
-        $('#frmInward').submit();
+        //$('#txtIsPrint').val('1');
+        //$('#frmInward').submit();
         //window.open('/Inward/RawInwardPrintDetials/'+ @Html.Raw(Model.InwVou),'_blank')
+        $("#modelPopup").click();
+        $("#EmailAddress").hide();
+        $("#WhatappNo").hide();
     })
 
     $("#btnSave").click(function () {
         $('#txtIsPrint').val('0');
         $('#frmInward').submit();
     })
+</script>
+<script>
+    var ReturnId = 0;
+    function PrintJobWorkReport(returnID) {
+
+        ReturnId = returnID;
+        $('#exampleModal').modal('toggle');
+    }
+
+      $(document).ready(function () {
+
+            ReturnId = '@Html.Raw(TempData["ReturnId"])';
+            var Savedone = '@Html.Raw(TempData["Savedone"])';
+            if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
+            }
+
+            $("#btn_ViewMailWhatapp").click(function () {
+                let optionVal = $('input:radio[name=printOption]:checked').val();
+                if (optionVal == "Print") {
+                    $('#exampleModal').modal('hide');
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("InwardPrintDetials", "Inward")',
+                        data: { "id": ReturnId},
+                        dataType: "JSON",
+                        success: function (data) {
+                            var host = window.location.origin + data;
+                            $('#exampleModal').modal('hide');
+                            $("[name=" + activeEle + "]").focus();
+                            var win = window.open(host, '_blank');
+                            if (win) {
+                                win.focus();
+                            } else {
+                                alert('Please allow popups for this website');
+                            }
+                        },
+                        error: function (response) {
+                            $("#EmailAddress").val("");
+                        }
+                    });
+                }
+                else if (optionVal == "Email") {
+                    if ($("#EmailAddress").val() != "" && $("#EmailAddress").val() != null) {
+                        $.ajax({
+                            type: "POST",
+                            url: '/Inward/InwardSendMail',
+                            data: { "id": ReturnId, "email": $("#EmailAddress").val() },
+                            dataType: "JSON",
+                            success: function (data) {
+                                $("[name=" + activeEle + "]").focus();
+                                if (data.result) {
+                                     showSuccessMessage(data.message);
+                                }
+                                else {
+                                    showErrorMessage(data.message);
+                                }
+                                $('#radio1').prop('checked', true);
+                                $("#EmailAddress").val("");
+                                $('#exampleModal').modal('toggle');
+                            },
+                            error: function (response) {
+                                 $("#EmailAddress").val("");
+                            }
+                        });
+                    }
+                    else {
+                        alert("Please Enter Email Address")
+                    }
+
+
+                    //window.location.href = "/JobWorkEntry/JobWorkSendMail?id=" + ReturnId + "&email=" + $("#EmailAddress").val();
+
+                }
+                else if (optionVal == "WhatApp") {
+                    let whNO = $("#WhatappNo").val();
+                    if (whNO != "" && whNO != null) {
+                        if (whNO.length == 10) {
+                            $.ajax({
+                                type: "POST",
+                                url:  '/Inward/InwardWhatApp',
+                                data: { "id": ReturnId, "whatappNo": whNO },
+                                dataType: "JSON",
+                                success: function (data) {
+                                    $("[name=" + activeEle + "]").focus();
+                                    if (data.result == "error") {
+                                        showErrorMessage(data.message)
+                                    }
+                                    else {
+                                        showSuccessMessage(data.message);
+                                    }
+                                    $('#radio1').prop('checked', true);
+                                    $("#WhatappNo").val("");
+                                    $("#WhatappNo").hide();
+                                    $('#exampleModal').modal('toggle');
+                                },
+                                error: function (data) {
+                                    $("#WhatappNo").val("");
+                                }
+                            });
+                        }
+                        else {
+                            alert("Please enter 10 digit number")
+                        }
+                    }
+                    else {
+                        alert("Please enter what app number")
+                    }
+
+                }
+
+            });
+
+          $(".form-check input[name='printOption']").click(function () {
+
+                $("#EmailAddress").hide();
+                $("#WhatappNo").hide();
+                let optionVal = $('input:radio[name=printOption]:checked').val();
+                if (optionVal == "Print") {
+
+                }
+                else if (optionVal == "WhatApp") {
+                    $("#WhatappNo").show();
+                }
+                else {
+                    $("#EmailAddress").show();
+                }
+            });
+        })
 </script>

@@ -74,11 +74,7 @@ namespace SUNMark.Classes
                     {
                         try
                         {
-                            string voucherNo = GetVoucherNo(sessionCompanyId);
-                            SqlParameter[] sqlParameters = new SqlParameter[37];
-                            sqlParameters[0] = new SqlParameter("@OblNVno", voucherNo);
-                            sqlParameters[1] = new SqlParameter("@OblDt", DateTime.Parse(dt.Rows[i]["INWARD DATE"].ToString()));
-                            sqlParameters[2] = new SqlParameter("@OblCmpVou", companyId);
+                            #region Validation
 
                             #region Godown
                             string godownId = string.Empty;
@@ -86,14 +82,7 @@ namespace SUNMark.Classes
                             {
                                 godownId = godownList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["LOCATION"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
                             }
-
-                            if (!string.IsNullOrWhiteSpace(godownId))
-                            {
-                                sqlParameters[3] = new SqlParameter("@OblGdnVou", godownId);
-                            }
                             #endregion
-
-                            sqlParameters[4] = new SqlParameter("@OblLocVou", string.Empty);
 
                             #region Party
                             string partyId = string.Empty;
@@ -102,17 +91,7 @@ namespace SUNMark.Classes
                                 partyId = partyList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["PARTY"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
                             }
 
-                            if (!string.IsNullOrWhiteSpace(partyId))
-                            {
-                                sqlParameters[5] = new SqlParameter("@OblAccVou", partyId);
-                            }
-
                             #endregion
-
-                            sqlParameters[6] = new SqlParameter("@OblPrdVou", productId);
-                            sqlParameters[7] = new SqlParameter("@OblRem", string.Empty);
-                            sqlParameters[8] = new SqlParameter("@LotSupCoilNo", dt.Rows[i]["PARTY COIL NO"].ToString());
-                            sqlParameters[9] = new SqlParameter("@LotHeatNo", dt.Rows[i]["HEAT NO"].ToString());
 
                             #region Grade
                             string gradeId = string.Empty;
@@ -122,240 +101,293 @@ namespace SUNMark.Classes
                                 gradeId = gradeList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["GRADE"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
                                 grade = gradeList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["GRADE"].ToString().Trim().ToLower())).Select(x => x.Text).FirstOrDefault();
                             }
-
-                            if (!string.IsNullOrWhiteSpace(gradeId))
-                            {
-                                sqlParameters[10] = new SqlParameter("@LotGrdMscVou", gradeId);
-                                sqlParameters[11] = new SqlParameter("@OblGrade", grade);
-                            }
-
                             #endregion
 
-                            #region Finish
-                            //string finishId = string.Empty;
-                            //string finish = string.Empty;
-                            //if (finishList != null && finishList.Count > 0)
-                            //{
-                            //    finishId = finishList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["FINISH"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
-                            //    finish = finishList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["FINISH"].ToString().Trim().ToLower())).Select(x => x.Text).FirstOrDefault();
-                            //}
-
-                            //if (!string.IsNullOrWhiteSpace(finishId))
-                            //{
-                            //    sqlParameters[12] = new SqlParameter("@LotFinMscVou", finishId);
-                            //    sqlParameters[13] = new SqlParameter("@OblFinish", finish);
-                            //}
-                            //else
-                            //{
-                            sqlParameters[12] = new SqlParameter("@LotFinMscVou", 0);
-                            sqlParameters[13] = new SqlParameter("@OblFinish", "");
-                            //}
-                            #endregion
-
-                            sqlParameters[14] = new SqlParameter("@LotWidth", dt.Rows[i]["WIDTH"].ToString());
-                            sqlParameters[15] = new SqlParameter("@LotThick", dt.Rows[i]["THICK"].ToString());
-                            sqlParameters[16] = new SqlParameter("@LotQty", dt.Rows[i]["WEIGHT"].ToString());
-                            sqlParameters[17] = new SqlParameter("@LotInwWidth", dt.Rows[i]["WIDTH"].ToString());
-                            sqlParameters[18] = new SqlParameter("@LotInwThick", dt.Rows[i]["THICK"].ToString());
-                            sqlParameters[19] = new SqlParameter("@LotInwQty", dt.Rows[i]["WEIGHT"].ToString());
-                            sqlParameters[20] = new SqlParameter("@PrdTyp", "COIL");
-                            sqlParameters[21] = new SqlParameter("@CmpVou", companyId);
-                            sqlParameters[22] = new SqlParameter("@OblVou", 0);
-
-
-                            sqlParameters[23] = new SqlParameter("@LotTyp", string.Empty);
-                            string coilano = dt.Rows[i]["COIL NO"].ToString();
-                            string temp = string.Empty;
-                            int coilnumber = 0;
-
-                            for (int c = 0; c < coilano.Length; c++)
-                            {
-                                if (Char.IsDigit(coilano[c]))
-                                    temp += coilano[c];
-                            }
-
-                            if (temp.Length > 0)
-                                coilnumber = int.Parse(temp);
-
-                            sqlParameters[24] = new SqlParameter("@LotNo", coilnumber);
-
-                            string _strLotCoilNo = string.Format("{0}", dt.Rows[i]["COIL NO"].ToString());
-                            
-                            sqlParameters[25] = new SqlParameter("@Flg", 1);
-                            sqlParameters[26] = new SqlParameter("@RefNo", dt.Rows[i]["MEMO NO"].ToString());
-                            sqlParameters[27] = new SqlParameter("@LotOD", dt.Rows[i]["SIZE"].ToString());
-                            sqlParameters[28] = new SqlParameter("@LotPrcTypCD", 0);
-                            sqlParameters[29] = new SqlParameter("@LotPCS", 0);
-                            sqlParameters[30] = new SqlParameter("@LotFeetPer", 0);
-                            sqlParameters[31] = new SqlParameter("@NB", "");
-                            sqlParameters[32] = new SqlParameter("@SCH", "");
-
-                            #region CoilPrefix
+                            #region Prefix
                             string prefixId = string.Empty;
-                            string prefix = string.Empty;
                             if (prefixList != null && prefixList.Count > 0)
                             {
-                                prefixId = prefixList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["COIL PREFIX"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
-                                prefix = prefixList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["COIL PREFIX"].ToString().Trim().ToLower())).Select(x => x.Text).FirstOrDefault();
-                            }
-                            if (!string.IsNullOrWhiteSpace(prefixId))
-                            {
-                                _strLotCoilNo = prefix +"-"+_strLotCoilNo;
-                                sqlParameters[33] = new SqlParameter("@CoilType", prefix);
-                                sqlParameters[34] = new SqlParameter("@CoilTypeVou", prefixId);
-                            }
-                            else
-                            {
-                                sqlParameters[33] = new SqlParameter("@CoilType", "");
-                                sqlParameters[34] = new SqlParameter("@CoilTypeVou", 0);
+                                if (!string.IsNullOrWhiteSpace(Convert.ToString(dt.Rows[i]["COIL PREFIX"])))
+                                {
+                                    prefixId = prefixList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["COIL PREFIX"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
+                                }
                             }
                             #endregion
-                            if (!string.IsNullOrWhiteSpace(dt.Rows[i]["SUFIX"].ToString()))
-                            {
-                                _strLotCoilNo = _strLotCoilNo +"-"+ dt.Rows[i]["SUFIX"].ToString();
-                                sqlParameters[35] = new SqlParameter("@CoilSuffix", dt.Rows[i]["SUFIX"].ToString());
-                            }
-                            else
-                            {
-                                sqlParameters[35] = new SqlParameter("@CoilSuffix", "");
-                            }
 
-                            sqlParameters[36] = new SqlParameter("@CoilNo", _strLotCoilNo);
+                            bool isprefixerror = false, isgodownerror = false, isgradeerror = false, ispartyerror = false;
 
-                            if (!string.IsNullOrWhiteSpace(gradeId) && !string.IsNullOrWhiteSpace(partyId) && !string.IsNullOrWhiteSpace(godownId))
+                            if (string.IsNullOrWhiteSpace(prefixId) && !string.IsNullOrWhiteSpace(Convert.ToString(dt.Rows[i]["COIL PREFIX"])))
                             {
-                                DataTable DtState = ObjDBConnection.CallStoreProcedure("OBLMST_Insert", sqlParameters);
-                                if (DtState != null && DtState.Rows.Count > 0)
+                                if (notFoundItems.Count <= 0 || notFoundItems.Where(x => x.Value1.Equals(dt.Rows[i]["COIL PREFIX"].ToString().Trim())).Count() <= 0)
                                 {
-                                    int status = DbConnection.ParseInt32(DtState.Rows[0][0].ToString());
+                                    prefixId = dt.Rows[i]["COIL PREFIX"].ToString().Trim();
+                                    isprefixerror = true;
+                                }
+                                else
+                                {
+                                    prefixId = "Coil Prefix not found";
                                 }
                             }
                             else
                             {
-                                bool isAllow = false;
-                                if (string.IsNullOrWhiteSpace(prefixId))
+                                prefixId = "-";
+                            }
+
+
+                            if (string.IsNullOrWhiteSpace(godownId))
+                            {
+                                if (notFoundItems.Count <= 0 || notFoundItems.Where(x => x.Value1.Equals(dt.Rows[i]["LOCATION"].ToString().Trim())).Count() <= 0)
                                 {
-                                    if (notFoundItems.Count <= 0 || notFoundItems.Where(x => x.Value1.Equals(dt.Rows[i]["COIL PREFIX"].ToString().Trim())).Count() <= 0)
-                                    {
-                                        prefixId = dt.Rows[i]["COIL PREFIX"].ToString().Trim();
-                                        isAllow = true;
-                                    }
-                                    else
-                                    {
-                                        prefixId = "Coil Prefix not found";
-                                    }
+                                    godownId = dt.Rows[i]["LOCATION"].ToString().Trim();
+                                    isgodownerror = true;
                                 }
                                 else
-                                {
-                                    prefixId = "-";
-                                }
-
-                                if (string.IsNullOrWhiteSpace(godownId))
-                                {
-                                    if (notFoundItems.Count <= 0 || notFoundItems.Where(x => x.Value1.Equals(dt.Rows[i]["LOCATION"].ToString().Trim())).Count() <= 0)
-                                    {
-                                        godownId = dt.Rows[i]["LOCATION"].ToString().Trim();
-                                        isAllow = true;
-                                    }
-                                    else
-                                    {
-                                        godownId = "Godown not found";
-                                    }
-                                }
-                                else
-                                {
-                                    godownId = "-";
-                                }
-
-                                if (string.IsNullOrWhiteSpace(gradeId))
-                                {
-                                    if (notFoundItems.Count <= 0 || notFoundItems.Where(x => x.Value2.Equals(dt.Rows[i]["GRADE"].ToString().Trim())).Count() <= 0)
-                                    {
-                                        gradeId = dt.Rows[i]["GRADE"].ToString().Trim();
-                                        isAllow = true;
-                                    }
-                                    else
-                                    {
-                                        gradeId = "Grade not found";
-                                    }
-                                }
-                                else
-                                {
-                                    gradeId = "-";
-                                }
-
-                                if (string.IsNullOrWhiteSpace(partyId))
-                                {
-                                    if (notFoundItems.Count <= 0 || notFoundItems.Where(x => x.Value3.Equals(dt.Rows[i]["PARTY"].ToString().Trim())).Count() <= 0)
-                                    {
-                                        partyId = dt.Rows[i]["PARTY"].ToString().Trim();
-                                        isAllow = true;
-                                    }
-                                    else
-                                    {
-                                        partyId = "Party not found";
-                                    }
-                                }
-                                else
-                                {
-                                    partyId = "-";
-                                }
-
-                                //if (string.IsNullOrWhiteSpace(finishId) && !string.IsNullOrWhiteSpace(dt.Rows[i]["FINISH"].ToString()))
-                                //{
-                                //    if (notFoundItems.Count <= 0 || notFoundItems.Where(x => x.Text.Equals(dt.Rows[i]["FINISH"].ToString().Trim())).Count() <= 0)
-                                //    {
-                                //        finishId = dt.Rows[i]["FINISH"].ToString().Trim();
-                                //        isAllow = true;
-                                //    }
-                                //    else
-                                //    {
-                                //        finishId = "-";
-                                //    }
-                                //}
-                                //else
-                                //{
-                                //    finishId = "-";
-                                //}
-
-
-                                if (string.IsNullOrWhiteSpace(prefixId) && notFoundItems.Where(x => x.Value1.Equals("Coil Prefix not found")).Count() <= 0)
-                                {
-                                    godownId = "Coil Prefix not found";
-                                }
-                                if (string.IsNullOrWhiteSpace(godownId) && notFoundItems.Where(x => x.Value1.Equals("Godown not found")).Count() <= 0)
                                 {
                                     godownId = "Godown not found";
                                 }
+                            }
+                            else
+                            {
+                                godownId = "-";
+                            }
 
-                                if (!string.IsNullOrWhiteSpace(gradeId) && notFoundItems.Where(x => x.Value2.Equals("Grade not found")).Count() <= 0)
+                            if (string.IsNullOrWhiteSpace(gradeId))
+                            {
+                                if (notFoundItems.Count <= 0 || notFoundItems.Where(x => x.Value2.Equals(dt.Rows[i]["GRADE"].ToString().Trim())).Count() <= 0)
+                                {
+                                    gradeId = dt.Rows[i]["GRADE"].ToString().Trim();
+                                    isgradeerror = true;
+                                }
+                                else
                                 {
                                     gradeId = "Grade not found";
                                 }
+                            }
+                            else
+                            {
+                                gradeId = "-";
+                            }
 
-                                if (string.IsNullOrWhiteSpace(partyId) && notFoundItems.Where(x => x.Value3.Equals("Party not found")).Count() <= 0)
+                            if (string.IsNullOrWhiteSpace(partyId))
+                            {
+                                if (notFoundItems.Count <= 0 || notFoundItems.Where(x => x.Value3.Equals(dt.Rows[i]["PARTY"].ToString().Trim())).Count() <= 0)
+                                {
+                                    partyId = dt.Rows[i]["PARTY"].ToString().Trim();
+                                    ispartyerror = true;
+                                }
+                                else
                                 {
                                     partyId = "Party not found";
                                 }
-
-
-                                if (!string.IsNullOrWhiteSpace(partyId) || string.IsNullOrWhiteSpace(gradeId) || string.IsNullOrWhiteSpace(godownId) || string.IsNullOrWhiteSpace(prefixId))
-                                    notFoundItems.Add(new CustomDropDown
-                                    {
-                                        //Text = finishId,
-                                        Value1 = godownId,
-                                        Value2 = gradeId,
-                                        Value3 = partyId
-                                        //Value4 = prefixId
-                                    });
                             }
+                            else
+                            {
+                                partyId = "-";
+                            }
+
+                            //if (isprefixerror)
+                            //{
+                            //    prefixId = "Coil Prefix not found";
+                            //}
+                            //if (isgodownerror)
+                            //{
+                            //    godownId = "Godown not found";
+                            //}
+
+                            //if (isgradeerror)
+                            //{
+                            //    gradeId = "Grade not found";
+                            //}
+
+                            //if (ispartyerror)
+                            //{
+                            //    partyId = "Party not found";
+                            //}
+
+
+                            if (ispartyerror || isgradeerror || isgodownerror || isprefixerror)
+                                notFoundItems.Add(new CustomDropDown
+                                {
+                                    //Text = finishId,
+                                    Value1 = godownId,
+                                    Value2 = gradeId,
+                                    Value3 = partyId,
+                                    Value4 = prefixId
+                                });
+
+
+                            #endregion
                         }
                         catch (Exception ex)
                         {
                             throw;
                         }
                     }
-                    inserted = 1;
+
+                    if (notFoundItems == null || notFoundItems.Count == 0)
+                    {
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            try
+                            {
+                                #region Insert code
+
+                                string voucherNo = GetVoucherNo(sessionCompanyId);
+                                SqlParameter[] sqlParameters = new SqlParameter[37];
+                                sqlParameters[0] = new SqlParameter("@OblNVno", voucherNo);
+                                sqlParameters[1] = new SqlParameter("@OblDt", DateTime.Parse(dt.Rows[i]["INWARD DATE"].ToString()));
+                                sqlParameters[2] = new SqlParameter("@OblCmpVou", companyId);
+
+                                #region Godown
+                                string godownId = string.Empty;
+                                if (godownList != null && godownList.Count > 0)
+                                {
+                                    godownId = godownList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["LOCATION"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
+                                }
+
+                                if (!string.IsNullOrWhiteSpace(godownId))
+                                {
+                                    sqlParameters[3] = new SqlParameter("@OblGdnVou", godownId);
+                                }
+                                #endregion
+
+                                sqlParameters[4] = new SqlParameter("@OblLocVou", string.Empty);
+
+                                #region Party
+                                string partyId = string.Empty;
+                                if (partyList != null && partyList.Count > 0)
+                                {
+                                    partyId = partyList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["PARTY"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
+                                }
+
+                                if (!string.IsNullOrWhiteSpace(partyId))
+                                {
+                                    sqlParameters[5] = new SqlParameter("@OblAccVou", partyId);
+                                }
+
+                                #endregion
+
+                                sqlParameters[6] = new SqlParameter("@OblPrdVou", productId);
+                                sqlParameters[7] = new SqlParameter("@OblRem", string.Empty);
+                                sqlParameters[8] = new SqlParameter("@LotSupCoilNo", dt.Rows[i]["PARTY COIL NO"].ToString());
+                                sqlParameters[9] = new SqlParameter("@LotHeatNo", dt.Rows[i]["HEAT NO"].ToString());
+
+                                #region Grade
+                                string gradeId = string.Empty;
+                                string grade = string.Empty;
+                                if (gradeList != null && gradeList.Count > 0)
+                                {
+                                    gradeId = gradeList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["GRADE"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
+                                    grade = gradeList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["GRADE"].ToString().Trim().ToLower())).Select(x => x.Text).FirstOrDefault();
+                                }
+
+                                if (!string.IsNullOrWhiteSpace(gradeId))
+                                {
+                                    sqlParameters[10] = new SqlParameter("@LotGrdMscVou", gradeId);
+                                    sqlParameters[11] = new SqlParameter("@OblGrade", grade);
+                                }
+
+                                #endregion
+
+                                sqlParameters[12] = new SqlParameter("@LotFinMscVou", 0);
+                                sqlParameters[13] = new SqlParameter("@OblFinish", "");
+                                sqlParameters[14] = new SqlParameter("@LotWidth", dt.Rows[i]["WIDTH"].ToString());
+                                sqlParameters[15] = new SqlParameter("@LotThick", dt.Rows[i]["THICK"].ToString());
+                                sqlParameters[16] = new SqlParameter("@LotQty", dt.Rows[i]["WEIGHT"].ToString());
+                                sqlParameters[17] = new SqlParameter("@LotInwWidth", dt.Rows[i]["WIDTH"].ToString());
+                                sqlParameters[18] = new SqlParameter("@LotInwThick", dt.Rows[i]["THICK"].ToString());
+                                sqlParameters[19] = new SqlParameter("@LotInwQty", dt.Rows[i]["WEIGHT"].ToString());
+                                sqlParameters[20] = new SqlParameter("@PrdTyp", "COIL");
+                                sqlParameters[21] = new SqlParameter("@CmpVou", companyId);
+                                sqlParameters[22] = new SqlParameter("@OblVou", 0);
+
+
+                                sqlParameters[23] = new SqlParameter("@LotTyp", string.Empty);
+                                string coilano = dt.Rows[i]["COIL NO"].ToString();
+                                string temp = string.Empty;
+                                int coilnumber = 0;
+
+                                for (int c = 0; c < coilano.Length; c++)
+                                {
+                                    if (Char.IsDigit(coilano[c]))
+                                        temp += coilano[c];
+                                }
+
+                                if (temp.Length > 0)
+                                    coilnumber = int.Parse(temp);
+
+                                sqlParameters[24] = new SqlParameter("@LotNo", coilnumber);
+
+                                string _strLotCoilNo = string.Format("{0}", dt.Rows[i]["COIL NO"].ToString());
+
+                                sqlParameters[25] = new SqlParameter("@Flg", 1);
+                                sqlParameters[26] = new SqlParameter("@RefNo", dt.Rows[i]["MEMO NO"].ToString());
+                                sqlParameters[27] = new SqlParameter("@LotOD", dt.Rows[i]["SIZE"].ToString());
+                                sqlParameters[28] = new SqlParameter("@LotPrcTypCD", 0);
+                                sqlParameters[29] = new SqlParameter("@LotPCS", 0);
+                                sqlParameters[30] = new SqlParameter("@LotFeetPer", 0);
+                                sqlParameters[31] = new SqlParameter("@NB", "");
+                                sqlParameters[32] = new SqlParameter("@SCH", "");
+
+                                #region CoilPrefix
+                                string prefixId = string.Empty;
+                                string prefix = string.Empty;
+                                if (prefixList != null && prefixList.Count > 0)
+                                {
+                                    prefixId = prefixList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["COIL PREFIX"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
+                                    prefix = prefixList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["COIL PREFIX"].ToString().Trim().ToLower())).Select(x => x.Text).FirstOrDefault();
+                                }
+                                if (!string.IsNullOrWhiteSpace(prefixId))
+                                {
+                                    _strLotCoilNo = prefix + "-" + _strLotCoilNo;
+                                    sqlParameters[33] = new SqlParameter("@CoilType", prefix);
+                                    sqlParameters[34] = new SqlParameter("@CoilTypeVou", prefixId);
+                                }
+                                else
+                                {
+                                    sqlParameters[33] = new SqlParameter("@CoilType", "");
+                                    sqlParameters[34] = new SqlParameter("@CoilTypeVou", 0);
+                                }
+                                #endregion
+
+                                if (!string.IsNullOrWhiteSpace(dt.Rows[i]["SUFIX"].ToString()))
+                                {
+                                    _strLotCoilNo = _strLotCoilNo + "-" + dt.Rows[i]["SUFIX"].ToString();
+                                    sqlParameters[35] = new SqlParameter("@CoilSuffix", dt.Rows[i]["SUFIX"].ToString());
+                                }
+                                else
+                                {
+                                    sqlParameters[35] = new SqlParameter("@CoilSuffix", "");
+                                }
+
+                                sqlParameters[36] = new SqlParameter("@CoilNo", _strLotCoilNo);
+
+                                if (!string.IsNullOrWhiteSpace(gradeId) && !string.IsNullOrWhiteSpace(partyId) && !string.IsNullOrWhiteSpace(godownId))
+                                {
+                                    DataTable DtState = ObjDBConnection.CallStoreProcedure("OBLMST_Insert", sqlParameters);
+                                    if (DtState != null && DtState.Rows.Count > 0)
+                                    {
+                                        int status = DbConnection.ParseInt32(DtState.Rows[0][0].ToString());
+                                    }
+                                }
+                                #endregion
+                            }
+                            catch (Exception ex)
+                            {
+                                throw;
+                            }
+                        }
+
+                        inserted = 1;
+
+
+                    }
+                    else
+                    {
+                        inserted = 0;
+                    }
+
+
                 }
                 else if (type.ToLower() == "pipe")
                 {
