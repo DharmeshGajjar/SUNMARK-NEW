@@ -362,22 +362,22 @@ namespace SUNMark.Controllers
                                 }
 
                             }
-                            for (int p = 0; p < inwardModel.Inward.CoilNo.Length; p++)
-                            {
-                                if (inwardModel.Inward.CoilNo[p] != null && inwardModel.Inward.IntWidth.Length > 0)
-                                {
-                                    SqlParameter[] sqlParam = new SqlParameter[6];
-                                    sqlParam[0] = new SqlParameter("@SupCoil", inwardModel.Inward.CoilNo[p]);
-                                    sqlParam[5] = new SqlParameter("@MainVou", "0");
-                                    DataTable DtInw = ObjDBConnection.CallStoreProcedure("sp_CheckDuplicateCoilNoInward", sqlParam);
-                                    if (DtInw != null && DtInw.Rows.Count > 1)
-                                    {
-                                        SetSuccessMessage("Coil No is Already Exists");
-                                        ViewBag.FocusType = "1";
-                                        return View(inwardModel);
-                                    }
-                                }
-                            }
+                            //for (int p = 0; p < inwardModel.Inward.CoilNo.Length; p++)
+                            //{
+                            //    if (inwardModel.Inward.CoilNo[p] != null && inwardModel.Inward.IntWidth.Length > 0)
+                            //    {
+                            //        SqlParameter[] sqlParam = new SqlParameter[6];
+                            //        sqlParam[0] = new SqlParameter("@SupCoil", inwardModel.Inward.CoilNo[p]);
+                            //        sqlParam[5] = new SqlParameter("@MainVou", "0");
+                            //        DataTable DtInw = ObjDBConnection.CallStoreProcedure("sp_CheckDuplicateCoilNoInward", sqlParam);
+                            //        if (DtInw != null && DtInw.Rows.Count > 1)
+                            //        {
+                            //            SetSuccessMessage("Coil No is Already Exists");
+                            //            ViewBag.FocusType = "1";
+                            //            return View(inwardModel);
+                            //        }
+                            //    }
+                            //}
                         }
                         else
                         {
@@ -491,7 +491,7 @@ namespace SUNMark.Controllers
                                         parameter[19] = new SqlParameter("@IntFinish", "");
                                         parameter[20] = new SqlParameter("@IntProcess", "");
                                         parameter[21] = new SqlParameter("@IntBillNo", inwardModel.Inward.BillNoCoil[i]);
-                                        parameter[22] = new SqlParameter("@IntCoilPrefix", inwardModel.Inward.IntCoilPrefix[i].ToString().Trim());
+                                        parameter[22] = new SqlParameter("@IntCoilPrefix", inwardModel.Inward.IntCoilPrefix[i+1]);
                                         parameter[23] = new SqlParameter("@IntCoilNo", inwardModel.Inward.CoilNo[i]);
                                         parameter[24] = new SqlParameter("@IntSufix", inwardModel.Inward.IntSufix[i]);
                                         DataTable DtInwTrn = ObjDBConnection.CallStoreProcedure("InwardTrn_Insert", parameter);
@@ -675,7 +675,7 @@ namespace SUNMark.Controllers
                                 {
                                     if (inwardModel.Inward.IntThickPipe[i] != null && inwardModel.Inward.IntThickPipe[i] != 0 && inwardModel.Inward.IntThickPipe[i] > 0)
                                     {
-                                        SqlParameter[] parameter = new SqlParameter[22];
+                                        SqlParameter[] parameter = new SqlParameter[25];
                                         parameter[0] = new SqlParameter("@IntInwVou", masterId);
                                         parameter[1] = new SqlParameter("@IntSrNo", (i + 1));
                                         parameter[2] = new SqlParameter("@IntPrdVou", 0);
@@ -706,6 +706,9 @@ namespace SUNMark.Controllers
                                         parameter[19] = new SqlParameter("@IntFinish", inwardModel.Inward.IntFinshPipe[i]);
                                         parameter[20] = new SqlParameter("@IntProcess", inwardModel.Inward.IntProcePipe[i]);
                                         parameter[21] = new SqlParameter("@IntBillNo", inwardModel.Inward.BillNoPipe[i]);
+                                        parameter[22] = new SqlParameter("@IntCoilPrefix", "");
+                                        parameter[23] = new SqlParameter("@IntCoilNo", "");
+                                        parameter[24] = new SqlParameter("@IntSufix", ""); 
                                         DataTable DtInwTrn = ObjDBConnection.CallStoreProcedure("InwardTrn_Insert", parameter);
                                     }
                                 }
@@ -888,7 +891,7 @@ namespace SUNMark.Controllers
                                 {
                                     if (inwardModel.Inward.IntQtyOther[i] != null && inwardModel.Inward.IntQtyOther[i] != 0 && inwardModel.Inward.IntQtyOther[i] > 0)
                                     {
-                                        SqlParameter[] parameter = new SqlParameter[22];
+                                        SqlParameter[] parameter = new SqlParameter[25];
                                         parameter[0] = new SqlParameter("@IntInwVou", masterId);
                                         parameter[1] = new SqlParameter("@IntSrNo", (i + 1));
                                         parameter[2] = new SqlParameter("@IntPrdVou", inwardModel.Inward.IntPrdVou[i]);
@@ -925,6 +928,9 @@ namespace SUNMark.Controllers
                                         parameter[10] = new SqlParameter("@IntFinish", "0");
                                         parameter[20] = new SqlParameter("@IntProcess", "0");
                                         parameter[21] = new SqlParameter("@IntBillNo", inwardModel.Inward.BillNoOther[i]);
+                                        parameter[22] = new SqlParameter("@IntCoilPrefix", "");
+                                        parameter[23] = new SqlParameter("@IntCoilNo", "");
+                                        parameter[24] = new SqlParameter("@IntSufix", "");
                                         DataTable DtInwTrn = ObjDBConnection.CallStoreProcedure("InwardTrn_Insert", parameter);
                                     }
                                 }
