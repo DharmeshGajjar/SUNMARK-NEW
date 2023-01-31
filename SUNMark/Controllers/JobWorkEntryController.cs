@@ -806,10 +806,12 @@ namespace SUNMark.Controllers
 
                 bool result = SendEmail(email, "SLITTING MACHINE REPORT", "Please find attachment", wwwroot);
                 if (result)
-                    return Json(new { result = result, message = "Please check your mail address" });
+                    return Json(new { result = result, message = "Mail Send Sucessfully" });
                 else
                     return Json(new { result = result, message = "Internal server error" });
 
+
+                //return Json(new { result = result, message = "Please check your mail address" });
             }
             catch (Exception ex)
             {
