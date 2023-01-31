@@ -2948,7 +2948,6 @@
 <script>
     var ReturnId = 0;
     function PrintJobWorkReport(returnID) {
-        debugger
 
         ReturnId = returnID;
         $('#exampleModal').modal('toggle');
@@ -2967,7 +2966,6 @@
             }
 
             $("#btn_ViewMailWhatapp").click(function () {
-                debugger
                 let optionVal = $('input:radio[name=printOption]:checked').val();
                 if (optionVal == "Print") {
                     $('#exampleModal').modal('hide');
