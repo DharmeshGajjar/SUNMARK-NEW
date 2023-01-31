@@ -194,7 +194,7 @@ namespace SUNMark.Controllers
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
 
-                SqlParameter[] sqlParameters = new SqlParameter[9];
+                SqlParameter[] sqlParameters = new SqlParameter[15];
                 sqlParameters[0] = new SqlParameter("@CmpVou", companyid);
                 sqlParameters[1] = new SqlParameter("@TrnType", trnType);
                 sqlParameters[2] = new SqlParameter("@RecIss", '0');
@@ -204,12 +204,12 @@ namespace SUNMark.Controllers
                 sqlParameters[6] = new SqlParameter("@ToDt", toDt);
                 sqlParameters[7] = new SqlParameter("@Stock", 0);
                 sqlParameters[8] = new SqlParameter("@UserID", userId);
-                sqlParameters[9] = new SqlParameter("@Thick", thick);
-                sqlParameters[10] = new SqlParameter("@Wdith", width);
-                sqlParameters[11] = new SqlParameter("@Qty", qty);
-                sqlParameters[12] = new SqlParameter("@OD", od);
-                sqlParameters[13] = new SqlParameter("@NB", nb);
-                sqlParameters[14] = new SqlParameter("@Sch", sch);
+                sqlParameters[9] = new SqlParameter("@Thick", thick == null ? 0: Convert.ToDecimal(thick));
+                sqlParameters[10] = new SqlParameter("@Width", width== null ? 0 : Convert.ToDecimal(width));
+                sqlParameters[11] = new SqlParameter("@Qty", qty == null ? 0 : Convert.ToDecimal(qty));
+                sqlParameters[12] = new SqlParameter("@OD", od == null ? 0 : Convert.ToDecimal(od));
+                sqlParameters[13] = new SqlParameter("@NB", nb == null ? 0 : Convert.ToDecimal(nb));
+                sqlParameters[14] = new SqlParameter("@Sch", sch == null ? 0 : Convert.ToDecimal(sch));
                 DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("GetStockLedgerDetails", sqlParameters);
 
                 string whereConditionQuery = string.Empty;
@@ -259,7 +259,12 @@ namespace SUNMark.Controllers
                 }
                 else
                 {
-                    var bytes = PDF(getReportDataModel, "Stock Ledger Report", companyDetails.CmpName, "");
+                    string address = string.Empty;
+                    address += companyDetails.CmpAdd == null ? "" :(companyDetails.CmpAdd + "," ) ;
+                    address +=  frDt != null ?"From Date : " + frDt  + "," : "";
+                    address += address + toDt != null ?"To Date : " + toDt  : "";
+                    
+                    var bytes = PDF(getReportDataModel, "Stock Ledger Report", companyDetails.CmpName, address);
                     return File(
                             bytes,
                             "application/pdf",
