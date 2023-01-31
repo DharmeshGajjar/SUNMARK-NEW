@@ -2190,20 +2190,20 @@
         $(".InwAccVou").select2({
             placeholder: "---Select---",
             // added by anand on 25-01-2023 point no 19 from anand point
-            //ajax: {
-            //    url: '/Inward/GetAccount-List',
-            //    data: function (params) {
-            //        return {
-            //            q: params.term// search term
-            //        };
-            //    },
-            //    processResults: function (data) {
-            //        return {
-            //            results: data.items
-            //        }
-            //    },
+            ajax: {
+                url: '/Inward/GetAccount-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
 
-            //}
+            }
         });
 
         $(".InwTrnVou").select2({
