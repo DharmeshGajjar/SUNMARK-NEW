@@ -1042,6 +1042,7 @@
     var isRecentCalledEsc = false;
     var isRecentCalledAddRows = false;
     var isRecentCalledSave = false;
+    var isRecentCalledPrint = false;
     (function (code) {
         code(window.jQuery, document, window);
     }(function ($, document, window) {
@@ -1053,12 +1054,19 @@
                     GetVoucherNumber();
                 }).on('F9', function () {
                     //$("#btnPrint").click();
-                    activeEle = document.activeElement.name;
-                    if ($('.modal.show').length != 0) {
-                        $("#btn_ViewMailWhatapp").click();
-                    }
-                    else {
-                        $("#btnPrint").click();
+                    if (!isRecentCalledPrint) {
+                        isRecentCalledPrint = true;
+                        activeEle = document.activeElement.name;
+                        if ($('.modal.show').length != 0) {
+                            $("#btn_ViewMailWhatapp").click();
+                        }
+                        else {
+                            $("#btnPrint").click();
+                            $('#frmInward').submit();
+                            setTimeout(function () {
+                                isRecentCalledPrint = false;
+                            }, 500)
+                        }
                     }
                 }).on('F10', function () {
                     $("#btnSave").click();
@@ -2396,12 +2404,11 @@
     });
 
     $("#btnPrint").click(function () {
-        //$('#txtIsPrint').val('1');
+        $('#txtIsPrint').val('1');
         //$('#frmInward').submit();
         //window.open('/Inward/RawInwardPrintDetials/'+ @Html.Raw(Model.InwVou),'_blank')
-        $("#modelPopup").click();
-        $("#EmailAddress").hide();
-        $("#WhatappNo").hide();
+      
+    
     })
 
     $("#btnSave").click(function () {
@@ -2418,10 +2425,12 @@
     }
 
       $(document).ready(function () {
-
             ReturnId = '@Html.Raw(TempData["ReturnId"])';
-            var Savedone = '@Html.Raw(TempData["Savedone"])';
-            if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
+          var Savedone = '@Html.Raw(TempData["Savedone"])';
+          if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
+              $("#modelPopup").click();
+              $("#EmailAddress").hide();
+              $("#WhatappNo").hide();
             }
 
             $("#btn_ViewMailWhatapp").click(function () {

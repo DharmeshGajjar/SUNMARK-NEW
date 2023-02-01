@@ -89,6 +89,7 @@ namespace SUNMark.Controllers
                 #region User Rights
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                string guid = GetStringSession("LoginGUID");
                 UserFormRightModel userFormRights = new UserFormRightModel();
                 string currentURL = "/StockLedger/Index";
                 userFormRights = GetUserRights(userId, currentURL);
@@ -105,7 +106,7 @@ namespace SUNMark.Controllers
                     startRecord = (pageIndex - 1) * pageSize;
                 }
 
-                SqlParameter[] sqlParameters = new SqlParameter[15];
+                SqlParameter[] sqlParameters = new SqlParameter[16];
                 sqlParameters[0] = new SqlParameter("@CmpVou", companyid);
                 if (trnType == "Select")
                 {
@@ -128,6 +129,7 @@ namespace SUNMark.Controllers
                 sqlParameters[12] = new SqlParameter("@OD", od);
                 sqlParameters[13] = new SqlParameter("@NB", nb);
                 sqlParameters[14] = new SqlParameter("@Sch", sch);
+                sqlParameters[15] = new SqlParameter("@GUID", guid);
                 DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("GetStockLedgerDetails", sqlParameters);
 
 

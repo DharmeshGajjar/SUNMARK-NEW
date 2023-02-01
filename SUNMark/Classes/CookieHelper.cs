@@ -33,7 +33,7 @@ namespace SUNMark.Classes
                 else
                 {
                     int cookieSessionUserId, cookieCompanyId, cookieClientId = 0, cookieYearId,isAdministrator = 0;
-                    string cookieSessionUsername = string.Empty,cookieCompanyName,cookieYearName;
+                    string cookieSessionUsername = string.Empty,cookieCompanyName,cookieYearName, cookieLoginGUID;
 
                     cookieSessionUserId = DbConnection.ParseInt32(filterContext.HttpContext.Request.Cookies["UserId"]);
                     cookieCompanyId = DbConnection.ParseInt32(filterContext.HttpContext.Request.Cookies["CompanyId"]);
@@ -43,6 +43,7 @@ namespace SUNMark.Classes
                     isAdministrator = DbConnection.ParseInt32(filterContext.HttpContext.Request.Cookies["IsAdministrator"]);
                     cookieCompanyName = Convert.ToString(filterContext.HttpContext.Request.Cookies["CompanyName"]);
                     cookieYearName= Convert.ToString(filterContext.HttpContext.Request.Cookies["YearName"]);
+                    cookieLoginGUID = Convert.ToString(filterContext.HttpContext.Request.Cookies["LoginGUID"]);
                     
 
                     filterContext.HttpContext.Session.SetInt32("UserId", cookieSessionUserId);
@@ -53,6 +54,7 @@ namespace SUNMark.Classes
                     filterContext.HttpContext.Session.SetInt32("IsAdministrator", isAdministrator);
                     filterContext.HttpContext.Session.SetString("CompanyName", cookieCompanyName);
                     filterContext.HttpContext.Session.SetString("YearName", cookieYearName);
+                    filterContext.HttpContext.Session.SetString("LoginGUID", cookieLoginGUID);
                     
 
                 }

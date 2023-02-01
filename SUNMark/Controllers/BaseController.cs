@@ -53,6 +53,11 @@ namespace SUNMark.Controllers
             return HttpContext.Session.GetInt32(key).HasValue ? Convert.ToInt64(HttpContext.Session.GetInt32(key).Value) : 0;
         }
 
+        public string GetStringSession(string key)
+        {
+            return HttpContext.Session.GetString(key)!=null ? Convert.ToString(HttpContext.Session.GetString(key)) : null;
+        }
+
         public JsonResult GetLatestNumberByTableName(string TableName, string Vou)
         {
             try
