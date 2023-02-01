@@ -197,6 +197,7 @@ namespace SUNMark.Controllers
                         if (dtGridMst != null && dtGridMst.Rows.Count > 0)
                         {
                             returnModel.ReportType = Convert.ToInt32(dtGridMst.Rows[0]["GrdType"].ToString());
+                            returnModel.GrdTitle = dtGridMst.Rows[0]["GrdTitle"].ToString();
                             Query = "SELECT * FROM (" + dtGridMst.Rows[0]["GrdQryFields"].ToString() + " " + dtGridMst.Rows[0]["GrdQryJoin"].ToString();
                         }
 
@@ -686,6 +687,10 @@ namespace SUNMark.Controllers
             int columnCount = 0;
             try
             {
+                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                DepartmentMasterModel departmentMaster = null;
+                if (companyId > 0)
+                    departmentMaster = DbConnection.GetDepartmentMasterByCompanyId(companyId);
                 columnCount = getReportDataModel.ColumnsData.Where(x => x.GrdAHideYN == "0").Count();
                 string[] columnNames = new string[getReportDataModel.ColumnsData.Count];
                 DataTable dataTableData = new DataTable();
@@ -753,7 +758,7 @@ namespace SUNMark.Controllers
                 #region Add Company Name Header
                 cell = new PdfPCell(new Phrase(companyName, _companyNameFontStyle));
                 cell.Colspan = columnCount;
-                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 cell.Border = 0;
                 cell.PaddingBottom = 5f;
                 cell.BackgroundColor = BaseColor.WHITE;
@@ -761,11 +766,33 @@ namespace SUNMark.Controllers
                 table.CompleteRow();
 
 
-                if (!string.IsNullOrWhiteSpace(cmpaddress))
+                if (departmentMaster != null && !string.IsNullOrWhiteSpace(departmentMaster.DepAdd))
                 {
-                    cell = new PdfPCell(new Phrase(cmpaddress, _headerFontStyle));
+                    cell = new PdfPCell(new Phrase(departmentMaster.DepAdd, _headerFontStyle));
                     cell.Colspan = columnCount;
-                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
+                    cell.Border = 0;
+                    cell.PaddingBottom = 5f;
+                    cell.BackgroundColor = BaseColor.WHITE;
+                    table.AddCell(cell);
+                    table.CompleteRow();
+                }
+                if (departmentMaster != null && !string.IsNullOrWhiteSpace(departmentMaster.DepGST))
+                {
+                    cell = new PdfPCell(new Phrase(departmentMaster.DepGST, _headerFontStyle));
+                    cell.Colspan = columnCount;
+                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
+                    cell.Border = 0;
+                    cell.PaddingBottom = 5f;
+                    cell.BackgroundColor = BaseColor.WHITE;
+                    table.AddCell(cell);
+                    table.CompleteRow();
+                }
+                if ( !string.IsNullOrWhiteSpace(getReportDataModel.GrdTitle))
+                {
+                    cell = new PdfPCell(new Phrase(getReportDataModel.GrdTitle, _headerFontStyle));
+                    cell.Colspan = columnCount;
+                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
                     cell.Border = 0;
                     cell.PaddingBottom = 5f;
                     cell.BackgroundColor = BaseColor.WHITE;
@@ -777,7 +804,7 @@ namespace SUNMark.Controllers
                 #region Add Header
                 cell = new PdfPCell(new Phrase(header, _headerFontStyle));
                 cell.Colspan = columnCount;
-                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.HorizontalAlignment = Element.ALIGN_RIGHT;
                 cell.Border = 0;
                 cell.BackgroundColor = BaseColor.WHITE;
                 table.AddCell(cell);
