@@ -130,7 +130,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <input type="hidden" name="GenVou" value="1"/>
+                                                    <input type="hidden" name="GenVou" value="1" />
                                                     <label class="control-label col-md-3 col-sm-3  font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
                                                         Email Id <span class="required">*</span>
                                                     </label>
@@ -150,7 +150,7 @@
                                                     <input type="hidden" name="State" />
                                                     <div class="col-md-auto col-12 form-outline form-white mb-2">
                                                         <input type="password" maxlength="50" id="txtGenPass" autocomplete="new-password" name="GenPass" onfocus="this.select()" class="form-control form-control-lg" placeholder="Password"
-                                                               tabindex="1" value="@Model.GenPass" style="font-family: Verdana;font-size:small; height:30px;width:350px" required />
+                                                               tabindex="2" value="@Model.GenPass" style="font-family: Verdana;font-size:small; height:30px;width:350px" required />
 
                                                     </div>
                                                     <i class="far fa-eye col-md-1 col-sm-1" id="togglePassword" style="margin-left: -40px; cursor: pointer;margin-top:8px"></i>
@@ -165,12 +165,25 @@
                                                     <input type="hidden" name="State" />
                                                     <div class="col-md-auto col-12 form-outline form-white mb-2">
                                                         <input type="text" maxlength="9" id="txtGenSMTP" name="GenSMTP" onfocus="this.select()" class="form-control form-control-lg" placeholder="SMTP Port No"
-                                                               tabindex="1" value="@Model.GenSMTP" style="font-family: Verdana;font-size:small; height:30px;width:350px" required />
+                                                               tabindex="3" value="@Model.GenSMTP" style="font-family: Verdana;font-size:small; height:30px;width:350px" required />
                                                     </div>
 
                                                 </div>
                                             </div>
-                                            
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3  font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                        Email Host <span class="required">*</span>
+                                                    </label>
+                                                    <input type="hidden" name="State" />
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        <input type="text" maxlength="30" id="txtGenHost" name="GenHost" onfocus="this.select()" class="form-control form-control-lg" placeholder="Email Host"
+                                                               tabindex="4" value="@Model.GenHost" style="font-family: Verdana;font-size:small; height:30px;width:350px" required />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
                                         </div>
                                         <br />
                                         <h5>Whatsapp Configuration</h5>
@@ -183,7 +196,7 @@
                                                     <input type="hidden" name="State" />
                                                     <div class="col-md-auto col-12 form-outline form-white mb-2">
                                                         <input type="text" maxlength="20" id="txtGenWhtMob" name="GenWhtMob" onfocus="this.select()" class="form-control form-control-lg" placeholder="Whatsapp Number"
-                                                               tabindex="1" value="@Model.GenWhtMob" style="font-family: Verdana;font-size:small; height:30px;width:350px" required />
+                                                               tabindex="5" value="@Model.GenWhtMob" style="font-family: Verdana;font-size:small; height:30px;width:350px" required />
                                                     </div>
 
                                                 </div>
@@ -196,7 +209,7 @@
                                                     <input type="hidden" name="State" />
                                                     <div class="col-md-auto col-12 form-outline form-white mb-2">
                                                         <input type="text" id="txtGenTokenID" name="GenTokenID" onfocus="this.select()" class="form-control form-control-lg" placeholder="Token Id"
-                                                               tabindex="1" maxlength="50" value="@Model.GenTokenID" style="font-family: Verdana;font-size:small; height:30px;width:350px" required />
+                                                               tabindex="6" maxlength="50" value="@Model.GenTokenID" style="font-family: Verdana;font-size:small; height:30px;width:350px" required />
                                                     </div>
 
                                                 </div>
@@ -209,11 +222,39 @@
                                                     <input type="hidden" name="State" />
                                                     <div class="col-md-auto col-12 form-outline form-white mb-2">
                                                         <input type="text" id="txtGenInstID" name="GenInstID" onfocus="this.select()" class="form-control form-control-lg" placeholder="Instant Id"
-                                                               tabindex="1" maxlength="100" value="@Model.GenInstID" style="font-family: Verdana;font-size:small; height:30px;width:350px" required />
+                                                               tabindex="7" maxlength="100" value="@Model.GenInstID" style="font-family: Verdana;font-size:small; height:30px;width:350px" required />
                                                     </div>
 
                                                 </div>
                                             </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3  font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                        Whatsapp API <span class="required">*</span>
+                                                    </label>
+                                                    <input type="hidden" name="State" />
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        <input type="text" id="txtGenSkruAPI" name="GenSkruAPI" onfocus="this.select()" class="form-control form-control-lg" placeholder="Whatsapp Skru API"
+                                                               tabindex="8" maxlength="100" value="@Model.GenSkruApi" style="font-family: Verdana;font-size:small; height:30px;width:350px" required />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="control-label col-md-3 col-sm-3  font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                        Whatsapp SURL <span class="required">*</span>
+                                                    </label>
+                                                    <input type="hidden" name="State" />
+                                                    <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                        <input type="text" id="txtGenSURL" name="GenSURL" onfocus="this.select()" class="form-control form-control-lg" placeholder="Whatsapp SURL"
+                                                               tabindex="9" maxlength="100" value="@Model.GenSURL" style="font-family: Verdana;font-size:small; height:30px;width:350px" required />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
 
 
                                             <div class="col-md-12">
@@ -425,47 +466,4 @@
         window.location.href = "/GenSetting/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
     })
 </script>
-<script>
-    $(function () {
-        var statename = $('#CtyStaVou').children('option:selected').text()
-        if (statename)
-            $('input[name="State"]').val(statename);
-    })
 
-    $('#CtyStaVou').change(function () {
-        var statename = $('#CtyStaVou').children('option:selected').text()
-        if (statename)
-            $('input[name="State"]').val(statename);
-    })
-</script>
-
-<script>
-    $(document).ready(function () {
-        $(".CtyStaVou").select2({
-            placeholder: "---Select---",
-            ajax: {
-                url: '/GenSetting//GenSetting/GetState-List',
-                data: function (params) {
-                    return {
-                        q: params.term// search term
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data.items
-                    }
-                },
-
-            }
-        });
-
-        $(".CtyStaVou").select2({
-            placeholder: "---Select---",
-        });
-
-        $('.drpReportLayout').select2({
-            placeholder: "---Select---",
-        });
-    });
-
-</script>

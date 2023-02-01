@@ -184,6 +184,8 @@ namespace SUNMark.Controllers
 
                         WhatAppHelper.SToken = Convert.ToString(dtGenSettings.Rows[0]["GenTokenId"]);
                         WhatAppHelper.SInstanceID = Convert.ToString(dtGenSettings.Rows[0]["GenInstId"]);
+                        WhatAppHelper.SURL = Convert.ToString(dtGenSettings.Rows[0]["GenSURL"]);
+                        WhatAppHelper.skrumessage = Convert.ToString(dtGenSettings.Rows[0]["GenSkruAPI"]);
                     }
 
                     

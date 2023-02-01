@@ -45,6 +45,9 @@ namespace SUNMark.Controllers
                         genSettingModel.GenWhtMob = DtEmp.Rows[0]["GenWhtMob"].ToString();
                         genSettingModel.GenTokenID = DtEmp.Rows[0]["GenTokenID"].ToString();
                         genSettingModel.GenInstID = DtEmp.Rows[0]["GenInstID"].ToString();
+                        genSettingModel.GenHost = DtEmp.Rows[0]["GenHost"].ToString();
+                        genSettingModel.GenSkruApi = DtEmp.Rows[0]["GenSkruAPI"].ToString();
+                        genSettingModel.GenSURL = DtEmp.Rows[0]["GenSURL"].ToString();
                     }
                 }
 
@@ -100,7 +103,7 @@ namespace SUNMark.Controllers
                 int administrator = 0;
                 if (!string.IsNullOrWhiteSpace(genSettingModel.GenEmail) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(genSettingModel.GenVou).ToString()))
                 {
-                    SqlParameter[] sqlParameters = new SqlParameter[8];
+                    SqlParameter[] sqlParameters = new SqlParameter[11];
                     sqlParameters[0] = new SqlParameter("@GenEmail", genSettingModel.GenEmail);
                     sqlParameters[1] = new SqlParameter("@GenPass", genSettingModel.GenPass);
                     sqlParameters[2] = new SqlParameter("@GenSMTP", genSettingModel.GenSMTP);
@@ -109,6 +112,9 @@ namespace SUNMark.Controllers
                     sqlParameters[5] = new SqlParameter("@GenInstID", genSettingModel.GenInstID);
                     sqlParameters[6] = new SqlParameter("@Flg", 1);
                     sqlParameters[7] = new SqlParameter("@GenCmpVou", companyId);
+                    sqlParameters[8] = new SqlParameter("@GenHost", genSettingModel.GenHost);
+                    sqlParameters[9] = new SqlParameter("@GenSkruAPI", genSettingModel.GenSkruApi);
+                    sqlParameters[10] = new SqlParameter("@GenSURL", genSettingModel.GenSURL);
 
                     DataTable Dt = ObjDBConnection.CallStoreProcedure("GetSetGenSettingDetails", sqlParameters);
                     SetSuccessMessage("Saved Sucessfully");

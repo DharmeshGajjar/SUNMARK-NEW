@@ -12,8 +12,11 @@ namespace SUNMark.Models
         public string GenEmail { get; set; }
         public string GenPass { get; set; }
         public int GenSMTP { get; set; }
+        public string GenHost { get; set; }
         public string GenWhtMob { get; set; }
         public string GenTokenID { get; set; }
         public string GenInstID { get; set; }
+        public string GenSkruApi { get; set; }
+        public string GenSURL { get; set; }
     }
 }

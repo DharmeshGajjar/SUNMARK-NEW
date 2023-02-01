@@ -1214,7 +1214,7 @@ namespace SUNMark.Controllers
         //    return RedirectToAction("index", "SaudaEntry", new { id = 0 });
         //}
 
-        public WhatAppAPIResponse SendWhatAppMessage(string sMobile, string sMessage, string filnm)
+        public WhatAppAPIResponse SendWhatAppMessage(string sMobile, string sMessage, string filnm, string pdffilenm)
         {
             try
             {
@@ -1228,13 +1228,24 @@ namespace SUNMark.Controllers
 
                     try
                     {
+                        //string sAPI = WhatAppHelper.skrumessage + "?number=" + sMobile + "&type=text&message=" + sMessage + "&instance_id=" + WhatAppHelper.SInstanceID + "&access_token=" + WhatAppHelper.SToken + "";
+                        //request = WebRequest.Create(sAPI);
+                        //response = (HttpWebResponse)request.GetResponse();
+                        //Stream stream = response.GetResponseStream();
+                        //Encoding ec = System.Text.Encoding.GetEncoding("utf-8");
+                        //StreamReader reader = new System.IO.StreamReader(stream, ec);
+                        //result = reader.ReadToEnd();
+                        //if (result.Contains("error"))
+                        //    return null;
+                        //reader.Close();
+                        //stream.Close();
+
                         string resultMsg = "";
                         WebRequest requestFile = null;
                         HttpWebResponse responseFile = null;
                         if (filnm != "")
                         {
-
-                            string sFileAPI = WhatAppHelper.skrumessage + "?number=" + sMobile + "&type=media&message=" + sMessage + "&media_url=" + WhatAppHelper.SURL + "&instance_id=" + WhatAppHelper.SInstanceID + "&access_token=" + WhatAppHelper.SToken + "&filename=" + filnm;
+                            string sFileAPI = WhatAppHelper.skrumessage + "?number=" + sMobile + "&type=media&message=" + sMessage + "&media_url=" + WhatAppHelper.SURL + pdffilenm + "&instance_id=" + WhatAppHelper.SInstanceID + "&access_token=" + WhatAppHelper.SToken + "&filename=" + pdffilenm;
                             requestFile = WebRequest.Create(sFileAPI);
                             responseFile = (HttpWebResponse)requestFile.GetResponse();
                             Stream streamF = responseFile.GetResponseStream();

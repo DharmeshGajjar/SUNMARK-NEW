@@ -1669,7 +1669,7 @@ namespace SUNMark.Controllers
                 doc.Save(wwwroot);
                 doc.Close();
 
-                WhatAppAPIResponse apiResponse = SendWhatAppMessage(whatappNo, "INWARD REPORT", wwwroot);
+                WhatAppAPIResponse apiResponse = SendWhatAppMessage(whatappNo, "INWARD REPORT", wwwroot, "");
                 return Json(new { result = apiResponse.status, message = apiResponse.message });
             }
             catch (Exception ex)

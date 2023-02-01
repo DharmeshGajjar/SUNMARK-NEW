@@ -824,16 +824,19 @@ namespace SUNMark.Controllers
             {
                 JobWorkPrintDetails obj = GetJobWorkPrintData(id);
                 string wwwroot = string.Empty;
+                string filenm = string.Empty;
                 string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
 
                 wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                //wwwroot = "http://piosunmark.pioerp.com/wwwroot/PrintPDF/" + dateTime + ".pdf";
+                filenm = dateTime + ".pdf";
                 SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
                 SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
                 doc.Margins.Left = 25;
                 doc.Save(wwwroot);
                 doc.Close();
 
-                WhatAppAPIResponse apiResponse = SendWhatAppMessage(whatappNo, "SLITTING MACHINE REPORT", wwwroot);
+                WhatAppAPIResponse apiResponse = SendWhatAppMessage(whatappNo, "SLITTING MACHINE REPORT", wwwroot, filenm);
                 return Json(new { result = apiResponse.status, message = apiResponse.message });
             }
             catch (Exception ex)
@@ -943,8 +946,9 @@ namespace SUNMark.Controllers
 
                             newbody = newbody.Replace("#*#*datatable-keytable*#*#", sb.ToString());
 
-                            newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
-                            //newbody = newbody.Replace("#*#*logo*#*#", "http://localhost:6954/Uploads/0026.jpeg");
+                            //newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
+                            newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "http://piosunmark.pioerp.com/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
+
 
                             obj.Html = newbody;
                             obj.Id = id.ToString();
