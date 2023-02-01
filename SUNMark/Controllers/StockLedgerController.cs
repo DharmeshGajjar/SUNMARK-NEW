@@ -194,9 +194,10 @@ namespace SUNMark.Controllers
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
+                string guid = GetStringSession("LoginGUID");
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
 
-                SqlParameter[] sqlParameters = new SqlParameter[15];
+                SqlParameter[] sqlParameters = new SqlParameter[16];
                 sqlParameters[0] = new SqlParameter("@CmpVou", companyid);
                 sqlParameters[1] = new SqlParameter("@TrnType", trnType);
                 sqlParameters[2] = new SqlParameter("@RecIss", '0');
@@ -212,6 +213,7 @@ namespace SUNMark.Controllers
                 sqlParameters[12] = new SqlParameter("@OD", od == null ? 0 : Convert.ToDecimal(od));
                 sqlParameters[13] = new SqlParameter("@NB", nb == null ? 0 : Convert.ToDecimal(nb));
                 sqlParameters[14] = new SqlParameter("@Sch", sch == null ? 0 : Convert.ToDecimal(sch));
+                sqlParameters[15] = new SqlParameter("@GUID", guid);
                 DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("GetStockLedgerDetails", sqlParameters);
 
                 string whereConditionQuery = string.Empty;
