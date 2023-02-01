@@ -405,5 +405,48 @@ namespace SUNMark.Classes
             }
             return IsInserted;
         }
+
+        public static DepartmentMasterModel GetDepartmentMasterByCompanyId(int id)
+        {
+            DepartmentMasterModel departmentMasterModel = new DepartmentMasterModel();
+            
+            DbConnection objdb = new DbConnection();
+            try
+            {
+                SqlParameter[] sqlParameters = new SqlParameter[1];
+                sqlParameters[0] = new SqlParameter("@CmpVou", id);
+                DataTable DtDepartment = objdb.CallStoreProcedure("GetDepartmentMasterByCompany", sqlParameters);
+                if (DtDepartment != null && DtDepartment.Rows.Count > 0)
+                {
+                    departmentMasterModel.DepCode = DtDepartment.Rows[0]["DepCode"].ToString();
+                    departmentMasterModel.DepName = DtDepartment.Rows[0]["DepName"].ToString();
+                    departmentMasterModel.DepAdd = DtDepartment.Rows[0]["DepAdd"].ToString();
+                    departmentMasterModel.DepCity = DtDepartment.Rows[0]["DepCity"].ToString();
+                    departmentMasterModel.DepStateVou = DbConnection.ParseInt32(DtDepartment.Rows[0]["DepStateVou"].ToString());
+                    departmentMasterModel.DepPAN = DtDepartment.Rows[0]["DepPAN"].ToString();
+                    departmentMasterModel.DepGST = DtDepartment.Rows[0]["DepGST"].ToString();
+                    departmentMasterModel.DepPhone2 = DtDepartment.Rows[0]["DepPhone2"].ToString();
+                    departmentMasterModel.DepMob = DtDepartment.Rows[0]["DepMobile"].ToString();
+                    departmentMasterModel.DepEmail = DtDepartment.Rows[0]["DepEmail"].ToString();
+                    departmentMasterModel.DepSTax = DtDepartment.Rows[0]["DepSerTaxNo"].ToString();
+                    departmentMasterModel.DepJurd = DtDepartment.Rows[0]["DepJurisd"].ToString();
+                    departmentMasterModel.DepBnkNm = DtDepartment.Rows[0]["DepBankNm"].ToString();
+                    departmentMasterModel.DepAcNo = DtDepartment.Rows[0]["DepBnkAcNo"].ToString();
+                    departmentMasterModel.DepIFSC = DtDepartment.Rows[0]["DepBnkIFSC"].ToString();
+                    departmentMasterModel.DepBnkBrnch = DtDepartment.Rows[0]["DepBnkBrnch"].ToString();
+                    departmentMasterModel.DepWhtMob = DtDepartment.Rows[0]["DepWhtMob"].ToString();
+                    departmentMasterModel.DepBusLine = DtDepartment.Rows[0]["DepBusLine"].ToString();
+                    departmentMasterModel.ProfilePicture = DtDepartment.Rows[0]["DepLogo"].ToString();
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            return departmentMasterModel;
+        }
+
     }
 }

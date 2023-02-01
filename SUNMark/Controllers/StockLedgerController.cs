@@ -261,12 +261,12 @@ namespace SUNMark.Controllers
                 }
                 else
                 {
-                    string address = string.Empty;
-                    address += companyDetails.CmpAdd == null ? "" :(companyDetails.CmpAdd + "," ) ;
-                    address +=  frDt != null ?"From Date : " + frDt  + "," : "";
-                    address += address + toDt != null ?"To Date : " + toDt  : "";
+                    //string address = string.Empty;
+                    //address += companyDetails.CmpAdd == null ? "" :(companyDetails.CmpAdd + "," ) ;
+                    //address +=  frDt != null ?"From Date : " + frDt  + "," : "";
+                    //address += address + toDt != null ?"To Date : " + toDt  : "";
                     
-                    var bytes = PDF(getReportDataModel, "Stock Ledger Report", companyDetails.CmpName, address);
+                    var bytes = PDF(getReportDataModel, "Stock Ledger Report", companyDetails.CmpName, companyDetails.CmpAdd);
                     return File(
                             bytes,
                             "application/pdf",
