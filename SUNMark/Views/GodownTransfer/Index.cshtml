@@ -2033,9 +2033,16 @@
     }
 </script>
 <script>
+    var ReturnId = 0;
+    function PrintGdnTrnReport(returnID) {
+
+        ReturnId = returnID;
+        $('#exampleModal').modal('toggle');
+    }
     $(document).ready(function () {
-        var ReturnId = '@Html.Raw(TempData["ReturnId"])';
+        ReturnId = '@Html.Raw(TempData["ReturnId"])';
         var Savedone = '@Html.Raw(TempData["Savedone"])';
+
         if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
             //window.open(
             //    '/GodownTransfer/GdnTrnPrintDetials/'+ReturnId+'',
@@ -2102,38 +2109,37 @@
                 }
                 else if (optionVal == "WhatApp") {
                     let whNO = $("#WhatappNo").val();
-                    //if (whNO != "" && whNO != null) {
-                    //    if (whNO.length == 10) {
-                    //        $.ajax({
-                    //            type: "POST",
-                    //            url:  '/JobWorkEntry/JobWorkWhatApp',
-                    //            data: { "id": ReturnId, "whatappNo": whNO },
-                    //            dataType: "JSON",
-                    //            success: function (data) {
-                    //                $("[name=" + activeEle + "]").focus();
-                    //                if (data.result == "error") {
-                    //                    showErrorMessage(data.message)
-                    //                }
-                    //                else {
-                    //                    showSuccessMessage(data.message);
-                    //                }
-                    //                $('#radio1').prop('checked', true);
-                    //                $("#WhatappNo").val("");
-                    //                $("#WhatappNo").hide();
-                    //                $('#exampleModal').modal('toggle');
-                    //            },
-                    //            error: function (data) {
-                    //                $("#WhatappNo").val("");
-                    //            }
-                    //        });
-                    //    }
-                    //    else {
-                    //        alert("Please enter 10 digit number")
-                    //    }
-                    //}
-                    //else {
-                    //    alert("Please enter what app number")
-                    //}
+                    if (whNO != "" && whNO != null) {
+                        if (whNO.length == 10) {
+                            $.ajax({
+                                type: "POST",
+                                url: '/GodownTransfer/GdnTrWhatApp',
+                                data: { "id": ReturnId, "whatappNo": whNO },
+                                dataType: "JSON",
+                                success: function (data) {
+                                    if (data.result == "error") {
+                                        showErrorMessage(data.message)
+                                    }
+                                    else {
+                                        showSuccessMessage(data.message);
+                                    }
+                                    $('#radio1').prop('checked', true);
+                                    $("#WhatappNo").val("");
+                                    $("#WhatappNo").hide();
+                                    $('#exampleModal').modal('toggle');
+                                },
+                                error: function (data) {
+                                    $("#WhatappNo").val("");
+                                }
+                            });
+                        }
+                        else {
+                            alert("Please enter 10 digit number")
+                        }
+                    }
+                    else {
+                        alert("Please enter what app number")
+                    }
 
                 }
 
