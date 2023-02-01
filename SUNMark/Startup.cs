@@ -40,15 +40,15 @@ namespace SUNMark
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            MailHelper.FromEmail = Configuration["SMTP:FromEmail"];
-            MailHelper.Password = Configuration["SMTP:Password"];
-            MailHelper.Port = Convert.ToInt32(Configuration["SMTP:Port"]);
-            MailHelper.Host = Configuration["SMTP:Host"];
+            //MailHelper.FromEmail = Configuration["SMTP:FromEmail"];
+            //MailHelper.Password = Configuration["SMTP:Password"];
+            //MailHelper.Port = Convert.ToInt32(Configuration["SMTP:Port"]);
+            //MailHelper.Host = Configuration["SMTP:Host"];
 
             WhatAppHelper.skrumessage = Configuration["WHATAPP:skrumessage"];
             WhatAppHelper.SURL = Configuration["WHATAPP:SURL"];
-            WhatAppHelper.SInstanceID =Configuration["WHATAPP:SInstanceID"];
-            WhatAppHelper.SToken = Configuration["WHATAPP:SToken"];
+            //WhatAppHelper.SInstanceID =Configuration["WHATAPP:SInstanceID"];
+            //WhatAppHelper.SToken = Configuration["WHATAPP:SToken"];
 
         }
 

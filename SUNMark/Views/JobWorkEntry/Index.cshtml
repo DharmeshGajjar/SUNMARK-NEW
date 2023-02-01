@@ -136,7 +136,7 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"> Esc - Cancle</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"> Esc - Cancel</button>
                                     <button type="button" class="btn btn-primary" id="btn_ViewMailWhatapp">Submit (F9)</button>
                                 </div>
                             </div>
@@ -915,6 +915,8 @@
                         $("#btn_ViewMailWhatapp").click();
                     }
                     else {
+                        
+                      var result =   AddJobkWorkEntry(event);
                         $("#btnPrint").click();
                     }
                 }).on('F10', function () {
@@ -2217,7 +2219,7 @@
 
 
     function AddJobkWorkEntry(event) {
-
+        debugger
         if (!isSaveCalled) {
             isSaveCalled = true;
             setTimeout(function () {
@@ -2346,6 +2348,7 @@
                                 data: { "isscoil": isscoil },
                                 dataType: "JSON",
                                 success: function (data) {
+                                    debugger
                                     if (data.result) {
                                         if (data.data == "1") {
                                             showErrorMessage("Intrasit Coil Can not Complete Production!");
@@ -2359,9 +2362,11 @@
                                                 data: { "jobWorkEntryModel": model },
                                                 dataType: "JSON",
                                                 success: function (response) {
+                                                    debugger
                                                     if (response) {
                                                         if (response.result) {
-                                                            window.location.href = '/jobworkentry/index'
+                                                            // window.location.href = '/jobworkentry/index'
+                                                            return true;
                                                         }
                                                         else {
                                                             showErrorMessage(response.message);
@@ -3102,6 +3107,7 @@
     $("#btnPrint").click(function () {
         //$('#txtIsPrint').val('1');
         //$('#frmjobwork').submit();
+        var result = AddJobkWorkEntry(event);
         $("#modelPopup").click();
     })
 

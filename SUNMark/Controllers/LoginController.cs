@@ -17,7 +17,7 @@ namespace SUNMark.Controllers
         DbConnection ObjDBConnection = new DbConnection();
         public IActionResult Index()
         {
-           // SendWhatAppMessage("918200137917","Hello Anand", "E:/04012023095916.pdf");
+            // SendWhatAppMessage("918200137917","Hello Anand", "E:/04012023095916.pdf");
             return View();
         }
 
@@ -173,6 +173,21 @@ namespace SUNMark.Controllers
                     var companyList = DbConnection.GetCompanyYearList(Convert.ToInt32(clientId), isadministrator);
                     Response.Cookies.Append("CompanyName", companyList.Where(x => x.Id == companyId.ToString()).Select(x => x.Name).FirstOrDefault());
                     Response.Cookies.Append("YearName", yearList.Where(x => x.Value == yearId.ToString()).Select(x => x.Text).FirstOrDefault());
+
+                    DataTable dtGenSettings = ObjDBConnection.CallStoreProcedure("GetGenSettings", null);
+                    if (dtGenSettings != null && dtGenSettings.Rows.Count > 0)
+                    {
+                        MailHelper.FromEmail = Convert.ToString(dtGenSettings.Rows[0]["GenEmail"]);
+                        MailHelper.Host = Convert.ToString(dtGenSettings.Rows[0]["GenHost"]);
+                        MailHelper.Password = Convert.ToString(dtGenSettings.Rows[0]["GenPass"]);
+                        MailHelper.Port = Convert.ToInt32(dtGenSettings.Rows[0]["GenSMTP"]);
+
+                        WhatAppHelper.SToken = Convert.ToString(dtGenSettings.Rows[0]["GenTokenId"]);
+                        WhatAppHelper.SInstanceID = Convert.ToString(dtGenSettings.Rows[0]["GenInstId"]);
+                    }
+
+                    
+
                     return RedirectToAction("index", "dashboard");
 
                 }

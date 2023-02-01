@@ -683,9 +683,10 @@ namespace SUNMark.Controllers
         public byte[] PDF(GetReportDataModel getReportDataModel, string header, string companyName, string cmpaddress = "")
         {
             MemoryStream _stream = new MemoryStream();
+            int columnCount = 0;
             try
             {
-                int columnCount = getReportDataModel.ColumnsData.Where(x => x.GrdAHideYN == "0").Count();
+                columnCount = getReportDataModel.ColumnsData.Where(x => x.GrdAHideYN == "0").Count();
                 string[] columnNames = new string[getReportDataModel.ColumnsData.Count];
                 DataTable dataTableData = new DataTable();
                 for (int i = 0; i < getReportDataModel.ColumnsData.Count; i++)
@@ -724,14 +725,20 @@ namespace SUNMark.Controllers
                 Font _totalAndProductFontStyle = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 9f, BaseColor.BLACK);
                 Font _tableDataFontStyle = FontFactory.GetFont("calibri", 8f, BaseColor.BLACK);
 
-                Document document = new Document(PageSize.A4, 10f, 10f, 30f, 20f);
-                if (columnCount > 8 && 13 < columnCount)
+                Document document = new Document();
+                if (columnCount > 8 && columnCount < 13)
                 {
-                 document = new Document(PageSize.A4_LANDSCAPE, 10f, 10f, 30f, 20f);
+                    document = new Document(PageSize.A4_LANDSCAPE.Rotate().Rotate().Rotate(), 50f, 50f, 50f, 50f);
+
                 }
                 else if (columnCount > 13)
                 {
-                    document = new Document(PageSize.LEGAL_LANDSCAPE, 10f, 10f, 30f, 20f);
+                    document = new Document(PageSize.LEGAL_LANDSCAPE.Rotate().Rotate().Rotate(), 50f, 50f, 50f, 50f);
+
+                }
+                else
+                {
+                    document = new Document(PageSize.A4, 50f, 50f, 50f, 50f);
                 }
                 PdfWriter.GetInstance(document, _stream);
                 document.Open();
@@ -756,7 +763,7 @@ namespace SUNMark.Controllers
 
                 if (!string.IsNullOrWhiteSpace(cmpaddress))
                 {
-                    cell = new PdfPCell(new Phrase(cmpaddress, _companyNameFontStyle));
+                    cell = new PdfPCell(new Phrase(cmpaddress, _headerFontStyle));
                     cell.Colspan = columnCount;
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     cell.Border = 0;
@@ -902,7 +909,7 @@ namespace SUNMark.Controllers
             {
                 throw;
             }
-            return AddPageNumbers(_stream.ToArray());
+            return AddPageNumbers(_stream.ToArray(), columnCount);
         }
 
         public List<SelectListItem> GetPageNo()
@@ -954,7 +961,7 @@ namespace SUNMark.Controllers
         }
 
 
-        private static byte[] AddPageNumbers(byte[] pdf)
+        private static byte[] AddPageNumbers(byte[] pdf, int columnCount)
         {
             MemoryStream ms = new MemoryStream();
             // we create a reader for a certain document
@@ -964,11 +971,26 @@ namespace SUNMark.Controllers
             // we retrieve the size of the first page
             Rectangle psize = reader.GetPageSize(1);
             // step 1: creation of a document-object
-            Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+            //Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+            Document document = new Document();
+            if (columnCount > 8 && columnCount < 13)
+            {
+                document = new Document(PageSize.A4_LANDSCAPE.Rotate(), 50f, 50f, 50f, 50f);
+
+            }
+            else if (columnCount > 13)
+            {
+                document = new Document(PageSize.LEGAL_LANDSCAPE.Rotate().Rotate().Rotate(), 50f, 50f, 50f, 50f);
+
+            }
+            else
+            {
+                document = new Document(PageSize.A4, 50f, 50f, 50f, 50f);
+            }
             //Document document = new Document(PageSize.A4, 0f, 0f, 0f, 0f);
 
-            document.SetPageSize(PageSize.A4);
-            document.SetMargins(50f, 50f, 50f, 50f);
+            //document.SetPageSize(PageSize.A4);
+            //document.SetMargins(50f, 50f, 50f, 50f);
             // step 2: we create a writer that listens to the document
             PdfWriter writer = PdfWriter.GetInstance(document, ms);
             // step 3: we open the document
@@ -991,7 +1013,19 @@ namespace SUNMark.Controllers
                 Phrase header1 = new Phrase("Report Date: " + DateTime.Now.ToString("dd-MM-yyyy"), ffont);
                 Phrase header2 = new Phrase("Page No.: " + p, ffont);
                 ColumnText.ShowTextAligned(cb, Element.ALIGN_LEFT, header1, 20, document.Top + 30, 0);
-                ColumnText.ShowTextAligned(cb, Element.ALIGN_RIGHT, header2, 570, document.Top + 30, 0);
+                if (columnCount > 8 && columnCount < 13)
+                {
+                    ColumnText.ShowTextAligned(cb, Element.ALIGN_RIGHT, header2, 790, document.Top + 30, 0);
+                }
+                else if (columnCount > 13)
+                {
+                    ColumnText.ShowTextAligned(cb, Element.ALIGN_RIGHT, header2, 900, document.Top + 30, 0);
+
+                }
+                else
+                {
+                    ColumnText.ShowTextAligned(cb, Element.ALIGN_RIGHT, header2, 570, document.Top + 30, 0);
+                }
             }
             // step 5: we close the document
             document.Close();
