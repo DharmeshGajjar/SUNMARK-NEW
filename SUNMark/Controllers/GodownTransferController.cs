@@ -36,6 +36,8 @@ namespace SUNMark.Controllers
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 ViewBag.id = id;
+                if (id > 0)
+                    TempData["ReturnId"] = Convert.ToString(id);
                 return View();
             }
             catch (Exception ex)
@@ -569,7 +571,7 @@ namespace SUNMark.Controllers
             }
             return RedirectToAction("index", "GodownTransfer");
         }
-        public IActionResult GdnTrnPrintDetials(long id, int copyType = 1)
+        public GdnTrnPrintDetails GetGdnTrnHtmlData(long id)
         {
             GdnTrnPrintDetails obj = new GdnTrnPrintDetails();
 
@@ -646,7 +648,7 @@ namespace SUNMark.Controllers
                         {
                             string sRem = DtInward.Rows[i]["GdtRem"].ToString();
                             sRem = sRem == null ? "" : sRem;
-                            sb.Append("<tr>");  
+                            sb.Append("<tr>");
 
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["GdtGrade"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["GdtCoilNo"].ToString() + "</td>");
@@ -691,7 +693,61 @@ namespace SUNMark.Controllers
             {
                 throw;
             }
-            return View(obj);
+            return obj;
+        }
+        public IActionResult GdnTrnPrintDetials(long id, int copyType = 1)
+        {
+            try
+            {
+                GdnTrnPrintDetails obj = GetGdnTrnHtmlData(id);
+
+                string wwwroot = string.Empty;
+                string filePath = "/PrintPDF/" + id + ".pdf";
+                wwwroot = _iwebhostenviroment.WebRootPath + filePath;
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Save(wwwroot);
+                doc.Close();
+                return Json(filePath);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            
+        }
+        public IActionResult GdnTrnSendMail(long id, string email = "")
+        {
+            try
+            {
+                GdnTrnPrintDetails obj = GetGdnTrnHtmlData(id);
+                string wwwroot = string.Empty;
+                string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
+
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                //var render = new IronPdf.HtmlToPdf();
+                //using var doc = render.RenderHtmlAsPdf(obj.Html);
+                //doc.SaveAs(wwwroot);
+
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Save(wwwroot);
+                doc.Close();
+
+                bool result = SendEmail(email, "GODOWN TRANSFER REPORT", "Please find attachment", wwwroot);
+                if (result)
+                    return Json(new { result = result, message = "Mail Send Sucessfully" });
+                else
+                    return Json(new { result = result, message = "Internal server error" });
+
+
+                //return Json(new { result = result, message = "Please check your mail address" });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
     }
 }
