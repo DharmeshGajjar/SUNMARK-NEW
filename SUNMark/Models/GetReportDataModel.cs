@@ -18,6 +18,7 @@ namespace SUNMark.Models
         public int pageSize { get; set; }
 
         public int ReportType { get; set; }
+        public string GrdTitle { get; set; }
 
         public string ControllerName { get; set; }
 

@@ -89,6 +89,7 @@ namespace SUNMark.Controllers
                 #region User Rights
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                string guid = GetStringSession("LoginGUID");
                 UserFormRightModel userFormRights = new UserFormRightModel();
                 string currentURL = "/StockLedger/Index";
                 userFormRights = GetUserRights(userId, currentURL);
@@ -105,7 +106,7 @@ namespace SUNMark.Controllers
                     startRecord = (pageIndex - 1) * pageSize;
                 }
 
-                SqlParameter[] sqlParameters = new SqlParameter[15];
+                SqlParameter[] sqlParameters = new SqlParameter[16];
                 sqlParameters[0] = new SqlParameter("@CmpVou", companyid);
                 if (trnType == "Select")
                 {
@@ -128,6 +129,7 @@ namespace SUNMark.Controllers
                 sqlParameters[12] = new SqlParameter("@OD", od);
                 sqlParameters[13] = new SqlParameter("@NB", nb);
                 sqlParameters[14] = new SqlParameter("@Sch", sch);
+                sqlParameters[15] = new SqlParameter("@GUID", guid);
                 DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("GetStockLedgerDetails", sqlParameters);
 
 
@@ -192,9 +194,10 @@ namespace SUNMark.Controllers
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
+                string guid = GetStringSession("LoginGUID");
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
 
-                SqlParameter[] sqlParameters = new SqlParameter[15];
+                SqlParameter[] sqlParameters = new SqlParameter[16];
                 sqlParameters[0] = new SqlParameter("@CmpVou", companyid);
                 sqlParameters[1] = new SqlParameter("@TrnType", trnType);
                 sqlParameters[2] = new SqlParameter("@RecIss", '0');
@@ -210,6 +213,7 @@ namespace SUNMark.Controllers
                 sqlParameters[12] = new SqlParameter("@OD", od == null ? 0 : Convert.ToDecimal(od));
                 sqlParameters[13] = new SqlParameter("@NB", nb == null ? 0 : Convert.ToDecimal(nb));
                 sqlParameters[14] = new SqlParameter("@Sch", sch == null ? 0 : Convert.ToDecimal(sch));
+                sqlParameters[15] = new SqlParameter("@GUID", guid);
                 DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("GetStockLedgerDetails", sqlParameters);
 
                 string whereConditionQuery = string.Empty;
@@ -259,12 +263,12 @@ namespace SUNMark.Controllers
                 }
                 else
                 {
-                    string address = string.Empty;
-                    address += companyDetails.CmpAdd == null ? "" :(companyDetails.CmpAdd + "," ) ;
-                    address +=  frDt != null ?"From Date : " + frDt  + "," : "";
-                    address += address + toDt != null ?"To Date : " + toDt  : "";
+                    //string address = string.Empty;
+                    //address += companyDetails.CmpAdd == null ? "" :(companyDetails.CmpAdd + "," ) ;
+                    //address +=  frDt != null ?"From Date : " + frDt  + "," : "";
+                    //address += address + toDt != null ?"To Date : " + toDt  : "";
                     
-                    var bytes = PDF(getReportDataModel, "Stock Ledger Report", companyDetails.CmpName, address);
+                    var bytes = PDF(getReportDataModel, "Stock Ledger Report", companyDetails.CmpName, companyDetails.CmpAdd);
                     return File(
                             bytes,
                             "application/pdf",

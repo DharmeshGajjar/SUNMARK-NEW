@@ -65,13 +65,34 @@ namespace SUNMark.Controllers
                             Response.Cookies.Delete("IsAdministrator");
                             Response.Cookies.Delete("CompanyName");
                             Response.Cookies.Delete("YearName");
+                            Response.Cookies.Delete("LoginGUID");
                             HttpContext.Session.Clear();
 
                             Response.Cookies.Append("UserId", dtLogin.Tables[1].Rows[0]["Uservou"].ToString());
                             Response.Cookies.Append("Username", dtLogin.Tables[1].Rows[0]["UserId"].ToString());
                             Response.Cookies.Append("ClientId", dtLogin.Tables[1].Rows[0]["ClientId"].ToString());
                             Response.Cookies.Append("IsAdministrator", dtLogin.Tables[1].Rows[0]["IsAdministrator"].ToString());
-                            return RedirectToAction("Company", "Login");
+                            Response.Cookies.Append("LoginGUID", Guid.NewGuid().ToString());
+
+                            Response.Cookies.Delete("CompanyId");
+                            Response.Cookies.Delete("YearId");
+                            Response.Cookies.Delete("CompanyName");
+                            Response.Cookies.Delete("YearName");
+
+                            var companyDetails = DbConnection.GetCompanyYearList(0, 1);
+                            if (companyDetails != null && companyDetails.Count > 0)
+                            {
+                                Response.Cookies.Append("CompanyId", companyDetails[0].Id.ToString());
+                                Response.Cookies.Append("CompanyName", companyDetails[0].Name);
+
+                                var yearList = DbConnection.GetYearList(Convert.ToInt32(companyDetails[0].Id.ToString()));
+
+                                Response.Cookies.Append("YearName", yearList.Where(x => x.Value == yearList[0].Value.ToString()).Select(x => x.Text).FirstOrDefault());
+                                Response.Cookies.Append("YearId", yearList[0].Value.ToString()); 
+                            }
+
+                            //return RedirectToAction("Company", "Login");
+                            return RedirectToAction("index", "dashboard");
                         }
                     }
                     else
@@ -188,7 +209,7 @@ namespace SUNMark.Controllers
                         WhatAppHelper.skrumessage = Convert.ToString(dtGenSettings.Rows[0]["GenSkruAPI"]);
                     }
 
-                    
+
 
                     return RedirectToAction("index", "dashboard");
 

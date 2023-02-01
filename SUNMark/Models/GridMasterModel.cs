@@ -15,6 +15,7 @@ namespace SUNMark.Models
         public string GrdType { get; set; }
         public List<SelectListItem> TypeList { get; set; }
         public string GrdName { get; set; }
+        public string GrdTitle { get; set; }
         public int GrdMultiSelYN { get; set; }
         public List<SelectListItem> MultiYNList { get; set; }
         public string GrdQryFields { get; set; }
