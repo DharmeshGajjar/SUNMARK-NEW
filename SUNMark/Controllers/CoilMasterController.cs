@@ -305,6 +305,10 @@ namespace SUNMark.Controllers
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
 
+                SqlParameter[] sqlParameters = new SqlParameter[1];
+                sqlParameters[0] = new SqlParameter("@SESSID", userId);
+                DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("RPT_COILMASTER", sqlParameters);
+
                 string whereConditionQuery = string.Empty;
                 if (gridMstId != 35)
                 {
@@ -403,11 +407,11 @@ namespace SUNMark.Controllers
                     {
                         whereConditionQuery += " AND CoilMst.Thick<='" + tothick + "'";
                     }
-                    if (!string.IsNullOrWhiteSpace(frWeigth))
+                    if (!string.IsNullOrWhiteSpace(frWeigth) && frWeigth != "0")
                     {
                         whereConditionQuery += " AND CoilMst.Qty >='" + frWeigth + "'";
                     }
-                    if (!string.IsNullOrWhiteSpace(toWeigth))
+                    if (!string.IsNullOrWhiteSpace(toWeigth) && toWeigth != "0")
                     {
                         whereConditionQuery += " AND CoilMst.Qty <='" + toWeigth + "'";
                     }
@@ -481,7 +485,12 @@ namespace SUNMark.Controllers
                 }
                 else
                 {
-                    var bytes = PDF(getReportDataModel, "Coil Register Report", companyDetails.CmpName, "");
+                    string address = string.Empty;
+                    address += companyDetails.CmpAdd == null ? "" : (companyDetails.CmpAdd + ",");
+                    address += frRecDt != null ? "From Date : " + frRecDt + "," : "";
+                    address += address + toRecDt != null ? "To Date : " + toRecDt : "";
+
+                    var bytes = PDF(getReportDataModel, "Coil Register Report", companyDetails.CmpName, address);
                     return File(
                             bytes,
                             "application/pdf",
