@@ -122,7 +122,7 @@
                                         }
                                         @if (Model.ControllerName == "GodownTransfer")
                                         {
-                                            <a target="_blank" href="/@Model.ControllerName/GdnTrnPrintDetials/@item[0]"> <i class="fa fa-print text-orange pr-2"></i></a>
+                                            <a onclick="PrintGdnTrnReport(@item[0])" href="#"> <i class="fa fa-print text-orange pr-2"></i></a>
                                         }
                                         @if (userRight != null && userRight.IsEdit)
                                         {
