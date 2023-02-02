@@ -1660,16 +1660,18 @@ namespace SUNMark.Controllers
             {
                 InwardPrintDetails obj = GetDetailsById(id);
                 string wwwroot = string.Empty;
+                string filenm = string.Empty;
                 string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
 
                 wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                filenm = dateTime + ".pdf";
                 SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
                 SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
                 doc.Margins.Left = 25;
                 doc.Save(wwwroot);
                 doc.Close();
 
-                WhatAppAPIResponse apiResponse = SendWhatAppMessage(whatappNo, "INWARD REPORT", wwwroot, "");
+                WhatAppAPIResponse apiResponse = SendWhatAppMessage(whatappNo, "INWARD REPORT", wwwroot, filenm);
                 return Json(new { result = apiResponse.status, message = apiResponse.message });
             }
             catch (Exception ex)

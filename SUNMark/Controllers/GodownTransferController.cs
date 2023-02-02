@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Text;
 using Microsoft.AspNetCore.Hosting;
+using SUNMark.Common;
 
 namespace SUNMark.Controllers
 {
@@ -630,7 +631,8 @@ namespace SUNMark.Controllers
                         newbody = newbody.Replace("#*#*chalnno*#*#", DtInward.Rows[0]["gdmref"].ToString());
                         newbody = newbody.Replace("#*#*r3*#*#", DtInward.Rows[0]["GdmVehNo"].ToString());
                         newbody = newbody.Replace("#*#*r4*#*#", "");
-                        newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtInward.Rows[0]["DepLogo"].ToString()) ? "/Uploads/" + DtInward.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
+                        //newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtInward.Rows[0]["DepLogo"].ToString()) ? "/Uploads/" + DtInward.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
+                        newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtInward.Rows[0]["DepLogo"].ToString()) ? "http://piosunmark.pioerp.com/Uploads/" + DtInward.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
 
                         StringBuilder sb = new StringBuilder();
 
@@ -742,6 +744,33 @@ namespace SUNMark.Controllers
 
 
                 //return Json(new { result = result, message = "Please check your mail address" });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        public IActionResult GdnTrWhatApp(long id, string whatappNo = "")
+        {
+            try
+            {
+                GdnTrnPrintDetails obj = GetGdnTrnHtmlData(id);
+                string wwwroot = string.Empty;
+                string filenm = string.Empty;
+                string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
+
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                //wwwroot = "http://piosunmark.pioerp.com/wwwroot/PrintPDF/" + dateTime + ".pdf";
+                filenm = dateTime + ".pdf";
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Margins.Left = 25;
+                doc.Save(wwwroot);
+                doc.Close();
+
+                WhatAppAPIResponse apiResponse = SendWhatAppMessage(whatappNo, "GODOWN TRANSFER REPORT", wwwroot, filenm);
+                return Json(new { result = apiResponse.status, message = apiResponse.message });
             }
             catch (Exception ex)
             {
