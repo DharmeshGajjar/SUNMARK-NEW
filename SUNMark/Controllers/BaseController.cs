@@ -681,16 +681,15 @@ namespace SUNMark.Controllers
             }
         }
 
-        public byte[] PDF(GetReportDataModel getReportDataModel, string header, string companyName, string cmpaddress = "")
+        public byte[] PDF(GetReportDataModel getReportDataModel, string header, string companyName, string companyID = "")
         {
             MemoryStream _stream = new MemoryStream();
             int columnCount = 0;
+            DepartmentMasterModel departmentMaster = new DepartmentMasterModel();
             try
             {
-                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
-                DepartmentMasterModel departmentMaster = null;
-                if (companyId > 0)
-                    departmentMaster = DbConnection.GetDepartmentMasterByCompanyId(companyId);
+                int companyId = string.IsNullOrEmpty(companyID) ? 0 : Convert.ToInt32(companyID);
+                departmentMaster = DbConnection.GetDepartmentMasterByCompanyId(companyId);
                 columnCount = getReportDataModel.ColumnsData.Where(x => x.GrdAHideYN == "0").Count();
                 string[] columnNames = new string[getReportDataModel.ColumnsData.Count];
                 DataTable dataTableData = new DataTable();
@@ -722,9 +721,9 @@ namespace SUNMark.Controllers
                 int[] RequisitionReportRightJustify = { 8, 9 };
 
                 Font _blankSpaceLine = FontFactory.GetFont(FontFactory.HELVETICA, 2f);
-                Font _companyNameFontStyle = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 15f, BaseColor.BLACK);
+
                 Font _companyAddressFontStyle = FontFactory.GetFont(FontFactory.HELVETICA, 10f);
-                Font _headerFontStyle = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11f, BaseColor.BLACK);
+
                 Font _filterFontStyle = FontFactory.GetFont(FontFactory.HELVETICA, 10f, BaseColor.BLACK);
                 Font _tableHeaderFontStyle = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f, BaseColor.BLACK);
                 Font _totalAndProductFontStyle = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 9f, BaseColor.BLACK);
@@ -749,69 +748,6 @@ namespace SUNMark.Controllers
                 document.Open();
 
 
-                PdfPTable table = new PdfPTable(1);
-                PdfPCell cell = new PdfPCell();
-
-                table.WidthPercentage = 100;
-                table.HorizontalAlignment = 1;
-
-                #region Add Company Name Header
-                cell = new PdfPCell(new Phrase(companyName, _companyNameFontStyle));
-                cell.Colspan = columnCount;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                cell.Border = 0;
-                cell.PaddingBottom = 5f;
-                cell.BackgroundColor = BaseColor.WHITE;
-                table.AddCell(cell);
-                table.CompleteRow();
-
-
-                if (departmentMaster != null && !string.IsNullOrWhiteSpace(departmentMaster.DepAdd))
-                {
-                    cell = new PdfPCell(new Phrase(departmentMaster.DepAdd, _headerFontStyle));
-                    cell.Colspan = columnCount;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    cell.Border = 0;
-                    cell.PaddingBottom = 5f;
-                    cell.BackgroundColor = BaseColor.WHITE;
-                    table.AddCell(cell);
-                    table.CompleteRow();
-                }
-                if (departmentMaster != null && !string.IsNullOrWhiteSpace(departmentMaster.DepGST))
-                {
-                    cell = new PdfPCell(new Phrase(departmentMaster.DepGST, _headerFontStyle));
-                    cell.Colspan = columnCount;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    cell.Border = 0;
-                    cell.PaddingBottom = 5f;
-                    cell.BackgroundColor = BaseColor.WHITE;
-                    table.AddCell(cell);
-                    table.CompleteRow();
-                }
-                if ( !string.IsNullOrWhiteSpace(getReportDataModel.GrdTitle))
-                {
-                    cell = new PdfPCell(new Phrase(getReportDataModel.GrdTitle, _headerFontStyle));
-                    cell.Colspan = columnCount;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    cell.Border = 0;
-                    cell.PaddingBottom = 5f;
-                    cell.BackgroundColor = BaseColor.WHITE;
-                    table.AddCell(cell);
-                    table.CompleteRow();
-                }
-                #endregion
-
-                #region Add Header
-                cell = new PdfPCell(new Phrase(header, _headerFontStyle));
-                cell.Colspan = columnCount;
-                cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                cell.Border = 0;
-                cell.BackgroundColor = BaseColor.WHITE;
-                table.AddCell(cell);
-                table.CompleteRow();
-                #endregion
-
-                document.Add(table);
                 Paragraph line = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLACK, Element.ALIGN_LEFT, 1)));
                 line.SpacingBefore = 0.0f;
                 document.Add(line);
@@ -936,7 +872,7 @@ namespace SUNMark.Controllers
             {
                 throw;
             }
-            return AddPageNumbers(_stream.ToArray(), columnCount);
+            return AddPageNumbers(_stream.ToArray(), columnCount, departmentMaster, getReportDataModel.GrdTitle, header);
         }
 
         public List<SelectListItem> GetPageNo()
@@ -988,7 +924,7 @@ namespace SUNMark.Controllers
         }
 
 
-        private static byte[] AddPageNumbers(byte[] pdf, int columnCount)
+        private static byte[] AddPageNumbers(byte[] pdf, int columnCount, DepartmentMasterModel departmentMaster, string grdTitle, string header)
         {
             MemoryStream ms = new MemoryStream();
             // we create a reader for a certain document
@@ -1026,20 +962,23 @@ namespace SUNMark.Controllers
             // step 4: we add content
             Font ffont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL);
             PdfContentByte cb = writer.DirectContent;
+            Font _companyNameFontStyle = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 15f, BaseColor.BLACK);
+            Font _headerFontStyle = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11f, BaseColor.BLACK);
+            PdfPTable table = new PdfPTable(1);
+            PdfPCell cell = new PdfPCell();
 
-
-            int p = 0;
+            int p = 0, temp = -25;
             for (int page = 1; page <= reader.NumberOfPages; page++)
             {
                 document.NewPage();
                 p++;
 
                 PdfImportedPage importedPage = writer.GetImportedPage(reader, page);
-                cb.AddTemplate(importedPage, 0, 0);
+                cb.AddTemplate(importedPage, 0, -43);
 
                 Phrase header1 = new Phrase("Report Date: " + DateTime.Now.ToString("dd-MM-yyyy"), ffont);
                 Phrase header2 = new Phrase("Page No.: " + p, ffont);
-                ColumnText.ShowTextAligned(cb, Element.ALIGN_LEFT, header1, 20, document.Top + 30, 0);
+                ColumnText.ShowTextAligned(cb, Element.ALIGN_LEFT, header1, 50, document.Top + 30, 0);
                 if (columnCount > 8 && columnCount < 13)
                 {
                     ColumnText.ShowTextAligned(cb, Element.ALIGN_RIGHT, header2, 790, document.Top + 30, 0);
@@ -1053,6 +992,34 @@ namespace SUNMark.Controllers
                 {
                     ColumnText.ShowTextAligned(cb, Element.ALIGN_RIGHT, header2, 570, document.Top + 30, 0);
                 }
+                int top = 10;
+                Phrase header4 = new Phrase(departmentMaster.DepName, _companyNameFontStyle);
+                ColumnText.ShowTextAligned(cb, Element.ALIGN_LEFT, header4, 50, document.Top + top, 0);
+                if (departmentMaster != null && !string.IsNullOrWhiteSpace(departmentMaster.DepAdd))
+                {
+                    top = top - 12;
+                    Phrase header5 = new Phrase(departmentMaster.DepAdd, _headerFontStyle);
+                    ColumnText.ShowTextAligned(cb, Element.ALIGN_LEFT, header5, 50, document.Top + top, 0);
+                }
+                if (departmentMaster != null && !string.IsNullOrWhiteSpace(departmentMaster.DepGST))
+                {
+                    top = top - 12;
+                    Phrase header5 = new Phrase(departmentMaster.DepGST, _headerFontStyle);
+                    ColumnText.ShowTextAligned(cb, Element.ALIGN_LEFT, header5, 50, document.Top + top, 0);
+                }
+                if (departmentMaster != null && !string.IsNullOrWhiteSpace(grdTitle))
+                {
+                    top = top - 12;
+                    Phrase header5 = new Phrase(grdTitle, _headerFontStyle);
+                    ColumnText.ShowTextAligned(cb, Element.ALIGN_LEFT, header5, 50, document.Top + top, 0);
+                }
+                if (departmentMaster != null && !string.IsNullOrWhiteSpace(header))
+                {
+                    top = top - 12;
+                    Phrase header5 = new Phrase(header, _headerFontStyle);
+                    ColumnText.ShowTextAligned(cb, Element.ALIGN_LEFT, header5, 50, document.Top + top, 0);
+                }
+                temp = temp - 2;
             }
             // step 5: we close the document
             document.Close();

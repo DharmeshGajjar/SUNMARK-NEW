@@ -264,7 +264,7 @@ namespace SUNMark.Controllers
                     //address +=  frDt != null ?"From Date : " + frDt  + "," : "";
                     //address += address + toDt != null ?"To Date : " + toDt  : "";
                     
-                    var bytes = PDF(getReportDataModel, "Stock Ledger Report", companyDetails.CmpName, companyDetails.CmpAdd);
+                    var bytes = PDF(getReportDataModel, "Stock Ledger Report", companyDetails.CmpName, companyid);
                     return File(
                             bytes,
                             "application/pdf",
