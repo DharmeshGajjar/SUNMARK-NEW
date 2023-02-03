@@ -55,6 +55,7 @@ namespace SUNMark.Controllers
                             gridMasterModel.GrdType = DtGrdMst.Rows[0]["GrdType"].ToString();
                             gridMasterModel.GrdName = DtGrdMst.Rows[0]["GrdName"].ToString();
                             gridMasterModel.GrdTitle = DtGrdMst.Rows[0]["GrdTitle"].ToString();
+                            gridMasterModel.PageSize = DbConnection.ParseInt32(DtGrdMst.Rows[0]["PageSize"].ToString());
                             gridMasterModel.GrdMultiSelYN = DbConnection.ParseInt32(DtGrdMst.Rows[0]["GrdMultiSelYN"].ToString());
                             gridMasterModel.GrdDftYNo = DbConnection.ParseInt32(DtGrdMst.Rows[0]["GrdDftYNo"].ToString());
                             gridMasterModel.GrdQryFields = DtGrdMst.Rows[0]["GrdQryFields"].ToString();
@@ -200,7 +201,7 @@ namespace SUNMark.Controllers
                     {
                         if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(gridMasterModel.GrdMnuVou).ToString()) && !string.IsNullOrWhiteSpace(gridMasterModel.GrdType) && !string.IsNullOrWhiteSpace(gridMasterModel.GrdName))
                         {
-                            SqlParameter[] sqlParameters = new SqlParameter[10];
+                            SqlParameter[] sqlParameters = new SqlParameter[11];
                             sqlParameters[0] = new SqlParameter("@GrdMnuVou", gridMasterModel.GrdMnuVou);
                             sqlParameters[1] = new SqlParameter("@GrdType", gridMasterModel.GrdType);
                             sqlParameters[2] = new SqlParameter("@GrdName", gridMasterModel.GrdName);
@@ -211,6 +212,7 @@ namespace SUNMark.Controllers
                             sqlParameters[7] = new SqlParameter("@GrdVou", id);
                             sqlParameters[8] = new SqlParameter("@GrdDftYNo", gridMasterModel.GrdDftYNo);
                             sqlParameters[9] = new SqlParameter("@GrdTitle", gridMasterModel.GrdTitle);
+                            sqlParameters[10] = new SqlParameter("@PageSize", gridMasterModel.PageSize);
                             DataTable DtGrid = ObjDBConnection.CallStoreProcedure("GridMaster_Insert", sqlParameters);
                             if (DtGrid != null && DtGrid.Rows.Count > 0)
                             {

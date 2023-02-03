@@ -1,4 +1,5 @@
-﻿@model SUNMark.Models.GridMasterModel
+﻿@using SUNMark.Common;
+@model SUNMark.Models.GridMasterModel
 @{
     ViewData["Title"] = "Grid Master";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -69,8 +70,8 @@
                                             @if (Model != null && Model.MenuList != null && Model.MenuList.Count > 0)
                                             {
                                 @Html.DropDownListFor(x => x.GrdMnuVou, Model.MenuList, "Select", new { @class = "form-control select2", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width: 150px", @required = "required", @id = "txtGrdMnuVou" }) }
-                                            else
-                                            {
+                            else
+                            {
                                 @Html.DropDownListFor(x => x.GrdMnuVou, new List<SelectListItem>(), "Select", new { @class = "form-control select2", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width: 150px", @required = "required", @id = "txtGrdMnuVou" })}
 
                                         </div>
@@ -109,11 +110,13 @@
                                                 @if (Model.GrdDftYNo == 1)
                                                 {
                                     <option value="0">No</option>
-                                                    <option selected value="1">Yes</option> }
-                                                                else
-                                                                {
-                                                    <option selected value="0">No</option>
-                                                                    <option value="1">Yes</option>}
+                                                    <option selected value="1">Yes</option>
+ }
+                                                else
+                                                {
+                                    <option selected value="0">No</option>
+                                                    <option value="1">Yes</option>
+}
                                             </select>
                                         </div>
                                     </div>
@@ -123,6 +126,15 @@
                                         </label>
                                         <div class="form-outline form-white mb-2">
                                             @Html.TextBoxFor(x => x.GrdTitle, new { @class = "form-control form-control-lg", @placeholder = "Title", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:38px; width: 150px", @required = "required" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="control-label col-xl-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                            Page Size <span class="required">*</span>
+                                        </label>
+                                        <div class="form-outline form-white mb-2">
+                                            @Html.DropDownListFor(x => x.PageSize, Html.GetEnumSelectList<EnumPageSize>(), "Select", new { @class = "form-control select2", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px; width: 100px", @required = "required" })
+
                                         </div>
                                     </div>
                                 </div>

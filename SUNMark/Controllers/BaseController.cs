@@ -55,7 +55,7 @@ namespace SUNMark.Controllers
 
         public string GetStringSession(string key)
         {
-            return HttpContext.Session.GetString(key)!=null ? Convert.ToString(HttpContext.Session.GetString(key)) : null;
+            return HttpContext.Session.GetString(key) != null ? Convert.ToString(HttpContext.Session.GetString(key)) : null;
         }
 
         public JsonResult GetLatestNumberByTableName(string TableName, string Vou)
@@ -203,6 +203,7 @@ namespace SUNMark.Controllers
                         {
                             returnModel.ReportType = Convert.ToInt32(dtGridMst.Rows[0]["GrdType"].ToString());
                             returnModel.GrdTitle = dtGridMst.Rows[0]["GrdTitle"].ToString();
+                            returnModel.DocumentPageSize = DbConnection.ParseInt32(dtGridMst.Rows[0]["PageSize"].ToString());
                             Query = "SELECT * FROM (" + dtGridMst.Rows[0]["GrdQryFields"].ToString() + " " + dtGridMst.Rows[0]["GrdQryJoin"].ToString();
                         }
 
@@ -735,12 +736,12 @@ namespace SUNMark.Controllers
                 Font _tableDataFontStyle = FontFactory.GetFont("calibri", 8f, BaseColor.BLACK);
 
                 Document document = new Document();
-                if (columnCount > 8 && columnCount < 13)
+                if (getReportDataModel.DocumentPageSize == (int)EnumPageSize.A4_LANDSCAPE)
                 {
                     document = new Document(PageSize.A4_LANDSCAPE.Rotate().Rotate().Rotate(), 50f, 50f, 50f, 50f);
 
                 }
-                else if (columnCount > 13)
+                else if (getReportDataModel.DocumentPageSize == (int)EnumPageSize.LEGAL_LANDSCAPE)
                 {
                     document = new Document(PageSize.LEGAL_LANDSCAPE.Rotate().Rotate().Rotate(), 50f, 50f, 50f, 50f);
 
@@ -877,7 +878,7 @@ namespace SUNMark.Controllers
             {
                 throw;
             }
-            return AddPageNumbers(_stream.ToArray(), columnCount, departmentMaster, getReportDataModel.GrdTitle, header);
+            return AddPageNumbers(_stream.ToArray(), columnCount, departmentMaster, getReportDataModel.GrdTitle, header, getReportDataModel.DocumentPageSize );
         }
 
         public List<SelectListItem> GetPageNo()
@@ -929,7 +930,7 @@ namespace SUNMark.Controllers
         }
 
 
-        private static byte[] AddPageNumbers(byte[] pdf, int columnCount, DepartmentMasterModel departmentMaster, string grdTitle, string header)
+        private static byte[] AddPageNumbers(byte[] pdf, int columnCount, DepartmentMasterModel departmentMaster, string grdTitle, string header,int documentPageSize)
         {
             MemoryStream ms = new MemoryStream();
             // we create a reader for a certain document
@@ -941,12 +942,12 @@ namespace SUNMark.Controllers
             // step 1: creation of a document-object
             //Document document = new Document(PageSize.A4, 50, 50, 50, 50);
             Document document = new Document();
-            if (columnCount > 8 && columnCount < 13)
+            if (documentPageSize == (int)EnumPageSize.A4_LANDSCAPE)
             {
                 document = new Document(PageSize.A4_LANDSCAPE.Rotate(), 50f, 50f, 50f, 50f);
 
             }
-            else if (columnCount > 13)
+            else if (documentPageSize == (int)EnumPageSize.LEGAL_LANDSCAPE)
             {
                 document = new Document(PageSize.LEGAL_LANDSCAPE.Rotate().Rotate().Rotate(), 50f, 50f, 50f, 50f);
 
@@ -984,13 +985,13 @@ namespace SUNMark.Controllers
                 Phrase header1 = new Phrase("Report Date: " + DateTime.Now.ToString("dd-MM-yyyy"), ffont);
                 Phrase header2 = new Phrase("Page No.: " + p, ffont);
                 ColumnText.ShowTextAligned(cb, Element.ALIGN_LEFT, header1, 50, document.Top + 30, 0);
-                if (columnCount > 8 && columnCount < 13)
+                if (documentPageSize == (int)EnumPageSize.A4_LANDSCAPE)
                 {
                     ColumnText.ShowTextAligned(cb, Element.ALIGN_RIGHT, header2, 790, document.Top + 30, 0);
                 }
-                else if (columnCount > 13)
+                else if (documentPageSize == (int)EnumPageSize.LEGAL_LANDSCAPE)
                 {
-                    ColumnText.ShowTextAligned(cb, Element.ALIGN_RIGHT, header2, 900, document.Top + 30, 0);
+                    ColumnText.ShowTextAligned(cb, Element.ALIGN_RIGHT, header2, 950, document.Top + 30, 0);
 
                 }
                 else

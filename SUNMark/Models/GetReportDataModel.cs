@@ -25,6 +25,7 @@ namespace SUNMark.Models
         public string Query { get; set; }
 
         public bool IsError { get; set; }
+        public int DocumentPageSize { get; set; }
     }
 
     public class ReportColumnConfiguration

@@ -35,6 +35,7 @@ namespace SUNMark.Models
         public GridShortGridModel Gridshort { get; set; }
 
         public int GrdDftYNo { get; set; }
+        public int PageSize { get; set; }
 
     }
     public class GridTransactionGridModel
