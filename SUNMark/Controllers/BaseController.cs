@@ -696,189 +696,191 @@ namespace SUNMark.Controllers
             {
                 int companyId = string.IsNullOrEmpty(companyID) ? 0 : Convert.ToInt32(companyID);
                 departmentMaster = DbConnection.GetDepartmentMasterByCompanyId(companyId);
-                columnCount = getReportDataModel.ColumnsData.Where(x => x.GrdAHideYN == "0").Count();
-                string[] columnNames = new string[getReportDataModel.ColumnsData.Count];
-                DataTable dataTableData = new DataTable();
-                for (int i = 0; i < getReportDataModel.ColumnsData.Count; i++)
+                if (getReportDataModel.ColumnsData != null)
                 {
-                    columnNames[i] = getReportDataModel.ColumnsData[i].GrdANewColNm;
-                    dataTableData.Columns.Add(getReportDataModel.ColumnsData[i].GrdANewColNm);
-                }
-                DataTable dataTableTotal = new DataTable();
-                if (getReportDataModel != null && getReportDataModel.RowsData != null)
-                {
-                    for (int x = 0; x < getReportDataModel.RowsData.Count; x++)
-                    {
-                        DataRow drAdd = dataTableData.NewRow();
-                        var item = getReportDataModel.RowsData[x] as List<string>;
-                        int start = 0;
-                        if (getReportDataModel.ReportType == 1)
-                            start = 1;
-                        for (int y = start; y < item.Count; y++)
-                        {
-                            if (getReportDataModel.ReportType == 1)
-                                drAdd[y - 1] = item[y];
-                            else
-                                drAdd[y] = item[y];
-                        }
-                        dataTableData.Rows.Add(drAdd);
-                    }
-                }
-                int[] RequisitionReportRightJustify = { 8, 9 };
-
-                Font _blankSpaceLine = FontFactory.GetFont(FontFactory.HELVETICA, 2f);
-
-                Font _companyAddressFontStyle = FontFactory.GetFont(FontFactory.HELVETICA, 10f);
-
-                Font _filterFontStyle = FontFactory.GetFont(FontFactory.HELVETICA, 10f, BaseColor.BLACK);
-                Font _tableHeaderFontStyle = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f, BaseColor.BLACK);
-                Font _totalAndProductFontStyle = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 9f, BaseColor.BLACK);
-                Font _tableDataFontStyle = FontFactory.GetFont("calibri", 8f, BaseColor.BLACK);
-
-                Document document = new Document();
-                if (getReportDataModel.DocumentPageSize == (int)EnumPageSize.A4_LANDSCAPE)
-                {
-                    document = new Document(PageSize.A4_LANDSCAPE.Rotate().Rotate().Rotate(), 50f, 50f, 50f, 50f);
-
-                }
-                else if (getReportDataModel.DocumentPageSize == (int)EnumPageSize.LEGAL_LANDSCAPE)
-                {
-                    document = new Document(PageSize.LEGAL_LANDSCAPE.Rotate().Rotate().Rotate(), 50f, 50f, 50f, 50f);
-
-                }
-                else
-                {
-                    document = new Document(PageSize.A4, 50f, 50f, 50f, 50f);
-                }
-                PdfWriter.GetInstance(document, _stream);
-                document.Open();
-
-
-                Paragraph line = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLACK, Element.ALIGN_LEFT, 1)));
-                line.SpacingBefore = 0.0f;
-                document.Add(line);
-
-                PdfPTable _pdfTable = new PdfPTable(columnCount);
-
-                _pdfTable.SpacingBefore = 5f;
-                _pdfTable.WidthPercentage = 100;
-                _pdfTable.HorizontalAlignment = Element.ALIGN_CENTER;
-
-                float[] width = new float[columnCount];
-                for (int i = 0, count = 0; i < getReportDataModel.ColumnsData.Count; i++)
-                {
-                    if (getReportDataModel.ColumnsData[i].GrdAHideYN == "0")
-                    {
-                        width[count] = float.Parse(getReportDataModel.ColumnsData[i].GrdAWidth);
-                        count++;
-                    }
-                }
-
-                _pdfTable.SetWidths(width);
-
-
-                PdfPCell _pdfCell = new PdfPCell();
-                if (getReportDataModel != null && getReportDataModel.RowsData != null)
-                {
-                    #region Table Header
-                    int columnIndexJustigy = 1;
-
+                    columnCount = getReportDataModel.ColumnsData.Where(x => x.GrdAHideYN == "0").Count();
+                    string[] columnNames = new string[getReportDataModel.ColumnsData.Count];
+                    DataTable dataTableData = new DataTable();
                     for (int i = 0; i < getReportDataModel.ColumnsData.Count; i++)
+                    {
+                        columnNames[i] = getReportDataModel.ColumnsData[i].GrdANewColNm;
+                        dataTableData.Columns.Add(getReportDataModel.ColumnsData[i].GrdANewColNm);
+                    }
+                    DataTable dataTableTotal = new DataTable();
+                    if (getReportDataModel != null && getReportDataModel.RowsData != null)
+                    {
+                        for (int x = 0; x < getReportDataModel.RowsData.Count; x++)
+                        {
+                            DataRow drAdd = dataTableData.NewRow();
+                            var item = getReportDataModel.RowsData[x] as List<string>;
+                            int start = 0;
+                            if (getReportDataModel.ReportType == 1)
+                                start = 1;
+                            for (int y = start; y < item.Count; y++)
+                            {
+                                if (getReportDataModel.ReportType == 1)
+                                    drAdd[y - 1] = item[y];
+                                else
+                                    drAdd[y] = item[y];
+                            }
+                            dataTableData.Rows.Add(drAdd);
+                        }
+                    }
+                    int[] RequisitionReportRightJustify = { 8, 9 };
+
+                    Font _blankSpaceLine = FontFactory.GetFont(FontFactory.HELVETICA, 2f);
+
+                    Font _companyAddressFontStyle = FontFactory.GetFont(FontFactory.HELVETICA, 10f);
+
+                    Font _filterFontStyle = FontFactory.GetFont(FontFactory.HELVETICA, 10f, BaseColor.BLACK);
+                    Font _tableHeaderFontStyle = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f, BaseColor.BLACK);
+                    Font _totalAndProductFontStyle = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 9f, BaseColor.BLACK);
+                    Font _tableDataFontStyle = FontFactory.GetFont("calibri", 8f, BaseColor.BLACK);
+
+                    Document document = new Document();
+                    if (getReportDataModel.DocumentPageSize == (int)EnumPageSize.A4_LANDSCAPE)
+                    {
+                        document = new Document(PageSize.A4_LANDSCAPE.Rotate().Rotate().Rotate(), 50f, 50f, 50f, 50f);
+
+                    }
+                    else if (getReportDataModel.DocumentPageSize == (int)EnumPageSize.LEGAL_LANDSCAPE)
+                    {
+                        document = new Document(PageSize.LEGAL_LANDSCAPE.Rotate().Rotate().Rotate(), 50f, 50f, 50f, 50f);
+
+                    }
+                    else
+                    {
+                        document = new Document(PageSize.A4, 50f, 50f, 50f, 50f);
+                    }
+                    PdfWriter.GetInstance(document, _stream);
+                    document.Open();
+
+
+                    Paragraph line = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLACK, Element.ALIGN_LEFT, 1)));
+                    line.SpacingBefore = 0.0f;
+                    document.Add(line);
+
+                    PdfPTable _pdfTable = new PdfPTable(columnCount);
+
+                    _pdfTable.SpacingBefore = 5f;
+                    _pdfTable.WidthPercentage = 100;
+                    _pdfTable.HorizontalAlignment = Element.ALIGN_CENTER;
+
+                    float[] width = new float[columnCount];
+                    for (int i = 0, count = 0; i < getReportDataModel.ColumnsData.Count; i++)
                     {
                         if (getReportDataModel.ColumnsData[i].GrdAHideYN == "0")
                         {
-                            _pdfCell = new PdfPCell(new Phrase(getReportDataModel.ColumnsData[i].GrdANewColNm.ToString(), _tableHeaderFontStyle));
-                            _pdfCell.PaddingBottom = 5f;
-                            _pdfCell.BackgroundColor = BaseColor.WHITE;
-
-                            if (getReportDataModel.ColumnsData[i].GrdAAlign == "1")
-                            {
-                                _pdfCell.VerticalAlignment = Element.ALIGN_LEFT;
-                                _pdfCell.HorizontalAlignment = Element.ALIGN_LEFT;
-                            }
-                            else if (getReportDataModel.ColumnsData[i].GrdAAlign == "2")
-                            {
-                                _pdfCell.VerticalAlignment = Element.ALIGN_RIGHT;
-                                _pdfCell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                            }
-                            else if (getReportDataModel.ColumnsData[i].GrdAAlign == "3")
-                            {
-                                _pdfCell.VerticalAlignment = Element.ALIGN_CENTER;
-                                _pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
-                            }
-
-                            _pdfTable.AddCell(_pdfCell);
-
-                            columnIndexJustigy++;
+                            width[count] = float.Parse(getReportDataModel.ColumnsData[i].GrdAWidth);
+                            count++;
                         }
                     }
 
-                    _pdfTable.CompleteRow();
-                    #endregion
+                    _pdfTable.SetWidths(width);
 
 
-                    #region Table Body
-
-                    for (int i = 0; i < dataTableData.Rows.Count; i++)
+                    PdfPCell _pdfCell = new PdfPCell();
+                    if (getReportDataModel != null && getReportDataModel.RowsData != null)
                     {
-                        int columnDataIndexJustify = 1;
+                        #region Table Header
+                        int columnIndexJustigy = 1;
 
-                        for (int j = 0; j < dataTableData.Columns.Count; j++)
+                        for (int i = 0; i < getReportDataModel.ColumnsData.Count; i++)
                         {
-                            if (getReportDataModel.ColumnsData[j].GrdAHideYN == "0")
+                            if (getReportDataModel.ColumnsData[i].GrdAHideYN == "0")
                             {
-                                string value = string.Empty;
-                                if (getReportDataModel.ColumnsData[j].GrdADataType == "2")
-                                {
-                                    value = DbConnection.DynamicDecimalPoints(dataTableData.Rows[i][j].ToString(), Convert.ToInt32(getReportDataModel.ColumnsData[j].GrdADecUpTo));
-                                }
-                                else
-                                {
-                                    value = dataTableData.Rows[i][j].ToString();
-                                }
-                                _pdfCell = new PdfPCell(new Phrase(value, _tableDataFontStyle));
-
-                                _pdfCell.PaddingBottom = 3f;
+                                _pdfCell = new PdfPCell(new Phrase(getReportDataModel.ColumnsData[i].GrdANewColNm.ToString(), _tableHeaderFontStyle));
+                                _pdfCell.PaddingBottom = 5f;
                                 _pdfCell.BackgroundColor = BaseColor.WHITE;
 
-                                if (getReportDataModel.ColumnsData[j].GrdAAlign == "1")
+                                if (getReportDataModel.ColumnsData[i].GrdAAlign == "1")
                                 {
                                     _pdfCell.VerticalAlignment = Element.ALIGN_LEFT;
                                     _pdfCell.HorizontalAlignment = Element.ALIGN_LEFT;
                                 }
-                                else if (getReportDataModel.ColumnsData[j].GrdAAlign == "2")
+                                else if (getReportDataModel.ColumnsData[i].GrdAAlign == "2")
                                 {
                                     _pdfCell.VerticalAlignment = Element.ALIGN_RIGHT;
                                     _pdfCell.HorizontalAlignment = Element.ALIGN_RIGHT;
                                 }
-                                else if (getReportDataModel.ColumnsData[j].GrdAAlign == "3")
+                                else if (getReportDataModel.ColumnsData[i].GrdAAlign == "3")
                                 {
                                     _pdfCell.VerticalAlignment = Element.ALIGN_CENTER;
                                     _pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                                 }
 
-
                                 _pdfTable.AddCell(_pdfCell);
 
-                                columnDataIndexJustify++;
+                                columnIndexJustigy++;
                             }
                         }
 
                         _pdfTable.CompleteRow();
+                        #endregion
+
+
+                        #region Table Body
+
+                        for (int i = 0; i < dataTableData.Rows.Count; i++)
+                        {
+                            int columnDataIndexJustify = 1;
+
+                            for (int j = 0; j < dataTableData.Columns.Count; j++)
+                            {
+                                if (getReportDataModel.ColumnsData[j].GrdAHideYN == "0")
+                                {
+                                    string value = string.Empty;
+                                    if (getReportDataModel.ColumnsData[j].GrdADataType == "2")
+                                    {
+                                        value = DbConnection.DynamicDecimalPoints(dataTableData.Rows[i][j].ToString(), Convert.ToInt32(getReportDataModel.ColumnsData[j].GrdADecUpTo));
+                                    }
+                                    else
+                                    {
+                                        value = dataTableData.Rows[i][j].ToString();
+                                    }
+                                    _pdfCell = new PdfPCell(new Phrase(value, _tableDataFontStyle));
+
+                                    _pdfCell.PaddingBottom = 3f;
+                                    _pdfCell.BackgroundColor = BaseColor.WHITE;
+
+                                    if (getReportDataModel.ColumnsData[j].GrdAAlign == "1")
+                                    {
+                                        _pdfCell.VerticalAlignment = Element.ALIGN_LEFT;
+                                        _pdfCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                                    }
+                                    else if (getReportDataModel.ColumnsData[j].GrdAAlign == "2")
+                                    {
+                                        _pdfCell.VerticalAlignment = Element.ALIGN_RIGHT;
+                                        _pdfCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                                    }
+                                    else if (getReportDataModel.ColumnsData[j].GrdAAlign == "3")
+                                    {
+                                        _pdfCell.VerticalAlignment = Element.ALIGN_CENTER;
+                                        _pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                    }
+
+
+                                    _pdfTable.AddCell(_pdfCell);
+
+                                    columnDataIndexJustify++;
+                                }
+                            }
+
+                            _pdfTable.CompleteRow();
+                        }
+
+                        _pdfTable.CompleteRow();
+                        #endregion
                     }
-
-                    _pdfTable.CompleteRow();
-
-                    #endregion
+                    document.Add(_pdfTable);
+                    document.Close();
                 }
-                document.Add(_pdfTable);
-                document.Close();
             }
             catch (Exception ex)
             {
                 throw;
             }
-            return AddPageNumbers(_stream.ToArray(), columnCount, departmentMaster, getReportDataModel.GrdTitle, header, getReportDataModel.DocumentPageSize );
+            return AddPageNumbers(_stream.ToArray(), columnCount, departmentMaster, getReportDataModel.GrdTitle, header, getReportDataModel.DocumentPageSize);
         }
 
         public List<SelectListItem> GetPageNo()
@@ -930,7 +932,7 @@ namespace SUNMark.Controllers
         }
 
 
-        private static byte[] AddPageNumbers(byte[] pdf, int columnCount, DepartmentMasterModel departmentMaster, string grdTitle, string header,int documentPageSize)
+        private static byte[] AddPageNumbers(byte[] pdf, int columnCount, DepartmentMasterModel departmentMaster, string grdTitle, string header, int documentPageSize)
         {
             MemoryStream ms = new MemoryStream();
             // we create a reader for a certain document
