@@ -485,12 +485,12 @@ namespace SUNMark.Controllers
                 }
                 else
                 {
-                    string address = string.Empty;
-                    address += companyDetails.CmpAdd == null ? "" : (companyDetails.CmpAdd + ",");
-                    address += frRecDt != null ? "From Date : " + frRecDt + "," : "";
-                    address += address + toRecDt != null ? "To Date : " + toRecDt : "";
+                    //string address = string.Empty;
+                    //address += companyDetails.CmpAdd == null ? "" : (companyDetails.CmpAdd + ",");
+                    //address += frRecDt != null ? "From Date : " + frRecDt + "," : "";
+                    //address += address + toRecDt != null ? "To Date : " + toRecDt : "";
 
-                    var bytes = PDF(getReportDataModel, "Coil Register Report", companyDetails.CmpName, address);
+                    var bytes = PDF(getReportDataModel, "Coil Register Report", companyDetails.CmpName, companyid);
                     return File(
                             bytes,
                             "application/pdf",
