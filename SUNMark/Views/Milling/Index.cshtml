@@ -252,7 +252,7 @@
                                                 <div class="col-md-2 col-6">
                                                     <div class="form-group">
                                                         <label>OD<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.OD, new { @class = "form-control ", @placeholder = "OD", @type = "text", @*@onchange = "GetNBSCHDetails(this)",*@@disabled = "disabled", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                        @Html.TextBoxFor(x => x.OD, new { @class = "form-control ", @placeholder = "OD", @type = "text", @onchange = "GetNBSCHDetails(this)",@*@disabled = "disabled",*@ @onkeyup = "numericFilter(this)", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <input type="hidden" value="1" id="ODValidCheck"/>
@@ -280,7 +280,7 @@
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>Length(Feet)<span class="text-danger" style="font-family: Verdana">*</span></label>
-                                                        @Html.TextBoxFor(x => x.FeetPer, new { @class = "form-control ", @placeholder = "Length(Feet)", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                        @Html.TextBoxFor(x => x.FeetPer, new { @class = "form-control ", @placeholder = "Length(Feet)", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right", @onchange = "GetLengthPerPCS()" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
@@ -674,9 +674,12 @@
                             $('input[name="Thick"]').val(response.data[3]);
                             $('input[name="Width"]').val(response.data[4]);
                             $('input[name="OD"]').val((response.data[4] / 3.14).toFixed(2));
-                            var weight = (((response.data[4] / 3.14).toFixed(2) - response.data[3]) * response.data[3] * 0.02503).toFixed(2);
-                            var weight2 = (((response.data[4] / 3.14).toFixed(8) - response.data[3]) * response.data[3] * 0.02503).toFixed(8);
-                            var weight3 = (((response.data[4] / 3.14).toFixed(3) - response.data[3]) * response.data[3] * 0.02503).toFixed(3);
+                            $('input[name="FeetPer"]').val(20);
+                            var length = $('input[name="FeetPer"]').val();
+                            var lengthmtr = (length * 0.3048).toFixed(2);
+                            var weight = (((response.data[4] / 3.14).toFixed(2) - response.data[3]) * response.data[3] * 0.02503 *lengthmtr).toFixed(2);
+                            var weight2 = (((response.data[4] / 3.14).toFixed(8) - response.data[3]) * response.data[3] * 0.02503 * lengthmtr).toFixed(8);
+                            var weight3 = (((response.data[4] / 3.14).toFixed(3) - response.data[3]) * response.data[3] * 0.02503 * lengthmtr ).toFixed(3);
                             var pcs = parseInt(response.data[0] / weight);
                             $('#NoOfPipe').text(pcs);
                             //alert((weight * pcs).toFixed(1));
@@ -746,6 +749,20 @@
         }
     }
 
+    //function GetLengthPerPCS() {
+    //    var weight = $('input[name="Weight"]').val();
+    //    var thick = $('input[name="Thick"]').val();
+    //    var od = $('input[name="OD"]').val();
+    //    var length = $('input[name="FeetPer"]').val();
+    //    var lengthmtr = (length * 0.3048).toFixed(2);
+    //    var weight1 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2);
+    //    var weight2 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2);
+    //    var pcs = parseInt(weight / weight1);
+    //    $('#NoOfPipe').text(pcs);
+    //    $('#PCSWeight').text((weight2 * pcs).toFixed(1));
+    //}
+
+
     function EnableTextbox() {
         $('input[name="Vno"]').attr('disabled', false)
         $('input[name="Vou"]').attr('disabled', false)
@@ -786,12 +803,12 @@
             return false;
         }
         var RemainWeight = $('#RemainWeight').val();
-        if (parseFloat(RemainWeight) < 0) {
-            showErrorMessage("Total weight can not be exceeded remaining weight");
-            $('#PCS').focus();
-            IsSubmit = 0;
-            return false;
-        }
+        //if (parseFloat(RemainWeight) < 0) {
+        //    showErrorMessage("Total weight can not be exceeded remaining weight");
+        //    $('#PCS').focus();
+        //    IsSubmit = 0;
+        //    return false;
+        //}
         if (IsSubmit == 1) {
             $('select[name="MillNo"]').attr('disabled', false)
             EnableTextbox();
@@ -811,18 +828,19 @@
                 success: function (response) {
                     if (response) {
                         if (response.result) {
-                            $('input[name="NB"]').val(response.lotNB);
-                            $('input[name="SCH"]').val(response.lotSCH);
+                            $('select[name="NB"]').val(response.lotNB);
+                            $('select[name="SCH"]').val(response.lotSCH);
                         }
                         else {
-                            $('input[name="NB"]').val(response.lotNB);
-                            $('input[name="SCH"]').val(response.lotSCH);
+                            $('select[name="NB"]').val(response.lotNB);
+                            $('select[name="SCH"]').val(response.lotSCH);
                         }
                     }
                     else {
-                        $('input[name="NB"]').val(response.lotNB);
-                        $('input[name="SCH"]').val(response.lotSCH);
+                        $('select[name="NB"]').val(response.lotNB);
+                        $('select[name="SCH"]').val(response.lotSCH);
                     }
+                    SetSelect2();
                 },
                 error: function (response) {
                 }
@@ -834,9 +852,11 @@
         var thick = $('#Thick').val();
         var od = $('#OD').val();
         var pcs = $('#PCS').val();
+        var length = $('input[name="FeetPer"]').val();
+        var lengthmtr = (length * 0.3048).toFixed(2);
        
         if (thick != null && thick != "" && od != null && od != "" && pcs != null && pcs != "") {
-            $('input[name="PCSWeight"]').val((((od - thick) * thick * 0.02503) * pcs).toFixed(1));
+            $('input[name="PCSWeight"]').val((((od - thick) * thick * 0.02503)*lengthmtr * pcs).toFixed(1));
             changeRemainingval();
         }
     }
@@ -851,9 +871,10 @@
         }
         var RemainWeight = $('label#PCSWeight').text();
         if (parseFloat(RemainWeight) - parseFloat(txtPCSWeight) - parseFloat(ScrapWeight) < 0) {
-            showErrorMessage("Total weight can not be exceeded remaining weight");
+            //showErrorMessage("Total weight can not be exceeded remaining weight");
+            //$('#RemainWeight').val((parseFloat(RemainWeight) - parseFloat(txtPCSWeight) - parseFloat(ScrapWeight)).toFixed(1))
+            //$('#PCS').focus();
             $('#RemainWeight').val((parseFloat(RemainWeight) - parseFloat(txtPCSWeight) - parseFloat(ScrapWeight)).toFixed(1))
-            $('#PCS').focus();
         }
         else {
             $('#RemainWeight').val((parseFloat(RemainWeight) - parseFloat(txtPCSWeight) - parseFloat(ScrapWeight)).toFixed(1))
@@ -885,8 +906,9 @@
             $('#NbVou').val('@Model.NB').trigger('change');
             $('#SCHVou').val('@Model.SCH').trigger('change');
 
-            var weight = (((parseFloat('@Model.Width') / 3.14).toFixed(2) - parseFloat('@Model.Thick')) * parseFloat('@Model.Thick') * 0.02503).toFixed(2);
-            var weight2 = (((parseFloat('@Model.Width') / 3.14).toFixed(3) - parseFloat('@Model.Thick')) * parseFloat('@Model.Thick') * 0.02503).toFixed(3);
+
+            var weight = (((parseFloat('@Model.Width') / 3.14).toFixed(2) - parseFloat('@Model.Thick')) * parseFloat('@Model.Thick') * 0.02503 * lengthmtr).toFixed(2);
+            var weight2 = (((parseFloat('@Model.Width') / 3.14).toFixed(3) - parseFloat('@Model.Thick')) * parseFloat('@Model.Thick') * 0.02503 * lengthmtr).toFixed(3);
             var pcs = parseInt(parseFloat('@Model.Weight') / weight);
             var pcsWeightt = ((weight2 * pcs).toFixed(1));
             if ('@Model.RemainingWeight' != '') {
