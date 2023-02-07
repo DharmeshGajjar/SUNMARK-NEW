@@ -286,7 +286,7 @@ namespace SUNMark.Controllers
                     {
                         whereConditionQuery += " AND PipeMst.Qty >='" + frWeigth + "'";
                     }
-                    if (!string.IsNullOrWhiteSpace(toWeigth))
+                    if (!string.IsNullOrWhiteSpace(toWeigth) && toWeigth != "0")
                     {
                         whereConditionQuery += " AND PipeMst.Qty <='" + toWeigth + "'";
                     }
