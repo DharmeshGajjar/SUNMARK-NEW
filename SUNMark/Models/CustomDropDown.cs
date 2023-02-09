@@ -18,5 +18,7 @@ namespace SUNMark.Models
         public string Value3 { get; internal set; }
 
         public string Value4 { get; set; }
+
+        public string Value5 { get; set; }
     }
 }
