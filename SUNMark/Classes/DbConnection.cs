@@ -12,7 +12,7 @@ namespace SUNMark.Classes
     public class DbConnection
     {
 
-        public static string ConnectionString = "Server=144.91.71.201;Database=SUNmark;User ID=Piosun;Password=pio*123";
+        public static string ConnectionString = "Server=144.91.71.201;Database=SUNMark;User ID=Piosun;Password=pio*123";
         //public static string ConnectionString = "Server=144.91.71.201;Database=SUNMark;User ID=Sun;Password=pio*123";
 
         public static int GridTypeView = 1;

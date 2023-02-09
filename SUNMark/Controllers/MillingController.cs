@@ -101,6 +101,12 @@ namespace SUNMark.Controllers
                         millingMasterModel.FinishDate = !string.IsNullOrWhiteSpace(dt.Rows[0]["MilFinishDt"].ToString()) ? Convert.ToDateTime(dt.Rows[0]["MilFinishDt"].ToString()).ToString("yyyy-MM-dd") : null;
                         millingMasterModel.Reason = dt.Rows[0]["MilReason"].ToString();
                         millingMasterModel.RemainingWeight = (Convert.ToDecimal(dt.Rows[0]["RemainingWeight"].ToString()) + Convert.ToDecimal(dt.Rows[0]["MilRecQty"].ToString()) + Convert.ToDecimal(dt.Rows[0]["MilScrQty"].ToString())).ToString();
+                        millingMasterModel.StopFromTime1 = dt.Rows[0]["MilStopFrTm1"].ToString();
+                        millingMasterModel.StopToTime1 = dt.Rows[0]["MilStopToTm1"].ToString();
+                        millingMasterModel.StopReason1 = dt.Rows[0]["MilStopReson1"].ToString();
+                        millingMasterModel.StopFromTime2 = dt.Rows[0]["MilStopFrTm2"].ToString();
+                        millingMasterModel.StopToTime2 = dt.Rows[0]["MilStopToTm2"].ToString();
+                        millingMasterModel.StopReason2 = dt.Rows[0]["MilStopReson2"].ToString();
                     }
                 }
             }
@@ -126,7 +132,7 @@ namespace SUNMark.Controllers
                 }
                 //if (ModelState.IsValid)
                 //{
-                    SqlParameter[] parameter = new SqlParameter[42];
+                    SqlParameter[] parameter = new SqlParameter[48];
                     parameter[0] = new SqlParameter("@MilVou", millingMasterModel.Vou);
                     parameter[1] = new SqlParameter("@MilCmpVou", millingMasterModel.CompanyVou);
                     parameter[2] = new SqlParameter("@MilVno", millingMasterModel.Vno);
@@ -169,7 +175,13 @@ namespace SUNMark.Controllers
                     parameter[39] = new SqlParameter("@MIlFinishDt", millingMasterModel.FinishDate);
                     parameter[40] = new SqlParameter("@MilReason", millingMasterModel.Reason);
                     parameter[41] = new SqlParameter("@MilRemainingWeight", millingMasterModel.RemainingWeight);
-                    DataTable dt = ObjDBConnection.CallStoreProcedure("AddMilling", parameter);
+                parameter[42] = new SqlParameter("@MilStopFrTm1", millingMasterModel.StopFromTime1);
+                parameter[43] = new SqlParameter("@MilStopToTm1", millingMasterModel.StopToTime1);
+                parameter[44] = new SqlParameter("@MilStopReson1", millingMasterModel.StopReason1);
+                parameter[45] = new SqlParameter("@MilStopFrTm2", millingMasterModel.StopFromTime2);
+                parameter[46] = new SqlParameter("@MilStopToTm2", millingMasterModel.StopToTime2);
+                parameter[47] = new SqlParameter("@MilStopReson2", millingMasterModel.StopReason2);
+                DataTable dt = ObjDBConnection.CallStoreProcedure("AddMilling", parameter);
                     if (dt != null && dt.Rows.Count > 0)
                     {
                         int status = Convert.ToInt32(dt.Rows[0][0].ToString());
@@ -287,7 +299,7 @@ namespace SUNMark.Controllers
                         data.Add(dtLotMst.Rows[0]["LotQty"].ToString());
                         data.Add(Convert.ToDateTime(dtLotMst.Rows[0]["LotDt"].ToString()).ToString("yyyy-MM-dd"));
 
-                        if (Convert.ToDateTime(Convert.ToDateTime(dtLotMst.Rows[0]["LotDt"].ToString()).ToString("yyyy-MM-dd"))  >= Convert.ToDateTime(mildt))
+                        if (Convert.ToDateTime(Convert.ToDateTime(dtLotMst.Rows[0]["LotDt"].ToString()).ToString("yyyy-MM-dd"))  > Convert.ToDateTime(mildt))
                         {
                             return Json(new { result = false, message = "Lot Date Must Be Less Than Milling Date!" });
                         }

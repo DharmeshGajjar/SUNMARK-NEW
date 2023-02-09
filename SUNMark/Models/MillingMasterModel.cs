@@ -80,6 +80,12 @@ namespace SUNMark.Models
         public string FinishDate { get; set; }
         public string Reason { get; set; }
         public string RemainingWeight { get; set; }
+        public string StopFromTime1 { get; set; }
+        public string StopToTime1 { get; set; }
+        public string StopReason1 { get; set; }
+        public string StopFromTime2 { get; set; }
+        public string StopToTime2 { get; set; }
+        public string StopReason2 { get; set; }
 
     }
 }

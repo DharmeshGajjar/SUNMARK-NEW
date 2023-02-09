@@ -232,6 +232,11 @@ namespace SUNMark.Classes
                     Text = "Second",
                     Value = "2"
                 });
+                shifList.Add(new SelectListItem
+                {
+                    Text = "Both",
+                    Value = "3"
+                });
 
             }
             catch (Exception ex)
