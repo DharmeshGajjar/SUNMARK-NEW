@@ -307,7 +307,7 @@
                                                     <div class="form-group">
                                                         <label>No Of Pipe<span class="text-danger" style="font-family: Verdana">*</span></label>
                                                         <label class="control-label pl-1" style="font-family: Verdana;width:70px;text-align:right" id="NoOfPipe">-</label>
-                                                        @Html.TextBoxFor(x => x.PCS, new { @class = "form-control ", @placeholder = "No Of Pipe", @type = "text", @onchange = "GetODThickPCS(this)", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                        @Html.TextBoxFor(x => x.PCS, new { @class = "form-control ", @placeholder = "No Of Pipe", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
@@ -1058,14 +1058,19 @@
     }
 
     function GetODThickPCS() {
+        var weight = $('input[name="Weight"]').val();
         var thick = $('#Thick').val();
         var od = $('#OD').val();
-        var pcs = $('#PCS').val();
+        //var pcs = $('#PCS').val();
         var length = $('input[name="FeetPer"]').val();
         var lengthmtr = (length * 0.3048).toFixed(2);
-
+        var weight1 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
+        var weight2 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
+        var pcs = parseInt(weight / weight1);
         if (thick != null && thick != "" && od != null && od != "" && pcs != null && pcs != "") {
-            $('input[name="PCSWeight"]').val((((od - thick) * thick * 0.02503) * lengthmtr * pcs).toFixed(1));
+            $('input[name="PCS"]').val(pcs);
+            $('input[name="PCSWeight"]').val((weight2 * pcs).toFixed(1));
+            //$('input[name="PCSWeight"]').val((((od - thick) * thick * 0.02503) * lengthmtr * pcs).toFixed(1));
             changeRemainingval();
         }
     }
