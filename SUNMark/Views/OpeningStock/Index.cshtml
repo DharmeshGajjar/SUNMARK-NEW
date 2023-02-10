@@ -173,7 +173,7 @@
                                                         Job/Inv No <span class="required clsrequied"></span>
                                                     </label>
                                                     <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                        <input type="text" id="OblRefNo" name="OblRefNo" class="form-control form-control-lg" placeholder="Memo No" tabindex="3" value="@Model.OblRefNo" style="font-family: Verdana;font-size:small; height:30px;width:150px" />
+                                                        <input type="text" id="OblRefNo" name="OblRefNo" class="form-control form-control-lg" placeholder="Memo No" tabindex="3" value="@Model.OblRefNo" style="font-family: Verdana;font-size:small; height:30px;width:200px" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -599,9 +599,11 @@
         if (oblVou != null && oblVou != '' && oblVou != 0 ) {
             GoToAddTab()
             GetVoucherNumber();
+            
         }
         else {
-            GoToListTab()
+            
+            GoToListTab();
         }
     });
 
@@ -613,6 +615,7 @@
         $('#custom-tabs-three-add').addClass('active');
         $('#custom-tabs-three-add').addClass('show');
         document.getElementById('OblNVno').focus();
+        $('#OblDt').focus();
         GetVoucherNumber();
         
     }
@@ -625,6 +628,7 @@
         $('#custom-tabs-three-add').removeClass('active');
         $('#custom-tabs-three-add').removeClass('show');
         $('#txtReportSearchDataTable').focus();
+        
     }
 </script>
 <script>
@@ -700,6 +704,9 @@
             AutofillNBSCHByODThick();
         });
         $('#LotWidth').on('blur', function () {
+            AutofillNBSCHByODThick();
+        });
+        $('#LotOD').on('blur', function () {
             AutofillNBSCHByODThick();
         });
     })
@@ -1391,11 +1398,11 @@
 
     function AutofillNBSCHByODThick() {
         var thick = $('#LotThick').val();
-        var od = $('#LotWidth').val();
+        var od = $('#LotOD').val();
         if (thick != '' && od != '') {
             $.ajax({
                 type: "POST",
-                url: '/OpeningStock/GetNBSCH',
+                url: '/Milling/GetNBSCH',
                 data: { "thick": thick, "od": od },
                 dataType: "JSON",
                 success: function (response) {

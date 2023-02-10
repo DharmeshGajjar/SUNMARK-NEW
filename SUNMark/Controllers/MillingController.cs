@@ -96,7 +96,7 @@ namespace SUNMark.Controllers
                         millingMasterModel.PCSWeight = dt.Rows[0]["MilRecQty"].ToString();
                         millingMasterModel.Supervisor = dt.Rows[0]["MilSupEmpVou"].ToString();
                         millingMasterModel.RLPCS = dt.Rows[0]["MilRLPcs"].ToString();
-                        millingMasterModel.Supervisor = dt.Rows[0]["MilRLWeight"].ToString();
+                        millingMasterModel.RLWeight = dt.Rows[0]["MilRLWeight"].ToString();
                         millingMasterModel.PrcVou = dt.Rows[0]["MilPrcVou"].ToString();
                         millingMasterModel.FinishDate = !string.IsNullOrWhiteSpace(dt.Rows[0]["MilFinishDt"].ToString()) ? Convert.ToDateTime(dt.Rows[0]["MilFinishDt"].ToString()).ToString("yyyy-MM-dd") : null;
                         millingMasterModel.Reason = dt.Rows[0]["MilReason"].ToString();
@@ -466,8 +466,8 @@ namespace SUNMark.Controllers
                     DataTable dtNBSCH = ObjDBConnection.CallStoreProcedure("GetNBSCHDetails", sqlParameters);
                     if (dtNBSCH != null && dtNBSCH.Rows.Count > 0)
                     {
-                        string LotNB = dtNBSCH.Rows[0]["OrdNB"].ToString();
-                        string LotSCH = dtNBSCH.Rows[0]["OrdSCH"].ToString();
+                        string LotNB = dtNBSCH.Rows[0]["OrdNB"].ToString().Trim();
+                        string LotSCH = dtNBSCH.Rows[0]["OrdSCH"].ToString().Trim();
                         return Json(new { result = true, lotNB = LotNB, lotSCH = LotSCH });
                     }
                 }

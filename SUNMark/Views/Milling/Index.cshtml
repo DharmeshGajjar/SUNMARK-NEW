@@ -307,7 +307,7 @@
                                                     <div class="form-group">
                                                         <label>No Of Pipe<span class="text-danger" style="font-family: Verdana">*</span></label>
                                                         <label class="control-label pl-1" style="font-family: Verdana;width:70px;text-align:right" id="NoOfPipe">-</label>
-                                                        @Html.TextBoxFor(x => x.PCS, new { @class = "form-control ", @placeholder = "No Of Pipe", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                        @Html.TextBoxFor(x => x.PCS, new { @class = "form-control ", @placeholder = "No Of Pipe", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right", @onchange = "GetODThickPCS()" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
@@ -320,13 +320,13 @@
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>In Time<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.InTime, new { @class = "form-control onlytimepicker", @placeholder = "In Time", @type = "text" })
+                                                        @Html.TextBoxFor(x => x.InTime, new { @class = "form-control", @placeholder = "In Time", @type = "time" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>Out Time<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.OutTime, new { @class = "form-control onlytimepicker", @placeholder = "Out Time", @type = "text" })
+                                                        @Html.TextBoxFor(x => x.OutTime, new { @class = "form-control", @placeholder = "Out Time", @type = "time" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
@@ -434,7 +434,7 @@
                                                 </div>
                                                 <div class="col-md-4 col-12">
                                                     <div class="form-group">
-                                                        <label>Reason</label>
+                                                        <label>Reason For Incomplete Coil</label>
                                                         @Html.TextBoxFor(x => x.Reason, new { @class = "form-control ", @placeholder = "Reason", @type = "text" })
                                                     </div>
                                                 </div>
@@ -442,13 +442,13 @@
                                                     <div class="col-md-2 col-12">
                                                         <div class="form-group">
                                                             <label>Stop From Time<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                            @Html.TextBoxFor(x => x.StopFromTime1, new { @class = "form-control onlytimepicker StopFromTime1", @placeholder = "From Time", @type = "text", @onblur = "TimeDiffHours(1)", @onchange = "TimeDiffHours(1)" })
+                                                            @Html.TextBoxFor(x => x.StopFromTime1, new { @class = "form-control StopFromTime1", @placeholder = "From Time", @type = "time", @onblur = "TimeDiffHours(1)", @onchange = "TimeDiffHours(1)" })
                                                         </div>
                                                     </div>
                                                     <div class="col-md-2 col-12">
                                                         <div class="form-group">
                                                             <label>Stop To Time<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                            @Html.TextBoxFor(x => x.StopToTime1, new { @class = "form-control onlytimepicker StopToTime1", @placeholder = "To Time", @type = "text", @onblur = "TimeDiffHours(1)", @onchange = "TimeDiffHours(1)" })
+                                                            @Html.TextBoxFor(x => x.StopToTime1, new { @class = "form-control StopToTime1", @placeholder = "To Time", @type = "time", @onblur = "TimeDiffHours(1)", @onchange = "TimeDiffHours(1)" })
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4 col-12">
@@ -468,13 +468,13 @@
                                                     <div class="col-md-2 col-12">
                                                         <div class="form-group">
                                                             <label>Stop From Time<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                            @Html.TextBoxFor(x => x.StopFromTime2, new { @class = "form-control onlytimepicker StopFromTime2", @placeholder = "From Time", @type = "text", @onblur = "TimeDiffHours(2)", @onchange = "TimeDiffHours(2)" })
+                                                            @Html.TextBoxFor(x => x.StopFromTime2, new { @class = "form-control StopFromTime2", @placeholder = "From Time", @type = "time", @onblur = "TimeDiffHours(2)", @onchange = "TimeDiffHours(2)" })
                                                         </div>
                                                     </div>
                                                     <div class="col-md-2 col-12">
                                                         <div class="form-group">
                                                             <label>Stop To Time<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                            @Html.TextBoxFor(x => x.StopToTime2, new { @class = "form-control onlytimepicker StopToTime2", @placeholder = "To Time", @type = "text", @onblur = "TimeDiffHours(2)", @onchange = "TimeDiffHours(2)" })
+                                                            @Html.TextBoxFor(x => x.StopToTime2, new { @class = "form-control StopToTime2", @placeholder = "To Time", @type = "time", @onblur = "TimeDiffHours(2)", @onchange = "TimeDiffHours(2)" })
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4 col-12">
