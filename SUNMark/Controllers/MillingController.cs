@@ -90,7 +90,7 @@ namespace SUNMark.Controllers
                         millingMasterModel.Width = dt.Rows[0]["LotWidth"].ToString();
                         millingMasterModel.ProcessVou = dt.Rows[0]["MilNextPrcVou"].ToString();
                         millingMasterModel.NB = dt.Rows[0]["MilNB"].ToString();
-                        millingMasterModel.NbVou = dt.Rows[0]["MilNBVou"].ToString();
+                        millingMasterModel.NBVou = dt.Rows[0]["MilNBVou"].ToString();
                         millingMasterModel.SCH = dt.Rows[0]["MilSCH"].ToString();
                         millingMasterModel.SCHVou = dt.Rows[0]["MilSCHVou"].ToString();
                         millingMasterModel.PCSWeight = dt.Rows[0]["MilRecQty"].ToString();
@@ -167,7 +167,7 @@ namespace SUNMark.Controllers
                     parameter[31] = new SqlParameter("@MilNB", millingMasterModel.NB);
                     parameter[32] = new SqlParameter("@MilSCH", millingMasterModel.SCH);
                     parameter[33] = new SqlParameter("@MilRecQty", millingMasterModel.PCSWeight);
-                    parameter[34] = new SqlParameter("@MilNBVou", millingMasterModel.NbVou);
+                    parameter[34] = new SqlParameter("@MilNBVou", millingMasterModel.NBVou);
                     parameter[35] = new SqlParameter("@MilSCHVou", millingMasterModel.SCHVou);
                     parameter[36] = new SqlParameter("@MilRLPcs", millingMasterModel.RLPCS);
                     parameter[37] = new SqlParameter("@MilRLWeight", millingMasterModel.RLWeight);

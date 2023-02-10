@@ -280,7 +280,7 @@
                                                     <div class="form-group">
                                                         <label>NB<span class="text-danger" style="font-family: Verdana"></span></label>
                                                         <input type="hidden" readonly placeholder="NB" id="NB" name="NB" class="form-control" value="" />
-                                                        @Html.DropDownListFor(x => x.NbVou, nbList, "Select", new { @class = "form-control select2", @style = "width:100% " })
+                                                        @Html.DropDownListFor(x => x.NBVou, nbList, "Select", new { @class = "form-control select2", @style = "width:100% " })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
@@ -877,7 +877,7 @@
                             $('input[name="PCS"]').val(0);
                             $('input[name="PCSWeight"]').val(0);
                             //alert(response.data[7]);
-                            $('#NbVou').val(response.data[7]).trigger('change');
+                            $('#NBVou').val(response.data[7]).trigger('change');
                             $('#SCHVou').val(response.data[8]).trigger('change');
                             if (response.isValidOD == '0' || response.isValidOD == 0) {
                                 showErrorMessage('Coil OD Size is Not Range to this Machine!');
@@ -886,7 +886,7 @@
                             else {
                                 $('#ODValidCheck').val('1');
                             }
-                            //GetNBSCHDetails();
+                            GetNBSCHDetails();
                         }
                         else {
                             showErrorMessage(response.message);
@@ -1037,17 +1037,17 @@
                 success: function (response) {
                     if (response) {
                         if (response.result) {
-                            $('select[name="NB"]').val(response.lotNB);
-                            $('select[name="SCH"]').val(response.lotSCH);
+                            $('select[name="NBVou"]').val(response.lotNB);
+                            $('select[name="SCHVou"]').val(response.lotSCH);
                         }
                         else {
-                            $('select[name="NB"]').val(response.lotNB);
-                            $('select[name="SCH"]').val(response.lotSCH);
+                            $('select[name="NBVou"]').val(response.lotNB);
+                            $('select[name="SCHVou"]').val(response.lotSCH);
                         }
                     }
                     else {
-                        $('select[name="NB"]').val(response.lotNB);
-                        $('select[name="SCH"]').val(response.lotSCH);
+                        $('select[name="NBVou"]').val(response.lotNB);
+                        $('select[name="SCHVou"]').val(response.lotSCH);
                     }
                     SetSelect2();
                 },
@@ -1102,13 +1102,13 @@
 </script>
 <script>
     $(function () {
-        var nb = $('#NbVou').children('option:selected').text()
+        var nb = $('#NBVou').children('option:selected').text()
         if (nb)
             $('input[name="NB"]').val(nb);
     })
 
-    $('#NbVou').change(function () {
-        var nb = $('#NbVou').children('option:selected').text()
+    $('#NBVou').change(function () {
+        var nb = $('#NBVou').children('option:selected').text()
         if (nb)
             $('input[name="NB"]').val(nb);
     })
@@ -1118,7 +1118,7 @@
         if (sch)
             $('input[name="SCH"]').val(sch);
         if ('@Model.Vou' != '' && '@Model.Vou' != '0') {
-            $('#NbVou').val('@Model.NB').trigger('change');
+            $('#NBVou').val('@Model.NB').trigger('change');
             $('#SCHVou').val('@Model.SCH').trigger('change');
 
 
@@ -1199,7 +1199,7 @@
                             $('input[name="IssueCoilNo"]').prop("readonly", true);
                             $('input[name="IssueCoilNoVou"]').val(response.lotVou);
                             $('input[name="NB"]').val(response.nb);
-                            $('select[name="NbVou"]').val(response.nb);
+                            $('select[name="NBVou"]').val(response.nb);
                             $('select[name="ProcessVou"]').val(response.nextPrcVou);
                             $('input[name="OD"]').val(response.od);
                             $('select[name="Operator1"]').val(response.opr1EmpVou);
@@ -1249,7 +1249,7 @@
                             $('input[name="IssueCoilNo"]').val('');
                             $('input[name="IssueCoilNoVou"]').val('');
                             $('input[name="NB"]').val('');
-                            $('select[name="NbVou"]').val('');
+                            $('select[name="NBVou"]').val('');
                             //$('select[name="ProcessVou"]').val('');
                             $('input[name="OD"]').val('');
                             $('select[name="Operator1"]').val('');
@@ -1291,7 +1291,7 @@
                         $('input[name="IssueCoilNo"]').val('');
                         $('input[name="IssueCoilNoVou"]').val('');
                         $('input[name="NB"]').val('');
-                        $('select[name="NbVou"]').val('');
+                        $('select[name="NBVou"]').val('');
                         //$('select[name="ProcessVou"]').val('');
                         $('input[name="OD"]').val('');
                         $('select[name="Operator1"]').val('');

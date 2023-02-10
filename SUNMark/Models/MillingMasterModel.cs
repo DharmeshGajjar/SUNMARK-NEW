@@ -30,7 +30,7 @@ namespace SUNMark.Models
 
         public string OD { get; set; }
         public string NB { get; set; }
-        public string NbVou { get; set; }
+        public string NBVou { get; set; }
         public string SCH { get; set; }
         public string SCHVou { get; set; }
         public string Grade { get; set; }
