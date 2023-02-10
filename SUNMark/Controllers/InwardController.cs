@@ -551,7 +551,8 @@ namespace SUNMark.Controllers
                                             TempData["IsPrint"] = inwardModel.isPrint;
                                         }
                                     }
-                                    return RedirectToAction("Index", new { id = 0 });
+                                    if (inwardModel.isPrint == 0)
+                                        return RedirectToAction("Index", new { id = 0 });
                                 }
                             }
                             else
@@ -765,7 +766,8 @@ namespace SUNMark.Controllers
                                             TempData["IsPrint"] = inwardModel.isPrint;
                                         }
                                     }
-                                    return RedirectToAction("Index", "Inward", new { id = 0 });
+                                    if (inwardModel.isPrint == 0)
+                                        return RedirectToAction("Index", "Inward", new { id = 0 });
                                 }
                             }
                             else
@@ -988,7 +990,8 @@ namespace SUNMark.Controllers
                                             TempData["IsPrint"] = inwardModel.isPrint;
                                         }
                                     }
-                                    return RedirectToAction("Index", "Inward", new { id = 0 });
+                                    if (inwardModel.isPrint == 0)
+                                        return RedirectToAction("Index", "Inward", new { id = 0 });
                                 }
                             }
                             else

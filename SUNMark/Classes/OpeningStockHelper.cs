@@ -68,7 +68,7 @@ namespace SUNMark.Classes
                     var godownList = objProductHelper.GetGoDownMasterDropdown(sessionCompanyId, 0);
                     var gradeList = objProductHelper.GetGradeMasterDropdown(sessionCompanyId, 0);
                     var partyList = objProductHelper.GetSupplierMasterDropdown(sessionCompanyId, 0);
-                    var prefixList = objProductHelper.GetLotMasterDropdown(sessionCompanyId, 0);
+                    var productList = objProductHelper.GetProductMasterWithCodeDropdown(sessionCompanyId);
 
                     for (int i = 0; i < dt.Rows.Count; i++)
                     {
@@ -103,34 +103,34 @@ namespace SUNMark.Classes
                             }
                             #endregion
 
-                            #region Prefix
-                            string prefixId = string.Empty;
-                            if (prefixList != null && prefixList.Count > 0)
+                            #region Product
+                            string prdId = string.Empty;
+                            if (productList != null && productList.Count > 0)
                             {
-                                if (!string.IsNullOrWhiteSpace(Convert.ToString(dt.Rows[i]["COIL PREFIX"])))
+                                if (!string.IsNullOrWhiteSpace(Convert.ToString(dt.Rows[i]["PRODUCT"])))
                                 {
-                                    prefixId = prefixList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["COIL PREFIX"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
+                                    prdId = productList.Where(x => x.Value1.ToLower().Trim().ToString().Equals(dt.Rows[i]["PRODUCT"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
                                 }
                             }
                             #endregion
 
-                            bool isprefixerror = false, isgodownerror = false, isgradeerror = false, ispartyerror = false;
+                            bool isgodownerror = false, isgradeerror = false, ispartyerror = false, isproducterror = false;
 
-                            if (string.IsNullOrWhiteSpace(prefixId) && !string.IsNullOrWhiteSpace(Convert.ToString(dt.Rows[i]["COIL PREFIX"])))
+                            if (string.IsNullOrWhiteSpace(prdId) && !string.IsNullOrWhiteSpace(Convert.ToString(dt.Rows[i]["PRODUCT"])))
                             {
-                                if (notFoundItems.Count <= 0 || notFoundItems.Where(x => x.Value1.Equals(dt.Rows[i]["COIL PREFIX"].ToString().Trim())).Count() <= 0)
+                                if (notFoundItems.Count <= 0 || notFoundItems.Where(x => x.Value1.Equals(dt.Rows[i]["PRODUCT"].ToString().Trim())).Count() <= 0)
                                 {
-                                    prefixId = dt.Rows[i]["COIL PREFIX"].ToString().Trim();
-                                    isprefixerror = true;
+                                    prdId = dt.Rows[i]["PRODUCT"].ToString().Trim();
+                                    isproducterror = true;
                                 }
                                 else
                                 {
-                                    prefixId = "Coil Prefix not found";
+                                    prdId = "Product not found";
                                 }
                             }
                             else
                             {
-                                prefixId = "-";
+                                prdId = "-";
                             }
 
 
@@ -205,14 +205,14 @@ namespace SUNMark.Classes
                             //}
 
 
-                            if (ispartyerror || isgradeerror || isgodownerror || isprefixerror)
+                            if (ispartyerror || isgradeerror || isgodownerror || isproducterror)
                                 notFoundItems.Add(new CustomDropDown
                                 {
                                     //Text = finishId,
                                     Value1 = godownId,
                                     Value2 = gradeId,
                                     Value3 = partyId,
-                                    Value4 = prefixId
+                                    Value4 = prdId
                                 });
 
 
@@ -267,7 +267,20 @@ namespace SUNMark.Classes
 
                                 #endregion
 
-                                sqlParameters[6] = new SqlParameter("@OblPrdVou", productId);
+                                
+                                #region Product
+                                string prdId = string.Empty;
+                                if (productList != null && productList.Count > 0)
+                                {
+                                    prdId = productList.Where(x => x.Value1.ToLower().Trim().ToString().Equals(dt.Rows[i]["PRODUCT"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
+                                }
+
+                                if (!string.IsNullOrWhiteSpace(prdId))
+                                {
+                                    sqlParameters[6] = new SqlParameter("@OblPrdVou", prdId);
+                                }
+
+                                #endregion
                                 sqlParameters[7] = new SqlParameter("@OblRem", string.Empty);
                                 sqlParameters[8] = new SqlParameter("@LotSupCoilNo", dt.Rows[i]["PARTY COIL NO"].ToString());
                                 sqlParameters[9] = new SqlParameter("@LotHeatNo", dt.Rows[i]["HEAT NO"].ToString());
@@ -291,18 +304,19 @@ namespace SUNMark.Classes
 
                                 sqlParameters[12] = new SqlParameter("@LotFinMscVou", 0);
                                 sqlParameters[13] = new SqlParameter("@OblFinish", "");
-                                sqlParameters[14] = new SqlParameter("@LotWidth", dt.Rows[i]["WIDTH"].ToString());
-                                sqlParameters[15] = new SqlParameter("@LotThick", dt.Rows[i]["THICK"].ToString());
-                                sqlParameters[16] = new SqlParameter("@LotQty", dt.Rows[i]["WEIGHT"].ToString());
-                                sqlParameters[17] = new SqlParameter("@LotInwWidth", dt.Rows[i]["WIDTH"].ToString());
-                                sqlParameters[18] = new SqlParameter("@LotInwThick", dt.Rows[i]["THICK"].ToString());
-                                sqlParameters[19] = new SqlParameter("@LotInwQty", dt.Rows[i]["WEIGHT"].ToString());
+                                sqlParameters[14] = new SqlParameter("@LotWidth", Convert.ToDecimal(dt.Rows[i]["WIDTH"].ToString()));
+                                sqlParameters[15] = new SqlParameter("@LotThick", Convert.ToDecimal(dt.Rows[i]["THICK"].ToString()));
+                                sqlParameters[16] = new SqlParameter("@LotQty", Convert.ToDecimal(dt.Rows[i]["WEIGHT"].ToString()));
+                                sqlParameters[17] = new SqlParameter("@LotInwWidth", Convert.ToDecimal(dt.Rows[i]["WIDTH"].ToString()));
+                                sqlParameters[18] = new SqlParameter("@LotInwThick", Convert.ToDecimal(dt.Rows[i]["THICK"].ToString()));
+                                sqlParameters[19] = new SqlParameter("@LotInwQty", Convert.ToDecimal(dt.Rows[i]["WEIGHT"].ToString()));
                                 sqlParameters[20] = new SqlParameter("@PrdTyp", "COIL");
-                                sqlParameters[21] = new SqlParameter("@CmpVou", companyId);
+                                sqlParameters[21] = new SqlParameter("@CmpVou", sessionCompanyId);
                                 sqlParameters[22] = new SqlParameter("@OblVou", 0);
 
 
-                                sqlParameters[23] = new SqlParameter("@LotTyp", string.Empty);
+                                sqlParameters[23] = new SqlParameter("@LotTyp", dt.Rows[i]["COIL PREFIX"].ToString());
+                                
                                 string coilano = dt.Rows[i]["COIL NO"].ToString();
                                 string temp = string.Empty;
                                 int coilnumber = 0;
@@ -317,9 +331,14 @@ namespace SUNMark.Classes
                                     coilnumber = int.Parse(temp);
 
                                 sqlParameters[24] = new SqlParameter("@LotNo", coilnumber);
-
                                 string _strLotCoilNo = string.Format("{0}", dt.Rows[i]["COIL NO"].ToString());
 
+                                if (!string.IsNullOrWhiteSpace(dt.Rows[i]["COIL PREFIX"].ToString()))
+                                {
+                                    string prefix = dt.Rows[i]["COIL PREFIX"].ToString();
+                                    _strLotCoilNo = prefix + "-" + _strLotCoilNo;
+                                }
+                                    
                                 sqlParameters[25] = new SqlParameter("@Flg", 1);
                                 sqlParameters[26] = new SqlParameter("@RefNo", dt.Rows[i]["MEMO NO"].ToString());
                                 sqlParameters[27] = new SqlParameter("@LotOD", dt.Rows[i]["SIZE"].ToString());
@@ -329,26 +348,29 @@ namespace SUNMark.Classes
                                 sqlParameters[31] = new SqlParameter("@NB", "");
                                 sqlParameters[32] = new SqlParameter("@SCH", "");
 
-                                #region CoilPrefix
-                                string prefixId = string.Empty;
-                                string prefix = string.Empty;
-                                if (prefixList != null && prefixList.Count > 0)
+                                string coiltype = string.Empty;
+                                if (dt.Rows[i]["COIL TYPE"].ToString() == "1")
                                 {
-                                    prefixId = prefixList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["COIL PREFIX"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
-                                    prefix = prefixList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["COIL PREFIX"].ToString().Trim().ToLower())).Select(x => x.Text).FirstOrDefault();
+                                    coiltype = "Slited Coil";
                                 }
-                                if (!string.IsNullOrWhiteSpace(prefixId))
+                                else if (dt.Rows[i]["COIL TYPE"].ToString() == "2")
                                 {
-                                    _strLotCoilNo = prefix + "-" + _strLotCoilNo;
-                                    sqlParameters[33] = new SqlParameter("@CoilType", prefix);
-                                    sqlParameters[34] = new SqlParameter("@CoilTypeVou", prefixId);
+                                    coiltype = "Bal. Patta";
                                 }
-                                else
+                                else if (dt.Rows[i]["COIL TYPE"].ToString() == "3")
                                 {
-                                    sqlParameters[33] = new SqlParameter("@CoilType", "");
-                                    sqlParameters[34] = new SqlParameter("@CoilTypeVou", 0);
+                                    coiltype = "Scrap";
                                 }
-                                #endregion
+                                else if (dt.Rows[i]["COIL TYPE"].ToString() == "4")
+                                {
+                                    coiltype = "M.Coil";
+                                }
+                                else if (dt.Rows[i]["COIL TYPE"].ToString() == "5")
+                                {
+                                    coiltype = "In Trans";
+                                }
+                                sqlParameters[33] = new SqlParameter("@CoilType", coiltype);
+                                sqlParameters[34] = new SqlParameter("@CoilTypeVou", dt.Rows[i]["COIL TYPE"].ToString());
 
                                 if (!string.IsNullOrWhiteSpace(dt.Rows[i]["SUFIX"].ToString()))
                                 {

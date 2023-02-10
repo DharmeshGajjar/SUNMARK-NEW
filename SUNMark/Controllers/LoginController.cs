@@ -91,6 +91,20 @@ namespace SUNMark.Controllers
                                 Response.Cookies.Append("YearId", yearList[0].Value.ToString()); 
                             }
 
+                            DataTable dtGenSettings = ObjDBConnection.CallStoreProcedure("GetGenSettings", null);
+                            if (dtGenSettings != null && dtGenSettings.Rows.Count > 0)
+                            {
+                                MailHelper.FromEmail = Convert.ToString(dtGenSettings.Rows[0]["GenEmail"]);
+                                MailHelper.Host = Convert.ToString(dtGenSettings.Rows[0]["GenHost"]);
+                                MailHelper.Password = Convert.ToString(dtGenSettings.Rows[0]["GenPass"]);
+                                MailHelper.Port = Convert.ToInt32(dtGenSettings.Rows[0]["GenSMTP"]);
+
+                                WhatAppHelper.SToken = Convert.ToString(dtGenSettings.Rows[0]["GenTokenId"]);
+                                WhatAppHelper.SInstanceID = Convert.ToString(dtGenSettings.Rows[0]["GenInstId"]);
+                                WhatAppHelper.SURL = Convert.ToString(dtGenSettings.Rows[0]["GenSURL"]);
+                                WhatAppHelper.skrumessage = Convert.ToString(dtGenSettings.Rows[0]["GenSkruAPI"]);
+                            }
+
                             //return RedirectToAction("Company", "Login");
                             return RedirectToAction("index", "dashboard");
                         }

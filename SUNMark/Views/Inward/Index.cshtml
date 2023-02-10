@@ -96,7 +96,7 @@
                                                     <label class="form-check-label" for="radio2">WhatApp</label>
                                                 </div>
                                                 <div class="col-md-10 form-group">
-                                                    <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "" />
+                                                    <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "              />
                                                 </div>
                                             </div>
                                         </div>
@@ -2326,7 +2326,7 @@
     }
 </script>
 <script>
-    $(document).ready(function () {
+    @*$(document).ready(function () {
         var ReturnId = '@Html.Raw(TempData["ReturnId"])';
         var Savedone = '@Html.Raw(TempData["Savedone"])';
         var CopyType = '1';
@@ -2345,7 +2345,7 @@
             );
         }
         
-    })
+    })*@
 
     $('#frmInward').submit(function (event) {
         var unit = '';
@@ -2429,8 +2429,8 @@
           var Savedone = '@Html.Raw(TempData["Savedone"])';
           if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
               $("#modelPopup").click();
-              $("#EmailAddress").hide();
-              $("#WhatappNo").hide();
+              $("#EmailAddress").show();
+              $("#WhatappNo").show();
             }
 
             $("#btn_ViewMailWhatapp").click(function () {
@@ -2530,20 +2530,20 @@
 
             });
 
-          $(".form-check input[name='printOption']").click(function () {
+          //$(".form-check input[name='printOption']").click(function () {
 
-                $("#EmailAddress").hide();
-                $("#WhatappNo").hide();
-                let optionVal = $('input:radio[name=printOption]:checked').val();
-                if (optionVal == "Print") {
+          //      $("#EmailAddress").hide();
+          //      $("#WhatappNo").hide();
+          //      let optionVal = $('input:radio[name=printOption]:checked').val();
+          //      if (optionVal == "Print") {
 
-                }
-                else if (optionVal == "WhatApp") {
-                    $("#WhatappNo").show();
-                }
-                else {
-                    $("#EmailAddress").show();
-                }
-            });
+          //      }
+          //      else if (optionVal == "WhatApp") {
+          //          $("#WhatappNo").show();
+          //      }
+          //      else {
+          //          $("#EmailAddress").show();
+          //      }
+          //  });
         })
 </script>
