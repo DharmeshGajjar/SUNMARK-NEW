@@ -940,7 +940,11 @@
         var weight2 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
         var pcs = parseInt(weight / weight1);
         $('#NoOfPipe').text(pcs);
-        $('#PCSWeight').text((weight2 * pcs).toFixed(1));
+        $('input[name="PCS"]').val(pcs);
+        $('input[name="PCSWeight"]').val((weight2 * pcs).toFixed(1));;
+
+        //$('#PCS').val(pcs);
+        //$('#PCSWeight').val((weight2 * pcs).toFixed(1));
     }
 
 
