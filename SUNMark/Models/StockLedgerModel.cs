@@ -38,6 +38,19 @@ namespace SUNMark.Models
         public int StockYNVou { get; set; }
         public List<SelectListItem> StockYNList { get; set; }
         public string StockYN { get; set; }
+        public string Dt { get; set; }
+        public int ShiftVou { get; set; }
+        public List<SelectListItem> ShiftList { get; set; }
+        public string Shift { get; set; }
+        public int MachineVou { get; set; }
+        public List<SelectListItem> MachineList { get; set; }
+        public string Machine { get; set; }
+    }
+    public class MillingPrintDetails
+    {
+        public string Id { get; set; }
+        public string Html { get; set; }
 
     }
+
 }

@@ -532,7 +532,7 @@
                                                                         }
                                                                     </td>
                                                                     <td>
-                                                                        @Html.TextBoxFor(x => x.Inward.SupCoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtSupCoilNo", @onblur = "SuplierCoilCheck(this,true)" })
+                                                                        @Html.TextBoxFor(x => x.Inward.SupCoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtSupCoilNo"@*, @onblur = "SuplierCoilCheck(this,true)"*@ })
                                                                     </td>
                                                                     <td>
                                                                         @Html.TextBoxFor(x => x.Inward.HeatNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtHeatNo" })
@@ -593,7 +593,7 @@
                                                                     }
                                                                 </td>
                                                                 <td>
-                                                                    @Html.TextBoxFor(x => x.Inward.SupCoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtSupCoilNo", @onblur = "SuplierCoilCheck(this)" })
+                                                                    @Html.TextBoxFor(x => x.Inward.SupCoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtSupCoilNo"@*, @onblur = "SuplierCoilCheck(this)"*@ })
                                                                 </td>
                                                                 <td>
                                                                     @Html.TextBoxFor(x => x.Inward.HeatNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtHeatNo" })
@@ -1536,8 +1536,8 @@
             $(this).children("td").eq(2).children("select").attr("Id", "Inward.IntGdnCoil" + i + "");
             $(this).children("td").eq(3).children("input").attr("name", "Inward.SupCoilNo");
             $(this).children("td").eq(3).children("input").attr("Id", "Inward.SupCoilNo" + i + "");
-            if (!isRemove)
-                $(this).children("td").eq(3).children("input").attr("onblur", 'SuplierCoilCheck(this)');
+            //if (!isRemove)
+            //    $(this).children("td").eq(3).children("input").attr("onblur", 'SuplierCoilCheck(this)');
             $(this).children("td").eq(4).children("input").attr("name", "Inward.HeatNo");
             $(this).children("td").eq(4).children("input").attr("Id", "Inward.HeatNo" + i + "");
             $(this).children("td").eq(5).children("select").attr("name", "Inward.IntGrdCoil");
