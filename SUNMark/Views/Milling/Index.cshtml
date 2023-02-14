@@ -51,7 +51,7 @@
 
 
 
-<link href="~/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+@*<link href="~/css/bootstrap-datetimepicker.css" rel="stylesheet" />*@
 <style>
     .bootstrap-datetimepicker-widget.dropdown-menu {
         display: none;
@@ -442,13 +442,13 @@
                                                     <div class="col-md-2 col-12">
                                                         <div class="form-group">
                                                             <label>Stop From Time<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                            @Html.TextBoxFor(x => x.StopFromTime1, new { @class = "form-control StopFromTime1", @placeholder = "From Time", @type = "time", @onblur = "TimeDiffHours(1)", @onchange = "TimeDiffHours(1)" })
+                                                            @Html.TextBoxFor(x => x.StopFromTime1, new { @class = "form-control StopFromTime1", @placeholder = "From Time", @type = "datetime-local", @onblur = "TimeDiffHours(1)", @onchange = "TimeDiffHours(1)" })
                                                         </div>
                                                     </div>
                                                     <div class="col-md-2 col-12">
                                                         <div class="form-group">
                                                             <label>Stop To Time<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                            @Html.TextBoxFor(x => x.StopToTime1, new { @class = "form-control StopToTime1", @placeholder = "To Time", @type = "time", @onblur = "TimeDiffHours(1)", @onchange = "TimeDiffHours(1)" })
+                                                            @Html.TextBoxFor(x => x.StopToTime1, new { @class = "form-control StopToTime1", @placeholder = "To Time", @type = "datetime-local", @onblur = "TimeDiffHours(1)", @onchange = "TimeDiffHours(1)" })
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4 col-12">
@@ -468,13 +468,13 @@
                                                     <div class="col-md-2 col-12">
                                                         <div class="form-group">
                                                             <label>Stop From Time<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                            @Html.TextBoxFor(x => x.StopFromTime2, new { @class = "form-control StopFromTime2", @placeholder = "From Time", @type = "time", @onblur = "TimeDiffHours(2)", @onchange = "TimeDiffHours(2)" })
+                                                            @Html.TextBoxFor(x => x.StopFromTime2, new { @class = "form-control StopFromTime2", @placeholder = "From Time", @type = "datetime-local", @onblur = "TimeDiffHours(2)", @onchange = "TimeDiffHours(2)" })
                                                         </div>
                                                     </div>
                                                     <div class="col-md-2 col-12">
                                                         <div class="form-group">
                                                             <label>Stop To Time<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                            @Html.TextBoxFor(x => x.StopToTime2, new { @class = "form-control StopToTime2", @placeholder = "To Time", @type = "time", @onblur = "TimeDiffHours(2)", @onchange = "TimeDiffHours(2)" })
+                                                            @Html.TextBoxFor(x => x.StopToTime2, new { @class = "form-control StopToTime2", @placeholder = "To Time", @type = "datetime-local", @onblur = "TimeDiffHours(2)", @onchange = "TimeDiffHours(2)" })
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4 col-12">
@@ -560,8 +560,8 @@
 @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">*@
 @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>*@
-<script src="~/js/moment.js"></script>
-<script src="~/js/bootstrap-datetimepicker.min.js"></script>
+@*<script src="~/js/moment.js"></script>
+<script src="~/js/bootstrap-datetimepicker.min.js"></script>*@
 
 <script>
     $(document).ready(function () {
@@ -571,9 +571,15 @@
             $('select[name="MillNo"]').attr('disabled', true)
             //$('input[name="IssueCoilNo"]').attr('disabled', true)
             $('input[name="IssueCoilNo"]').prop("readonly", true);
+            GetAllPercentageCalculation();
         }
         else {
             GoToListTab()
+            $('.FL').val('0');
+            $('.SL').val('0');
+            $('.SC').val('0');
+            $('.LOSS').val('0');
+            $('.YIELD').val('0');
         }
         //$('.onlytimepicker').attr('readonly', true)
             //$('.timepicker').timepicker({
@@ -584,17 +590,17 @@
             //    dropdown: true,
             //    scrollbar: true
             //});
-        $('.onlytimepicker').datetimepicker({
-                datepicker: false,
-                format: 'hh:mm A'
+        //$('.onlytimepicker').datetimepicker({
+        //        datepicker: false,
+        //        format: 'hh:mm A'
 
-        });
-        $('.onlytimepicker').on('click', function () {
-            $(".accordion-toggle").click();
-        });
+        //});
+        //$('.onlytimepicker').on('click', function () {
+        //    $(".accordion-toggle").click();
+        //});
         TimeDiffHours(1);
-        TimeDiffHours(2)
-        GetAllPercentageCalculation();
+        TimeDiffHours(2);
+        
         //$('.picker-switch .accordion-toggle').click();
     });
     function TimeDiffHours(n) {
@@ -604,7 +610,7 @@
         
         
         if (FromDate1 != '' && ToDate1 != '') {
-            var diff = new Date("1970-1-1 " + ToDate1).getTime() - new Date("1970-1-1 " + FromDate1).getTime();
+            var diff = new Date(ToDate1).getTime() - new Date(FromDate1).getTime();
             //alert(diff);
             if (diff < 0) {
                 showErrorMessage('Please select valid time range!');
@@ -979,7 +985,7 @@
         }
 
         if (FromDate1 != '' && ToDate1 != '') {
-            var diff = new Date("1970-1-1 " + ToDate1).getTime() - new Date("1970-1-1 " + FromDate1).getTime();
+            var diff = new Date(ToDate1).getTime() - new Date(FromDate1).getTime();
             //alert(diff);
             if (diff < 0) {
                 showErrorMessage('Please select valid time range!');
@@ -987,7 +993,7 @@
             }
         }
         if (FromDate2 != '' && ToDate2 != '') {
-            var diff = new Date("1970-1-1 " + ToDate2).getTime() - new Date("1970-1-1 " + FromDate2).getTime();
+            var diff = new Date(ToDate2).getTime() - new Date(FromDate2).getTime();
             //alert(diff);
             if (diff < 0) {
                 showErrorMessage('Please select valid time range!');
