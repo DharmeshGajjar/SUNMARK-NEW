@@ -276,6 +276,8 @@
                                                     </div>
                                                 </div>
                                                 <input type="hidden" value="1" id="ODValidCheck" />
+                                                <input type="hidden" value="0" id="MilMaxODMilMaxOD" />
+                                                <input type="hidden" value="0" id="MilMinODMilMinOD" />
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>NB<span class="text-danger" style="font-family: Verdana"></span></label>
@@ -885,6 +887,8 @@
                             //alert(response.data[7]);
                             $('#NBVou').val(response.data[7]).trigger('change');
                             $('#SCHVou').val(response.data[8]).trigger('change');
+                            $('#MilMaxODMilMaxOD').val(response.milMaxOD);
+                            $('#MilMinODMilMinOD').val(response.milMinOD);
                             if (response.isValidOD == '0' || response.isValidOD == 0) {
                                 showErrorMessage('Coil OD Size is Not Range to this Machine!');
                                 $('#ODValidCheck').val('0');
@@ -1000,8 +1004,11 @@
                 return false;
             }
         }
+        var MilMaxODMilMaxOD = $('#MilMaxODMilMaxOD').val();
+        var MilMinODMilMinOD = $('#MilMinODMilMinOD').val();
+        var OD = $('#OD').val();
 
-        if ($('#ODValidCheck').val() == '0' || $('#ODValidCheck').val() == 0) {
+        if (!(parseFloat(MilMaxODMilMaxOD) >= parseFloat(OD) && parseFloat(MilMinODMilMinOD) <= parseFloat(OD)) /*$('#ODValidCheck').val() == '0' || $('#ODValidCheck').val() == 0*/) {
             showErrorMessage('Coil OD Size is Not Range to this Machine!');
             IsSubmit = 0;
             return false;
@@ -1165,6 +1172,8 @@
 
     function GetSupervisor() {
         $('#ODValidCheck').val('1');
+        $('#MilMaxODMilMaxOD').val('0');
+        $('#MilMinODMilMinOD').val('0');
         var macNo = $('#MillNo').val();
         var shift = $('#ShiftVou').val();
         $('input[name="IssueCoilNo"]').prop("readonly", false);
@@ -1210,6 +1219,8 @@
                     if (response) {
                         if (response.result) {
                             $('#ODValidCheck').val('1');
+                            $('#MilMaxODMilMaxOD').val('0');
+                            $('#MilMinODMilMinOD').val('0');
                             $('input[name="InTime"]').val(response.inTime);
                             $('input[name="FeetPer"]').val(response.lenFeet);
                             $('input[name="IssueCoilNo"]').val(response.lotNo);

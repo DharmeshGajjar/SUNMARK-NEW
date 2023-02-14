@@ -323,8 +323,9 @@ namespace SUNMark.Controllers
                             return Json(new { result = false, message = "Remaining coil weight is not sufficiant to make a process!" });
                         }
                     }
+                    string MilMaxOD = "";
+                    string MilMinOD = "";
 
-                    
                     if (dtMacMst != null && dtMacMst.Rows.Count > 0)
                     {
                         if (!(Convert.ToDecimal(dtLotMst.Rows[0]["LotOD"].ToString()) >= Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGFR"].ToString()) && Convert.ToDecimal(dtLotMst.Rows[0]["LotOD"].ToString()) <= Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGTO"].ToString())))
@@ -332,6 +333,8 @@ namespace SUNMark.Controllers
                             IsValidOD = 0;
                             //return Json(new { result = false, message = "Coil OD Size is Not Range to this Machine!" });
                         }
+                        MilMaxOD = Convert.ToString(Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGTO"].ToString()));
+                        MilMinOD = Convert.ToString(Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGFR"].ToString()));
                     }
                     else
                     {
@@ -343,7 +346,7 @@ namespace SUNMark.Controllers
                     }
                     else
                     {
-                        return Json(new { result = true, data = data, IsValidOD = IsValidOD });
+                        return Json(new { result = true, data = data, IsValidOD = IsValidOD , MilMaxOD = MilMaxOD , MilMinOD = MilMinOD});
                     }
 
                 }

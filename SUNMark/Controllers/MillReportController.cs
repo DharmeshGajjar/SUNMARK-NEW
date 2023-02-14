@@ -140,8 +140,8 @@ namespace SUNMark.Controllers
                     {
                         for (int i = 0; i < DtBilty.Rows.Count; i++)
                         {
-                            string BilDate = DateTime.Parse(DtBilty.Rows[0]["JobDt"].ToString()).ToString("dd-MM-yyyy");
-                            string newbody = body.Replace("#*#*date*#*#", BilDate);
+                            string BilDate = DateTime.Parse(DtBilty.Rows[0]["MilDt"].ToString()).ToString("dd-MM-yyyy");
+                            string newbody = body.Replace("#*#*Dt*#*#", BilDate);
                             newbody = body.Replace("#*#*coilno*#*#", DtBilty.Rows[0]["CoilNo"].ToString());
                             newbody = newbody.Replace("#*#*party*#*#", DtBilty.Rows[0]["AccNm"].ToString());
                             newbody = newbody.Replace("#*#*date*#*#", BilDate);
