@@ -1042,7 +1042,9 @@
                     if (response) {
                         if (response.result) {
                             $('select[name="NBVou"]').val(response.lotNB);
+                            $('input[name="NB"]').val(response.lotNB);
                             $('select[name="SCHVou"]').val(response.lotSCH);
+                            $('input[name="SCH"]').val(response.lotSCH);
                         }
                         else {
                             $('select[name="NBVou"]').val(response.lotNB);

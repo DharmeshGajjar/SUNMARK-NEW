@@ -42,7 +42,7 @@ namespace SUNMark.Controllers
                     millingMasterModel.Supervisor = dtMill.Rows[0]["MilSupEmpVou"].ToString();
                     millingMasterModel.FeetPer = dtMill.Rows[0]["MilLenFeet"].ToString();
                     millingMasterModel.RecPrdVou = dtMill.Rows[0]["MilRecPrdVou"].ToString();
-                    //millingMasterModel.ScrapPipeProductVou = dtMill.Rows[0]["MilScrPrdVou"].ToString();
+                    millingMasterModel.ScrapPipeProductVou = dtMill.Rows[0]["MilScrPrdVou"].ToString();
                     millingMasterModel.ProcessVou = dtMill.Rows[0]["MilNextPrcVou"].ToString();
                     millingMasterModel.PrcVou = dtMill.Rows[0]["MilPrcVou"].ToString();
                 }
