@@ -86,6 +86,8 @@ namespace SUNMark.Models
         public string StopFromTime2 { get; set; }
         public string StopToTime2 { get; set; }
         public string StopReason2 { get; set; }
+        public string MilMaxOD { get; set; }
+        public string MilMinOD { get; set; }
 
     }
 }

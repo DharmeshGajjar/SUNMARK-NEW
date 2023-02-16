@@ -115,8 +115,8 @@ namespace SUNMark.Controllers
 
                 SqlParameter[] sqlParameters = new SqlParameter[3];
                 sqlParameters[0] = new SqlParameter("@Dt", dt);
-                sqlParameters[0] = new SqlParameter("@Machine", machine);
-                sqlParameters[0] = new SqlParameter("@Shift", machine);
+                sqlParameters[1] = new SqlParameter("@Machine", machine);
+                sqlParameters[2] = new SqlParameter("@Shift", shift);
                 DataTable DtBilty = ObjDBConnection.CallStoreProcedure("GetMillingReport", sqlParameters);
                 if (DtBilty != null && DtBilty.Rows.Count > 0)
                 {
@@ -138,90 +138,80 @@ namespace SUNMark.Controllers
                     }
                     if (!string.IsNullOrEmpty(body))
                     {
+                        string BilDate = DateTime.Parse(DtBilty.Rows[0]["MilDt"].ToString()).ToString("dd-MM-yyyy");
+                        string newbody = body.Replace("#*#*Dt*#*", BilDate);
+                        newbody = newbody.Replace("#*#*Oper*#*", DtBilty.Rows[0]["Operator1"].ToString() + "/" + DtBilty.Rows[0]["Operator2"].ToString());
+                        newbody = newbody.Replace("#*#*MillNo*#*", DtBilty.Rows[0]["MacNm"].ToString());
+                        newbody = newbody.Replace("#*#*Shift*#*", DtBilty.Rows[0]["MilShiftName"].ToString());
+                        StringBuilder sb = new StringBuilder();
                         for (int i = 0; i < DtBilty.Rows.Count; i++)
                         {
-                            string BilDate = DateTime.Parse(DtBilty.Rows[0]["MilDt"].ToString()).ToString("dd-MM-yyyy");
-                            string newbody = body.Replace("#*#*Dt*#*#", BilDate);
-                            newbody = body.Replace("#*#*coilno*#*#", DtBilty.Rows[0]["CoilNo"].ToString());
-                            newbody = newbody.Replace("#*#*party*#*#", DtBilty.Rows[0]["AccNm"].ToString());
-                            newbody = newbody.Replace("#*#*date*#*#", BilDate);
-                            newbody = newbody.Replace("#*#*opename*#*#", DtBilty.Rows[0]["opename"].ToString());
-                            newbody = newbody.Replace("#*#*partycoil*#*#", DtBilty.Rows[0]["SupCoilNo"].ToString());
-                            newbody = newbody.Replace("#*#*grade*#*#", DtBilty.Rows[0]["Grade"].ToString());
-                            newbody = newbody.Replace("#*#*partywt*#*#", (Math.Round(decimal.Parse((DtBilty.Rows[0]["JobQty"].ToString())))).ToString("0"));
-                            newbody = newbody.Replace("#*#*width*#*#", (Math.Round(decimal.Parse((DtBilty.Rows[0]["JobWidth"].ToString())))).ToString("0.0"));
-                            newbody = newbody.Replace("#*#*thk*#*#", (Math.Round(decimal.Parse((DtBilty.Rows[0]["Thick"].ToString())))).ToString("0.00"));
-                            newbody = newbody.Replace("#*#*actwt*#*#", (Math.Round(decimal.Parse((DtBilty.Rows[0]["JobActQty"].ToString())))).ToString("0"));
-                            newbody = newbody.Replace("#*#*diff*#*#", (Math.Round(decimal.Parse((DtBilty.Rows[0]["Diff"].ToString())))).ToString("0"));
+                           
+                            sb.Append("<tr>");
 
-                            StringBuilder sb = new StringBuilder();
+                            sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilLotNo"].ToString() + "</td>");
+                            sb.Append("<td rowspan=\"3\">#*#*r2*#*</td>");
+                            sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["LotGrade"].ToString() + "</td>");
+                            sb.Append("<td style=\"height: 40px;\">Coil</td>");
+                            sb.Append("<td style=\"width: 5%;\">" + DtBilty.Rows[i]["LotInwWidth"].ToString() + "</td>");
+                            sb.Append("<td style=\"width: 5%;\">" + DtBilty.Rows[i]["LotInwThick"].ToString() + "</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td rowspan=\"3\" style=\"width: 5%;\">" + DtBilty.Rows[i]["MilLenFeet"].ToString() + "</td>");
+                            sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilQty"].ToString() + "</td>");
+                            sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilInTime"].ToString() + "</td>");
+                            sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilOutTime"].ToString() + "</td>");
+                            sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilPCS"].ToString() + "</td>");
+                            sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilRecQty"].ToString() + "</td>");
+                            sb.Append("<td>3 TO 10</td>");
+                            sb.Append("<td style=\"width: 5%;\">#*#*r12*#*</td>");
+                            sb.Append("<td style=\"width: 5%;\">#*#*r13*#*</td>");
+                            sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilScrQty"].ToString() + "</td>");
+                            sb.Append("<td style=\"width: 3%;\">" + DtBilty.Rows[i]["MilTouNo"].ToString() + "</td>");
+                            sb.Append("<td style=\"width: 3%;\">" + DtBilty.Rows[i]["MilWeldSpeed"].ToString() + "</td>");
+                            sb.Append("<td style=\"width: 3%;\">" + DtBilty.Rows[i]["MilWeldAMP"].ToString() + "</td>");
+                            sb.Append("<td style=\"width: 3%;\">" + DtBilty.Rows[i]["MilWeldVolt"].ToString() + "</td>");
+                            sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilRem"].ToString() + "</td>");
 
-                            sb.Append("<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\" width=\"100%\" style=\"margin-top:10px;\" > <thead><tr>");//datatable
-                            sb.Append("<th align=\"center\" style=\"font-family:Verdana;font-size:15px;color:black;width:45px;border-left:none;\" >Sr.No.</th>");
-                            sb.Append("<th align=\"center\" style=\"font-family:Verdana;font-size:15px;color:black;width:175px;\" >SM COIL NO.</th>");
-                            sb.Append("<th align=\"center\" style=\"font-family:Verdana;font-size:15px;color:black;width:70px;\" >WIDTH</th>");
-                            sb.Append("<th align=\"center\" style=\"font-family:Verdana;font-size:15px;color:black;width:70px;\" >THK</th>");
-                            sb.Append("<th align=\"center\" style=\"font-family:Verdana;font-size:15px;color:black;width:70px;\" >WEIGHT</th>");
-                            sb.Append("<th align=\"center\" style=\"font-family:Verdana;font-size:15px;color:black;border-right:none;\" >REMARKS</th>");
                             sb.Append("</tr>");
 
-                            sb.Append("</thead><tbody>");
+                            sb.Append("<tr>");
+                            sb.Append("<td rowspan=\"2\">ACTUAL</td>");
+                            sb.Append("<td rowspan=\"2\">#*#*r16*#*</td>");
+                            sb.Append("<td rowspan=\"2\">#*#*r17*#*</td>");
+                            sb.Append("<td rowspan=\"2\">" + DtBilty.Rows[i]["MilOD"].ToString() + "</td>");
+                            sb.Append("<td style=\"height: 40px;\">10 TO 18</td>");
+                            sb.Append("<td style=\"width: 3%;\">#*#*r27*#*</td>");
+                            sb.Append("<td style=\"width: 3%;\">#*#*r28*#*</td>");
+                            sb.Append("<td rowspan=\"2\">#*#*r19*#*</td>");
+                            sb.Append("<td rowspan=\"2\">#*#*r20*#*</td>");
+                            sb.Append("<td rowspan=\"2\">#*#*r21*#*</td>");
+                            sb.Append("<td rowspan=\"2\">#*#*r22*#*</td>");
+                            sb.Append("</tr>");
 
-                            double dTotWT = 0;
-                            for (int j = 0; j < DtBilty.Rows.Count; j++)
-                            {
-                                sb.Append("<tr>");
+                            sb.Append("<tr>");
+                            sb.Append("<td style=\"width: 6%;height: 40px;\">18 TO 19.5</td>");
+                            sb.Append("<td style=\"width: 3%;\">#*#*r29*#*</td>");
+                            sb.Append("<td style=\"width: 3%;\">#*#*r30*#*</td>");
+                            sb.Append("</tr>");
 
-                                sb.Append("<td align=\"center\" style=\"font-size:14px;border-left:none;\">" + (j + 1) + "</td>");
-                                sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtBilty.Rows[j]["LotCoilNo"].ToString() + "</td>");
-                                sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtBilty.Rows[j]["LotWidth"].ToString() + "</td>");
-                                sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtBilty.Rows[j]["LotThick"].ToString() + "</td>");
-                                sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtBilty.Rows[j]["LotQty"].ToString() + "</td>");
-                                sb.Append("<td align=\"center\" style=\"font-size:14px;border-right:none;\">" + DtBilty.Rows[j]["JobRem"].ToString() + "</td>");
-
-                                dTotWT += Convert.ToDouble(DtBilty.Rows[j]["LotQty"].ToString());
-
-                                sb.Append("</tr>");
-                            }
-                            for (int j = DtBilty.Rows.Count; j < 19; j++)
-                            {
-                                sb.Append("<tr>");
-
-                                sb.Append("<td align=\"center\" style=\"font-size:14px;border-left:none;\">" + (j + 1) + "</td>");
-                                sb.Append("<td align=\"center\" style=\"font-size:14px;\"></td>");
-                                sb.Append("<td align=\"center\" style=\"font-size:14px;\"></td>");
-                                sb.Append("<td align=\"center\" style=\"font-size:14px;\"></td>");
-                                sb.Append("<td align=\"center\" style=\"font-size:14px;\"></td>");
-                                sb.Append("<td align=\"center\" style=\"font-size:14px;border-right:none;\"></td>");
-
-                                sb.Append("</tr>");
-                            }
-
-                            sb.Append("</tbody></table>");
-
-                            newbody = newbody.Replace("#*#*sdate*#*#", BilDate);
-                            //newbody = newbody.Replace("#*#*r16*#*#", dTotWT.ToString("") + " kg");
-                            newbody = newbody.Replace("#*#*patta*#*#", DtBilty.Rows[i]["BalPatta"].ToString());
-                            newbody = newbody.Replace("#*#*scrap*#*#", DtBilty.Rows[i]["Scrap"].ToString());
-                            //newbody = newbody.Replace("#*#*r19*#*#", "");
-
-                            newbody = newbody.Replace("#*#*datatable-keytable*#*#", sb.ToString());
-
-                            //newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
-                            newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "http://piosunmark.pioerp.com/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
-
-
-                            obj.Html = newbody;
-                            //obj.Id = id.ToString();
+                            
                         }
+                        newbody = newbody.Replace("#*#*datatable-keytable-Main*#*#", sb.ToString());
+
+                        ////newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
+                        //newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "http://piosunmark.pioerp.com/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
+
+
+                        obj.Html = newbody;
+                        //obj.Id = id.ToString();
                     }
                 }
                 return obj;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw ex;
             }
         }
 
