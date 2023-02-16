@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using SUNMark.Classes;
+using SUNMark.Common;
 using SUNMark.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -144,9 +146,17 @@ namespace SUNMark.Controllers
                         newbody = newbody.Replace("#*#*MillNo*#*", DtBilty.Rows[0]["MacNm"].ToString());
                         newbody = newbody.Replace("#*#*Shift*#*", DtBilty.Rows[0]["MilShiftName"].ToString());
                         StringBuilder sb = new StringBuilder();
+                        StringBuilder sb2 = new StringBuilder();
+                        StringBuilder sb3 = new StringBuilder();
+                        int sb2Cnt = 1;
                         for (int i = 0; i < DtBilty.Rows.Count; i++)
                         {
-                           
+                            decimal Weight = DtBilty.Rows[i]["MilQty"].ToString() == "" ? 0 : Convert.ToDecimal(DtBilty.Rows[i]["MilQty"].ToString());
+                            decimal txtPCSWeight = DtBilty.Rows[i]["MilRecQty"].ToString() == "" ? 0 : Convert.ToDecimal(DtBilty.Rows[i]["MilRecQty"].ToString());
+                            decimal RLWeight = DtBilty.Rows[i]["MilRLWeight"].ToString() == "" ? 0 : Convert.ToDecimal(DtBilty.Rows[i]["MilRLWeight"].ToString());
+                            decimal ScrapWeight = DtBilty.Rows[i]["MilScrQty"].ToString() == "" ? 0 : Convert.ToDecimal(DtBilty.Rows[i]["MilScrQty"].ToString());
+                            decimal E = txtPCSWeight + RLWeight + ScrapWeight;
+                            decimal F = Weight - E;
                             sb.Append("<tr>");
 
                             sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilLotNo"].ToString() + "</td>");
@@ -182,10 +192,10 @@ namespace SUNMark.Controllers
                             sb.Append("<td style=\"height: 40px;\">10 TO 18</td>");
                             sb.Append("<td style=\"width: 3%;\">#*#*r27*#*</td>");
                             sb.Append("<td style=\"width: 3%;\">#*#*r28*#*</td>");
-                            sb.Append("<td rowspan=\"2\">#*#*r19*#*</td>");
-                            sb.Append("<td rowspan=\"2\">#*#*r20*#*</td>");
-                            sb.Append("<td rowspan=\"2\">#*#*r21*#*</td>");
-                            sb.Append("<td rowspan=\"2\">#*#*r22*#*</td>");
+                            sb.Append("<td rowspan=\"2\">-</td>");
+                            sb.Append("<td rowspan=\"2\">-</td>");
+                            sb.Append("<td rowspan=\"2\">-</td>");
+                            sb.Append("<td rowspan=\"2\">-</td>");
                             sb.Append("</tr>");
 
                             sb.Append("<tr>");
@@ -194,9 +204,62 @@ namespace SUNMark.Controllers
                             sb.Append("<td style=\"width: 3%;\">#*#*r30*#*</td>");
                             sb.Append("</tr>");
 
+                            sb2.Append("<tr>");
+                            sb2.Append("<td>" + sb2Cnt + "</td>");
                             
+                            if (DtBilty.Rows[i]["MilStopFrTm1"].ToString() == "" || DtBilty.Rows[i]["MilStopToTm1"].ToString() =="")
+                            {
+                                sb2.Append("<td></td>");
+                                sb2.Append("<td></td>");
+                                sb2.Append("<td>" + DtBilty.Rows[i]["MilStopReson1"].ToString() + "</td>");
+                                sb2.Append("<td></td>");
+                            }
+                            else
+                            {
+                                sb2.Append("<td>" + (DateTime.ParseExact(DtBilty.Rows[i]["MilStopFrTm1"].ToString(), "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)).ToString("dd/MM/yyyy hh:mm tt") + "</td>");
+                                sb2.Append("<td>" + (DateTime.ParseExact(DtBilty.Rows[i]["MilStopToTm1"].ToString(), "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)).ToString("dd/MM/yyyy hh:mm tt") + "</td>");
+                                sb2.Append("<td>" + DtBilty.Rows[i]["MilStopReson1"].ToString() + "</td>");
+                                sb2.Append("<td>" + (DateTime.ParseExact(DtBilty.Rows[i]["MilStopToTm1"].ToString(), "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)- DateTime.ParseExact(DtBilty.Rows[i]["MilStopFrTm1"].ToString(), "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)) + "</td>");
+                            }
+                            sb2.Append("</tr>");
+                            sb2.Append("<tr>");
+                            sb2Cnt++;
+                            sb2.Append("<td>" + sb2Cnt + "</td>");
+                            
+                            if (DtBilty.Rows[i]["MilStopFrTm2"].ToString() == "" || DtBilty.Rows[i]["MilStopToTm2"].ToString() == "")
+                            {
+                                sb2.Append("<td></td>");
+                                sb2.Append("<td></td>");
+                                sb2.Append("<td>" + DtBilty.Rows[i]["MilStopReson2"].ToString() + "</td>");
+                                sb2.Append("<td></td>");
+                            }
+                            else
+                            {
+                                sb2.Append("<td>" + (DateTime.ParseExact(DtBilty.Rows[i]["MilStopFrTm2"].ToString(), "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)).ToString("dd/MM/yyyy hh:mm tt") + "</td>");
+                                sb2.Append("<td>" + (DateTime.ParseExact(DtBilty.Rows[i]["MilStopToTm2"].ToString(), "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)).ToString("dd/MM/yyyy hh:mm tt") + "</td>");
+                                sb2.Append("<td>" + DtBilty.Rows[i]["MilStopReson2"].ToString() + "</td>");
+                                sb2.Append("<td>" + (DateTime.ParseExact(DtBilty.Rows[i]["MilStopToTm2"].ToString(), "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture) - DateTime.ParseExact(DtBilty.Rows[i]["MilStopFrTm2"].ToString(), "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)) + "</td>");
+                            }
+                            sb2.Append("</tr>");
+                            sb2Cnt++;
+
+                            sb3.Append("<tr>");
+                            sb3.Append("<td>" + DtBilty.Rows[i]["MilLotNo"].ToString() + "</td>");
+                            sb3.Append("<td>" + ((txtPCSWeight*100)/Weight).ToString("0.##") + "</td>");
+                            sb3.Append("<td>" + ((RLWeight * 100) / Weight).ToString("0.##") + "</td>");
+                            sb3.Append("<td>" + ((ScrapWeight * 100) / Weight).ToString("0.##") + "</td>");
+                            sb3.Append("<td>" + (F / Weight).ToString("0.##") + "</td>");
+                            sb3.Append("<td>" + ((txtPCSWeight) / Weight).ToString("0.##") + "</td>");
+                            sb3.Append("</tr>");
+
+
                         }
                         newbody = newbody.Replace("#*#*datatable-keytable-Main*#*#", sb.ToString());
+                        newbody = newbody.Replace("#*#*datatable-keytable-Child1*#*#", sb2.ToString());
+                        newbody = newbody.Replace("#*#*datatable-keytable-Child2*#*#", sb3.ToString());
+
+                        
+                        
 
                         ////newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
                         //newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "http://piosunmark.pioerp.com/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
@@ -214,6 +277,65 @@ namespace SUNMark.Controllers
                 throw ex;
             }
         }
+        public IActionResult MillSendMail(string dt, int machine, int shift,string email)
+        {
+            try
+            {
+                MillingPrintDetails obj = GetMillPrintData(dt, machine, shift);
+                string wwwroot = string.Empty;
+                string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
 
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                //var render = new IronPdf.HtmlToPdf();
+                //using var doc = render.RenderHtmlAsPdf(obj.Html);
+                //doc.SaveAs(wwwroot);
+
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Save(wwwroot);
+                doc.Close();
+
+                bool result = SendEmail(email, "MILL REPORT", "Please find attachment", wwwroot);
+                if (result)
+                    return Json(new { result = result, message = "Mail Send Sucessfully" });
+                else
+                    return Json(new { result = result, message = "Internal server error" });
+
+
+                //return Json(new { result = result, message = "Please check your mail address" });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        public IActionResult MillWhatApp(string dt, int machine, int shift, string whatappNo)
+        {
+            try
+            {
+                MillingPrintDetails obj = GetMillPrintData(dt, machine, shift);
+                string wwwroot = string.Empty;
+                string filenm = string.Empty;
+                string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
+
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                //wwwroot = "http://piosunmark.pioerp.com/wwwroot/PrintPDF/" + dateTime + ".pdf";
+                filenm = dateTime + ".pdf";
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Margins.Left = 25;
+                doc.Save(wwwroot);
+                doc.Close();
+
+                WhatAppAPIResponse apiResponse = SendWhatAppMessage(whatappNo, "MILL REPORT", wwwroot, filenm);
+                return Json(new { result = apiResponse.status, message = apiResponse.message });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
     }
 }
