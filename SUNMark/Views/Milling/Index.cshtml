@@ -1004,6 +1004,7 @@
                 return false;
             }
         }
+        GetODRangeByCoilMacNo($('#IssueCoilNo').val(),$('#MillNo').val());
         var MilMaxODMilMaxOD = $('#MilMaxODMilMaxOD').val();
         var MilMinODMilMinOD = $('#MilMinODMilMinOD').val();
         var OD = $('#OD').val();
@@ -1412,4 +1413,31 @@
         }
         return true;
     }
-NB</script>
+    function GetODRangeByCoilMacNo(c,m) {
+        $.ajax({
+            type: "POST",
+            async: false,
+            cache: false,
+            url: '/Milling/GetODRangeByCoilMacNo',
+            data: { "coilNo": c, "MacId": m },
+            dataType: "JSON",
+            success: function (response) {
+                if (response) {
+                    if (response.result) {
+                        $('#MilMaxODMilMaxOD').val(response.milMaxOD);
+                        $('#MilMinODMilMinOD').val(response.milMinOD);
+                    }
+                    else {
+                        showErrorMessage(response.message);
+                    }
+                }
+                else {
+                    showErrorMessage("OD range not found!");
+                }
+            },
+            error: function (response) {
+
+            }
+        });
+    }
+</script>

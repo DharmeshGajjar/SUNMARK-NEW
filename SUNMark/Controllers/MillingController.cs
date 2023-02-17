@@ -523,6 +523,45 @@ namespace SUNMark.Controllers
                 return Json(new { result = false });
             }
         }
+        public ActionResult GetODRangeByCoilMacNo(string coilNo,string MacId)
+        {
+            try
+            {
+                MillingMasterModel millingMasterModel = new MillingMasterModel();
+                SqlParameter[] parameter = new SqlParameter[2];
+                parameter[0] = new SqlParameter("@COILNO", coilNo);
+                parameter[1] = new SqlParameter("@MACVOU", MacId);
+                DataSet ds = ObjDBConnection.GetDataSet("GetDataByCoilNoMilling", parameter);
+                if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables.Count == 6)
+                {
+                    List<object> data = new List<object>();
+                    DataTable dtMacMst = ds.Tables[4];
+                    
+                    string MilMaxOD = "";
+                    string MilMinOD = "";
 
+                    if (dtMacMst != null && dtMacMst.Rows.Count > 0)
+                    {
+                        MilMaxOD = Convert.ToString(Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGTO"].ToString()));
+                        MilMinOD = Convert.ToString(Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGFR"].ToString()));
+                        return Json(new { result = true, data = data, MilMaxOD = MilMaxOD, MilMinOD = MilMinOD });
+                    }
+                    else
+                    {
+                        return Json(new { result = false, message = "Something went wrong!" });
+                    }
+                    
+
+                }
+                else
+                {
+                    return Json(new { result = false, message = "Invalid Coil No!" });
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { result = false, message = "Invalid Coil No!" });
+            }
+        }
     }
 }

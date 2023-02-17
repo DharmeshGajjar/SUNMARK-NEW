@@ -46,6 +46,9 @@
         padding: 5px !important;
         text-align: center
     }
+    .required{
+        color: red;
+    }
 </style>
 
 
@@ -107,7 +110,7 @@
                     <div class="row mt-3">
                         <div class="col-md-2">
                             <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                                Date <span class="required"></span>
+                                Date <span class="required">*</span>
                             </label>
                             <div class="form-outline form-white mb-2">
                                 @Html.TextBoxFor(x => x.Dt, new { @class = "form-control form-control-lg", @placeholder = "Date", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
@@ -115,7 +118,7 @@
                         </div>
                         <div class="col-md-2">
                             <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                                Machine No <span class="required"></span>
+                                Machine No <span class="required">*</span>
                             </label>
                             <div class="form-outline form-white mb-2">
                                 @Html.DropDownListFor(x => x.Machine, Model.MachineList, "Select", new { @class = "form-control select2", @tabindex = "2", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
@@ -123,14 +126,14 @@
                         </div>
                         <div class="col-md-2">
                             <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                                Shift <span class="required"></span>
+                                Shift <span class="required">*</span>
                             </label>
                             <div class="form-outline form-white mb-2">
                                 @Html.DropDownListFor(x => x.Shift, Model.ShiftList, "Select", new { @class = "form-control select2", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
                             </div>
                         </div>
                         <div class="col-md-5 mt-1 text-right">
-                            <button class="btn btn-primary px-4 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" onclick=" GetMillPrint();">
+                            <button class="btn btn-primary px-4 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" @*onclick=" GetMillPrint();"*@>
                                 Print (F9)
                             </button>
                             <a href="/StockLedger/index" class="btn btn-warning px-4 text-dark" style="font-family:Verdana;font-size:medium">
@@ -361,7 +364,8 @@
             var machine = $('select[name="Machine"]').val();
             var shift = $('select[name="Shift"]').val();
             let optionVal = $('input:radio[name=printOption]:checked').val();
-            if (optionVal == "Print") {
+            if (machine != '' && shift != '') {
+                if (optionVal == "Print") {
                 $('#exampleModal').modal('hide');
 
                 $.ajax({
@@ -450,12 +454,39 @@
                 }
 
             }
+            }
+            else {
+                showErrorMessage("Please select all mandatory fields!");
+            }
 
+
+        });
+        $(".form-check input[name='printOption']").click(function () {
+            $("#EmailAddress").hide();
+            $("#WhatappNo").hide();
+            let optionVal = $('input:radio[name=printOption]:checked').val();
+            if (optionVal == "Print") {
+
+            }
+            else if (optionVal == "WhatApp") {
+                $("#WhatappNo").show();
+            }
+            else {
+                $("#EmailAddress").show();
+            }
         });
     });
 
 
     $("#btnPrint").click(function () {
-        $("#modelPopup").click();
+        var machine = $('select[name="Machine"]').val();
+        var shift = $('select[name="Shift"]').val();
+        if (machine != '' && shift != '') {
+
+            $("#modelPopup").click();
+        }
+        else {
+            showErrorMessage("Please select all mandatory fields!");
+        }
     })
 </script>
