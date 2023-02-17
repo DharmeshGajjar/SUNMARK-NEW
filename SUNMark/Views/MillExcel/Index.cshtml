@@ -1,0 +1,363 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
+    List<SUNMark.Models.MillingMasterModel> millingMasterList = ViewBag.millingMasterList as List<SUNMark.Models.MillingMasterModel>;
+    List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
+    List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
+    ViewData["Title"] = userRight.ModuleNm;
+    string headerAdd = "";
+    string headerList = "";
+    string gridAdd = "";
+    string gridList = "";
+    bool headerAddTrue = false;
+    bool headerListTrue = false;
+
+    if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+    {
+        headerAdd = "active";
+        gridAdd = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    List<SelectListItem> companyList = ViewBag.companyList != null ? ViewBag.companyList as List<SelectListItem> : new List<SelectListItem>();
+    List<SelectListItem> productList = ViewBag.productList != null ? ViewBag.productList as List<SelectListItem> : null;
+}
+
+
+<style>
+    .clsrequied {
+        color: red;
+    }
+
+    .lblstyle {
+        font-family: Verdana;
+        font-size: small
+    }
+</style>
+<style>
+    #tblDisplay thead tr th {
+        padding: 5px !important;
+        text-align: center
+    }
+
+    #tblDisplay tbody tr td {
+        padding: 5px !important;
+        text-align: center
+    }
+</style>
+<div class="card card-primary">
+    <div class="card-header" style="font-family:Verdana">
+        <h6> @ViewData["Title"]</h6>
+    </div>
+    <div class="card-body">
+        <div class="card card-primary card-tabs">
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                    @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerAdd" id="custom-tabs-three-add-tab" data-toggle="pill" href="#custom-tabs-three-add" role="tab" aria-controls="custom-tabs-three-add" aria-selected="@headerAddTrue" style="font-family:Verdana;font-size:small" onclick="GoToAddTab()">Upload Excel (F2)</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="tab-content" id="custom-tabs-three-tabContent">
+                        @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                        {
+                            <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
+                                <form method="post" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-md-4 col-12">
+                                            <div class="row">
+                                                <div class="col-md-4 col-12">
+                                                    <label class="control-label">Company</label>
+                                                </div>
+                                                <div class="col-md-6 col-12">
+                                                    @if (companyList != null && companyList.Count > 0)
+                                                    {
+                                                        <select class="form-control select2" name="drpCompany" id="drpCompany">
+                                                            <option value=""></option>
+                                                            @foreach (var item in companyList)
+                                                            {
+                                                                <option value="@item.Value">@item.Text</option>
+                                                            }
+                                                        </select>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-12">
+                                            <div class="row">
+                                                <div class="col-md-4 col-12">
+                                                    <label class="control-label"> Receive Product</label>
+                                                </div>
+                                                <div class="col-md-6 col-12">
+                                                    @if (productList != null && productList.Count > 0)
+                                                    {
+                                                        <select class="form-control select2" name="drpProduct" id="drpProduct">
+                                                            <option value=""></option>
+                                                            @foreach (var item in productList)
+                                                            {
+                                                                <option value="@item.Value">@item.Text</option>
+                                                            }
+                                                        </select>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-12">
+                                            <div class="row">
+                                                <div class="col-md-4 col-12">
+                                                    <label class="control-label">Scrap Product</label>
+                                                </div>
+                                                <div class="col-md-6 col-12">
+                                                    @if (productList != null && productList.Count > 0)
+                                                    {
+                                                        <select class="form-control select2" name="drpScpProduct" id="drpScpProduct">
+                                                            <option value=""></option>
+                                                            @foreach (var item in productList)
+                                                            {
+                                                                <option value="@item.Value">@item.Text</option>
+                                                            }
+                                                        </select>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-12 mt-3" id="divUploadExcel">
+                                            <div class="row">
+                                                <div class="col-md-2 col-12">
+                                                    <label class="control-label customLabel">Upload Excel </label>
+                                                </div>
+                                                <div class="col-md-10 col-12 d-flex">
+                                                    <a download="" class="btn btn-primary text-white col-3 col-md-4" href="" id="btnDownloadSample">
+                                                        <i class="fa fa-download mr-2 text-white"></i> Sample
+                                                    </a>
+                                                    <input type="file" class="ml-3 col-md-8 col-12" value="Select File" onchange="ProcessExcel()" id="fileUpload" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-12 text-center  mt-3">
+                                        <input type="button" class="btn btn-primary" id="btnSubmit" value="Submit (F10)" onclick="UploadExcel();" />
+                                    </div>
+                                </form>
+
+                                <div class="col-md-12 col-12 table-responsive mt-4">
+                                    <table class="table table-bordered overflow-auto table-head-fixed" id="tblDisplay">
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function GoToAddTab() {
+        $('#custom-tabs-three-add-tab').addClass('active');
+        $('#custom-tabs-three-add').addClass('active');
+        $('#custom-tabs-three-add').addClass('show');
+        setTimeout(function () {
+            $('#drpProductType').focus();
+        }, 80)
+
+    }
+
+    GoToAddTab();
+
+    SetSelect2();
+</script>
+<script>
+    var isRecentCalledEsc = false;
+    var isRecentCalledSave = false;
+    (function (code) {
+        code(window.jQuery, document, window);
+    }(function ($, document, window) {
+        $(function () {
+            $(window)
+                .initKeyboard({ debug: 1 })
+                .on('F2', function () {
+                    GoToAddTab()
+                }).on('F10', function () {
+                    if (!isRecentCalledSave) {
+                        UploadExcel();
+                        isRecentCalledSave = true;
+
+                        setTimeout(function () {
+                            isRecentCalledSave = false;
+                        }, 500)
+                    }
+
+                })
+                .on('Alt+C', function () {
+                    if (confirm("Do you want to exit without save?")) {
+                        location.href = '/MillExcel/Index'
+                    }
+                    else {
+                        $('#OblNVno').focus();
+                    }
+
+                }).on('Escape', function () {
+                    if (!isRecentCalledEsc) {
+                        isRecentCalledEsc = true;
+                        if (confirm("Do you want to exit without save?")) {
+                            location.href = '/MillExcel/Index'
+                        }
+                        //else {
+                        //    $('#OblNVno').focus();
+                        //}
+                        setTimeout(function () {
+                            isRecentCalledEsc = false;
+                        }, 500)
+                    }
+
+                })
+        });
+    }));
+</script>
+<script>
+
+    function ProcessExcel() {
+        if ($('#fileUpload') != null && $('#fileUpload')[0].files[0] != null && $('#fileUpload')[0].files[0] != undefined) {
+            var formData = new FormData();
+            formData.append('file', $('#fileUpload')[0].files[0]);
+            $.ajax({
+                url: '/MillExcel/Excel',
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (data) {
+                    if (data != null) {
+                        if (!data.result) {
+                            showErrorMessage(data.message)
+                            $('#fileUpload').val("");
+                        }
+                        else {
+                            var headerData = data.headerList;
+                            var data = data.gridList;
+
+                            if (data != null && data.length > 0) {
+                                var html = $('#tblPipe').children().find('tr.AddRows:first').html();
+                                $('#tblDisplay').children('tbody').remove();
+                                $('#tblDisplay').children('thead').remove();
+
+                                var header = '<thead><tr>';
+                                for (var x = 0; x < headerData.length; x++) {
+                                    header += `<th>` + headerData[x] + `</th>`
+                                }
+                                $('#tblDisplay').append(header);
+
+                                $('#tblDisplay').append('<tbody></tbody>');
+                                var body = '';
+                                for (var x = 0; x < data.length; x++) {
+                                    body += '<tr>';
+                                    for (var y = 0; y < data[x].length; y++) {
+                                        body += '<td>' + data[x][y] + '</td>'
+                                    }
+                                    body += '</tr>';
+                                }
+                                $('#tblDisplay').children('tbody').append(body);
+                            }
+                            $('#btnSubmit').focus();
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    function UploadExcel() {
+        if ($('#fileUpload') != null && $('#fileUpload')[0].files[0] != null && $('#fileUpload')[0].files[0] != undefined) {
+
+            if ($('#drpCompany').val() && $('#drpScpProduct').val() && $('#drpProduct').val()) {
+                var formData = new FormData();
+                formData.append('file', $('#fileUpload')[0].files[0]);
+                formData.append('scpproductId', $('#drpScpProduct').val());
+                formData.append('companyId', $('#drpCompany').val());
+                formData.append('productId', $('#drpProduct').val());
+                var scpprd = $('#drpScpProduct').val();
+                $.ajax({
+                    url: '/MillExcel/InsertExcel',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,  // tell jQuery not to process the data
+                    contentType: false,  // tell jQuery not to set contentType
+                    success: function (data) {
+                        if (data != null) {
+                            if (data.result) {
+                                showSuccessMessage(data.message)
+                                $('#fileUpload').val("");
+                            }
+                            else {
+                                var notFoundItemList = data.notFoundList
+                                showSuccessMessage(data.message);
+                                $('#fileUpload').val("");
+                                $('#drpScpProduct').val("");
+                                $('#drpProduct').val("");
+                                $('#drpCompany').val("");
+                                SetSelect2();
+                                GoToAddTab();
+                                $('#tblDisplay').children('tbody').remove();
+                                $('#tblDisplay').children('thead').remove();
+
+                                var alertHTML = '';
+                                if (notFoundItemList != null && notFoundItemList.length > 0) {
+                                    alertHTML = '<b style="font-size:20px !important">Following unique milling master data not found!</b><div class="table-responsive"><table style="font-size:16px !important" class="table table-boredered mt-3"><thead><tr><th>#</th><th>Grade</th><th>Operator1</th><th>Operator2</th><th>Supervisor</th><th>Mill No</th><th>Process</th></tr></thead><tbody>';
+                                    for (var x = 0; x < notFoundItemList.length; x++) {
+                                        alertHTML += "<tr><td>" + (parseInt(x) + 1) + "</td>";
+                                        alertHTML += "<td>" + notFoundItemList[x].value1 + "</td>";
+                                        alertHTML += "<td>" + notFoundItemList[x].value2 + "</td>";
+                                        alertHTML += "<td>" + notFoundItemList[x].value3 + "</td>";
+                                        alertHTML += "<td>" + notFoundItemList[x].value4 + "</td>";
+                                        alertHTML += "<td>" + notFoundItemList[x].value5 + "</td>";
+                                        alertHTML += "<td>" + notFoundItemList[x].value6 + "</td>";
+                                        alertHTML += "</tr>";
+                                    }
+                                    alertHTML += "</tbody</table></div>";
+
+                                    Swal.fire({
+                                        position: 'center',
+                                        title: alertHTML,
+                                        showConfirmButton: true,
+                                    })
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            else {
+                showErrorMessage("Please select product , company and product, scrap Product!");
+            }
+
+        }
+    }
+
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+
+</script>

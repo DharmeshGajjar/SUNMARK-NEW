@@ -175,33 +175,33 @@ namespace SUNMark.Controllers
                     parameter[39] = new SqlParameter("@MIlFinishDt", millingMasterModel.FinishDate);
                     parameter[40] = new SqlParameter("@MilReason", millingMasterModel.Reason);
                     parameter[41] = new SqlParameter("@MilRemainingWeight", millingMasterModel.RemainingWeight);
-                parameter[42] = new SqlParameter("@MilStopFrTm1", millingMasterModel.StopFromTime1);
-                parameter[43] = new SqlParameter("@MilStopToTm1", millingMasterModel.StopToTime1);
-                parameter[44] = new SqlParameter("@MilStopReson1", millingMasterModel.StopReason1);
-                parameter[45] = new SqlParameter("@MilStopFrTm2", millingMasterModel.StopFromTime2);
-                parameter[46] = new SqlParameter("@MilStopToTm2", millingMasterModel.StopToTime2);
-                parameter[47] = new SqlParameter("@MilStopReson2", millingMasterModel.StopReason2);
-                DataTable dt = ObjDBConnection.CallStoreProcedure("AddMilling", parameter);
-                    if (dt != null && dt.Rows.Count > 0)
-                    {
-                        int status = Convert.ToInt32(dt.Rows[0][0].ToString());
-                        if (status > 0)
+                    parameter[42] = new SqlParameter("@MilStopFrTm1", millingMasterModel.StopFromTime1);
+                    parameter[43] = new SqlParameter("@MilStopToTm1", millingMasterModel.StopToTime1);
+                    parameter[44] = new SqlParameter("@MilStopReson1", millingMasterModel.StopReason1);
+                    parameter[45] = new SqlParameter("@MilStopFrTm2", millingMasterModel.StopFromTime2);
+                    parameter[46] = new SqlParameter("@MilStopToTm2", millingMasterModel.StopToTime2);
+                    parameter[47] = new SqlParameter("@MilStopReson2", millingMasterModel.StopReason2);
+                    DataTable dt = ObjDBConnection.CallStoreProcedure("AddMilling", parameter);
+                        if (dt != null && dt.Rows.Count > 0)
                         {
-                            SetSuccessMessage("Milling master record inserted successfully");
-                            return RedirectToAction("Index", "Milling", new { id = 0 });
+                            int status = Convert.ToInt32(dt.Rows[0][0].ToString());
+                            if (status > 0)
+                            {
+                                SetSuccessMessage("Milling master record inserted successfully");
+                                return RedirectToAction("Index", "Milling", new { id = 0 });
+                            }
+                            else
+                            {
+                                SetErrorMessage("Milling master record not inserted!");
+                                return View(millingMasterModel);
+                            }
+
                         }
                         else
                         {
                             SetErrorMessage("Milling master record not inserted!");
                             return View(millingMasterModel);
                         }
-
-                    }
-                    else
-                    {
-                        SetErrorMessage("Milling master record not inserted!");
-                        return View(millingMasterModel);
-                    }
 
                 //}
                 //else
@@ -261,11 +261,11 @@ namespace SUNMark.Controllers
 
             int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
             int administrator = 0;
-            ViewBag.companyList = objProductHelper.GetCompanyMasterDropdown(companyId, administrator); ;
-            ViewBag.employeeList = ObjAccountMasterHelpers.GetOperatorCustomDropdown(companyId, 0); ;
-            ViewBag.supervisorList = ObjAccountMasterHelpers.GetSupervisorCustomDropdown(companyId, 0); ;
-            ViewBag.productList = objProductHelper.GetProductMasterDropdown(companyId); ;
-            ViewBag.shiftList = objProductHelper.GetShiftNew(); ;
+            ViewBag.companyList = objProductHelper.GetCompanyMasterDropdown(companyId, administrator); 
+            ViewBag.employeeList = ObjAccountMasterHelpers.GetOperatorCustomDropdown(companyId, 0); 
+            ViewBag.supervisorList = ObjAccountMasterHelpers.GetSupervisorCustomDropdown(companyId, 0); 
+            ViewBag.productList = objProductHelper.GetProductMasterDropdown(companyId); 
+            ViewBag.shiftList = objProductHelper.GetShiftNew(); 
             ViewBag.processList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
             ViewBag.milprocessList = ObjAccountMasterHelpers.GetMachineMasterDropdown(companyId);
             ViewBag.nbList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
