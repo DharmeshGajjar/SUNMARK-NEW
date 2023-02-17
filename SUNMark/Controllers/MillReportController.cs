@@ -157,24 +157,25 @@ namespace SUNMark.Controllers
                             decimal ScrapWeight = DtBilty.Rows[i]["MilScrQty"].ToString() == "" ? 0 : Convert.ToDecimal(DtBilty.Rows[i]["MilScrQty"].ToString());
                             decimal E = txtPCSWeight + RLWeight + ScrapWeight;
                             decimal F = Weight - E;
+                            var Lnth = DtBilty.Rows[i]["Lenth"].ToString();
                             sb.Append("<tr>");
 
                             sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilLotNo"].ToString() + "</td>");
-                            sb.Append("<td rowspan=\"3\">#*#*r2*#*</td>");
+                            sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["LotHeatNo"].ToString() + "</td>");
                             sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["LotGrade"].ToString() + "</td>");
                             sb.Append("<td style=\"height: 40px;\">Coil</td>");
-                            sb.Append("<td style=\"width: 5%;\">" + DtBilty.Rows[i]["LotInwWidth"].ToString() + "</td>");
-                            sb.Append("<td style=\"width: 5%;\">" + DtBilty.Rows[i]["LotInwThick"].ToString() + "</td>");
+                            sb.Append("<td style=\"width: 5%;\">" + DtBilty.Rows[i]["LotWidth"].ToString() + "</td>");
+                            sb.Append("<td style=\"width: 5%;\">" + DtBilty.Rows[i]["LotThick"].ToString() + "</td>");
                             sb.Append("<td>&nbsp;</td>");
-                            sb.Append("<td rowspan=\"3\" style=\"width: 5%;\">" + DtBilty.Rows[i]["MilLenFeet"].ToString() + "</td>");
+                            sb.Append("<td rowspan=\"3\" style=\"width: 5%;\">" + DtBilty.Rows[i]["Lenth"].ToString() + "</td>");
                             sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilQty"].ToString() + "</td>");
                             sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilInTime"].ToString() + "</td>");
                             sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilOutTime"].ToString() + "</td>");
                             sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilPCS"].ToString() + "</td>");
                             sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilRecQty"].ToString() + "</td>");
                             sb.Append("<td>3 TO 10</td>");
-                            sb.Append("<td style=\"width: 5%;\">#*#*r12*#*</td>");
-                            sb.Append("<td style=\"width: 5%;\">#*#*r13*#*</td>");
+                                sb.Append("<td style=\"width: 5%;\">" + DtBilty.Rows[i]["MilRLPCS"].ToString() + "</td>");
+                                sb.Append("<td style=\"width: 5%;\">" + DtBilty.Rows[i]["MilRLWeight"].ToString() + "</td>");
                             sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilScrQty"].ToString() + "</td>");
                             sb.Append("<td style=\"width: 3%;\">" + DtBilty.Rows[i]["MilTouNo"].ToString() + "</td>");
                             sb.Append("<td style=\"width: 3%;\">" + DtBilty.Rows[i]["MilWeldSpeed"].ToString() + "</td>");
@@ -186,12 +187,12 @@ namespace SUNMark.Controllers
 
                             sb.Append("<tr>");
                             sb.Append("<td rowspan=\"2\">ACTUAL</td>");
-                            sb.Append("<td rowspan=\"2\">#*#*r16*#*</td>");
-                            sb.Append("<td rowspan=\"2\">#*#*r17*#*</td>");
+                            sb.Append("<td rowspan=\"2\">" + DtBilty.Rows[i]["LotWidth"].ToString() + "</td>");
+                            sb.Append("<td rowspan=\"2\">" + DtBilty.Rows[i]["LotThick"].ToString() + "</td>");
                             sb.Append("<td rowspan=\"2\">" + DtBilty.Rows[i]["MilOD"].ToString() + "</td>");
                             sb.Append("<td style=\"height: 40px;\">10 TO 18</td>");
-                            sb.Append("<td style=\"width: 3%;\">#*#*r27*#*</td>");
-                            sb.Append("<td style=\"width: 3%;\">#*#*r28*#*</td>");
+                            sb.Append("<td style=\"width: 3%;\"></td>");
+                            sb.Append("<td style=\"width: 3%;\"></td>");
                             sb.Append("<td rowspan=\"2\">-</td>");
                             sb.Append("<td rowspan=\"2\">-</td>");
                             sb.Append("<td rowspan=\"2\">-</td>");
@@ -200,8 +201,8 @@ namespace SUNMark.Controllers
 
                             sb.Append("<tr>");
                             sb.Append("<td style=\"width: 6%;height: 40px;\">18 TO 19.5</td>");
-                            sb.Append("<td style=\"width: 3%;\">#*#*r29*#*</td>");
-                            sb.Append("<td style=\"width: 3%;\">#*#*r30*#*</td>");
+                            sb.Append("<td style=\"width: 3%;\"></td>");
+                            sb.Append("<td style=\"width: 3%;\"></td>");
                             sb.Append("</tr>");
 
                             sb2.Append("<tr>");
@@ -258,10 +259,10 @@ namespace SUNMark.Controllers
                         newbody = newbody.Replace("#*#*datatable-keytable-Child1*#*#", sb2.ToString());
                         newbody = newbody.Replace("#*#*datatable-keytable-Child2*#*#", sb3.ToString());
 
-                        
-                        
 
-                        ////newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
+
+
+                        newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
                         //newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "http://piosunmark.pioerp.com/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
 
 
