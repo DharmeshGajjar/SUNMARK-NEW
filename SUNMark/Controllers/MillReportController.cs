@@ -90,7 +90,6 @@ namespace SUNMark.Controllers
             try
             {
                 MillingPrintDetails obj = GetMillPrintData(dt, machine, shift);
-
                 string wwwroot = string.Empty;
                 string filePath = "/PrintPDF/" + "Mill-" + dt + ".pdf";
                 wwwroot = _iwebhostenviroment.WebRootPath + filePath;

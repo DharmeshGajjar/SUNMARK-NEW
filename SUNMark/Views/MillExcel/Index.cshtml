@@ -173,6 +173,7 @@
 </div>
 
 <script>
+
     function GoToAddTab() {
         $('#custom-tabs-three-add-tab').addClass('active');
         $('#custom-tabs-three-add').addClass('active');
@@ -185,7 +186,13 @@
 
     GoToAddTab();
 
-    SetSelect2();
+    //SetSelect2();
+
+    $(function () {
+        $('#btnDownloadSample').attr('href', '/TubeMilling.xlsx')
+        $('#btnDownloadSample').attr('download', 'TubeMill.xlsx')
+    })
+
 </script>
 <script>
     var isRecentCalledEsc = false;

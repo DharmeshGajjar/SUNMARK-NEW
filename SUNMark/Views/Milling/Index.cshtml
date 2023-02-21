@@ -1059,10 +1059,32 @@
                             $('input[name="NB"]').val(response.lotNB);
                             $('select[name="SCHVou"]').val(response.lotSCH);
                             $('input[name="SCH"]').val(response.lotSCH);
+                            var weight = $('input[name="RemainingWeight"]').val();
+                            var thick = $('input[name="Thick"]').val();
+                            var od = $('input[name="OD"]').val();
+                            var length = $('input[name="FeetPer"]').val();
+                            var lengthmtr = (length * 0.3048).toFixed(2);
+                            var weight1 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
+                            var weight2 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
+                            var pcs = parseInt(weight / weight1);
+                            $('#NoOfPipe').text(pcs);
+                            $('input[name="PCS"]').val(pcs);
+                            $('input[name="PCSWeight"]').val((weight2 * pcs).toFixed(1));;
                         }
                         else {
                             $('select[name="NBVou"]').val(response.lotNB);
                             $('select[name="SCHVou"]').val(response.lotSCH);
+                            var weight = $('input[name="RemainingWeight"]').val();
+                            var thick = $('input[name="Thick"]').val();
+                            var od = $('input[name="OD"]').val();
+                            var length = $('input[name="FeetPer"]').val();
+                            var lengthmtr = (length * 0.3048).toFixed(2);
+                            var weight1 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
+                            var weight2 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
+                            var pcs = parseInt(weight / weight1);
+                            $('#NoOfPipe').text(pcs);
+                            $('input[name="PCS"]').val(pcs);
+                            $('input[name="PCSWeight"]').val((weight2 * pcs).toFixed(1));;
                         }
                     }
                     else {
@@ -1177,6 +1199,8 @@
         $('#MilMinODMilMinOD').val('0');
         var macNo = $('#MillNo').val();
         var shift = $('#ShiftVou').val();
+        var recprd = $('#RecPrdVou').val();
+        var scpprd = $('#ScrapPipeProductVou').val();
         $('input[name="IssueCoilNo"]').prop("readonly", false);
         if (macNo && shift) {
             $.ajax({
@@ -1190,16 +1214,16 @@
                             $('#Supervisor').val(data.sup);
                             $('#Operator1').val(data.opr1);
                             $('#Operator2').val(data.op2);
-                            $('#SizeFromTo').val(data.frSize+' - '+data.toSize);
-                            SetSelect2();
-
+                            $('#SizeFromTo').val(data.frSize + ' - ' + data.toSize);
+                            $('#RecPrdVou').val(recprd);
+                            $('#ScrapPipeProductVou').val(scpprd);
                         }
                         else {
                             $('#Supervisor').val('');
                             $('#Operator1').val('');
                             $('#Operator2').val('');
                         }
-
+                        SetSelect2();
                     }
                     else {
                         $('#Supervisor').val('');
@@ -1231,11 +1255,14 @@
                             $('select[name="NBVou"]').val(response.nb);
                             $('select[name="ProcessVou"]').val(response.nextPrcVou);
                             $('input[name="OD"]').val(response.od);
+                            var od = $('input[name="OD"]').val();
                             $('select[name="Operator1"]').val(response.opr1EmpVou);
                             $('select[name="Operator2"]').val(response.opr2EmpVou);
                             $('input[name="OutTime"]').val(response.outTime);
-                            var weight = (((response.width / 3.14).toFixed(2) - response.thick) * response.thick * 0.02503).toFixed(2);
-                            var weight2 = (((response.width / 3.14).toFixed(8) - response.thick) * response.thick * 0.02503).toFixed(8);
+                            var length = $('input[name="FeetPer"]').val();
+                            var lengthmtr = (length * 0.3048).toFixed(2);
+                            var weight = ((od - response.thick) * response.thick * 0.02503 * lengthmtr).toFixed(2);
+                            var weight2 = ((od - response.thick) * response.thick * 0.02503 * lengthmtr).toFixed(8);
                             var pcss = parseInt(response.lotQty / weight);
                             var pcsWeightt = ((weight2 * pcss).toFixed(1));
                             var totMilqty = response.milQtyS;
