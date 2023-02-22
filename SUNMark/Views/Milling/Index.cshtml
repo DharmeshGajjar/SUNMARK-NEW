@@ -865,7 +865,7 @@
                             $('input[name="OD"]').val((response.data[4] / 3.14).toFixed(2));
                             $('input[name="FeetPer"]').val(20);
                             var length = $('input[name="FeetPer"]').val();
-                            var lengthmtr = (length * 0.3048).toFixed(2);
+                            var lengthmtr = (length * 0.3048).toFixed(4);
                             var weight = (((response.data[4] / 3.14).toFixed(2) - response.data[3]) * response.data[3] * 0.02503 * lengthmtr).toFixed(2);
                             var weight2 = (((response.data[4] / 3.14).toFixed(8) - response.data[3]) * response.data[3] * 0.02503 * lengthmtr).toFixed(8);
                             var weight3 = (((response.data[4] / 3.14).toFixed(3) - response.data[3]) * response.data[3] * 0.02503 * lengthmtr).toFixed(3);
@@ -945,7 +945,7 @@
         var thick = $('input[name="Thick"]').val();
         var od = $('input[name="OD"]').val();
         var length = $('input[name="FeetPer"]').val();
-        var lengthmtr = (length * 0.3048).toFixed(2);
+        var lengthmtr = (length * 0.3048).toFixed(4);
         var weight1 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
         var weight2 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
         var pcs = parseInt(weight / weight1);
@@ -1068,7 +1068,7 @@
                             var thick = $('input[name="Thick"]').val();
                             var od = $('input[name="OD"]').val();
                             var length = $('input[name="FeetPer"]').val();
-                            var lengthmtr = (length * 0.3048).toFixed(2);
+                            var lengthmtr = (length * 0.3048).toFixed(4);
                             var weight1 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
                             var weight2 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
                             var pcs = parseInt(weight / weight1);
@@ -1083,7 +1083,7 @@
                             var thick = $('input[name="Thick"]').val();
                             var od = $('input[name="OD"]').val();
                             var length = $('input[name="FeetPer"]').val();
-                            var lengthmtr = (length * 0.3048).toFixed(2);
+                            var lengthmtr = (length * 0.3048).toFixed(4);
                             var weight1 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
                             var weight2 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
                             var pcs = parseInt(weight / weight1);
@@ -1110,7 +1110,7 @@
         var od = $('#OD').val();
         var pcs = $('#PCS').val();
         var length = $('input[name="FeetPer"]').val();
-        var lengthmtr = (length * 0.3048).toFixed(2);
+        var lengthmtr = (length * 0.3048).toFixed(4);
         var weight1 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
         var weight2 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
         ////if (pcs1 == '' && pcs1 == null & pcs1 == 0) {
@@ -1173,7 +1173,8 @@
             $('#NBVou').val('@Model.NB').trigger('change');
             $('#SCHVou').val('@Model.SCH').trigger('change');
 
-
+            var length = $('input[name="FeetPer"]').val();
+            var lengthmtr = (length * 0.3048).toFixed(4);
             var weight = (((parseFloat('@Model.Width') / 3.14).toFixed(2) - parseFloat('@Model.Thick')) * parseFloat('@Model.Thick') * 0.02503 * lengthmtr).toFixed(2);
             var weight2 = (((parseFloat('@Model.Width') / 3.14).toFixed(3) - parseFloat('@Model.Thick')) * parseFloat('@Model.Thick') * 0.02503 * lengthmtr).toFixed(3);
             var pcs = parseInt(parseFloat('@Model.Weight') / weight);
@@ -1286,7 +1287,7 @@
                             $('select[name="Operator2"]').val(response.opr2EmpVou);
                             $('input[name="OutTime"]').val(response.outTime);
                             var length = $('input[name="FeetPer"]').val();
-                            var lengthmtr = (length * 0.3048).toFixed(2);
+                            var lengthmtr = (length * 0.3048).toFixed(4);
                             var weight = ((od - response.thick) * response.thick * 0.02503 * lengthmtr).toFixed(2);
                             var weight2 = ((od - response.thick) * response.thick * 0.02503 * lengthmtr).toFixed(8);
                             var pcss = parseInt(response.lotQty / weight);
