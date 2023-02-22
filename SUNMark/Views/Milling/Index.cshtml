@@ -651,7 +651,7 @@
         $('.SL').val(((parseFloat(RLWeight) * 100) / parseFloat(Weight)).toFixed(2));
         $('.SC').val(((parseFloat(ScrapWeight) * 100) / parseFloat(Weight)).toFixed(2));
         $('.LOSS').val((F / parseFloat(Weight)).toFixed(2));
-        $('.YIELD').val((parseFloat(txtPCSWeight) / parseFloat(Weight)).toFixed(2));
+        $('.YIELD').val((100*(parseFloat(txtPCSWeight) / parseFloat(Weight))).toFixed(2));
     }
 
     function GoToAddTab() {
@@ -1004,6 +1004,7 @@
                 return false;
             }
         }
+        
         GetODRangeByCoilMacNo($('#IssueCoilNo').val(),$('#MillNo').val());
         var MilMaxODMilMaxOD = $('#MilMaxODMilMaxOD').val();
         var MilMinODMilMinOD = $('#MilMinODMilMinOD').val();
@@ -1037,6 +1038,10 @@
         //    return false;
         //}
         if (IsSubmit == 1) {
+            if ($('.Hours1').val() == '0' && ('@Model.Vou' == '' || '@Model.Vou' == '0')) {
+                $('.StopFromTime1').val('');
+                $('.StopToTime1').val('');
+                }
             $('select[name="MillNo"]').attr('disabled', false)
             EnableTextbox();
             $('#millingForm').submit();
@@ -1184,6 +1189,14 @@
             //$('#NoOfPipe').text(pcs);
 
         }
+        else {
+            var time = new Date();
+            var dt = new Date($('#Date').val() + ' ' + time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds());
+            var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+            var localISOTime = (new Date(dt - tzoffset)).toISOString().slice(0, -8);
+            $('#StopFromTime1').val(localISOTime);
+            $('#StopToTime1').val(localISOTime);
+        }
 
     })
 
@@ -1192,7 +1205,20 @@
         if (sch)
             $('input[name="SCH"]').val(sch);
     })
+    $('#Date').change(function () {
+        var Vou = '@Html.Raw(Model.Vou)';
+        if (Vou != null && Vou != '' && Vou != 0) {
 
+        }
+        else {
+            var time = new Date();
+            var dt = new Date($('#Date').val() + ' ' + time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds());
+            var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+            var localISOTime = (new Date(dt - tzoffset)).toISOString().slice(0, -8);
+            $('#StopFromTime1').val(localISOTime);
+            $('#StopToTime1').val(localISOTime);
+        }
+    });
     function GetSupervisor() {
         $('#ODValidCheck').val('1');
         $('#MilMaxODMilMaxOD').val('0');
