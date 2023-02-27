@@ -356,11 +356,11 @@
                                                     </div>
                                                 </div>
                                                 @*<div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Scrap Length<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                            @Html.TextBoxFor(x => x.ScrapLength, new { @class = "form-control ", @placeholder = "Scrap Length", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
-                                                        </div>
-                                                    </div>*@
+            <div class="form-group">
+                <label>Scrap Length<span class="text-danger" style="font-family: Verdana"></span></label>
+                @Html.TextBoxFor(x => x.ScrapLength, new { @class = "form-control ", @placeholder = "Scrap Length", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+            </div>
+        </div>*@
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>Scrap Weight<span class="text-danger" style="font-family: Verdana"></span></label>
@@ -382,20 +382,38 @@
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>Welding Speed<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        <label>No Of Tourch 2<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.NoOfTourch2, new { @class = "form-control ", @placeholder = "No Of Tourch", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Welding Speed(MM)<span class="text-danger" style="font-family: Verdana"></span></label>
                                                         @Html.TextBoxFor(x => x.WeldingSpeed, new { @class = "form-control ", @placeholder = "Welding Speed", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>AMP<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        <label>AMP 1<span class="text-danger" style="font-family: Verdana"></span></label>
                                                         @Html.TextBoxFor(x => x.AMP, new { @class = "form-control ", @placeholder = "AMP", @type = "text" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>Voltage<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        <label>Voltage 1<span class="text-danger" style="font-family: Verdana"></span></label>
                                                         @Html.TextBoxFor(x => x.Voltage, new { @class = "form-control ", @placeholder = "Voltage", @type = "text" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>AMP 2<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.AMP2, new { @class = "form-control ", @placeholder = "AMP", @type = "text" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Voltage 2<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Voltage2, new { @class = "form-control ", @placeholder = "Voltage", @type = "text" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 col-12">
@@ -406,26 +424,26 @@
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>Read 1 Thick<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.Read1Thick, new { @class = "form-control ", @placeholder = "Read 1 Thick", @type = "text", @style = "text-align:right" })
+                                                        <label>Reading Thick Min<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Read1Thick, new { @class = "form-control ", @placeholder = "Reading Thick Min", @type = "text", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>Read 1 OD<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.Read1OD, new { @class = "form-control ", @placeholder = "Read 1 OD", @type = "text", @style = "text-align:right" })
+                                                        <label>Reading OD Min<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Read1OD, new { @class = "form-control ", @placeholder = "Reading OD Min", @type = "text", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>Read 2 Thick<span class="text-danger"></span></label>
-                                                        @Html.TextBoxFor(x => x.Read2Thick, new { @class = "form-control ", @placeholder = "Read 2 Thick", @type = "text", @style = "text-align:right" })
+                                                        <label>Reading Thick Max<span class="text-danger"></span></label>
+                                                        @Html.TextBoxFor(x => x.Read2Thick, new { @class = "form-control ", @placeholder = "Reading Thick Max", @type = "text", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>Read 2 OD<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.Read2OD, new { @class = "form-control ", @placeholder = "Read 2 OD", @type = "text", @style = "text-align:right" })
+                                                        <label>Reading OD Max<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Read2OD, new { @class = "form-control ", @placeholder = "Reading OD Max", @type = "text", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
@@ -514,14 +532,16 @@
                                                     <div class="col-md-2 col-12">
                                                         <div class="form-group">
                                                             <label>
-                                                                B.LOSS                                                            </label>
+                                                                B.LOSS
+                                                            </label>
                                                             <input class="form-control LOSS" placeholder="Loss" value="0" type="text" readonly="readonly" />
                                                         </div>
                                                     </div>
                                                     <div class="col-md-2 col-12">
                                                         <div class="form-group">
                                                             <label>
-                                                                YIELD                                                            </label>
+                                                                YIELD
+                                                            </label>
                                                             <input class="form-control YIELD" placeholder="Yield" value="0" type="text" readonly="readonly" />
                                                         </div>
                                                     </div>

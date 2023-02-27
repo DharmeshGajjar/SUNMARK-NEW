@@ -107,6 +107,9 @@ namespace SUNMark.Controllers
                         millingMasterModel.StopFromTime2 = dt.Rows[0]["MilStopFrTm2"].ToString();
                         millingMasterModel.StopToTime2 = dt.Rows[0]["MilStopToTm2"].ToString();
                         millingMasterModel.StopReason2 = dt.Rows[0]["MilStopReson2"].ToString();
+                        millingMasterModel.NoOfTourch2 = dt.Rows[0]["MilTouNo2"].ToString();
+                        millingMasterModel.AMP2 = dt.Rows[0]["MilWeldAMP2"].ToString();
+                        millingMasterModel.Voltage2 = dt.Rows[0]["MilWeldVolt2"].ToString();
                     }
                 }
             }
@@ -132,7 +135,7 @@ namespace SUNMark.Controllers
                 }
                 //if (ModelState.IsValid)
                 //{
-                    SqlParameter[] parameter = new SqlParameter[48];
+                    SqlParameter[] parameter = new SqlParameter[51];
                     parameter[0] = new SqlParameter("@MilVou", millingMasterModel.Vou);
                     parameter[1] = new SqlParameter("@MilCmpVou", millingMasterModel.CompanyVou);
                     parameter[2] = new SqlParameter("@MilVno", millingMasterModel.Vno);
@@ -181,7 +184,10 @@ namespace SUNMark.Controllers
                     parameter[45] = new SqlParameter("@MilStopFrTm2", millingMasterModel.StopFromTime2);
                     parameter[46] = new SqlParameter("@MilStopToTm2", millingMasterModel.StopToTime2);
                     parameter[47] = new SqlParameter("@MilStopReson2", millingMasterModel.StopReason2);
-                    DataTable dt = ObjDBConnection.CallStoreProcedure("AddMilling", parameter);
+                    parameter[48] = new SqlParameter("@MilWeldAMP2", millingMasterModel.AMP2);
+                    parameter[49] = new SqlParameter("@MilWeldVolt2", millingMasterModel.Voltage2);
+                    parameter[50] = new SqlParameter("@MilTouNo2", millingMasterModel.NoOfTourch2);
+                DataTable dt = ObjDBConnection.CallStoreProcedure("AddMilling", parameter);
                         if (dt != null && dt.Rows.Count > 0)
                         {
                             int status = Convert.ToInt32(dt.Rows[0][0].ToString());

@@ -94,7 +94,8 @@ namespace SUNMark.Controllers
                         objOpeningStock.LotSuffix = DtOBLDetail.Rows[0]["OblSuffix"].ToString();
                         objOpeningStock.OblRefNo = DtOBLDetail.Rows[0]["OblRefNo"].ToString();
                         objOpeningStock.CoilTypeVou = int.Parse(DtOBLDetail.Rows[0]["LotCoilTypeVou"].ToString());
-                        objOpeningStock.LotOD = decimal.Round(decimal.Parse(DtOBLDetail.Rows[0]["LotWidth"].ToString()) / Convert.ToDecimal("3.14"),2, MidpointRounding.AwayFromZero);
+                        objOpeningStock.LotOD = decimal.Parse(DtOBLDetail.Rows[0]["LotOD"].ToString());
+                        //objOpeningStock.LotOD = decimal.Round(decimal.Parse(DtOBLDetail.Rows[0]["LotWidth"].ToString()) / Convert.ToDecimal("3.14"),2, MidpointRounding.AwayFromZero);
                     }
                 }
                 objOpeningStock.OblCmpVouList = objProductHelper.GetCompanyMasterDropdown(companyId, administrator);
