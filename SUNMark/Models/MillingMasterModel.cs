@@ -60,12 +60,16 @@ namespace SUNMark.Models
         public string ProcessVou { get; set; }
 
         public string NoOfTourch { get; set; }
+        public string NoOfTourch2 { get; set; }
 
         public decimal WeldingSpeed { get; set; }
 
         public string AMP { get; set; }
 
         public string Voltage { get; set; }
+        public string AMP2 { get; set; }
+
+        public string Voltage2 { get; set; }
 
         public string Remarks { get; set; }
 

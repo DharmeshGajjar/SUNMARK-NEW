@@ -356,11 +356,11 @@
                                                     </div>
                                                 </div>
                                                 @*<div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Scrap Length<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                            @Html.TextBoxFor(x => x.ScrapLength, new { @class = "form-control ", @placeholder = "Scrap Length", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
-                                                        </div>
-                                                    </div>*@
+            <div class="form-group">
+                <label>Scrap Length<span class="text-danger" style="font-family: Verdana"></span></label>
+                @Html.TextBoxFor(x => x.ScrapLength, new { @class = "form-control ", @placeholder = "Scrap Length", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+            </div>
+        </div>*@
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>Scrap Weight<span class="text-danger" style="font-family: Verdana"></span></label>
@@ -382,20 +382,38 @@
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>Welding Speed<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        <label>No Of Tourch 2<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.NoOfTourch2, new { @class = "form-control ", @placeholder = "No Of Tourch", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Welding Speed(MM)<span class="text-danger" style="font-family: Verdana"></span></label>
                                                         @Html.TextBoxFor(x => x.WeldingSpeed, new { @class = "form-control ", @placeholder = "Welding Speed", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>AMP<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        <label>AMP 1<span class="text-danger" style="font-family: Verdana"></span></label>
                                                         @Html.TextBoxFor(x => x.AMP, new { @class = "form-control ", @placeholder = "AMP", @type = "text" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>Voltage<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        <label>Voltage 1<span class="text-danger" style="font-family: Verdana"></span></label>
                                                         @Html.TextBoxFor(x => x.Voltage, new { @class = "form-control ", @placeholder = "Voltage", @type = "text" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>AMP 2<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.AMP2, new { @class = "form-control ", @placeholder = "AMP", @type = "text" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-12">
+                                                    <div class="form-group">
+                                                        <label>Voltage 2<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Voltage2, new { @class = "form-control ", @placeholder = "Voltage", @type = "text" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 col-12">
@@ -406,26 +424,26 @@
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>Read 1 Thick<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.Read1Thick, new { @class = "form-control ", @placeholder = "Read 1 Thick", @type = "text", @style = "text-align:right" })
+                                                        <label>Reading Thick Min<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Read1Thick, new { @class = "form-control ", @placeholder = "Reading Thick Min", @type = "text", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>Read 1 OD<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.Read1OD, new { @class = "form-control ", @placeholder = "Read 1 OD", @type = "text", @style = "text-align:right" })
+                                                        <label>Reading OD Min<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Read1OD, new { @class = "form-control ", @placeholder = "Reading OD Min", @type = "text", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>Read 2 Thick<span class="text-danger"></span></label>
-                                                        @Html.TextBoxFor(x => x.Read2Thick, new { @class = "form-control ", @placeholder = "Read 2 Thick", @type = "text", @style = "text-align:right" })
+                                                        <label>Reading Thick Max<span class="text-danger"></span></label>
+                                                        @Html.TextBoxFor(x => x.Read2Thick, new { @class = "form-control ", @placeholder = "Reading Thick Max", @type = "text", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>Read 2 OD<span class="text-danger" style="font-family: Verdana"></span></label>
-                                                        @Html.TextBoxFor(x => x.Read2OD, new { @class = "form-control ", @placeholder = "Read 2 OD", @type = "text", @style = "text-align:right" })
+                                                        <label>Reading OD Max<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                        @Html.TextBoxFor(x => x.Read2OD, new { @class = "form-control ", @placeholder = "Reading OD Max", @type = "text", @style = "text-align:right" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
@@ -514,14 +532,16 @@
                                                     <div class="col-md-2 col-12">
                                                         <div class="form-group">
                                                             <label>
-                                                                B.LOSS                                                            </label>
+                                                                B.LOSS
+                                                            </label>
                                                             <input class="form-control LOSS" placeholder="Loss" value="0" type="text" readonly="readonly" />
                                                         </div>
                                                     </div>
                                                     <div class="col-md-2 col-12">
                                                         <div class="form-group">
                                                             <label>
-                                                                YIELD                                                            </label>
+                                                                YIELD
+                                                            </label>
                                                             <input class="form-control YIELD" placeholder="Yield" value="0" type="text" readonly="readonly" />
                                                         </div>
                                                     </div>
@@ -651,7 +671,7 @@
         $('.SL').val(((parseFloat(RLWeight) * 100) / parseFloat(Weight)).toFixed(2));
         $('.SC').val(((parseFloat(ScrapWeight) * 100) / parseFloat(Weight)).toFixed(2));
         $('.LOSS').val((F / parseFloat(Weight)).toFixed(2));
-        $('.YIELD').val((parseFloat(txtPCSWeight) / parseFloat(Weight)).toFixed(2));
+        $('.YIELD').val((100*(parseFloat(txtPCSWeight) / parseFloat(Weight))).toFixed(2));
     }
 
     function GoToAddTab() {
@@ -865,7 +885,7 @@
                             $('input[name="OD"]').val((response.data[4] / 3.14).toFixed(2));
                             $('input[name="FeetPer"]').val(20);
                             var length = $('input[name="FeetPer"]').val();
-                            var lengthmtr = (length * 0.3048).toFixed(2);
+                            var lengthmtr = (length * 0.3048).toFixed(4);
                             var weight = (((response.data[4] / 3.14).toFixed(2) - response.data[3]) * response.data[3] * 0.02503 * lengthmtr).toFixed(2);
                             var weight2 = (((response.data[4] / 3.14).toFixed(8) - response.data[3]) * response.data[3] * 0.02503 * lengthmtr).toFixed(8);
                             var weight3 = (((response.data[4] / 3.14).toFixed(3) - response.data[3]) * response.data[3] * 0.02503 * lengthmtr).toFixed(3);
@@ -945,7 +965,7 @@
         var thick = $('input[name="Thick"]').val();
         var od = $('input[name="OD"]').val();
         var length = $('input[name="FeetPer"]').val();
-        var lengthmtr = (length * 0.3048).toFixed(2);
+        var lengthmtr = (length * 0.3048).toFixed(4);
         var weight1 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
         var weight2 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
         var pcs = parseInt(weight / weight1);
@@ -1004,6 +1024,7 @@
                 return false;
             }
         }
+        
         GetODRangeByCoilMacNo($('#IssueCoilNo').val(),$('#MillNo').val());
         var MilMaxODMilMaxOD = $('#MilMaxODMilMaxOD').val();
         var MilMinODMilMinOD = $('#MilMinODMilMinOD').val();
@@ -1037,6 +1058,10 @@
         //    return false;
         //}
         if (IsSubmit == 1) {
+            if ($('.Hours1').val() == '0' && ('@Model.Vou' == '' || '@Model.Vou' == '0')) {
+                $('.StopFromTime1').val('');
+                $('.StopToTime1').val('');
+                }
             $('select[name="MillNo"]').attr('disabled', false)
             EnableTextbox();
             $('#millingForm').submit();
@@ -1063,7 +1088,7 @@
                             var thick = $('input[name="Thick"]').val();
                             var od = $('input[name="OD"]').val();
                             var length = $('input[name="FeetPer"]').val();
-                            var lengthmtr = (length * 0.3048).toFixed(2);
+                            var lengthmtr = (length * 0.3048).toFixed(4);
                             var weight1 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
                             var weight2 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
                             var pcs = parseInt(weight / weight1);
@@ -1078,7 +1103,7 @@
                             var thick = $('input[name="Thick"]').val();
                             var od = $('input[name="OD"]').val();
                             var length = $('input[name="FeetPer"]').val();
-                            var lengthmtr = (length * 0.3048).toFixed(2);
+                            var lengthmtr = (length * 0.3048).toFixed(4);
                             var weight1 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
                             var weight2 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
                             var pcs = parseInt(weight / weight1);
@@ -1105,7 +1130,7 @@
         var od = $('#OD').val();
         var pcs = $('#PCS').val();
         var length = $('input[name="FeetPer"]').val();
-        var lengthmtr = (length * 0.3048).toFixed(2);
+        var lengthmtr = (length * 0.3048).toFixed(4);
         var weight1 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
         var weight2 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
         ////if (pcs1 == '' && pcs1 == null & pcs1 == 0) {
@@ -1168,7 +1193,8 @@
             $('#NBVou').val('@Model.NB').trigger('change');
             $('#SCHVou').val('@Model.SCH').trigger('change');
 
-
+            var length = $('input[name="FeetPer"]').val();
+            var lengthmtr = (length * 0.3048).toFixed(4);
             var weight = (((parseFloat('@Model.Width') / 3.14).toFixed(2) - parseFloat('@Model.Thick')) * parseFloat('@Model.Thick') * 0.02503 * lengthmtr).toFixed(2);
             var weight2 = (((parseFloat('@Model.Width') / 3.14).toFixed(3) - parseFloat('@Model.Thick')) * parseFloat('@Model.Thick') * 0.02503 * lengthmtr).toFixed(3);
             var pcs = parseInt(parseFloat('@Model.Weight') / weight);
@@ -1184,6 +1210,14 @@
             //$('#NoOfPipe').text(pcs);
 
         }
+        else {
+            var time = new Date();
+            var dt = new Date($('#Date').val() + ' ' + time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds());
+            var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+            var localISOTime = (new Date(dt - tzoffset)).toISOString().slice(0, -8);
+            $('#StopFromTime1').val(localISOTime);
+            $('#StopToTime1').val(localISOTime);
+        }
 
     })
 
@@ -1192,7 +1226,20 @@
         if (sch)
             $('input[name="SCH"]').val(sch);
     })
+    $('#Date').change(function () {
+        var Vou = '@Html.Raw(Model.Vou)';
+        if (Vou != null && Vou != '' && Vou != 0) {
 
+        }
+        else {
+            var time = new Date();
+            var dt = new Date($('#Date').val() + ' ' + time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds());
+            var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+            var localISOTime = (new Date(dt - tzoffset)).toISOString().slice(0, -8);
+            $('#StopFromTime1').val(localISOTime);
+            $('#StopToTime1').val(localISOTime);
+        }
+    });
     function GetSupervisor() {
         $('#ODValidCheck').val('1');
         $('#MilMaxODMilMaxOD').val('0');
@@ -1260,7 +1307,7 @@
                             $('select[name="Operator2"]').val(response.opr2EmpVou);
                             $('input[name="OutTime"]').val(response.outTime);
                             var length = $('input[name="FeetPer"]').val();
-                            var lengthmtr = (length * 0.3048).toFixed(2);
+                            var lengthmtr = (length * 0.3048).toFixed(4);
                             var weight = ((od - response.thick) * response.thick * 0.02503 * lengthmtr).toFixed(2);
                             var weight2 = ((od - response.thick) * response.thick * 0.02503 * lengthmtr).toFixed(8);
                             var pcss = parseInt(response.lotQty / weight);
