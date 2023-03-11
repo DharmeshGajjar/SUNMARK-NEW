@@ -18,7 +18,7 @@ namespace SUNMark.Controllers
 
         public IActionResult Index(int id)
         {
-            AnnealingMasterModel annealingMasterModel = new AnnealingMasterModel();
+            
             try
             {
                 bool isreturn = false;
@@ -27,6 +27,13 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
+                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                int administrator = 0;
+                long userId = GetIntSession("UserId");
+                AnnealingMasterModel annealingMasterModel = new AnnealingMasterModel();
+                annealingMasterModel.Annel = new AnnelGridModel();
+                annealingMasterModel.Annel.RecProductList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "PIPE");
+                annealingMasterModel.Annel.GradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
                 annealingMasterModel.Vno = GetVoucherNo();
                 if (id > 0)
                 {
@@ -47,31 +54,36 @@ namespace SUNMark.Controllers
                         annealingMasterModel.IssuePrdVou = dt.Rows[0]["AnnIssPrdVou"].ToString();
                         annealingMasterModel.Finish = dt.Rows[0]["AnnFinish"].ToString();
                         annealingMasterModel.FinishVou = dt.Rows[0]["AnnFinishVou"].ToString();
-                        annealingMasterModel.Grade = dt.Rows[0]["AnnGrade"].ToString();
-                        annealingMasterModel.GradeVou = dt.Rows[0]["AnnGrdVou"].ToString();
-                        annealingMasterModel.Width = dt.Rows[0]["AnnWidth"].ToString();
-                        annealingMasterModel.Thick = dt.Rows[0]["AnnThick"].ToString();
-                        annealingMasterModel.OD = dt.Rows[0]["AnnOD"].ToString();
-                        annealingMasterModel.NoOfPipe = dt.Rows[0]["AnnNoOfPipe"].ToString();
-                        annealingMasterModel.Weight = dt.Rows[0]["AnnQty"].ToString();
-                        annealingMasterModel.RecPrdVou = dt.Rows[0]["AnnRecPrdVou"].ToString();
-                        annealingMasterModel.InTime = dt.Rows[0]["AnnInTime"].ToString();
-                        annealingMasterModel.OutTime = dt.Rows[0]["AnnOutTime"].ToString();
-                        annealingMasterModel.OilLevel = dt.Rows[0]["AnnOilLevel"].ToString();
+                        annealingMasterModel.NextProc = dt.Rows[0]["AnnNextProc"].ToString();
+                        annealingMasterModel.NextPrcVou = dt.Rows[0]["AnnNextPrcVou"].ToString();
                         annealingMasterModel.LDOQty = dt.Rows[0]["AnnLDOQty"].ToString();
-                        annealingMasterModel.Hours = dt.Rows[0]["AnnHours"].ToString();
-                        annealingMasterModel.RPM = dt.Rows[0]["AnnRPM"].ToString();
                         annealingMasterModel.Remarks = dt.Rows[0]["AnnRemarks"].ToString();
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            annealingMasterModel.Annel.GradeVou[i] = Convert.ToInt32(dt.Rows[i]["AnnAGrdVou"].ToString());
+                            annealingMasterModel.Annel.OD[i] = Convert.ToDecimal(dt.Rows[i]["AnnAOD"].ToString());
+                            annealingMasterModel.Annel.Thick[i] = Convert.ToDecimal(dt.Rows[i]["AnnAThick"].ToString());
+                            annealingMasterModel.Annel.Length[i] = Convert.ToInt32(dt.Rows[i]["AnnALength"].ToString());
+                            annealingMasterModel.Annel.NoOfPipe[i] = Convert.ToDecimal(dt.Rows[i]["AnnANoOfPipe"].ToString());
+                            annealingMasterModel.Annel.Weight[i] = Convert.ToDecimal(dt.Rows[i]["AnnAWeight"].ToString());
+                            annealingMasterModel.Annel.RecPrdVou[i] = Convert.ToInt32(dt.Rows[i]["AnnARecPrdVou"].ToString());
+                            annealingMasterModel.Annel.InTime[i] = dt.Rows[i]["AnnAInTime"].ToString();
+                            annealingMasterModel.Annel.OutTime[i] = dt.Rows[i]["AnnAOutTime"].ToString();
+                            annealingMasterModel.Annel.OilLevel[i] = dt.Rows[i]["AnnAOilLevel"].ToString();
+                            annealingMasterModel.Annel.RPM[i] = dt.Rows[i]["AnnARPM"].ToString();
+                        }
+
                     }
 
                 }
+                return View(annealingMasterModel);
             }
             catch (Exception ex)
             {
 
                 throw;
             }
-            return View(annealingMasterModel);
+            return View();
         }
 
         [HttpPost]
@@ -85,51 +97,72 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
-                SqlParameter[] sqlParameter = new SqlParameter[26];
-                sqlParameter[0] = new SqlParameter("@AnnVou", annealingMasterModel.AnnVou);
-                sqlParameter[1] = new SqlParameter("@AnnCmpVou", annealingMasterModel.AnnCmpVou);
-                sqlParameter[2] = new SqlParameter("@AnnVno", annealingMasterModel.Vno);
-                sqlParameter[3] = new SqlParameter("@AnnDt", annealingMasterModel.Date);
-                sqlParameter[4] = new SqlParameter("@AnnShift", annealingMasterModel.Shift);
-                sqlParameter[5] = new SqlParameter("@AnnMacNo", annealingMasterModel.MachineNo);
-                sqlParameter[6] = new SqlParameter("@AnnSupEmpVou", annealingMasterModel.SupEmpVou);
-                sqlParameter[7] = new SqlParameter("@AnnManEmpVou", annealingMasterModel.ManEmpVou);
-                sqlParameter[8] = new SqlParameter("@AnnIssPrdVou", annealingMasterModel.IssuePrdVou);
-                sqlParameter[9] = new SqlParameter("@AnnFinish", annealingMasterModel.Finish);
-                sqlParameter[10] = new SqlParameter("@AnnFinishVou", annealingMasterModel.FinishVou);
-                sqlParameter[11] = new SqlParameter("@AnnGrade", annealingMasterModel.Grade);
-                sqlParameter[12] = new SqlParameter("@AnnGrdVou", annealingMasterModel.GradeVou);
-                sqlParameter[13] = new SqlParameter("@AnnWidth", annealingMasterModel.Width);
-                sqlParameter[14] = new SqlParameter("@AnnThick", annealingMasterModel.Thick);
-                sqlParameter[15] = new SqlParameter("@AnnOD", annealingMasterModel.OD);
-                sqlParameter[16] = new SqlParameter("@AnnNoOfPipe", annealingMasterModel.NoOfPipe);
-                sqlParameter[17] = new SqlParameter("@AnnQty", annealingMasterModel.NoOfPipe);
-                sqlParameter[18] = new SqlParameter("@AnnRecPrdVou", annealingMasterModel.RecPrdVou);
-                sqlParameter[19] = new SqlParameter("@AnnInTime", annealingMasterModel.InTime);
-                sqlParameter[20] = new SqlParameter("@AnnOutTime", annealingMasterModel.OutTime);
-                sqlParameter[21] = new SqlParameter("@AnnOilLevel", annealingMasterModel.OilLevel);
-                sqlParameter[22] = new SqlParameter("@AnnLDOQty", annealingMasterModel.LDOQty);
-                sqlParameter[23] = new SqlParameter("@AnnHours", annealingMasterModel.Hours);
-                sqlParameter[24] = new SqlParameter("@AnnRPM", annealingMasterModel.RPM);
-                sqlParameter[25] = new SqlParameter("@AnnRemarks", annealingMasterModel.Remarks);
-                DataTable dt = ObjDBConnection.CallStoreProcedure("InsertAnnealing", sqlParameter);
-                if (dt != null && dt.Rows.Count > 0)
+                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.Vno).ToString()) && !string.IsNullOrWhiteSpace(annealingMasterModel.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.AnnCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.MachineNo).ToString()) && annealingMasterModel.Annel.RecPrdVou.Length > 0 && annealingMasterModel.Annel.GradeVou.Length > 0 && annealingMasterModel.Annel.Length.Length > 0 && annealingMasterModel.Annel.OD.Length > 0 && annealingMasterModel.Annel.Weight.Length > 0 && annealingMasterModel.Annel.NoOfPipe.Length > 0 && annealingMasterModel.Annel.Thick.Length > 0)
                 {
-                    int annVou = Convert.ToInt32(dt.Rows[0][0].ToString());
-                    if (annVou > 0 && annealingMasterModel.AnnVou > 0)
+                    SqlParameter[] sqlParameter = new SqlParameter[14];
+                    sqlParameter[0] = new SqlParameter("@AnnVou", annealingMasterModel.AnnVou);
+                    sqlParameter[1] = new SqlParameter("@AnnCmpVou", annealingMasterModel.AnnCmpVou);
+                    sqlParameter[2] = new SqlParameter("@AnnVno", annealingMasterModel.Vno);
+                    sqlParameter[3] = new SqlParameter("@AnnDt", annealingMasterModel.Date);
+                    sqlParameter[4] = new SqlParameter("@AnnShift", annealingMasterModel.Shift);
+                    sqlParameter[5] = new SqlParameter("@AnnMacNo", annealingMasterModel.MachineNo);
+                    sqlParameter[6] = new SqlParameter("@AnnSupEmpVou", annealingMasterModel.SupEmpVou);
+                    sqlParameter[7] = new SqlParameter("@AnnManEmpVou", annealingMasterModel.ManEmpVou);
+                    sqlParameter[8] = new SqlParameter("@AnnIssPrdVou", annealingMasterModel.IssuePrdVou);
+                    sqlParameter[9] = new SqlParameter("@AnnFinish", annealingMasterModel.Finish);
+                    sqlParameter[10] = new SqlParameter("@AnnFinishVou", annealingMasterModel.FinishVou);
+                    sqlParameter[11] = new SqlParameter("@AnnLDOQty", annealingMasterModel.LDOQty);
+                    sqlParameter[12] = new SqlParameter("@AnnRemarks", annealingMasterModel.Remarks);
+                    sqlParameter[13] = new SqlParameter("@Flg", "1");
+                    DataTable dt = ObjDBConnection.CallStoreProcedure("InsertAnnealing", sqlParameter);
+                    if (dt != null && dt.Rows.Count > 0)
                     {
-                        SetSuccessMessage("Record updated succesfully!");
+                        int masterId = DbConnection.ParseInt32(dt.Rows[0][0].ToString());
+                        if (masterId > 0)
+                        {
+                            for (int i = 0; i < annealingMasterModel.Annel.Weight.Length; i++)
+                            {
+                                SqlParameter[] sqlParam = new SqlParameter[13];
+                                sqlParam[0] = new SqlParameter("@AnnAAnnVou", masterId);
+                                sqlParam[1] = new SqlParameter("@AnnACmpVou", annealingMasterModel.AnnCmpVou);
+                                sqlParam[2] = new SqlParameter("@AnnGrdVou", annealingMasterModel.Annel.GradeVou[i]);
+                                sqlParam[3] = new SqlParameter("@AnnThick", annealingMasterModel.Annel.Thick[i]);
+                                sqlParam[4] = new SqlParameter("@AnnOD", annealingMasterModel.Annel.OD[i]);
+                                sqlParam[5] = new SqlParameter("@AnnLength", annealingMasterModel.Annel.Length[i]);
+                                sqlParam[6] = new SqlParameter("@AnnNoOfPipe", annealingMasterModel.Annel.NoOfPipe[i]);
+                                sqlParam[6] = new SqlParameter("@AnnQty", annealingMasterModel.Annel.Weight[i]);
+                                sqlParam[7] = new SqlParameter("@AnnRecPrdVou", annealingMasterModel.Annel.RecPrdVou[i]);
+                                sqlParam[8] = new SqlParameter("@AnnInTime", annealingMasterModel.Annel.InTime[i]);
+                                sqlParam[9] = new SqlParameter("@AnnOutTime", annealingMasterModel.Annel.OutTime[i]);
+                                sqlParam[10] = new SqlParameter("@AnnOilLevel", annealingMasterModel.Annel.OilLevel[i]);
+                                sqlParam[11] = new SqlParameter("@AnnRPM", annealingMasterModel.Annel.RPM[i]);
+                                sqlParam[12] = new SqlParameter("@AnnSrNo", (i + 1));
+                                DataTable dttrn = ObjDBConnection.CallStoreProcedure("InsertAnnealingTrn", sqlParameter);
+                            }
+                            int Status = DbConnection.ParseInt32(dt.Rows[0][0].ToString());
+                            if (Status == 0)
+                            {
+                                SetSuccessMessage("Record inserted succesfully!");
+                            }
+                            else
+                            {
+                                SetSuccessMessage("Record updated succesfully!");
+                            }
+                        }
+                        else
+                        {
+                            SetSuccessMessage("Insert error!");
+                        }
                     }
-                    else if (annVou > 0 && annealingMasterModel.AnnVou <= 0)
+                    else
                     {
-                        SetSuccessMessage("Record inserted succesfully!");
+                        SetErrorMessage("Please Enter the Value");
                     }
                 }
                 else
                 {
-                    SetErrorMessage("Record not inserted succesfully!");
+                    SetErrorMessage("Please Enter the Value");
                 }
-
             }
             catch (Exception ex)
             {
@@ -137,7 +170,6 @@ namespace SUNMark.Controllers
             }
             return RedirectToAction("Index", new { id = "0" });
         }
-
 
         private void INIT(ref bool isReturn)
         {
@@ -172,8 +204,9 @@ namespace SUNMark.Controllers
             ViewBag.productList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "PIPE"); ;
             ViewBag.shiftList = objProductHelper.GetShiftNew(); ;
             ViewBag.milprocessList = ObjAccountMasterHelpers.GetMachineMasterDropdown(companyId);
-            ViewBag.gradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
+            
             ViewBag.finishList = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
+            ViewBag.nextProcList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
         }
 
         public IActionResult Delete(int id)
@@ -192,7 +225,6 @@ namespace SUNMark.Controllers
             }
             return RedirectToAction("Index", "Annealing", new { id = 0 });
         }
-
 
         public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby)
         {
@@ -302,6 +334,45 @@ namespace SUNMark.Controllers
             else
             {
                 return Json(new { result = false });
+            }
+        }
+        public IActionResult GetLotIssAnnelProduct(int recProdId, int annvou, int gradeId, decimal od, decimal thick)
+        {
+            try
+            {
+                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                SqlParameter[] sqlParameters = new SqlParameter[6];
+                sqlParameters[0] = new SqlParameter("@AnnVou", annvou);
+                sqlParameters[1] = new SqlParameter("@RecProd", recProdId);
+                sqlParameters[2] = new SqlParameter("@Grade", gradeId);
+                sqlParameters[3] = new SqlParameter("@od", od);
+                sqlParameters[4] = new SqlParameter("@thick", thick);
+                sqlParameters[5] = new SqlParameter("@FLG", "1");
+                DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotIssAnnelProduct", sqlParameters);
+                if (DtInw != null && DtInw.Columns.Count > 1)
+                {
+                    int Status = DbConnection.ParseInt32(DtInw.Rows[0][0].ToString());
+                    if (Status == 1)
+                    {
+                        return Json(new { result = true, data = "1" });
+                    }
+                    else
+                    {
+                        string LotPcs = DtInw.Rows[0]["LotPCS"].ToString();
+                        string LotQty = DtInw.Rows[0]["LotQty"].ToString();
+                        string Length = DtInw.Rows[0]["Length"].ToString();
+                        return Json(new { result = true, lotPcs = LotPcs, lotQty = LotQty, length = Length });
+                    }
+
+                }
+                else
+                {
+                    return Json(new { result = true, data = "1" });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }
