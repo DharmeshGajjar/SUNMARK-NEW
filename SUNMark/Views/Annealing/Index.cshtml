@@ -302,10 +302,10 @@
                                                                     }
                                                                 </td>
                                                                 <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.OD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtOD", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this);" })
+                                                                    @Html.TextBoxFor(x => x.Annel.OD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtOD", @onKeyUp = "numericFilter(this);" })
                                                                 </td>
                                                                 <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.Thick, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtThick", @onKeyUp = "numericFilter(this);" })
+                                                                    @Html.TextBoxFor(x => x.Annel.Thick, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtThick", @onKeyUp = "numericFilter(this)", @onblur = "GetLotIssAnnelProduct(this)" })
                                                                 </td>
                                                                 <td style="padding:0 0 0 8px">
                                                                     @Html.TextBoxFor(x => x.Annel.Length, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtLength", @onKeyUp = "numericFilter(this);" })
@@ -443,7 +443,7 @@
                                                                             @Html.TextBoxFor(x => x.Annel.OD[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtOD", @onKeyUp = "numericFilter(this);" })
                                                                         </td>
                                                                         <td style="padding:0 0 0 8px">
-                                                                            @Html.TextBoxFor(x => x.Annel.Thick[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this);" })
+                                                                            @Html.TextBoxFor(x => x.Annel.Thick[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
                                                                         </td>
                                                                         <td style="padding:0 0 0 8px">
                                                                             @Html.TextBoxFor(x => x.Annel.Length[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtLength", @onKeyUp = "numericFilter(this);" })
@@ -881,8 +881,7 @@
                                 $(this).children('td').eq(1).children('select').addClass('select2');
                                 $(this).children('td').eq(1).children('select').val(recproduct);
                                 $(this).children('td').eq(1).children('select').removeClass('select2')
-
-                                $(this).children('td').eq(2).children('select').attr('disabled',
+                                $(this).children('td').eq(1).children('select').attr('disabled',true)
 
                                 $(this).children('td').eq(2).children('select').remove();
                                 $(this).children('td').eq(2).children('span').remove();
@@ -912,8 +911,8 @@
 
 
 
-                    SetSerialNumberCoil();
-                    SetNameCoil();
+                    SetSerialNumberAnnel();
+                    SetNameAnnel();
                     SetSelect2();
                     //CalculateCoil();
                     isRecentCall = true
@@ -975,7 +974,7 @@
             $(this).children("td").eq(4).children("input").attr("name", "Annel.Thick");
             $(this).children("td").eq(4).children("input").attr("Id", "Annel.Thick" + i + "");
             if (!isRemove)
-                $(this).children("td").eq(3).children("input").attr("onblur", 'GetLotIssAnnelProduct(this)');
+                $(this).children("td").eq(4).children("input").attr("onblur", 'GetLotIssAnnelProduct(this)');
             $(this).children("td").eq(5).children("input").attr("name", "Annel.Length");
             $(this).children("td").eq(5).children("input").attr("Id", "Annel.Length" + i + "");
             $(this).children("td").eq(6).children("input").attr("name", "Annel.NoOfPipe");
@@ -1184,9 +1183,9 @@
                                 $(previousRow).closest('tr').children('td').eq(3).children('input').focus();
                             }
                             else {
-                                $(previousRow).closest('tr').children('td').eq(4).children('input').val(data.lenght);
-                                $(previousRow).closest('tr').children('td').eq(5).children('input').val(data.lotPcs);
-                                $(previousRow).closest('tr').children('td').eq(6).children('input').val(data.lotQty);
+                                $(previousRow).closest('tr').children('td').eq(5).children('input').val(data.lenght);
+                                $(previousRow).closest('tr').children('td').eq(6).children('input').val(data.lotPcs);
+                                $(previousRow).closest('tr').children('td').eq(7).children('input').val(data.lotQty);
                             }
                         }
                         else {
