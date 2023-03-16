@@ -38,6 +38,7 @@ namespace SUNMark.Controllers
                 }
                 coilMasterModel.GradeList = objProductHelper.GetGradeMasterDropdown(companyId, administrator);
                 coilMasterModel.CompanyList = objProductHelper.GetCompanyMasterDropdown(companyId, administrator);
+                ViewBag.processList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
                 //coilMasterModel.StockYNList = objProductHelper.GetStockYN();
             }
             catch (Exception ex)
@@ -74,7 +75,7 @@ namespace SUNMark.Controllers
             #endregion
         }
 
-        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string coilNo, string frWidth, string toWidth, string frthick, string tothick, string frWeigth, string toWeigth, string gradeid, string frRecDt, string toRecDt, string companyid)
+        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string coilNo, string frWidth, string toWidth, string frthick, string tothick, string frWeigth, string toWeigth, string gradeid, string frRecDt, string toRecDt, string companyid,string DoneProc,string NextProc)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -146,6 +147,14 @@ namespace SUNMark.Controllers
                     {
                         whereConditionQuery += " AND LotMst.LotDt<='" + toRecDt + "'";
                     }
+                    //if (!string.IsNullOrWhiteSpace(DoneProc))
+                    //{
+                    //    whereConditionQuery += " AND LotMst.LotDt ='" + DoneProc + "'";
+                    //}
+                    //if (!string.IsNullOrWhiteSpace(NextProc))
+                    //{
+                    //    whereConditionQuery += " AND LotMst.LotDt<='" + NextProc + "'";
+                    //}
                 }
                 else
                 {
@@ -188,6 +197,14 @@ namespace SUNMark.Controllers
                     if (!string.IsNullOrWhiteSpace(toRecDt))
                     {
                         whereConditionQuery += " AND PipeMst.RecDt<='" + toRecDt + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(DoneProc))
+                    {
+                        whereConditionQuery += " AND PipeMst.DoneProc<='" + DoneProc + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(NextProc))
+                    {
+                        whereConditionQuery += " AND PipeMst.NextProc<='" + NextProc + "'";
                     }
                 }
                 getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);

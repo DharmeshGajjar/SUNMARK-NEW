@@ -2,12 +2,13 @@
 @using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
-     
+
     Layout = "~/Views/Shared/_Layout.cshtml";
     int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
     List<SUNMark.Models.CoilMasterModel> coilList = ViewBag.coilList as List<SUNMark.Models.CoilMasterModel>;
     List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
     List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    List<SelectListItem> processList = ViewBag.processList != null ? ViewBag.processList as List<SelectListItem> : null;
     var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
     ViewData["Title"] = userRight.ModuleNm;
     string headerAdd = "";
@@ -133,19 +134,35 @@
                         </div>
                     </div>
                     @*<div class="col-md-2">
-                        <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                            Stock Y/N <span class="required"></span>
-                        </label>
-                        <div class="form-outline form-white mb-2">
-                            @Html.DropDownListFor(x => x.StockYN, Model.StockYNList, "Select", new { @class = "form-control StockYN select2", @tabindex = "12", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
-                        </div>
-                    </div>*@
+            <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                Stock Y/N <span class="required"></span>
+            </label>
+            <div class="form-outline form-white mb-2">
+                @Html.DropDownListFor(x => x.StockYN, Model.StockYNList, "Select", new { @class = "form-control StockYN select2", @tabindex = "12", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+            </div>
+        </div>*@
                     <div class="col-md-2">
                         <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
                             Company <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
                             @Html.DropDownListFor(x => x.Company, Model.CompanyList, "Select", new { @class = "form-control Company select2", @tabindex = "14", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                            Process Done <span class="required"></span>
+                        </label>
+                        <div class="form-outline form-white mb-2">
+                            @Html.DropDownListFor(x => x.DoneProc, processList, "Select", new { @class = "form-control Company select2", @tabindex = "14", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                            Next Process <span class="required"></span>
+                        </label>
+                        <div class="form-outline form-white mb-2">
+                            @Html.DropDownListFor(x => x.NextProc, processList, "Select", new { @class = "form-control Company select2", @tabindex = "14", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
                         </div>
                     </div>
                     <div class="col-md-5 mt-1 text-right">
@@ -279,13 +296,15 @@
             var toRecDt = $('#ToRecDt').val();
             //var stockYN = $('#StockYN').val();
             var company = $('#Company').val();
+        var DoneProc = $('#DoneProc').val();
+        var NextProc = $('#NextProc').val();
 
             $('.dataTable').html();
             $.ajax({
                 url: '/PipeMaster/GetReportView',
                 type: 'GET',
                 data: {
-                    pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy, frWidth: frWidth, toWidth:toWidth, frthick: frthick, tothick: tothick, frWeigth: frWeigth, toWeigth: toWeigth, gradeId: grade, frRecDt: frRecDt, toRecDt: toRecDt, companyId: company },
+                    pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy, frWidth: frWidth, toWidth: toWidth, frthick: frthick, tothick: tothick, frWeigth: frWeigth, toWeigth: toWeigth, gradeId: grade, frRecDt: frRecDt, toRecDt: toRecDt, companyId: company, DoneProc: DoneProc, NextProc: NextProc },
                 dataType: 'HTML',
                 traditional: true, // add this
                 success: function (data) {

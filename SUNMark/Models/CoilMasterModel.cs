@@ -36,6 +36,8 @@ namespace SUNMark.Models
         public int CompanyVou { get; set; }
         public List<SelectListItem> CompanyList { get; set; }
         public string Company { get; set; }
+        public string DoneProc { get; set; }
+        public string NextProc { get; set; }
 
         public int AccountVou { get; set; }
         public List<CustomDropDown> AccountList { get; set; }

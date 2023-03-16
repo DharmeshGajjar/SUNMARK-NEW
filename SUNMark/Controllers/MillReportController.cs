@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using SelectPdf;
 using SUNMark.Classes;
 using SUNMark.Common;
 using SUNMark.Models;
@@ -94,6 +95,7 @@ namespace SUNMark.Controllers
                 string filePath = "/PrintPDF/" + "Mill-" + dt + ".pdf";
                 wwwroot = _iwebhostenviroment.WebRootPath + filePath;
                 SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                converter.Options.PdfPageOrientation = PdfPageOrientation.Landscape;
                 SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
                 doc.Save(wwwroot);
                 doc.Close();
@@ -192,10 +194,10 @@ namespace SUNMark.Controllers
                             sb.Append("<td style=\"height: 40px;\">10 TO 18</td>");
                             sb.Append("<td style=\"width: 3%;\"></td>");
                             sb.Append("<td style=\"width: 3%;\"></td>");
+                            sb.Append("<td rowspan=\"2\">" + DtBilty.Rows[i]["MilTouNo2"].ToString() + "</td>");
                             sb.Append("<td rowspan=\"2\">-</td>");
-                            sb.Append("<td rowspan=\"2\">-</td>");
-                            sb.Append("<td rowspan=\"2\">-</td>");
-                            sb.Append("<td rowspan=\"2\">-</td>");
+                            sb.Append("<td rowspan=\"2\">" + DtBilty.Rows[i]["MilWeldAMP2"].ToString() + "</td>");
+                            sb.Append("<td rowspan=\"2\">" + DtBilty.Rows[i]["MilWeldVolt2"].ToString() + "</td>");
                             sb.Append("</tr>");
 
                             sb.Append("<tr>");
@@ -291,6 +293,7 @@ namespace SUNMark.Controllers
                 //doc.SaveAs(wwwroot);
 
                 SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                converter.Options.PdfPageOrientation = PdfPageOrientation.Landscape;
                 SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
                 doc.Save(wwwroot);
                 doc.Close();
@@ -323,6 +326,7 @@ namespace SUNMark.Controllers
                 //wwwroot = "http://piosunmark.pioerp.com/wwwroot/PrintPDF/" + dateTime + ".pdf";
                 filenm = dateTime + ".pdf";
                 SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                converter.Options.PdfPageOrientation = PdfPageOrientation.Landscape;
                 SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
                 doc.Margins.Left = 25;
                 doc.Save(wwwroot);
