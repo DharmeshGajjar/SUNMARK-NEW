@@ -906,6 +906,29 @@ namespace SUNMark.Classes
             return CoilTypeList;
         }
 
+        public List<SelectListItem> GetPicklingStatus()
+        {
+            List<SelectListItem> StatusList = new List<SelectListItem>();
+            try
+            {
+                StatusList.Add(new SelectListItem
+                {
+                    Text = "AP",
+                    Value = "1"
+                });
+                StatusList.Add(new SelectListItem
+                {
+                    Text = "Final Pickling",
+                    Value = "2"
+                });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return StatusList;
+        }
+
         public List<SelectListItem> GetInwardCoilType()
         {
             List<SelectListItem> CoilTypeList = new List<SelectListItem>();

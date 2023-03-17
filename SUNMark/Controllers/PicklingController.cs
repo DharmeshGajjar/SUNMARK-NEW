@@ -18,7 +18,6 @@ namespace SUNMark.Controllers
 
         public IActionResult Index(int id)
         {
-            PicklingMasterModel picklingMasterModel = new PicklingMasterModel();
             try
             {
                 bool isreturn = false;
@@ -27,13 +26,21 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
+                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                int administrator = 0;
+                long userId = GetIntSession("UserId");
+                PicklingMasterModel picklingMasterModel = new PicklingMasterModel();
+                picklingMasterModel.Pikling = new PikGridModel();
+                picklingMasterModel.Pikling.RecProductList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "PIPE");
+                picklingMasterModel.Pikling.GradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
+                picklingMasterModel.Pikling.StatusList = objProductHelper.GetPicklingStatus();
                 picklingMasterModel.Vno = GetVoucherNo();
                 if (id > 0)
                 {
                     SqlParameter[] parameter = new SqlParameter[2];
                     parameter[0] = new SqlParameter("@PikVou", id);
                     parameter[1] = new SqlParameter("@Flg", 0);
-                    DataTable dt = ObjDBConnection.CallStoreProcedure("GetPicklingMasterById", parameter);
+                    DataTable dt = ObjDBConnection.CallStoreProcedure("GetAnnealingMasterById", parameter);
                     if (dt != null && dt.Rows.Count > 0)
                     {
                         picklingMasterModel.PikVou = id;
@@ -47,35 +54,53 @@ namespace SUNMark.Controllers
                         picklingMasterModel.IssuePrdVou = dt.Rows[0]["PikIssPrdVou"].ToString();
                         picklingMasterModel.Finish = dt.Rows[0]["PikFinish"].ToString();
                         picklingMasterModel.FinishVou = dt.Rows[0]["PikFinishVou"].ToString();
-                        picklingMasterModel.Grade = dt.Rows[0]["PikGrade"].ToString();
-                        picklingMasterModel.GradeVou = dt.Rows[0]["PikGrdVou"].ToString();
-                        picklingMasterModel.Width = dt.Rows[0]["PikWidth"].ToString();
-                        picklingMasterModel.Thick = dt.Rows[0]["PikThick"].ToString();
-                        picklingMasterModel.OD = dt.Rows[0]["PikOD"].ToString();
-                        picklingMasterModel.NoOfPipe = dt.Rows[0]["PikPCS"].ToString();
-                        picklingMasterModel.Weight = dt.Rows[0]["PikQty"].ToString();
-                        picklingMasterModel.RecPrdVou = dt.Rows[0]["PikRecPrdVou"].ToString();
-                        picklingMasterModel.InTime = dt.Rows[0]["PikInTime"].ToString();
-                        picklingMasterModel.OutTime = dt.Rows[0]["PikOutTime"].ToString();
+                        picklingMasterModel.NextProc = dt.Rows[0]["PikNextProc"].ToString();
+                        picklingMasterModel.NextPrcVou = dt.Rows[0]["PikNextPrcVou"].ToString();
                         picklingMasterModel.HFQty = dt.Rows[0]["PikHFQty"].ToString();
-                        picklingMasterModel.NitricQty = dt.Rows[0]["PikNitricQty"].ToString();
-                        picklingMasterModel.LimeQty = dt.Rows[0]["PikLimeQty"].ToString();
-                        picklingMasterModel.RPM = dt.Rows[0]["PikRPM"].ToString();
                         picklingMasterModel.Remarks = dt.Rows[0]["PikRemarks"].ToString();
-                    }
 
+                        picklingMasterModel.Pikling.Grade = new string[dt.Rows.Count];
+                        picklingMasterModel.Pikling.PikOD = new decimal[dt.Rows.Count];
+                        picklingMasterModel.Pikling.PikThick = new decimal[dt.Rows.Count];
+                        picklingMasterModel.Pikling.PikLength = new decimal[dt.Rows.Count];
+                        picklingMasterModel.Pikling.PikNoOfPipe = new decimal[dt.Rows.Count];
+                        picklingMasterModel.Pikling.PikWeight = new decimal[dt.Rows.Count];
+                        picklingMasterModel.Pikling.RecProduct = new string[dt.Rows.Count];
+                        picklingMasterModel.Pikling.PikInTime = new string[dt.Rows.Count];
+                        picklingMasterModel.Pikling.PikOutTime = new string[dt.Rows.Count];
+                        picklingMasterModel.Pikling.PikCoilNo = new string[dt.Rows.Count];
+                        picklingMasterModel.Pikling.PikStatus = new string[dt.Rows.Count];
+                        picklingMasterModel.Pikling.PikType = new string[dt.Rows.Count];
+
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            picklingMasterModel.Pikling.Grade[i] = dt.Rows[i]["PikAGrdVou"].ToString();
+                            picklingMasterModel.Pikling.PikOD[i] = Convert.ToDecimal(dt.Rows[i]["PikAOD"].ToString());
+                            picklingMasterModel.Pikling.PikThick[i] = Convert.ToDecimal(dt.Rows[i]["PikAThick"].ToString());
+                            picklingMasterModel.Pikling.PikLength[i] = Convert.ToDecimal(dt.Rows[i]["PikALength"].ToString());
+                            picklingMasterModel.Pikling.PikNoOfPipe[i] = Convert.ToDecimal(dt.Rows[i]["PikANoOfPipe"].ToString());
+                            picklingMasterModel.Pikling.PikWeight[i] = Convert.ToDecimal(dt.Rows[i]["PikAWeight"].ToString());
+                            picklingMasterModel.Pikling.RecProduct[i] = dt.Rows[i]["PikARecPrdVou"].ToString();
+                            picklingMasterModel.Pikling.PikInTime[i] = dt.Rows[i]["PikAInTime"].ToString();
+                            picklingMasterModel.Pikling.PikOutTime[i] = dt.Rows[i]["PikAOutTime"].ToString();
+                            picklingMasterModel.Pikling.PikCoilNo[i] = dt.Rows[i]["PikACoilNo"].ToString();
+                            picklingMasterModel.Pikling.PikStatus[i] = dt.Rows[i]["PikAStatus"].ToString();
+                            picklingMasterModel.Pikling.PikType[i] = dt.Rows[i]["PikAType"].ToString();
+                        }
+                    }
                 }
+                return View(picklingMasterModel);
             }
             catch (Exception ex)
             {
 
                 throw;
             }
-            return View(picklingMasterModel);
+            return View();
         }
 
         [HttpPost]
-        public IActionResult Index(PicklingMasterModel picklingMasterModel)
+        public IActionResult Index(long id, PicklingMasterModel picklingMaster)
         {
             try
             {
@@ -85,51 +110,83 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
-                SqlParameter[] sqlParameter = new SqlParameter[26];
-                sqlParameter[0] = new SqlParameter("@PikVou", picklingMasterModel.PikVou);
-                sqlParameter[1] = new SqlParameter("@PikCmpVou", picklingMasterModel.PikCmpVou);
-                sqlParameter[2] = new SqlParameter("@PikVno", picklingMasterModel.Vno);
-                sqlParameter[3] = new SqlParameter("@PikDt", picklingMasterModel.Date);
-                sqlParameter[4] = new SqlParameter("@PikShift", picklingMasterModel.Shift);
-                sqlParameter[5] = new SqlParameter("@PikMacNo", picklingMasterModel.MachineNo);
-                sqlParameter[6] = new SqlParameter("@PikSupEmpVou", picklingMasterModel.SupEmpVou);
-                sqlParameter[7] = new SqlParameter("@PikManEmpVou", picklingMasterModel.ManEmpVou);
-                sqlParameter[8] = new SqlParameter("@PikIssPrdVou", picklingMasterModel.IssuePrdVou);
-                sqlParameter[9] = new SqlParameter("@PikFinish", picklingMasterModel.Finish);
-                sqlParameter[10] = new SqlParameter("@PikFinishVou", picklingMasterModel.FinishVou);
-                sqlParameter[11] = new SqlParameter("@PikGrade", picklingMasterModel.Grade);
-                sqlParameter[12] = new SqlParameter("@PikGrdVou", picklingMasterModel.GradeVou);
-                sqlParameter[13] = new SqlParameter("@PikWidth", picklingMasterModel.Width);
-                sqlParameter[14] = new SqlParameter("@PikThick", picklingMasterModel.Thick);
-                sqlParameter[15] = new SqlParameter("@PikOD", picklingMasterModel.OD);
-                sqlParameter[16] = new SqlParameter("@PikNoOfPipe", picklingMasterModel.NoOfPipe);
-                sqlParameter[17] = new SqlParameter("@PikQty", picklingMasterModel.NoOfPipe);
-                sqlParameter[18] = new SqlParameter("@PikRecPrdVou", picklingMasterModel.RecPrdVou);
-                sqlParameter[19] = new SqlParameter("@PikInTime", picklingMasterModel.InTime);
-                sqlParameter[20] = new SqlParameter("@PikOutTime", picklingMasterModel.OutTime);
-                sqlParameter[21] = new SqlParameter("@PikHFQty", picklingMasterModel.HFQty);
-                sqlParameter[22] = new SqlParameter("@PikNitricQty", picklingMasterModel.NitricQty);
-                sqlParameter[23] = new SqlParameter("@PikLimeQty", picklingMasterModel.LimeQty);
-                sqlParameter[24] = new SqlParameter("@PikRPM", picklingMasterModel.RPM);
-                sqlParameter[25] = new SqlParameter("@PikRemarks", picklingMasterModel.Remarks);
-                DataTable dt = ObjDBConnection.CallStoreProcedure("InsertPickling", sqlParameter);
-                if (dt != null && dt.Rows.Count > 0)
+                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.Vno).ToString()) && !string.IsNullOrWhiteSpace(picklingMaster.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.PikCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.MachineNo).ToString()) && picklingMaster.Pikling.RecProduct.Length > 0 && picklingMaster.Pikling.Grade.Length > 0 && picklingMaster.Pikling.PikLength.Length > 0 && picklingMaster.Pikling.PikOD.Length > 0 && picklingMaster.Pikling.PikWeight.Length > 0 && picklingMaster.Pikling.PikNoOfPipe.Length > 0 && picklingMaster.Pikling.PikThick.Length > 0)
                 {
-                    int pikVou = Convert.ToInt32(dt.Rows[0][0].ToString());
-                    if (pikVou > 0 && picklingMasterModel.PikVou > 0)
+                    SqlParameter[] sqlParameter = new SqlParameter[16];
+                    sqlParameter[0] = new SqlParameter("@AnnVou", picklingMaster.PikVou);
+                    sqlParameter[1] = new SqlParameter("@AnnCmpVou", picklingMaster.PikCmpVou);
+                    sqlParameter[2] = new SqlParameter("@AnnVno", picklingMaster.Vno);
+                    sqlParameter[3] = new SqlParameter("@AnnDt", picklingMaster.Date);
+                    sqlParameter[4] = new SqlParameter("@AnnShift", picklingMaster.Shift);
+                    sqlParameter[5] = new SqlParameter("@AnnMacNo", picklingMaster.MachineNo);
+                    sqlParameter[6] = new SqlParameter("@AnnSupEmpVou", picklingMaster.SupEmpVou);
+                    sqlParameter[7] = new SqlParameter("@AnnManEmpVou", picklingMaster.ManEmpVou);
+                    sqlParameter[8] = new SqlParameter("@AnnIssPrdVou", picklingMaster.IssuePrdVou);
+                    sqlParameter[9] = new SqlParameter("@AnnFinish", picklingMaster.Finish);
+                    sqlParameter[10] = new SqlParameter("@AnnFinishVou", picklingMaster.FinishVou);
+                    sqlParameter[11] = new SqlParameter("@AnnHFQty", picklingMaster.HFQty);
+                    sqlParameter[12] = new SqlParameter("@AnnRemarks", picklingMaster.Remarks);
+                    sqlParameter[13] = new SqlParameter("@AnnNextPrcVou", picklingMaster.NextPrcVou);
+                    sqlParameter[14] = new SqlParameter("@AnnNextProc", picklingMaster.NextProc);
+                    sqlParameter[15] = new SqlParameter("@Flg", "1");
+                    DataTable dt = ObjDBConnection.CallStoreProcedure("InsertAnnealing", sqlParameter);
+                    if (dt != null && dt.Rows.Count > 0)
                     {
-                        SetSuccessMessage("Record updated succesfully!");
+                        int masterId = DbConnection.ParseInt32(dt.Rows[0][0].ToString());
+                        if (masterId > 0)
+                        {
+                            for (int i = 0; i < picklingMaster.Pikling.PikWeight.Length; i++)
+                            {
+                                SqlParameter[] sqlParam = new SqlParameter[15];
+                                sqlParam[0] = new SqlParameter("@AnnAAnnVou", masterId);
+                                sqlParam[1] = new SqlParameter("@AnnCmpVou", picklingMaster.PikCmpVou);
+                                sqlParam[2] = new SqlParameter("@AnnGrdVou", picklingMaster.Pikling.Grade[i]);
+                                sqlParam[3] = new SqlParameter("@AnnThick", picklingMaster.Pikling.PikThick[i]);
+                                sqlParam[4] = new SqlParameter("@AnnOD", picklingMaster.Pikling.PikOD[i]);
+                                sqlParam[5] = new SqlParameter("@AnnLength", picklingMaster.Pikling.PikLength[i]);
+                                sqlParam[6] = new SqlParameter("@AnnNoOfPipe", picklingMaster.Pikling.PikNoOfPipe[i]);
+                                sqlParam[7] = new SqlParameter("@AnnQty", picklingMaster.Pikling.PikWeight[i]);
+                                sqlParam[8] = new SqlParameter("@AnnRecPrdVou", picklingMaster.Pikling.RecProduct[i]);
+                                sqlParam[9] = new SqlParameter("@AnnInTime", picklingMaster.Pikling.PikInTime[i + 1]);
+                                sqlParam[10] = new SqlParameter("@AnnOutTime", picklingMaster.Pikling.PikOutTime[i + 1]);
+                                sqlParam[11] = new SqlParameter("@AnnCoilNo", picklingMaster.Pikling.PikCoilNo[i + 1]);
+                                sqlParam[12] = new SqlParameter("@AnnStatus", picklingMaster.Pikling.PikStatus[i]);
+                                sqlParam[13] = new SqlParameter("@AnnType", picklingMaster.Pikling.PikType[i + 1]);
+                                sqlParam[14] = new SqlParameter("@AnnSrNo", (i + 1));
+                                DataTable dttrn = ObjDBConnection.CallStoreProcedure("InsertAnnealingTrn", sqlParam);
+                            }
+                            int Status = DbConnection.ParseInt32(dt.Rows[0][0].ToString());
+                            if (Status == 0)
+                            {
+                                SetErrorMessage("Dulplicate Vou.No Details");
+                            }
+                            else
+                            {
+                                if (id > 0)
+                                {
+                                    SetSuccessMessage("Record updated succesfully!");
+                                }
+                                else
+                                {
+                                    SetSuccessMessage("Record inserted succesfully!");
+                                }
+
+                            }
+                        }
+                        else
+                        {
+                            SetSuccessMessage("Insert error!");
+                        }
                     }
-                    else if (pikVou > 0 && picklingMasterModel.PikVou <= 0)
+                    else
                     {
-                        SetSuccessMessage("Record inserted succesfully!");
+                        SetErrorMessage("Please Enter the Value");
                     }
                 }
                 else
                 {
-                    SetErrorMessage("Record not inserted succesfully!");
+                    SetErrorMessage("Please Enter the Value");
                 }
-
             }
             catch (Exception ex)
             {
@@ -137,7 +194,6 @@ namespace SUNMark.Controllers
             }
             return RedirectToAction("Index", new { id = "0" });
         }
-
 
         private void INIT(ref bool isReturn)
         {
@@ -174,6 +230,7 @@ namespace SUNMark.Controllers
             ViewBag.milprocessList = ObjAccountMasterHelpers.GetMachineMasterDropdown(companyId);
             ViewBag.gradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
             ViewBag.finishList = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
+            ViewBag.nextProcList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
         }
 
         public IActionResult Delete(int id)
@@ -192,7 +249,6 @@ namespace SUNMark.Controllers
             }
             return RedirectToAction("Index", "Pickling", new { id = 0 });
         }
-
 
         public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby)
         {
@@ -304,5 +360,50 @@ namespace SUNMark.Controllers
                 return Json(new { result = false });
             }
         }
+        public IActionResult GetLotIssPiklingProduct(int recProdId, int pikvou, int gradeId, decimal od, decimal thick, string dt)
+        {
+            try
+            {
+                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                SqlParameter[] sqlParameters = new SqlParameter[7];
+                sqlParameters[0] = new SqlParameter("@AnnVou", pikvou);
+                sqlParameters[1] = new SqlParameter("@RecProd", recProdId);
+                sqlParameters[2] = new SqlParameter("@Grade", gradeId);
+                sqlParameters[3] = new SqlParameter("@od", od);
+                sqlParameters[4] = new SqlParameter("@thick", thick);
+                sqlParameters[5] = new SqlParameter("@dt", dt);
+                sqlParameters[6] = new SqlParameter("@FLG", "2");
+                DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotIssAnnelProduct", sqlParameters);
+                if (DtInw != null)
+                {
+                    int Status = DbConnection.ParseInt32(DtInw.Rows[0][0].ToString());
+                    if (Status == 1)
+                    {
+                        return Json(new { result = true, data = "1" });
+                    }
+                    else if (Status == 2)
+                    {
+                        return Json(new { result = true, data = "2" });
+                    }
+                    else
+                    {
+                        string LotPcs = DtInw.Rows[0]["LotPCS"].ToString();
+                        string LotQty = DtInw.Rows[0]["LotQty"].ToString();
+                        string Length = DtInw.Rows[0]["Length"].ToString();
+                        return Json(new { result = true, lotPcs = LotPcs, lotQty = LotQty, length = Length });
+                    }
+
+                }
+                else
+                {
+                    return Json(new { result = true, data = "1" });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

@@ -5,7 +5,7 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
-    List<SUNMark.Models.JobWorkEntryModel> jobworkentryList = ViewBag.jobworkentryList as List<SUNMark.Models.JobWorkEntryModel>;
+    List<SUNMark.Models.PicklingMasterModel> piklingList = ViewBag.piklingList as List<SUNMark.Models.PicklingMasterModel>;
     List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
     List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
     var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
@@ -25,8 +25,9 @@
     List<CustomDropDown> employeeList = ViewBag.employeeList != null ? ViewBag.employeeList as List<CustomDropDown> : null;
     List<CustomDropDown> supervisorList = ViewBag.supervisorList != null ? ViewBag.supervisorList as List<CustomDropDown> : null;
     List<SelectListItem> milprocessList = ViewBag.milprocessList != null ? ViewBag.milprocessList as List<SelectListItem> : null;
-    List<SelectListItem> gradeList = ViewBag.gradeList != null ? ViewBag.gradeList as List<SelectListItem> : null;
     List<SelectListItem> finishList = ViewBag.finishList != null ? ViewBag.finishList as List<SelectListItem> : null;
+    List<SelectListItem> nextProcList = ViewBag.nextProcList != null ? ViewBag.nextProcList as List<SelectListItem> : null;
+
 
 
     if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
@@ -137,180 +138,398 @@
                         @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
                         {
                             <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
-                                <form method="post" class="mt-1" autocomplete="off" id="PicklingForm">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="row">
-                                                <div class="col-md-1 col-12">
-                                                    <div class="form-group">
-                                                        <label>VNo.<span class="text-danger" style="font-family: Verdana">*</span></label>
-                                                        @Html.TextBoxFor(x => x.Vno, new { @class = "form-control ", @placeholder = "Voucher No", @type = "text", @disabled = "disabled" })
-                                                        @Html.TextBoxFor(x => x.PikVou, new { @class = "form-control ", @placeholder = "Voucher No", @type = "hidden", @disabled = "disabled" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 col-12">
-                                                    <div class="form-group">
-                                                        <label>Company<span class="text-danger" style="font-family: Verdana">*</span></label>
-                                                        @Html.DropDownListFor(x => x.PikCmpVou, companyList, "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important" })
-                                                    </div>
-                                                </div>
+                                <form method="post" class="mt-1" id="pickingForm">
+                                    <input type="hidden" id="txtIsPrint" name="isPrint" value="0" />
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="d-none" id="dropdownGrade">
+                                                @if (Model != null && Model.Pikling != null && Model.Pikling.GradeList != null && Model.Pikling.GradeList.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Pikling.GradeVou, new SelectList(Model.Pikling.GradeList, "Value", "Text"), "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
 
-                                                <div class="col-md-2 col-12">
-                                                    <div class="form-group">
-                                                        <label>Date<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                        @Html.TextBoxFor(x => x.Date, new { @class = "form-control ", @placeholder = "Voucher No", @type = "date" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2 col-12">
-                                                    <div class="form-group">
-                                                        <label>Shift<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                        @Html.DropDownListFor(x => x.Shift, shiftList, "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important", @onchange = "GetSupervisor()" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2 col-12">
-                                                    <div class="form-group">
-                                                        <label>In Time</label>
-                                                        @Html.TextBoxFor(x => x.InTime, new { @class = "form-control ", @placeholder = "In Time", @type = "text" })
-                                                    </div>
-                                                </div>
+                                            </div>
+                                            <div class="d-none" id="dropdownRecProduct">
+                                                @if (Model != null && Model.Pikling != null && Model.Pikling.RecProductList != null && Model.Pikling.RecProductList.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Pikling.RecPrdVou, new SelectList(Model.Pikling.RecProductList, "Value", "Text"), "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
 
-                                                <div class="col-md-2 col-12">
-                                                    <div class="form-group">
-                                                        <label>Out Time</label>
-                                                        @Html.TextBoxFor(x => x.OutTime, new { @class = "form-control ", @placeholder = "OutTime", @type = "text" })
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-1 col-12">
+                                                        <div class="form-group">
+                                                            <label>VNo.<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                            @Html.TextBoxFor(x => x.Vno, new { @class = "form-control ", @placeholder = "Voucher No", @type = "text", @disabled = "disabled" })
+                                                            @Html.TextBoxFor(x => x.PikVou, new { @class = "form-control ", @placeholder = "Voucher No", @type = "hidden", @disabled = "disabled" })
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-2 col-12">
-                                                    <div class="form-group">
-                                                        <label>Machine No<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                        @Html.DropDownListFor(x => x.MachineNo, new SelectList(milprocessList, "Value", "Text"), "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important", @onchange = "GetSupervisor()" })
+                                                    <div class="col-md-3 col-12">
+                                                        <div class="form-group">
+                                                            <label>Company<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                            @Html.DropDownListFor(x => x.PikCmpVou, companyList, "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important" })
+                                                        </div>
+                                                    </div>
 
+                                                    <div class="col-md-2 col-12">
+                                                        <div class="form-group">
+                                                            <label>Date<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                            @Html.TextBoxFor(x => x.Date, new { @class = "form-control ", @placeholder = "Voucher No", @type = "date" })
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-2 col-6">
-                                                    <div class="form-group">
-                                                        <label>Supervisor</label>
-                                                        @Html.DropDownListFor(x => x.SupEmpVou, new SelectList(supervisorList, "Value", "Text"), "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important"})
+                                                    <div class="col-md-2 col-12">
+                                                        <div class="form-group">
+                                                            <label>Shift<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                            @Html.DropDownListFor(x => x.Shift, shiftList, "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important", @onchange = "GetSupervisor()" })
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            
+                                                    <div class="col-md-2 col-12">
+                                                        <div class="form-group">
+                                                            <label>Machine No<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                            @Html.DropDownListFor(x => x.MachineNo, new SelectList(milprocessList, "Value", "Text"), "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important", @onchange = "GetSupervisor()" })
 
-                                                <div class="col-md-3 col-6">
-                                                    <div class="form-group">
-                                                        <label>Manager</label>
-                                                        @Html.DropDownListFor(x => x.ManEmpVou, new SelectList(employeeList, "Value", "Text"), "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important"})
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-6">
+                                                        <div class="form-group">
+                                                            <label>Supervisor   </label>
+                                                            @Html.DropDownListFor(x => x.SupEmpVou, new SelectList(supervisorList, "Value", "Text"), "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important" })
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2 col-6">
-                                                    <div class="form-group">
-                                                        <label>Issue Product</label>
-                                                        @Html.DropDownListFor(x => x.IssuePrdVou, new SelectList(productList, "Value", "Text"), "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important" })
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-3 col-6">
+                                                        <div class="form-group">
+                                                            <label>Manager</label>
+                                                            @Html.DropDownListFor(x => x.ManEmpVou, new SelectList(employeeList, "Value", "Text"), "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-6">
+                                                        <div class="form-group">
+                                                            <label>Issue Product</label>
+                                                            @Html.DropDownListFor(x => x.IssuePrdVou, new SelectList(productList, "Value", "Text"), "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-6">
+                                                        <div class="form-group">
+                                                            <label>Finish</label>
+                                                            @Html.DropDownListFor(x => x.FinishVou, finishList, "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important" })
+                                                            @Html.TextBoxFor(x => x.Finish, new { @class = "form-control ", @placeholder = "Grade", @type = "hidden" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-6">
+                                                        <div class="form-group">
+                                                            <label>Next Process</label>
+                                                            @Html.DropDownListFor(x => x.NextPrcVou, nextProcList, "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important" })
+                                                            @Html.TextBoxFor(x => x.NextProc, new { @class = "form-control ", @placeholder = "Next Process", @type = "hidden" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-12">
+                                                        <div class="form-group">
+                                                            <label>LDO Qty</label>
+                                                            @Html.TextBoxFor(x => x.HFQty, new { @class = "form-control ", @placeholder = "LDO Qty", @type = "text" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-12">
+                                                        <div class="form-group">
+                                                            <label>Nitric Qty</label>
+                                                            @Html.TextBoxFor(x => x.NitricQty, new { @class = "form-control ", @placeholder = "Nitric Qty", @type = "text" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-12">
+                                                        <div class="form-group">
+                                                            <label>Lime Qty</label>
+                                                            @Html.TextBoxFor(x => x.LimeQty, new { @class = "form-control ", @placeholder = "Lime Qty", @type = "text" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label>Remarks</label>
+                                                            @Html.TextBoxFor(x => x.Remarks, new { @class = "form-control ", @placeholder = "Remarks", @type = "text" })
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2 col-6">
-                                                    <div class="form-group">
-                                                        <label>Finish</label>
-                                                        @Html.DropDownListFor(x => x.FinishVou, finishList, "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important" })
-                                                        @Html.TextBoxFor(x => x.Finish, new { @class = "form-control ", @placeholder = "Grade", @type = "hidden" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2 col-6">
-                                                    <div class="form-group">
-                                                        <label>Grade<span class="text-danger" style="font-family: Verdana">*</span></label>
-                                                        @Html.DropDownListFor(x => x.GradeVou, gradeList, "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important" })
-                                                        @Html.TextBoxFor(x => x.Grade, new { @class = "form-control ", @placeholder = "Grade", @type = "hidden" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2 col-6">
-                                                    <div class="form-group">
-                                                        <label>Width<span class="text-danger" style="font-family: Verdana">*</span></label>
-                                                        @Html.TextBoxFor(x => x.Width, new { @class = "form-control ", @placeholder = "Width", @type = "text" })
-                                                    </div>
-                                                </div>
-                                            
-                                                <div class="col-md-2 col-6">
-                                                    <div class="form-group">
-                                                        <label>Thick<span class="text-danger" style="font-family: Verdana">*</span></label>
-                                                        @Html.TextBoxFor(x => x.Thick, new { @class = "form-control ", @placeholder = "Thick", @type = "text" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2 col-6">
-                                                    <div class="form-group">
-                                                        <label>OD</label>
-                                                        @Html.TextBoxFor(x => x.OD, new { @class = "form-control ", @placeholder = "OD", @type = "text", @onchange = "GetNBSCHDetails(this)" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2 col-12">
-                                                    <div class="form-group">
-                                                        <label>No Of Pipe<span class="text-danger" style="font-family: Verdana">*</span></label>
-                                                        @Html.TextBoxFor(x => x.NoOfPipe, new { @class = "form-control ", @placeholder = "No Of Pipe", @type = "text", @onchange = "GetODThickPCS(this)" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2 col-6">
-                                                    <div class="form-group">
-                                                        <label>Weight</label>
-                                                        @Html.TextBoxFor(x => x.Weight, new { @class = "form-control ", @placeholder = "Weight", @type = "text" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2 col-6">
-                                                    <div class="form-group">
-                                                        <label>Rec Product<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                        @Html.DropDownListFor(x => x.RecPrdVou, new SelectList(productList, "Value", "Text"), "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important" })
-                                                    </div>
-                                                </div>
-                                              
-                                                <div class="col-md-2 col-12">
-                                                    <div class="form-group">
-                                                        <label>HF Qty</label>
-                                                        @Html.TextBoxFor(x => x.HFQty, new { @class = "form-control ", @placeholder = "Oil level", @type = "number" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2 col-12">
-                                                    <div class="form-group">
-                                                        <label>Nitric Qty</label>
-                                                        @Html.TextBoxFor(x => x.NitricQty, new { @class = "form-control ", @placeholder = "LDO Qty", @type = "text" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2 col-12">
-                                                    <div class="form-group">
-                                                        <label>Lime Qty</label>
-                                                        @Html.TextBoxFor(x => x.LimeQty, new { @class = "form-control ", @placeholder = "Hours", @type = "number" })
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2 col-12">
-                                                    <div class="form-group">
-                                                        <label>RPM</label>
-                                                        @Html.TextBoxFor(x => x.RPM, new { @class = "form-control ", @placeholder = "RPM", @type = "number" })
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6 col-12">
-                                                    <div class="form-group">
-                                                        <label>Remarks</label>
-                                                        @Html.TextBoxFor(x => x.Remarks, new { @class = "form-control ", @placeholder = "Remarks", @type = "text" })
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12 text-center">
-                                                    @if (userRight.IsEdit && id > 0)
+                                            </div>
+                                            <div class="table-responsive mt-12" style="font-family:Verdana;font-size:small;font-display:inherit;margin:0 0 0 0">
+                                                <table class="table table-borderless" id="tblPikling" style="padding:0 0 0 0;margin:0 0 0 0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:2% !important">
+                                                                Sr
+                                                            </th>
+                                                            <th style="width:15% !important">
+                                                                Rec.Product
+                                                            </th>
+                                                            <th style="width:15% !important">
+                                                                Grade <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:12%;text-align:right !important">
+                                                                OD <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:10%;text-align:right !important">
+                                                                Thick <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:10%;text-align:right !important">
+                                                                Length <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:10%;text-align:right !important">
+                                                                No Of Pipe <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:12%;text-align:right !important">
+                                                                Weight <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:12% !important">
+                                                                Status <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:12% !important">
+                                                                In Time
+                                                            </th>
+                                                            <th style="width:12% !important">
+                                                                Out Time
+                                                            </th>
+                                                            <th style="width:12% !important">
+                                                                Coil No
+                                                            </th>
+                                                            <th style="width:12% !important">
+                                                                Type
+                                                            </th>
+                                                            <th style="width:5% !important">
+                                                                Actions
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr class="AddRows">
+                                                            <td style="padding:0 0 0 0">
+                                                                <input type="number" class="form-control" onchange="GetDataBySrNoPikling(this.value)" value="0" style="padding:0px !important;padding-left:3px !important;padding-right:3px !important;font-family: Verdana;font-size:small; height:30px;width:50px" />
+                                                            </td>
+                                                            <td style="padding:0 0 0 12px">
+                                                                @if (Model != null && Model.Pikling != null && Model.Pikling.RecProductList != null && Model.Pikling.RecProductList.Count > 0)
+                                                                {
+                                                                    @Html.DropDownListFor(x => x.Pikling.RecProduct, new SelectList(Model.Pikling.RecProductList, "Value", "Text"), "Select", new { @class = "form-control select2 RecProduct", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                }
+                                                            </td>
+                                                            <td style="padding:0 0 0 12px">
+                                                                @if (Model != null && Model.Pikling != null && Model.Pikling.GradeList != null && Model.Pikling.GradeList.Count > 0)
+                                                                {
+                                                                    @Html.DropDownListFor(x => x.Pikling.Grade, new SelectList(Model.Pikling.GradeList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                }
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Pikling.PikOD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikOD", @onKeyUp = "numericFilter(this);" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Pikling.PikThick, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssPiklingProduct(this)" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Pikling.PikLength, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikLength", @onKeyUp = "numericFilter(this);" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Pikling.PikNoOfPipe, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikNoOfPipe", @onKeyUp = "numericFilter(this);", @onblur = "GetCalculateQty(this)" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Pikling.PikWeight, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikWeigth", @onKeyUp = "numericFilter(this);" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @if (Model != null && Model.Pikling != null && Model.Pikling.StatusList != null && Model.Pikling.StatusList.Count > 0)
+                                                                {
+                                                                    @Html.DropDownListFor(x => x.Pikling.PikStatus, new SelectList(Model.Pikling.StatusList, "Value", "Text"), "Select", new { @class = "form-control select2 PikStatus", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                }
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Pikling.PikInTime, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtPikInTime", @type = "time" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Pikling.PikOutTime, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtPikInTime", @type = "time" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Pikling.PikCoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtPikCoilNoStr" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Pikling.PikType, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtPikTypeStr" })
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <i class="fa fa-plus text-blue" onclick="AddRowsPikling(this)" style="font-size:18px"></i>
+                                                                <i class="fa fa-sync text-blue ml-3" onclick="RefreshAnnel(this)" style="font-size:18px"></i>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="d-none">
+                                                            <td style="padding:0 0 0 0">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 12px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 12px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 0">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="table-responsive col-md-12" style="font-family:Verdana;font-size:small;font-display:inherit;margin:0 0 0 0">
+                                                <table class="table table-bordered overflow-auto table-head-fixed" id="tblDisplay">
+                                                    @if (Model != null && Model.Pikling != null && Model.Pikling.Grade != null && Model.Pikling.Grade.Length > 0)
                                                     {
-                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddPickling()">
-                                                            Save (F10)
-                                                        </button>
-                                                        <a href="/Pickling/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
-                                                            Cancel (Esc)
-                                                        </a>
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width:2% !important">
+                                                                    Sr
+                                                                </th>
+                                                                <th style="width:15% !important">
+                                                                    Rec.Product
+                                                                </th>
+                                                                <th style="width:15% !important">
+                                                                    Grade <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:12%;text-align:right !important">
+                                                                    OD <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:10%;text-align:right !important">
+                                                                    Thick <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:10%;text-align:right !important">
+                                                                    Length <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:10%;text-align:right !important">
+                                                                    No Of Pipe <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:12%;text-align:right !important">
+                                                                    Weight <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:12% !important">
+                                                                    Status <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:12% !important">
+                                                                    In Time
+                                                                </th>
+                                                                <th style="width:12% !important">
+                                                                    Out Time
+                                                                </th>
+                                                                <th style="width:12% !important">
+                                                                    Coil No
+                                                                </th>
+                                                                <th style="width:12% !important">
+                                                                    Type
+                                                                </th>
+                                                                <th style="width:5% !important">
+                                                                    Actions
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @for (int y = 0; y < Model.Pikling.PikWeight.Length; y++)
+                                                            {
+                                                                <tr class="AddRows">
+                                                                    <td style="padding:0 0 0 0">
+                                                                        <input type="number" class="form-control" onblur="GetDataBySrNoPikling(this.value)" value="@(y+1)" style="padding:0px !important;padding-left:3px !important;padding-right:3px !important;font-family: Verdana;font-size:small; height:30px;" disabled />
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 12px">
+                                                                        @if (Model != null && Model.Pikling != null && Model.Pikling.RecProductList != null && Model.Pikling.RecProductList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Pikling.RecProduct[y], new SelectList(Model.Pikling.RecProductList, "Value", "Text"), "Select", new { @class = "form-control select2 RecProduct", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 12px">
+                                                                        @if (Model != null && Model.Pikling != null && Model.Pikling.GradeList != null && Model.Pikling.GradeList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Pikling.Grade[y], new SelectList(Model.Pikling.GradeList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Pikling.PikOD[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikOD", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Pikling.PikThick[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssPiklingProduct(this)" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Pikling.PikLength[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikLength", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Pikling.PikNoOfPipe[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikNoOfPipe", @onKeyUp = "numericFilter(this);", @onblur = "GetCalculateQty(this)" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Pikling.PikWeight[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikWeigth", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @if (Model != null && Model.Pikling != null && Model.Pikling.StatusList != null && Model.Pikling.StatusList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Pikling.PikStatus[y], new SelectList(Model.Pikling.StatusList, "Value", "Text"), "Select", new { @class = "form-control select2 PikStatus", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Pikling.PikInTime[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtPikInTime", @type = "time" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Pikling.PikOutTime[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtPikInTime", @type = "time" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Pikling.PikCoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtPikCoilNoStr" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Pikling.PikType[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtPikTypeStr" })
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <i class="fa fa-edit text-primary" onclick="EditRowsPikling(this)" style="font-size:18px"></i>
+                                                                        <i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsPikling(this)" style="font-size:18px"></i>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
                                                     }
-                                                    else if (userRight.IsAdd && id == 0)
-                                                    {
-                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddPickling()">
-                                                            Save (F10)
-                                                        </button>
-                                                        <a href="/Pickling/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
-                                                            Cancel (Esc)
-                                                        </a>
-                                                    }
-                                                </div>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-12 text-center">
+                                                @if (userRight.IsEdit && id > 0)
+                                                {
+                                                    <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddPickling()">
+                                                        Save (F10)
+                                                    </button>
+                                                    <a href="/Pickling/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                        Cancel (Esc)
+                                                    </a>
+                                                }
+                                                else if (userRight.IsAdd && id == 0)
+                                                {
+                                                    <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddPickling()">
+                                                        Save (F10)
+                                                    </button>
+                                                    <a href="/Pickling/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                        Cancel (Esc)
+                                                    </a>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -333,6 +552,12 @@
         else {
             GoToListTab()
         }
+
+        var focusType = '@Html.Raw(ViewBag.FocusType)';
+        if (focusType != null && focusType != '' && focusType == 1) {
+            GoToAddTab();
+        }
+
     });
 
     function GoToAddTab() {
@@ -342,6 +567,14 @@
         $('#custom-tabs-three-list').removeClass('active');
         $('#custom-tabs-three-add').addClass('active');
         $('#custom-tabs-three-add').addClass('show');
+        var id = '@Html.Raw(Model.PikVou)';
+        if(!id || id == 0)
+            GetVoucherNumber();
+        if ($('#txtInwCmpVou').children('option').length == 2) {
+            $('#txtInwCmpVou').val($('#txtInwCmpVou').children('option').eq(1).attr('value'));
+            SetSelect2()
+            //$('#txtBilDepVou').attr('disabled', true);
+        }
         setTimeout(function () {
             $('#PikCmpVou').focus();
         },200)
@@ -385,11 +618,14 @@
                 .on('Pagedown', function () {
                     if (!isRecentCalledAddRows) {
                         isRecentCalledAddRows = true;
-                        AddRows();
+                        AddRowsPikling();
                         setTimeout(function () {
                             isRecentCalledAddRows = false;
                         }, 500)
                     }
+                })
+                .on('Alt+I', function () {
+                    AddRowsPikling();
                 })
                 .on('Alt+C', function () {
                     if (confirm("Do you want to exit without save?")) {
@@ -406,7 +642,7 @@
                             location.href = '/Pickling/Index'
                         }
                         //else {
-                        //    $('#PikCmpVou').focus();
+                        //    $('#AnnCmpVou').focus();
                         //}
                         setTimeout(function () {
                             isRecentCalledEsc = false;
@@ -488,6 +724,25 @@
     $('#btnExportToPDF').click(function () {
         window.location.href = "/Pickling/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
     })
+
+    function GetVoucherNumber() {
+        var PikVou = "0";
+        if (PikVou == "0") {
+            $.ajax({
+                type: "POST",
+                url: '/Pickling/GetLastVoucherNo',
+                data: "",
+                dataType: "JSON",
+                success: function (response) {
+                    $('input[name="VNo"]').val(response.VNo);
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+    }
+
 </script>
 <script>
     var isSaveCalled = false;
@@ -508,57 +763,6 @@
         if (!$('select[name="MachineNo"]').val()) {
             isAllow = false;
         }
-        //if (!$('select[name="SupEmpVou"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('select[name="ManEmpVou"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('select[name="IssuePrdVou"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('select[name="FinishVou"]').val()) {
-        //    isAllow = false;
-        //}
-        if (!$('select[name="GradeVou"]').val()) {
-            isAllow = false;
-        }
-        if (!$('input[name="Width"]').val()) {
-            isAllow = false;
-        }
-        if (!$('input[name="Thick"]').val()) {
-            isAllow = false;
-        }
-        //if (!$('input[name="OD"]').val()) {
-        //    isAllow = false;
-        //}
-        if (!$('input[name="NoOfPipe"]').val()) {
-            isAllow = false;
-        }
-        //if (!$('input[name="Weight"]').val()) {
-        //    isAllow = false;
-        //}
-        if (!$('select[name="RecPrdVou"]').val()) {
-            isAllow = false;
-        }
-        //if (!$('input[name="InTime"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('input[name="OutTime"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('input[name="HFQty"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('input[name="NitricQty"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('input[name="LimeQty"]').val()) {
-        //    isAllow = false;
-        //}
-        //if (!$('input[name="RPM"]').val()) {
-        //    isAllow = false;
-        //}
 
         return isAllow;
     }
@@ -569,14 +773,14 @@
             $('#PikVou').removeAttr('disabled')
             //$('#SupEmpVou').removeAttr('disabled')
             //$('#ManEmpVou').removeAttr('disabled')
-            $('#PicklingForm').submit();
+            $('#PickingForm').submit();
         }
         else {
             showErrorMessage("Please enter all compulsory fields.");
         }
     }
 
-    $('#GradeVou').change(function () {
+    $('#FinishVou').change(function () {
         if ($(this).val()) {
             $(this).next().next('input').val($(this).children('option:selected').html());
         }
@@ -585,7 +789,7 @@
         }
     })
 
-    $('#FinishVou').change(function () {
+    $('#NextPrcVou').change(function () {
         if ($(this).val()) {
             $(this).next().next('input').val($(this).children('option:selected').html());
         }
@@ -610,7 +814,7 @@
             $.ajax({
                 url: '/Pickling/GetSupEmpByShiftMacNo',
                 type: 'POST',
-                data: { shift: shift, macNo: macNo},
+                data: { shift: shift, macNo: macNo },
                 dataType: 'JSON',
                 success: function (data) {
                     if (data) {
@@ -637,4 +841,501 @@
             });
         }
     }
+</script>
+<script>
+    var isRecentCall = false;
+    var isExcelUpload = false;
+    var isPasteDone = false;
+
+    function AddRowsPikling() {
+        if (!isRecentCall) {
+            var previousRow = $('#tblPikling').children('tbody').children('tr:last').prev();
+            if (previousRow != null) {
+                var recproduct = $(previousRow).children('td').eq(1).children('select').children('option:selected').text();
+                var recproductvou = $(previousRow).children('td').eq(1).children('select').val();
+                var grade = $(previousRow).children('td').eq(2).children('select').children('option:selected').text();
+                var gradevou = $(previousRow).children('td').eq(2).children('select').val();
+                var od = $(previousRow).children('td').eq(3).children('input').val();
+                var thick = $(previousRow).children('td').eq(4).children('input').val();
+                var length = $(previousRow).children('td').eq(5).children('input').val();
+                var noofpipe = $(previousRow).children('td').eq(6).children('input').val();
+                var qty = $(previousRow).children('td').eq(7).children('input').val();
+                var rpm = $(previousRow).children('td').eq(8).children('input').val();
+                var intime = $(previousRow).children('td').eq(9).children('input').val();
+                var outtime = $(previousRow).children('td').eq(10).children('input').val();
+                var coilno = $(previousRow).children('td').eq(11).children('input').val();
+                var type = $(previousRow).children('td').eq(12).children('input').val();
+
+                var srNo = $(previousRow).children('td').eq(0).children('input').val();
+                if (recproduct != null && grade != null && thick != null && qty != null && od != null && length != null && noofpipe != null && recproduct != "" && grade != "" && thick != "" && qty != "" && od != "" && length != "" && noofpipe != "") {
+
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                        var html = $('#tblPikling').children().find('tr.AddRows:first').html();
+
+                        if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                            $('#tblDisplay').append(`<thead>` + $('#tblPikling').children('thead').html() + `</thead><tbody></tbody>`);
+                            $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
+                        }
+                        else {
+                            $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
+                        }
+                    }
+                    $('#tblPikling').children('tbody').children('tr:last').removeClass('d-none')
+                    $('#tblPikling').children('tbody').children('tr:last').children('td').eq(1).children('label').html(recproduct);
+                    $('#tblPikling').children('tbody').children('tr:last').children('td').eq(2).children('label').html(grade);
+                    $('#tblPikling').children('tbody').children('tr:last').children('td').eq(3).children('label').html(od);
+                    $('#tblPikling').children('tbody').children('tr:last').children('td').eq(4).children('label').html(thick);
+                    $('#tblPikling').children('tbody').children('tr:last').children('td').eq(5).children('label').html(length);
+                    $('#tblPikling').children('tbody').children('tr:last').children('td').eq(6).children('label').html(noofpipe);
+                    $('#tblPikling').children('tbody').children('tr:last').children('td').eq(7).children('label').html(qty);
+                    $('#tblPikling').children('tbody').children('tr:last').children('td').eq(8).children('label').html(rpm);
+                    $('#tblPikling').children('tbody').children('tr:last').children('td').eq(9).children('label').html(intime);
+                    $('#tblPikling').children('tbody').children('tr:last').children('td').eq(10).children('label').html(outtime);
+                    $('#tblPikling').children('tbody').children('tr:last').children('td').eq(11).children('label').html(coilno);
+                    $('#tblPikling').children('tbody').children('tr:last').children('td').eq(12).children('label').html(type);
+                    $('#tblPikling').children('tbody').children('tr:last').children('td').eq(0).children('label').html(srNo);
+
+
+                    $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val('');
+                    $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val('');
+                    $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val('');
+                    $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
+                    $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
+                    $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(8).children('input').val('');
+                    $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(9).children('input').val('');
+                    $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(10).children('input').val('');
+                    $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(11).children('input').val('');
+                    $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(12).children('input').val('');
+                    $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+
+                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('span').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).html($('#dropdownRecProduct').html());
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').addClass('select2');
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val(recproductvou);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').removeClass('select2')
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('span').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).html($('#dropdownGrade').html());
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').addClass('select2');
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val(gradevou);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').removeClass('select2')
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val(od);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val(thick);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val(length);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val(noofpipe);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val(qty);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val(rpm);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val(intime);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').val(outtime);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').val(coilno);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(12).children('input').val(type);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(13).addClass('text-center')
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsPikling(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsPikling(this)" style="font-size:18px"></i>`)
+
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('select').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(12).children('input').attr('disabled', true)
+
+                        $('#tblDisplay').children('tbody').children().find('input').each(function () {
+                            $(this).removeAttr('onfocusin')
+                            $(this).removeAttr('onfocus')
+                            $(this).removeAttr('onfocusout')
+                            $(this).removeClass('focusIn')
+                        })
+                    }
+                    else {
+                        $('#tblDisplay').children('tbody').children('tr').each(function () {
+                            if ($(this).children('td').eq(0).children('input').val() == srNo) {
+                                $(this).children('td').eq(1).children('select').remove();
+                                $(this).children('td').eq(1).children('span').remove();
+                                $(this).children('td').eq(1).html($('#dropdownRecProduct').html());
+                                $(this).children('td').eq(1).children('select').addClass('select2');
+                                $(this).children('td').eq(1).children('select').val(recproductvou);
+                                $(this).children('td').eq(1).children('select').removeClass('select2')
+                                $(this).children('td').eq(1).children('select').attr('disabled', true)
+
+                                $(this).children('td').eq(2).children('select').remove();
+                                $(this).children('td').eq(2).children('span').remove();
+                                $(this).children('td').eq(2).html($('#dropdownGrade').html());
+                                $(this).children('td').eq(2).children('select').addClass('select2');
+                                $(this).children('td').eq(2).children('select').val(gradevou);
+                                $(this).children('td').eq(2).children('select').removeClass('select2')
+                                $(this).children('td').eq(2).children('select').attr('disabled', true)
+
+                                $(this).children('td').eq(3).children('input').val(od);
+                                $(this).children('td').eq(4).children('input').val(thick);
+
+
+                                $(this).children('td').eq(5).children('input').val(length);
+                                $(this).children('td').eq(6).children('input').val(noofpipe);
+                                $(this).children('td').eq(7).children('input').val(qty);
+                                $(this).children('td').eq(8).children('input').val(rpm);
+                                $(this).children('td').eq(9).children('input').val(intime);
+                                $(this).children('td').eq(10).children('input').val(outtime);
+                                $(this).children('td').eq(11).children('input').val(coilno);
+                                $(this).children('td').eq(12).children('input').val(type);
+                                $(this).children('td').eq(13).addClass('text-center')
+                                $(this).children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsPikling(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsPikling(this)" style="font-size:18px"></i>`)
+                                $('#btnSave').prop('disabled', false);
+                            }
+                        })
+                    }
+
+
+
+                    SetSerialNumberPikling();
+                    SetNamePikling();
+                    SetSelect2();
+                    //CalculateCoil();
+                    isRecentCall = true
+                    setTimeout(function () {
+                        isRecentCall = false;
+
+                    }, 500)
+                    $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').focus();
+                    setTimeout(function () {
+                        window.scrollTo(0, 0);
+                    }, 100)
+                }
+                else {
+                    showErrorMessage("Please enter all required fields");
+                    return false;
+                }
+            }
+        }
+    }
+
+    function DeleteRowsPikling(obj) {
+        Swal.fire({
+            title: 'Are you sure want to delete row?',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(obj).closest('tr').remove();
+                SetSerialNumberPikling();
+                if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                    $('#tblDisplay').children('thead').remove();
+                    $('#tblDisplay').children('tbody').remove();
+                }
+            } else if (result.isDenied) {
+            }
+        })
+
+    }
+
+    function SetSerialNumberPikling() {
+        var count = 1;
+        $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function () {
+            $(this).children('td').eq(0).children('input').val(count);
+            $('#tblPikling').children('tbody').children('tr:last').children('td').eq(0).children('label').html(count)
+            $(this).children('td').eq(2).children('select').attr('id', 'drpGrade' + count);
+            count = parseInt(count) + 1;
+        });
+    }
+
+    function SetNamePikling(isRemove) {
+        $('#tblDisplay').children('tbody').children('tr:last').children("td").eq(2).children("select").attr("Id", "Pikling.Grade999999");
+        $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
+            $(this).children("td").eq(1).children("select").attr("name", "Pikling.RecProduct");
+            $(this).children("td").eq(1).children("select").attr("Id", "Pikling.RecProduct" + i + "");
+            $(this).children("td").eq(2).children("select").attr("name", "Pikling.Grade");
+            $(this).children("td").eq(2).children("select").attr("Id", "Pikling.Grade" + i + "");
+            $(this).children("td").eq(3).children("input").attr("name", "Pikling.PikOD");
+            $(this).children("td").eq(3).children("input").attr("Id", "Pikling.PikOD" + i + "");
+            $(this).children("td").eq(4).children("input").attr("name", "Pikling.PikThick");
+            $(this).children("td").eq(4).children("input").attr("Id", "Pikling.PikThick" + i + "");
+            if (!isRemove)
+                $(this).children("td").eq(4).children("input").attr("onblur", 'GetLotIssPiklingProduct(this)');
+            $(this).children("td").eq(5).children("input").attr("name", "Pikling.PikLength");
+            $(this).children("td").eq(5).children("input").attr("Id", "Pikling.PikLength" + i + "");
+            $(this).children("td").eq(6).children("input").attr("name", "Pikling.PikNoOfPipe");
+            $(this).children("td").eq(6).children("input").attr("Id", "Pikling.PikNoOfPipe" + i + "");
+            $(this).children("td").eq(7).children("input").attr("name", "Pikling.PikWeight");
+            $(this).children("td").eq(7).children("input").attr("Id", "Pikling.PikWeight" + i + "");
+            $(this).children("td").eq(8).children("input").attr("name", "Pikling.PikStatus");
+            $(this).children("td").eq(8).children("input").attr("Id", "Pikling.PikStatus" + i + "");
+            $(this).children("td").eq(9).children("input").attr("name", "Pikling.PikInTime");
+            $(this).children("td").eq(9).children("input").attr("Id", "Pikling.PikInTime" + i + "");
+            $(this).children("td").eq(10).children("input").attr("name", "Pikling.PikOutTime");
+            $(this).children("td").eq(10).children("input").attr("Id", "Pikling.PikOutTime" + i + "");
+            $(this).children("td").eq(11).children("input").attr("name", "Pikling.PikCoilNo");
+            $(this).children("td").eq(11).children("input").attr("Id", "Pikling.PikCoilNo" + i + "");
+            $(this).children("td").eq(12).children("input").attr("name", "Pikling.PikType");
+            $(this).children("td").eq(12).children("input").attr("Id", "Pikling.PikType" + i + "");
+        });
+    }
+
+    function EditRowsPikling(obj) {
+        if (obj != null) {
+            var srno = $(obj).closest('tr').children('td').eq(0).children('input').val();
+            var csrno = $(obj).closest('tr').children('td').eq(0).children('input').val();
+            var crecproduct = $(obj).closest('tr').children('td').eq(1).children('select').val();
+            var cgrade = $(obj).closest('tr').children('td').eq(2).children('select').val();
+            var cod = $(obj).closest('tr').children('td').eq(3).children('input').val();
+            var cthick = $(obj).closest('tr').children('td').eq(4).children('input').val();
+            var clength = $(obj).closest('tr').children('td').eq(5).children('input').val();
+            var cnoofpipe = $(obj).closest('tr').children('td').eq(6).children('input').val();
+            var cqty = $(obj).closest('tr').children('td').eq(7).children('input').val();
+            var crpm = $(obj).closest('tr').children('td').eq(8).children('input').val();
+            var cintime = $(obj).closest('tr').children('td').eq(9).children('input').val();
+            var couttime = $(obj).closest('tr').children('td').eq(10).children('input').val();
+            var ccoilno = $(obj).closest('tr').children('td').eq(11).children('input').val();
+            var ctype = $(obj).closest('tr').children('td').eq(12).children('input').val();
+
+
+
+            $('#tblPikling').children('tbody').children('tr').children('td').eq(0).children('input').val(srno);
+            $('#tblPikling').children('tbody').children('tr').children('td').eq(1).children('select').val(crecproduct);
+            $('#tblPikling').children('tbody').children('tr').children('td').eq(2).children('select').val(cgrade);
+            $('#tblPikling').children('tbody').children('tr').children('td').eq(3).children('input').val(cod);
+            $('#tblPikling').children('tbody').children('tr').children('td').eq(4).children('input').val(cthick);
+            $('#tblPikling').children('tbody').children('tr').children('td').eq(5).children('input').val(clength);
+            $('#tblPikling').children('tbody').children('tr').children('td').eq(6).children('input').val(cnoofpipe);
+            $('#tblPikling').children('tbody').children('tr').children('td').eq(7).children('input').val(cqty);
+            $('#tblPikling').children('tbody').children('tr').children('td').eq(8).children('input').val(crpm);
+            $('#tblPikling').children('tbody').children('tr').children('td').eq(9).children('input').val(cintime);
+            $('#tblPikling').children('tbody').children('tr').children('td').eq(10).children('input').val(couttime);
+            $('#tblPikling').children('tbody').children('tr').children('td').eq(11).children('input').val(ccoilno);
+            $('#tblPikling').children('tbody').children('tr').children('td').eq(12).children('input').val(ctype);
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
+            SetSelect2();
+            $('#btnSave').prop('disabled', true);
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
+
+        }
+    }
+
+    function GetDataBySrNoPikling(value) {
+        $('#tblDisplay').children('tbody').children('tr').each(function () {
+            if ($(this).children('td').eq(0).html() == value || $(this).children('td').eq(0).children('input').val() == value) {
+                EditRowsPikling($(this));
+                //$('#tblPikling').children('tbody').children('tr').children('td').eq(0).children('input').val(value);
+                $('#tblPikling').children('tbody').children('tr:last').children('td').eq(1).children('select').focus();
+            }
+        })
+    }
+
+    function RefreshAnnel() {
+        var rrecproduct = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val();
+        var rgrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val();
+        var rod = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
+        var rlenght = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val();
+
+        $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val(rrecproduct);
+        $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').val(rgrade);
+        $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val(od);
+        $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val('');
+        $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val(rlenght);
+        $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
+        $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
+        $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(8).children('input').val('');
+        $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(9).children('input').val('');
+        $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(10).children('input').val('');
+        $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(11).children('input').val('');
+        $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(12).children('input').val('');
+        $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+        SetSelect2();
+        $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
+    }
+
+    $(function () {
+        var pikvou = '@Html.Raw(Model.PikVou)';
+        if (pikvou != null && pikvou != '' && pikvou != 0) {
+            GoToAddTab()
+            var arecprd = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val();
+            var agrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val();
+            var aod = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
+            var athick = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val();
+            var alength = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val();
+            var anoofpipe = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val();
+            var aqty =  $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val();
+            var armp = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val();
+            var aintime =  $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val();
+            var aouttime = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').val();
+            var acoilno = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').val();
+            var atype = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(12).children('input').val();
+            var asrno = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').val();
+            $('#tblPikling').children('tbody').children('tr:last').removeClass('d-none')
+            $('#tblPikling').children('tbody').children('tr:last').children('td').eq(1).children('label').html(arecprd);
+            $('#tblPikling').children('tbody').children('tr:last').children('td').eq(2).children('label').html(agrade);
+            $('#tblPikling').children('tbody').children('tr:last').children('td').eq(3).children('label').html(aod);
+            $('#tblPikling').children('tbody').children('tr:last').children('td').eq(4).children('label').html(athick);
+            $('#tblPikling').children('tbody').children('tr:last').children('td').eq(5).children('label').html(alength);
+            $('#tblPikling').children('tbody').children('tr:last').children('td').eq(6).children('label').html(anoofpipe);
+            $('#tblPikling').children('tbody').children('tr:last').children('td').eq(7).children('label').html(aqty);
+            $('#tblPikling').children('tbody').children('tr:last').children('td').eq(8).children('label').html(armp);
+            $('#tblPikling').children('tbody').children('tr:last').children('td').eq(9).children('label').html(aintime);
+            $('#tblPikling').children('tbody').children('tr:last').children('td').eq(10).children('label').html(aouttime);
+            $('#tblPikling').children('tbody').children('tr:last').children('td').eq(11).children('label').html(acoilno);
+            $('#tblPikling').children('tbody').children('tr:last').children('td').eq(12).children('label').html(atype);
+            $('#tblPikling').children('tbody').children('tr:last').children('td').eq(0).children('label').html(asrno);
+
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val('');
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').val('');
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val('');
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val('');
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val('');
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(8).children('input').val('');
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(9).children('input').val('');
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(10).children('input').val('');
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(11).children('input').val('');
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(12).children('input').val('');
+            $('#tblPikling').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+            $('#tblDisplay').children('tbody').children('tr').each(function (i) {
+                $(this).children("td").eq(1).children('select').attr('disabled', true);
+                $(this).children("td").eq(2).children('select').attr('disabled', true);
+                $(this).children("td").eq(3).children('input').attr('disabled', true);
+                $(this).children("td").eq(4).children('input').attr('disabled', true);
+                $(this).children("td").eq(5).children('input').attr('disabled', true);
+                $(this).children("td").eq(6).children('input').attr('disabled', true);
+                $(this).children("td").eq(7).children('input').attr('disabled', true);
+                $(this).children("td").eq(8).children('input').attr('disabled', true);
+                $(this).children("td").eq(9).children('input').attr('disabled', true);
+                $(this).children("td").eq(10).children('input').attr('disabled', true);
+                $(this).children("td").eq(11).children('input').attr('disabled', true);
+                $(this).children("td").eq(12).children('input').attr('disabled', true);
+                $(this).children("td").eq(0).children('input').attr('disabled', true);
+            });
+        }
+    })
+
+    $("#btnSave").click(function () {
+        localStorage.setItem("Pickling", "1");
+        if (!isRecentCall) {
+            var previousRow = $('#tblPikling').children('tbody').children('tr:last').prev();
+            if (previousRow != null) {
+                var eqty = $(previousRow).children('td').eq(7).children('input').val();
+                if (eqty != 0) {
+                    AddRowsPikling()
+                }
+            }
+        }
+        $('#tblDisplay').children('tbody').children('tr').each(function (i) {
+            if (!$(this).children("td").eq(8).children("input").val()) {
+                $(this).children("td").eq(8).children("input").val("-1")
+            }
+            if (!$(this).children("td").eq(9).children("input").val()) {
+                $(this).children("td").eq(9).children("input").val("-1")
+            }
+            if (!$(this).children("td").eq(10).children("input").val()) {
+                $(this).children("td").eq(10).children("input").val("-1")
+            }
+            if (!$(this).children("td").eq(11).children("input").val()) {
+                $(this).children("td").eq(11).children("input").val("-1")
+            }
+            if (!$(this).children("td").eq(12).children("input").val()) {
+                $(this).children("td").eq(12).children("input").val("-1")
+            }
+
+            $(this).children("td").eq(1).children('select').attr('disabled', false);
+            $(this).children("td").eq(2).children('select').attr('disabled', false);
+            $(this).children("td").eq(3).children('input').attr('disabled', false);
+            $(this).children("td").eq(4).children('input').attr('disabled', false);
+            $(this).children("td").eq(5).children('input').attr('disabled', false);
+            $(this).children("td").eq(6).children('input').attr('disabled', false);
+            $(this).children("td").eq(7).children('input').attr('disabled', false);
+            $(this).children("td").eq(8).children('input').attr('disabled', false);
+            $(this).children("td").eq(9).children('input').attr('disabled', false);
+            $(this).children("td").eq(10).children('input').attr('disabled', false);
+            $(this).children("td").eq(11).children('input').attr('disabled', false);
+            $(this).children("td").eq(12).children('input').attr('disabled', false);
+            $(this).children("td").eq(0).children('input').attr('disabled', false);
+        });
+    });
+
+
+    function GetLotIssPiklingProduct(previousRow, isExists) {
+        if (previousRow != null) {
+            var pikvou = '@Html.Raw(Model.PikVou)';
+            var dt = $('#Date').val();
+            var recProdId = $(previousRow).closest('tr').children('td').eq(1).children('select').val();
+            var gradeId = $(previousRow).closest('tr').children('td').eq(2).children('select').val();
+            var od = $(previousRow).closest('tr').children('td').eq(3).children('input').val();
+            var thick = $(previousRow).closest('tr').children('td').eq(4).children('input').val();
+            if (thick != 0) {
+                $.ajax({
+                    url: '/Pickling/GetLotIssPiklingProduct',
+                    type: 'POST',
+                    data: { 'recProdId': recProdId, 'pikvou': pikvou, 'gradeId': gradeId, 'od': od, 'thick': thick, 'dt': dt },
+                    dataType: 'JSON',
+                    traditional: true, // add this
+                    success: function (data) {
+                        if (data.result) {
+                            if (data.data == "1" && !isExists) {
+                                showErrorMessage("Pickling OD Size Not Exsits!");
+                                $(previousRow).closest('tr').children('td').eq(5).children('input').val('');
+                                $(previousRow).closest('tr').children('td').eq(6).children('input').val('');
+                                $(previousRow).closest('tr').children('td').eq(7).children('input').val('');
+                                $(previousRow).closest('tr').children('td').eq(3).children('input').focus();
+                            }
+                            else if (data.data == "2" && !isExists) {
+                                showErrorMessage("Pickling Date Should be Grater Then!");
+                                $(previousRow).closest('tr').children('td').eq(5).children('input').val('');
+                                $(previousRow).closest('tr').children('td').eq(6).children('input').val('');
+                                $(previousRow).closest('tr').children('td').eq(7).children('input').val('');
+                                document.getElementById('Date').focus();
+                            }
+                            else {
+                                $(previousRow).closest('tr').children('td').eq(5).children('input').val("20");
+                                $(previousRow).closest('tr').children('td').eq(6).children('input').val(data.lotPcs);
+                                $(previousRow).closest('tr').children('td').eq(7).children('input').val(data.lotQty);
+                                var length = $(previousRow).closest('tr').children('td').eq(5).children('input').val();
+                                var lengthmtr = (length * 0.3048).toFixed(4);
+                                var weight = (((od) - thick) * thick * 0.02503 * lengthmtr).toFixed(2);
+                                var weight2 = (((od) - thick) * thick * 0.02503 * lengthmtr).toFixed(8);
+                                var pcs = parseInt(data.lotQty / weight);
+                                $(previousRow).closest('tr').children('td').eq(6).children('input').val(pcs);
+                                $(previousRow).closest('tr').children('td').eq(7).children('input').val((weight2 * pcs).toFixed(1));
+                            }
+                        }
+                        else {
+                            errorMessage(response);
+                        }
+                    },
+                    failure: function (response) {
+                        errorMessage(response);
+                    }
+                });
+            }
+        }
+    }
+
+    function numericFilter(txb) {
+        txb.value = txb.value.replace(/[^\0-9]/ig, "");
+    }
+
+    function GetCalculateQty(previousRow, isExists) {
+        if (previousRow != null) {
+            var pikvou = '@Html.Raw(Model.PikVou)';
+            var bod = $(previousRow).closest('tr').children('td').eq(3).children('input').val();
+            var bthick = $(previousRow).closest('tr').children('td').eq(4).children('input').val();
+            var blength = $(previousRow).closest('tr').children('td').eq(5).children('input').val();
+            var bpcs = $(previousRow).closest('tr').children('td').eq(6).children('input').val();
+            var bqty = $(previousRow).closest('tr').children('td').eq(7).children('input').val();
+            var blengthmtr = (blength * 0.3048).toFixed(4);
+            var bweight = (((bod) - bthick) * bthick * 0.02503 * blengthmtr).toFixed(2);
+            var weight2 = (((bod) - bthick) * bthick * 0.02503 * blengthmtr).toFixed(8);
+            $(previousRow).closest('tr').children('td').eq(7).children('input').val((weight2 * bpcs).toFixed(1));
+        }
+    }
+
 </script>
