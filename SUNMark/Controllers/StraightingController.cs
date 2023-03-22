@@ -37,9 +37,9 @@ namespace SUNMark.Controllers
                 if (id > 0)
                 {
                     SqlParameter[] parameter = new SqlParameter[2];
-                    parameter[0] = new SqlParameter("@AnnVou", id);
+                    parameter[0] = new SqlParameter("@StrVou", id);
                     parameter[1] = new SqlParameter("@Flg", 0);
-                    DataTable dt = ObjDBConnection.CallStoreProcedure("GetAnnealingMasterById", parameter);
+                    DataTable dt = ObjDBConnection.CallStoreProcedure("GetStrMasterById", parameter);
                     if (dt != null && dt.Rows.Count > 0)
                     {
                         straightingMasterModel.StrVou = id;
@@ -112,23 +112,23 @@ namespace SUNMark.Controllers
                 if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.Vno).ToString()) && !string.IsNullOrWhiteSpace(StraightingMasterModel.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.StrCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.MachineNo).ToString()) && StraightingMasterModel.Straighting.RecProduct.Length > 0 && StraightingMasterModel.Straighting.Grade.Length > 0 && StraightingMasterModel.Straighting.StrLength.Length > 0 && StraightingMasterModel.Straighting.StrOD.Length > 0 && StraightingMasterModel.Straighting.StrWeight.Length > 0 && StraightingMasterModel.Straighting.StrNoOfPipe.Length > 0 && StraightingMasterModel.Straighting.StrThick.Length > 0)
                 {
                     SqlParameter[] sqlParameter = new SqlParameter[16];
-                    sqlParameter[0] = new SqlParameter("@AnnVou", StraightingMasterModel.StrVou);
-                    sqlParameter[1] = new SqlParameter("@AnnCmpVou", StraightingMasterModel.StrCmpVou);
-                    sqlParameter[2] = new SqlParameter("@AnnVno", StraightingMasterModel.Vno);
-                    sqlParameter[3] = new SqlParameter("@AnnDt", StraightingMasterModel.Date);
-                    sqlParameter[4] = new SqlParameter("@AnnShift", StraightingMasterModel.Shift);
-                    sqlParameter[5] = new SqlParameter("@AnnMacNo", StraightingMasterModel.MachineNo);
-                    sqlParameter[6] = new SqlParameter("@AnnSupEmpVou", StraightingMasterModel.SupEmpVou);
-                    sqlParameter[7] = new SqlParameter("@AnnManEmpVou", StraightingMasterModel.ManEmpVou);
-                    sqlParameter[8] = new SqlParameter("@AnnIssPrdVou", StraightingMasterModel.IssuePrdVou);
-                    sqlParameter[9] = new SqlParameter("@AnnFinish", StraightingMasterModel.Finish);
-                    sqlParameter[10] = new SqlParameter("@AnnFinishVou", StraightingMasterModel.FinishVou);
-                    sqlParameter[11] = new SqlParameter("@AnnLDOQty", StraightingMasterModel.LDOQty);
-                    sqlParameter[12] = new SqlParameter("@AnnRemarks", StraightingMasterModel.Remarks);
-                    sqlParameter[13] = new SqlParameter("@AnnNextPrcVou", StraightingMasterModel.NextPrcVou);
-                    sqlParameter[14] = new SqlParameter("@AnnNextProc", StraightingMasterModel.NextProc);
-                    sqlParameter[15] = new SqlParameter("@Flg", "3");
-                    DataTable dt = ObjDBConnection.CallStoreProcedure("InsertAnnealing", sqlParameter);
+                    sqlParameter[0] = new SqlParameter("@StrVou", StraightingMasterModel.StrVou);
+                    sqlParameter[1] = new SqlParameter("@StrCmpVou", StraightingMasterModel.StrCmpVou);
+                    sqlParameter[2] = new SqlParameter("@StrVno", StraightingMasterModel.Vno);
+                    sqlParameter[3] = new SqlParameter("@StrDt", StraightingMasterModel.Date);
+                    sqlParameter[4] = new SqlParameter("@StrShift", StraightingMasterModel.Shift);
+                    sqlParameter[5] = new SqlParameter("@StrMacNo", StraightingMasterModel.MachineNo);
+                    sqlParameter[6] = new SqlParameter("@StrSupEmpVou", StraightingMasterModel.SupEmpVou);
+                    sqlParameter[7] = new SqlParameter("@StrManEmpVou", StraightingMasterModel.ManEmpVou);
+                    sqlParameter[8] = new SqlParameter("@StrIssPrdVou", StraightingMasterModel.IssuePrdVou);
+                    sqlParameter[9] = new SqlParameter("@StrFinish", StraightingMasterModel.Finish);
+                    sqlParameter[10] = new SqlParameter("@StrFinishVou", StraightingMasterModel.FinishVou);
+                    sqlParameter[11] = new SqlParameter("@StrLDOQty", StraightingMasterModel.LDOQty);
+                    sqlParameter[12] = new SqlParameter("@StrRemarks", StraightingMasterModel.Remarks);
+                    sqlParameter[13] = new SqlParameter("@StrNextPrcVou", StraightingMasterModel.NextPrcVou);
+                    sqlParameter[14] = new SqlParameter("@StrNextProc", StraightingMasterModel.NextProc);
+                    sqlParameter[15] = new SqlParameter("@Flg", "1");
+                    DataTable dt = ObjDBConnection.CallStoreProcedure("InsertStr", sqlParameter);
                     if (dt != null && dt.Rows.Count > 0)
                     {
                         int masterId = DbConnection.ParseInt32(dt.Rows[0][0].ToString());
@@ -137,22 +137,22 @@ namespace SUNMark.Controllers
                             for (int i = 0; i < StraightingMasterModel.Straighting.StrWeight.Length; i++)
                             {
                                 SqlParameter[] sqlParam = new SqlParameter[15];
-                                sqlParam[0] = new SqlParameter("@AnnAAnnVou", masterId);
-                                sqlParam[1] = new SqlParameter("@AnnCmpVou", StraightingMasterModel.StrCmpVou);
-                                sqlParam[2] = new SqlParameter("@AnnGrdVou", StraightingMasterModel.Straighting.Grade[i]);
-                                sqlParam[3] = new SqlParameter("@AnnThick", StraightingMasterModel.Straighting.StrThick[i]);
-                                sqlParam[4] = new SqlParameter("@AnnOD", StraightingMasterModel.Straighting.StrOD[i]);
-                                sqlParam[5] = new SqlParameter("@AnnLength", StraightingMasterModel.Straighting.StrLength[i]);
-                                sqlParam[6] = new SqlParameter("@AnnNoOfPipe", StraightingMasterModel.Straighting.StrNoOfPipe[i]);
-                                sqlParam[7] = new SqlParameter("@AnnQty", StraightingMasterModel.Straighting.StrWeight[i]);
-                                sqlParam[8] = new SqlParameter("@AnnRecPrdVou", StraightingMasterModel.Straighting.RecProduct[i]);
-                                sqlParam[9] = new SqlParameter("@AnnInTime", StraightingMasterModel.Straighting.StrInTime[i + 1]);
-                                sqlParam[10] = new SqlParameter("@AnnOutTime", StraightingMasterModel.Straighting.StrOutTime[i + 1]);
-                                sqlParam[11] = new SqlParameter("@AnnCoilNo", StraightingMasterModel.Straighting.StrCoilNo[i + 1]);
-                                sqlParam[12] = new SqlParameter("@AnnRPM", StraightingMasterModel.Straighting.StrRPM[i]);
-                                sqlParam[13] = new SqlParameter("@AnnType", StraightingMasterModel.Straighting.StrType[i + 1]);
-                                sqlParam[14] = new SqlParameter("@AnnSrNo", (i + 1));
-                                DataTable dttrn = ObjDBConnection.CallStoreProcedure("InsertAnnealingTrn", sqlParam);
+                                sqlParam[0] = new SqlParameter("@StrAStrVou", masterId);
+                                sqlParam[1] = new SqlParameter("@StrCmpVou", StraightingMasterModel.StrCmpVou);
+                                sqlParam[2] = new SqlParameter("@StrGrdVou", StraightingMasterModel.Straighting.Grade[i]);
+                                sqlParam[3] = new SqlParameter("@StrThick", StraightingMasterModel.Straighting.StrThick[i]);
+                                sqlParam[4] = new SqlParameter("@StrOD", StraightingMasterModel.Straighting.StrOD[i]);
+                                sqlParam[5] = new SqlParameter("@StrLength", StraightingMasterModel.Straighting.StrLength[i]);
+                                sqlParam[6] = new SqlParameter("@StrNoOfPipe", StraightingMasterModel.Straighting.StrNoOfPipe[i]);
+                                sqlParam[7] = new SqlParameter("@StrQty", StraightingMasterModel.Straighting.StrWeight[i]);
+                                sqlParam[8] = new SqlParameter("@StrRecPrdVou", StraightingMasterModel.Straighting.RecProduct[i]);
+                                sqlParam[9] = new SqlParameter("@StrInTime", StraightingMasterModel.Straighting.StrInTime[i + 1]);
+                               sqlParam[10] = new SqlParameter("@StrOutTime", StraightingMasterModel.Straighting.StrOutTime[i + 1]);
+                               sqlParam[11] = new SqlParameter("@StrCoilNo", StraightingMasterModel.Straighting.StrCoilNo[i + 1]);
+                               sqlParam[12] = new SqlParameter("@StrRPM", StraightingMasterModel.Straighting.StrRPM[i]);
+                               sqlParam[13] = new SqlParameter("@StrType", StraightingMasterModel.Straighting.StrType[i + 1]);
+                               sqlParam[14] = new SqlParameter("@StrSrNo", (i + 1));
+                                DataTable dttrn = ObjDBConnection.CallStoreProcedure("InsertStrTrn", sqlParam);
                             }
                             int Status = DbConnection.ParseInt32(dt.Rows[0][0].ToString());
                             if (Status == 0)
@@ -237,8 +237,8 @@ namespace SUNMark.Controllers
             try
             {
                 SqlParameter[] parameter = new SqlParameter[1];
-                parameter[0] = new SqlParameter("@AnnVou", id);
-                DataTable dt = ObjDBConnection.CallStoreProcedure("DeleteAnnealingMaster", parameter);
+                parameter[0] = new SqlParameter("@StrVou", id);
+                DataTable dt = ObjDBConnection.CallStoreProcedure("DeleteStrMaster", parameter);
                 SetSuccessMessage("Straighting record deleted succesfully!");
             }
             catch (Exception ex)
@@ -331,7 +331,7 @@ namespace SUNMark.Controllers
             string returnValue = string.Empty;
             try
             {
-                DataTable dtVoucherNo = ObjDBConnection.CallStoreProcedure("GetAnnealingVoucherNo", null);
+                DataTable dtVoucherNo = ObjDBConnection.CallStoreProcedure("GetStrVoucherNo", null);
                 if (dtVoucherNo != null && dtVoucherNo.Rows.Count > 0)
                 {
                     returnValue = dtVoucherNo.Rows[0][0].ToString();
@@ -372,7 +372,7 @@ namespace SUNMark.Controllers
                 sqlParameters[4] = new SqlParameter("@thick", thick);
                 sqlParameters[5] = new SqlParameter("@dt", dt);
                 sqlParameters[6] = new SqlParameter("@FLG", "1");
-                DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotIssAnnelProduct", sqlParameters);
+                DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotIssStrProduct", sqlParameters);
                 if (DtInw != null)
                 {
                     int Status = DbConnection.ParseInt32(DtInw.Rows[0][0].ToString());
