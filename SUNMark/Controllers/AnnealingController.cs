@@ -69,6 +69,11 @@ namespace SUNMark.Controllers
                         annealingMasterModel.Annel.AnnOutTime = new string[dt.Rows.Count];
                         annealingMasterModel.Annel.AnnCoilNo = new string[dt.Rows.Count];
                         annealingMasterModel.Annel.AnnRPM = new decimal[dt.Rows.Count];
+                        annealingMasterModel.Annel.AnnTDS1 = new int[dt.Rows.Count];
+                        annealingMasterModel.Annel.AnnTDS2 = new int[dt.Rows.Count];
+                        annealingMasterModel.Annel.AnnTDS3 = new int[dt.Rows.Count];
+                        annealingMasterModel.Annel.AnnTDS4 = new int[dt.Rows.Count];
+                        annealingMasterModel.Annel.AnnNoPBatch = new int[dt.Rows.Count];
                         annealingMasterModel.Annel.AnnType = new string[dt.Rows.Count];
 
                         for (int i = 0; i < dt.Rows.Count; i++)
@@ -85,6 +90,11 @@ namespace SUNMark.Controllers
                             annealingMasterModel.Annel.AnnCoilNo[i] = dt.Rows[i]["AnnACoilNo"].ToString();
                             annealingMasterModel.Annel.AnnRPM[i] = Convert.ToDecimal(dt.Rows[i]["AnnARPM"].ToString());
                             annealingMasterModel.Annel.AnnType[i] = dt.Rows[i]["AnnAType"].ToString();
+                            annealingMasterModel.Annel.AnnTDS1[i] = Convert.ToInt32(dt.Rows[i]["AnnATDC1"].ToString());
+                            annealingMasterModel.Annel.AnnTDS2[i] = Convert.ToInt32(dt.Rows[i]["AnnATDC2"].ToString());
+                            annealingMasterModel.Annel.AnnTDS3[i] = Convert.ToInt32(dt.Rows[i]["AnnATDC3"].ToString());
+                            annealingMasterModel.Annel.AnnTDS4[i] = Convert.ToInt32(dt.Rows[i]["AnnATDC4"].ToString());
+                            annealingMasterModel.Annel.AnnNoPBatch[i] = Convert.ToInt32(dt.Rows[i]["AnnANoPBatch"].ToString());
                         }
                     }
                 }
@@ -136,7 +146,7 @@ namespace SUNMark.Controllers
                         {
                             for (int i = 0; i < annealingMasterModel.Annel.AnnWeight.Length; i++)
                             {
-                                SqlParameter[] sqlParam = new SqlParameter[15];
+                                SqlParameter[] sqlParam = new SqlParameter[20];
                                 sqlParam[0] = new SqlParameter("@AnnAAnnVou", masterId);
                                 sqlParam[1] = new SqlParameter("@AnnCmpVou", annealingMasterModel.AnnCmpVou);
                                 sqlParam[2] = new SqlParameter("@AnnGrdVou", annealingMasterModel.Annel.Grade[i]);
@@ -152,6 +162,11 @@ namespace SUNMark.Controllers
                                 sqlParam[12] = new SqlParameter("@AnnRPM", annealingMasterModel.Annel.AnnRPM[i]);
                                 sqlParam[13] = new SqlParameter("@AnnType", annealingMasterModel.Annel.AnnType[i+1]);
                                 sqlParam[14] = new SqlParameter("@AnnSrNo", (i + 1));
+                                sqlParam[15] = new SqlParameter("@AnnTDC1", annealingMasterModel.Annel.AnnTDS1[i]);
+                                sqlParam[16] = new SqlParameter("@AnnTDC2", annealingMasterModel.Annel.AnnTDS2[i]);
+                                sqlParam[17] = new SqlParameter("@AnnTDC3", annealingMasterModel.Annel.AnnTDS3[i]);
+                                sqlParam[18] = new SqlParameter("@AnnTDC4", annealingMasterModel.Annel.AnnTDS4[i]);
+                                sqlParam[19] = new SqlParameter("@AnnNoPBatch", annealingMasterModel.Annel.AnnNoPBatch[i]);
                                 DataTable dttrn = ObjDBConnection.CallStoreProcedure("InsertAnnealingTrn", sqlParam);
                             }
                             int Status = DbConnection.ParseInt32(dt.Rows[0][0].ToString());
@@ -359,12 +374,12 @@ namespace SUNMark.Controllers
                 return Json(new { result = false });
             }
         }
-        public IActionResult GetLotIssAnnelProduct(int recProdId, int annvou, int gradeId, decimal od, decimal thick, string dt)
+        public IActionResult GetLotIssAnnelProduct(int recProdId, int annvou, int gradeId, decimal od, decimal thick, string dt, int gsrno)
         {
             try
             {
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
-                SqlParameter[] sqlParameters = new SqlParameter[7];
+                SqlParameter[] sqlParameters = new SqlParameter[8];
                 sqlParameters[0] = new SqlParameter("@AnnVou", annvou);
                 sqlParameters[1] = new SqlParameter("@RecProd", recProdId);
                 sqlParameters[2] = new SqlParameter("@Grade", gradeId);
@@ -372,6 +387,7 @@ namespace SUNMark.Controllers
                 sqlParameters[4] = new SqlParameter("@thick", thick);
                 sqlParameters[5] = new SqlParameter("@dt", dt);
                 sqlParameters[6] = new SqlParameter("@FLG", "1");
+                sqlParameters[7] = new SqlParameter("@GSrNo", gsrno);
                 DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotIssAnnelProduct", sqlParameters);
                 if (DtInw != null)
                 {
@@ -383,6 +399,10 @@ namespace SUNMark.Controllers
                     else if (Status == 2)
                     {
                         return Json(new { result = true, data = "2" });
+                    }
+                    else if (Status == 3)
+                    {
+                        return Json(new { result = true, data = "3" });
                     }
                     else
                     {

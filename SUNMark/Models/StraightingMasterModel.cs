@@ -55,5 +55,15 @@ namespace SUNMark.Models
         public string StrTypeStr { get; set; }
         public decimal[] StrRPM { get; set; }
         public string StrRPMStr { get; set; }
+        public int[] StrTDS1 { get; set; }
+        public string StrTDS1Str { get; set; }
+        public int[] StrTDS2 { get; set; }
+        public string StrTDS2Str { get; set; }
+        public int[] StrTDS3 { get; set; }
+        public string StrTDS3Str { get; set; }
+        public int[] StrTDS4 { get; set; }
+        public string StrTDS4Str { get; set; }
+        public int[] StrNoPBatch { get; set; }
+        public string StrNoPBatchStr { get; set; }
     }
 }
