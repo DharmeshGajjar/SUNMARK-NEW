@@ -360,12 +360,12 @@ namespace SUNMark.Controllers
                 return Json(new { result = false });
             }
         }
-        public IActionResult GetLotIssPiklingProduct(int recProdId, int pikvou, int gradeId, decimal od, decimal thick, string dt)
+        public IActionResult GetLotIssPiklingProduct(int recProdId, int pikvou, int gradeId, decimal od, decimal thick, string dt, int gsrno)
         {
             try
             {
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
-                SqlParameter[] sqlParameters = new SqlParameter[7];
+                SqlParameter[] sqlParameters = new SqlParameter[8];
                 sqlParameters[0] = new SqlParameter("@AnnVou", pikvou);
                 sqlParameters[1] = new SqlParameter("@RecProd", recProdId);
                 sqlParameters[2] = new SqlParameter("@Grade", gradeId);
@@ -373,6 +373,7 @@ namespace SUNMark.Controllers
                 sqlParameters[4] = new SqlParameter("@thick", thick);
                 sqlParameters[5] = new SqlParameter("@dt", dt);
                 sqlParameters[6] = new SqlParameter("@FLG", "2");
+                sqlParameters[7] = new SqlParameter("@GSrNo", gsrno);
                 DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotIssAnnelProduct", sqlParameters);
                 if (DtInw != null)
                 {
@@ -384,6 +385,10 @@ namespace SUNMark.Controllers
                     else if (Status == 2)
                     {
                         return Json(new { result = true, data = "2" });
+                    }
+                    else if (Status == 3)
+                    {
+                        return Json(new { result = true, data = "3" });
                     }
                     else
                     {

@@ -1271,11 +1271,12 @@
             var gradeId = $(previousRow).closest('tr').children('td').eq(2).children('select').val();
             var od = $(previousRow).closest('tr').children('td').eq(3).children('input').val();
             var thick = $(previousRow).closest('tr').children('td').eq(4).children('input').val();
+            var gsrno = $(previousRow).closest('tr').children('td').eq(0).children('input').val();
             if (thick != 0) {
                 $.ajax({
                     url: '/Pickling/GetLotIssPiklingProduct',
                     type: 'POST',
-                    data: { 'recProdId': recProdId, 'pikvou': pikvou, 'gradeId': gradeId, 'od': od, 'thick': thick, 'dt': dt },
+                    data: { 'recProdId': recProdId, 'pikvou': pikvou, 'gradeId': gradeId, 'od': od, 'thick': thick, 'dt': dt, "gsrno": gsrno },
                     dataType: 'JSON',
                     traditional: true, // add this
                     success: function (data) {
@@ -1293,6 +1294,9 @@
                                 $(previousRow).closest('tr').children('td').eq(6).children('input').val('');
                                 $(previousRow).closest('tr').children('td').eq(7).children('input').val('');
                                 document.getElementById('Date').focus();
+                            }
+                            else if (data.data == "3" && !isExists) {
+                                $(previousRow).closest('tr').children('td').eq(5).children('input').focus();
                             }
                             else {
                                 $(previousRow).closest('tr').children('td').eq(5).children('input').val("20");
