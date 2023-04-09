@@ -497,72 +497,72 @@
                                                         <tbody>
                                                             @for (int y = 0; y < Model.Annel.AnnWeight.Length; y++)
                                                             {
-                                                            <tr class="AddRows">
-                                                                <td style="padding:0 0 0 0">
-                                                                    <input type="number" class="form-control" onblur="GetDataBySrNoAnnel(this.value)" value="@(y+1)" style="padding:0px !important;padding-left:3px !important;padding-right:3px !important;font-family: Verdana;font-size:small; height:30px;" disabled />
-                                                                </td>
-                                                                <td style="padding:0 0 0 12px">
-                                                                    @if (Model != null && Model.Annel != null && Model.Annel.RecProductList != null && Model.Annel.RecProductList.Count > 0)
-                                                                    {
-                                                                        @Html.DropDownListFor(x => x.Annel.RecProduct[y], new SelectList(Model.Annel.RecProductList, "Value", "Text"), "Select", new { @class = "form-control select2 RecProduct", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
-                                                                    }
-                                                                </td>
-                                                                <td style="padding:0 0 0 12px">
-                                                                    @if (Model != null && Model.Annel != null && Model.Annel.GradeList != null && Model.Annel.GradeList.Count > 0)
-                                                                    {
-                                                                        @Html.DropDownListFor(x => x.Annel.Grade[y], new SelectList(Model.Annel.GradeList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
-                                                                    }
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnOD[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnOD", @onKeyUp = "numericFilter(this);" })
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnThick[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnLength[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnLength", @onKeyUp = "numericFilter(this);" })
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnNoOfPipe[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnNoOfPipe", @onKeyUp = "numericFilter(this);", @onblur = "GetCalculateQty(this)" })
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnWeight[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnWeigth", @onKeyUp = "numericFilter(this);" })
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnTDS1[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnTDS1", @onKeyUp = "numericFilter(this);" })
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnTDS2[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnTDS2", @onKeyUp = "numericFilter(this);" })
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnTDS3[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnTDS3", @onKeyUp = "numericFilter(this);" })
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnTDS4[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnTDS4", @onKeyUp = "numericFilter(this);" })
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnRPM[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:80px !important", @onfocus = "this.select()", @name = "txtAnnRMP" })
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnNoPBatch[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnNoPBatch", @onKeyUp = "numericFilter(this);" })
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnInTime[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtAnnInTime", @type = "time" })
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnOutTime[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtAnnInTime", @type = "time" })
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnCoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtAnnCoilNoStr" })
-                                                                </td>
-                                                                <td style="padding:0 0 0 8px">
-                                                                    @Html.TextBoxFor(x => x.Annel.AnnType[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtAnnTypeStr" })
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    <i class="fa fa-edit text-primary" onclick="EditRowsAnnel(this)" style="font-size:18px"></i>
-                                                                    <i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsAnnel(this)" style="font-size:18px"></i>
-                                                                </td>
-                                                            </tr>
+                                                                <tr class="AddRows">
+                                                                    <td style="padding:0 0 0 0">
+                                                                        <input type="number" class="form-control" onblur="GetDataBySrNoAnnel(this.value)" value="@(y+1)" style="padding:0px !important;padding-left:3px !important;padding-right:3px !important;font-family: Verdana;font-size:small; height:30px;" disabled />
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 12px">
+                                                                        @if (Model != null && Model.Annel != null && Model.Annel.RecProductList != null && Model.Annel.RecProductList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Annel.RecProduct[y], new SelectList(Model.Annel.RecProductList, "Value", "Text"), "Select", new { @class = "form-control select2 RecProduct", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 12px">
+                                                                        @if (Model != null && Model.Annel != null && Model.Annel.GradeList != null && Model.Annel.GradeList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Annel.Grade[y], new SelectList(Model.Annel.GradeList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnOD[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnOD", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnThick[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnLength[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnLength", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnNoOfPipe[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnNoOfPipe", @onKeyUp = "numericFilter(this);", @onblur = "GetCalculateQty(this)" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnWeight[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnWeigth", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnTDS1[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnTDS1", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnTDS2[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnTDS2", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnTDS3[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnTDS3", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnTDS4[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnTDS4", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnRPM[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:80px !important", @onfocus = "this.select()", @name = "txtAnnRMP" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnNoPBatch[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnNoPBatch", @onKeyUp = "numericFilter(this);" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnInTime[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtAnnInTime", @type = "time" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnOutTime[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtAnnInTime", @type = "time" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnCoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtAnnCoilNoStr" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.Annel.AnnType[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtAnnTypeStr" })
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <i class="fa fa-edit text-primary" onclick="EditRowsAnnel(this)" style="font-size:18px"></i>
+                                                                        <i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsAnnel(this)" style="font-size:18px"></i>
+                                                                    </td>
+                                                                </tr>
                                                             }
                                                         </tbody>
                                                     }
@@ -578,6 +578,9 @@
                                                     <a href="/Annealing/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
                                                         Cancel (Esc)
                                                     </a>
+                                                    @*<button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
+                                                        Print (F9)
+                                                    </button>*@
                                                 }
                                                 else if (userRight.IsAdd && id == 0)
                                                 {
@@ -586,6 +589,9 @@
                                                     </button>
                                                     <a href="/Annealing/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
                                                         Cancel (Esc)
+                                                        @*<button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
+                                                            Print (F9)
+                                                        </button>*@
                                                     </a>
                                                 }
                                             </div>
@@ -669,8 +675,10 @@
                             isRecentCalledSave = false;
                         }, 1000)
                     }
-                })
-                .on('Alt+L', function () {
+                //}).on('F9', function () {
+                //    $("#btnPrint").click();
+                //})
+                }).on('Alt+L', function () {
                     GoToListTab();
                 })
                 .on('Pagedown', function () {
@@ -1091,7 +1099,7 @@
                         isRecentCall = false;
 
                     }, 500)
-                    $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').focus();
+                    $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
                     setTimeout(function () {
                         window.scrollTo(0, 0);
                     }, 100)
@@ -1493,5 +1501,10 @@
             $(previousRow).closest('tr').children('td').eq(7).children('input').val((weight2 * bpcs).toFixed(1));
         }
     }
+
+    //$("#btnPrint").click(function () {
+    //    $('#txtIsPrint').val('1');
+    //    $('#annealingForm').submit();
+    //})
 
 </script>

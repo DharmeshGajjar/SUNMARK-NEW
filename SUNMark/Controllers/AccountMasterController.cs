@@ -219,7 +219,7 @@ namespace SUNMark.Controllers
             {
                 throw;
             }
-            return View(new CityModel());
+            return View(new AccountMasterModel());
         }
 
         public IActionResult Delete(long id)
