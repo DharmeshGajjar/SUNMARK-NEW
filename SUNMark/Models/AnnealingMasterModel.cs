@@ -24,6 +24,9 @@ namespace SUNMark.Models
         public string LDOQty { get; set; }
         public string Remarks { get; set; }
         public AnnelGridModel Annel { get; set; }
+        public int isPrint { get; set; }
+
+
 
     }
     public class AnnelGridModel
@@ -66,5 +69,12 @@ namespace SUNMark.Models
         public string AnnTDS4Str { get; set; }
         public int[] AnnNoPBatch { get; set; }
         public string AnnNoPBatchStr { get; set; }
+    }
+
+    public class AnnealingPrintDetails
+    {
+        public string Id { get; set; }
+        public string Html { get; set; }
+
     }
 }

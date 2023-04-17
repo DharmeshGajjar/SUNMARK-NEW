@@ -186,7 +186,7 @@
                                                         <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
                                                             @Html.DropDownListFor(x => x.OblCmpVou, Model.OblCmpVouList, "Select", new { @class = "form-control select2 OblCmpVou", @tabindex = "3", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @ID = "txtOblCmpVou" })
                                                             @*<a class="btn btn-outline-info ml-2" href="/Department/index" target="_blank"><i class="fa fa-plus"></i></a>
-                                                            <a class="btn btn-outline-info ml-2" onclick="GetCompanyMasterDropdown()"><i class="fa fa-sync"></i></a>*@
+                            <a class="btn btn-outline-info ml-2" onclick="GetCompanyMasterDropdown()"><i class="fa fa-sync"></i></a>*@
                                                             @*<a class="btn btn-outline-info ml-2" onclick="OpenStateModal()"><i class="fa fa-plus"></i></a>*@
                                                         </div>
 
@@ -205,7 +205,7 @@
                                                         <div class="col-md-9 d-flex form-outline form-white mb-2">
                                                             @Html.DropDownListFor(x => x.OblGdnVou, Model.OblGdnVouList, "Select", new { @class = "form-control select2 OblGdnVou", @tabindex = "4", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @ID = "txtOblGdnVou" })
                                                             @*<a class="btn btn-outline-info ml-2" href="/GodownMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
-                                                            <a class="btn btn-outline-info ml-2" onclick="GetGoDownMasterDropdown()"><i class="fa fa-sync"></i></a>*@
+                            <a class="btn btn-outline-info ml-2" onclick="GetGoDownMasterDropdown()"><i class="fa fa-sync"></i></a>*@
                                                             @*<a class="btn btn-outline-info ml-2" onclick="OpenStateModal()"><i class="fa fa-plus"></i></a>*@
                                                         </div>
                                                     </div>
@@ -266,7 +266,7 @@
                                                         <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
                                                             @Html.DropDownListFor(x => x.LotPrcTypVou, Model.LotPrcTypVouList, "Select", new { @class = "form-control select2 LotPrcTypVou", @tabindex = "8", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @ID = "txtLotPrcTypVou" })
                                                             @*<a class="btn btn-outline-info ml-2" href="#" target="_blank"><i class="fa fa-plus"></i></a>
-                                                            <a class="btn btn-outline-info ml-2" onclick="GetLotPrcTypMasterDropdown()"><i class="fa fa-sync"></i></a>*@
+                            <a class="btn btn-outline-info ml-2" onclick="GetLotPrcTypMasterDropdown()"><i class="fa fa-sync"></i></a>*@
                                                             @*<a class="btn btn-outline-info ml-2" onclick="OpenStateModal()"><i class="fa fa-plus"></i></a>*@
                                                         </div>
                                                     </div>
@@ -278,11 +278,26 @@
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="control-label col-md-3 col-sm-3 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                            Next Process <span class="required clsrequied"></span>
+                                                        </label>
+                                                        <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                                @Html.DropDownListFor(x => x.LotNextPrcVou, Model.LotNextPrcVouList, "Select", new { @class = "form-control select2 LotNextPrcVou", @tabindex = "9", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @ID = "txtLotNextPrcou" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="control-label col-md-3 col-sm-3 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
                                                             Grade <span class="required clsrequied">*</span>
                                                         </label>
                                                         <input type="hidden" name="Grade" id="Grade" />
                                                         <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
-                                                            @Html.DropDownListFor(x => x.LotGrade, Model.LotGradeList, "Select", new { @class = "form-control select2 LotGrade", @tabindex = "9", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @ID = "txtLotGrade" })
+                                                            @Html.DropDownListFor(x => x.LotGrade, Model.LotGradeList, "Select", new { @class = "form-control select2 LotGrade", @tabindex = "10", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @ID = "txtLotGrade" })
                                                             <a class="btn btn-outline-info ml-2" href="/GradeMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
                                                             <a class="btn btn-outline-info ml-2" onclick="GetGradeMasterDropdown()"><i class="fa fa-sync"></i></a>
                                                         </div>
@@ -294,7 +309,7 @@
                                                             Width <span class="required clsrequied"></span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotWidth" name="LotWidth" class="form-control form-control-lg 9-2DGT" onkeypress = "return isNumberKey(event)" placeholder="Width " tabindex="10" value="@Model.LotWidth" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" onchange="GetODDetails(this)"/>
+                                                            <input type="text" id="LotWidth" name="LotWidth" class="form-control form-control-lg 9-2DGT" onkeypress="return isNumberKey(event)" placeholder="Width" tabindex="11" value="@Model.LotWidth" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" onchange="GetODDetails(this)" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -308,7 +323,7 @@
                                                             Thick <span class="required clsrequied">*</span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotThick" name="LotThick" class="form-control form-control-lg 9-2DGT" placeholder="Thick " tabindex="11" value="@Model.LotThick" onkeypress = "return isNumberKey(event)" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" @*onchange="GetNBSCHDetails(this)"*@ required />
+                                                            <input type="text" id="LotThick" name="LotThick" class="form-control form-control-lg 9-2DGT" placeholder="Thick " tabindex="12" value="@Model.LotThick" onkeypress="return isNumberKey(event)" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" @*onchange="GetNBSCHDetails(this)"*@ required />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -318,7 +333,7 @@
                                                             OD <span class="required clsrequied">*</span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotOD" name="LotOD" class="form-control form-control-lg 9-2DGT" onkeypress = "return isNumberKey(event)" placeholder="OD" tabindex="12" value="@Model.LotOD" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" @*onchange="GetNBSCHDetails(this)"*@ required />
+                                                            <input type="text" id="LotOD" name="LotOD" class="form-control form-control-lg 9-2DGT" onkeypress="return isNumberKey(event)" placeholder="OD" tabindex="13" value="@Model.LotOD" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" @*onchange="GetNBSCHDetails(this)"*@ required />
                                                             <label class="control-label pl-1" style="font-family: Verdana;font-size:small; height:30px;" id="ODVal"></label>
                                                         </div>
                                                     </div>
@@ -334,7 +349,7 @@
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2" style="width: 29% !important;">
                                                             @*<input type="text" id="LotNB" name="LotNB" class="form-control form-control-lg" placeholder="NB" tabindex="13" value="@Model.LotNB" style="font-family: Verdana;font-size:small; height:30px;width:150px" required />*@
-                                                            @Html.DropDownListFor(x => x.LotNB, nbList, "Select", new { @class = "form-control select2", @style = "width:100% ", @required = "required" })
+                                                            @Html.DropDownListFor(x => x.LotNB, nbList, "Select", new { @class = "form-control select2", @style = "width:100% ", @required = "required", @tabindex = "14", })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -346,7 +361,7 @@
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2" style="width: 29% !important;">
                                                             @*<input type="text" id="LotSCH" name="LotSCH" class="form-control form-control-lg" placeholder="SCH" tabindex="14" value="@Model.LotSCH" style="font-family: Verdana;font-size:small; height:30px;width:150px" required />*@
-                                                            @Html.DropDownListFor(x => x.LotSCH, schList, "Select", new { @class = "form-control select2", @style = "width:100% ", @required = "required" })
+                                                            @Html.DropDownListFor(x => x.LotSCH, schList, "Select", new { @class = "form-control select2", @style = "width:100% ", @required = "required", @tabindex = "15" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -360,7 +375,7 @@
                                                             Feet Per <span class="required clsrequied">*</span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="FeetPer" name="FeetPer" class="form-control form-control-lg 9-2DGT" onkeypress = "return isNumberKey(event)" placeholder="Length" tabindex="15" value="@Model.FeetPer" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" required />
+                                                            <input type="text" id="FeetPer" name="FeetPer" class="form-control form-control-lg 9-2DGT" onkeypress="return isNumberKey(event)" placeholder="Length" tabindex="16" value="@Model.FeetPer" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" required />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -375,9 +390,9 @@
                                                         </label>
                                                         <input type="hidden" name="Finish" id="Finish" />
                                                         <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
-                                                            @Html.DropDownListFor(x => x.LotFinish, Model.LotFinishList, "Select", new { @class = "form-control select2 LotFinish", @tabindex = "16", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @ID = "txtLotFinish" })
+                                                            @Html.DropDownListFor(x => x.LotFinish, Model.LotFinishList, "Select", new { @class = "form-control select2 LotFinish", @tabindex = "17", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @ID = "txtLotFinish" })
                                                             @*<a class="btn btn-outline-info ml-2" href="/FinishMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
-                                                            <a class="btn btn-outline-info ml-2" onclick="GetFinishMasterDropdown()"><i class="fa fa-sync"></i></a>*@
+                            <a class="btn btn-outline-info ml-2" onclick="GetFinishMasterDropdown()"><i class="fa fa-sync"></i></a>*@
                                                             @*<a class="btn btn-outline-info ml-2" onclick="OpenStateModal()"><i class="fa fa-plus"></i></a>*@
                                                         </div>
                                                     </div>
@@ -393,7 +408,7 @@
                                                             PCS <span class="required clsrequied">*</span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="PCS" name="PCS" class="form-control form-control-lg 9-2DGT" onkeypress = "return isNumberKey(event)" placeholder="PCS" tabindex="17" value="@Model.PCS" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" required />
+                                                            <input type="text" id="PCS" name="PCS" class="form-control form-control-lg 9-2DGT" onkeypress="return isNumberKey(event)" placeholder="PCS" tabindex="18" value="@Model.PCS" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" required />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -403,7 +418,7 @@
                                                             Weight <span class="required clsrequied">*</span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="LotQty" name="LotQty" class="form-control form-control-lg 9-2DGT" onkeypress = "return isNumberKey(event)" placeholder="Weight" tabindex="18" value="@Model.LotQty" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" required />
+                                                            <input type="text" id="LotQty" name="LotQty" class="form-control form-control-lg 9-2DGT" onkeypress="return isNumberKey(event)" placeholder="Weight" tabindex="19" value="@Model.LotQty" style="font-family: Verdana;font-size:small; height:30px;width:150px;text-align:right" required />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -417,7 +432,7 @@
                                                             Remarks
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
-                                                            <input type="text" id="OblRem" name="OblRem" class="form-control form-control-lg" placeholder="Remarks" tabindex="19" value="@Model.OblRem" style="font-family: Verdana;font-size:small; height:30px;width:300px" />
+                                                            <input type="text" id="OblRem" name="OblRem" class="form-control form-control-lg" placeholder="Remarks" tabindex="20" value="@Model.OblRem" style="font-family: Verdana;font-size:small; height:30px;width:300px" />
                                                         </div>
                                                     </div>
                                                 </div>

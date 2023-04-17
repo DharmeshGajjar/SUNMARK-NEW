@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using SUNMark.Classes;
+using SUNMark.Common;
 using SUNMark.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SUNMark.Controllers
@@ -15,7 +19,11 @@ namespace SUNMark.Controllers
         DbConnection ObjDBConnection = new DbConnection();
         AccountMasterHelpers ObjAccountMasterHelpers = new AccountMasterHelpers();
         ProductHelpers objProductHelper = new ProductHelpers();
-
+        private readonly IWebHostEnvironment _iwebhostenviroment;
+        public AnnealingController(IWebHostEnvironment iwebhostenviroment)
+        {
+            _iwebhostenviroment = iwebhostenviroment;
+        }
         public IActionResult Index(int id)
         {
             try
@@ -36,6 +44,7 @@ namespace SUNMark.Controllers
                 annealingMasterModel.Vno = GetVoucherNo();
                 if (id > 0)
                 {
+                    TempData["ReturnId"] = Convert.ToString(id);
                     SqlParameter[] parameter = new SqlParameter[2];
                     parameter[0] = new SqlParameter("@AnnVou", id);
                     parameter[1] = new SqlParameter("@Flg", 0);
@@ -119,7 +128,7 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
-                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.Vno).ToString()) && !string.IsNullOrWhiteSpace(annealingMasterModel.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.AnnCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.MachineNo).ToString()) && annealingMasterModel.Annel.RecProduct.Length > 0 && annealingMasterModel.Annel.Grade.Length > 0 && annealingMasterModel.Annel.AnnLength.Length > 0 && annealingMasterModel.Annel.AnnOD.Length > 0 && annealingMasterModel.Annel.AnnWeight.Length > 0 && annealingMasterModel.Annel.AnnNoOfPipe.Length > 0 && annealingMasterModel.Annel.AnnThick.Length > 0)
+                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.Vno).ToString()) && !string.IsNullOrWhiteSpace(annealingMasterModel.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.AnnCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.MachineNo).ToString()) && annealingMasterModel.Annel.RecProduct.Length > 0 && annealingMasterModel.Annel.Grade.Length > 0)
                 {
                     SqlParameter[] sqlParameter = new SqlParameter[16];
                     sqlParameter[0] = new SqlParameter("@AnnVou", annealingMasterModel.AnnVou);
@@ -156,11 +165,11 @@ namespace SUNMark.Controllers
                                 sqlParam[6] = new SqlParameter("@AnnNoOfPipe", annealingMasterModel.Annel.AnnNoOfPipe[i]);
                                 sqlParam[7] = new SqlParameter("@AnnQty", annealingMasterModel.Annel.AnnWeight[i]);
                                 sqlParam[8] = new SqlParameter("@AnnRecPrdVou", annealingMasterModel.Annel.RecProduct[i]);
-                                sqlParam[9] = new SqlParameter("@AnnInTime", annealingMasterModel.Annel.AnnInTime[i+1]);
-                                sqlParam[10] = new SqlParameter("@AnnOutTime", annealingMasterModel.Annel.AnnOutTime[i+1]);
-                                sqlParam[11] = new SqlParameter("@AnnCoilNo", annealingMasterModel.Annel.AnnCoilNo[i+1]);
+                                sqlParam[9] = new SqlParameter("@AnnInTime", annealingMasterModel.Annel.AnnInTime[i]);
+                                sqlParam[10] = new SqlParameter("@AnnOutTime", annealingMasterModel.Annel.AnnOutTime[i]);
+                                sqlParam[11] = new SqlParameter("@AnnCoilNo", annealingMasterModel.Annel.AnnCoilNo[i]);
                                 sqlParam[12] = new SqlParameter("@AnnRPM", annealingMasterModel.Annel.AnnRPM[i]);
-                                sqlParam[13] = new SqlParameter("@AnnType", annealingMasterModel.Annel.AnnType[i+1]);
+                                sqlParam[13] = new SqlParameter("@AnnType", annealingMasterModel.Annel.AnnType[i]);
                                 sqlParam[14] = new SqlParameter("@AnnSrNo", (i + 1));
                                 sqlParam[15] = new SqlParameter("@AnnTDC1", annealingMasterModel.Annel.AnnTDS1[i]);
                                 sqlParam[16] = new SqlParameter("@AnnTDC2", annealingMasterModel.Annel.AnnTDS2[i]);
@@ -176,6 +185,13 @@ namespace SUNMark.Controllers
                             }
                             else
                             {
+                                if (annealingMasterModel.isPrint != 0)
+                                {
+                                    TempData["ReturnId"] = id.ToString();
+                                    TempData["Savedone"] = "1";
+                                    TempData["IsPrint"] = annealingMasterModel.isPrint.ToString();
+                                    return RedirectToAction("Index", new { id = id });
+                                }
                                 if (id > 0)
                                 {
                                     SetSuccessMessage("Record updated succesfully!");
@@ -242,7 +258,7 @@ namespace SUNMark.Controllers
             ViewBag.productList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "PIPE"); ;
             ViewBag.shiftList = objProductHelper.GetShiftNew(); ;
             ViewBag.milprocessList = ObjAccountMasterHelpers.GetMachineMasterDropdown(companyId);
-            
+
             ViewBag.finishList = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
             ViewBag.nextProcList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
         }
@@ -422,6 +438,219 @@ namespace SUNMark.Controllers
             {
                 throw;
             }
+        }
+
+        public AnnealingPrintDetails GetAnnealingHtmlData(long id)
+        {
+            AnnealingPrintDetails obj = new AnnealingPrintDetails();
+
+            try
+            {
+                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                int YearId = Convert.ToInt32(GetIntSession("YearId"));
+                long userId = GetIntSession("UserId");
+
+                SqlParameter[] sqlParameters = new SqlParameter[1];
+                sqlParameters[0] = new SqlParameter("@AnnVou", id);
+                DataTable DtInward = ObjDBConnection.CallStoreProcedure("GetAnnealingDetailsforPDF", sqlParameters);
+                if (DtInward != null && DtInward.Rows.Count > 0)
+                {
+                    string path = _iwebhostenviroment.WebRootPath + "/Reports";
+                    string body = string.Empty;
+                    string newbody = string.Empty;
+                    string filename = "";
+                    //using streamreader for reading my htmltemplate   
+                    string CmpCode = string.Empty;
+                    string CmpName = string.Empty;
+                    string CmpVou = string.Empty;
+                    string Layout = string.Empty;
+                    string CmpWeb = string.Empty;
+                    string CmpAdd = string.Empty;
+                    string CmpEmail = string.Empty;
+
+                    Layout = "Annealing";
+                    filename = "Annealing.html";
+
+                    using (StreamReader reader = new StreamReader(Path.Combine(path, filename)))
+                    {
+                        body = reader.ReadToEnd();
+                    }
+                    if (!string.IsNullOrEmpty(body))
+                    {
+                        newbody = body.Replace("//Address//", DtInward.Rows[0]["DepAdd"].ToString());
+                        newbody = newbody.Replace("//Email//", DtInward.Rows[0]["DepEmail"].ToString());
+                        newbody = newbody.Replace("//Web//", CmpWeb);
+                        string BilDate = DateTime.Parse(DtInward.Rows[0]["AnnDt"].ToString()).ToString("dd-MM-yyyy");
+                        newbody = newbody.Replace("//Date//", BilDate);
+                        newbody = newbody.Replace("//Shift//", DtInward.Rows[0]["AnnShift"].ToString());
+                        newbody = newbody.Replace("//Logo//", !string.IsNullOrWhiteSpace(DtInward.Rows[0]["DepLogo"].ToString()) ? "http://piosunmark.pioerp.com/Uploads/" + DtInward.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
+
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.Append("<tr align=\"center\"><td>Coil NO</td><td>WO NO</td><td>ASTM</td><td>GRADE</td><td>HEAT NO.</td><td>OD</td><td>THK</td><td>LNG</td><td>NOS</td><td>TOTAL WEIGHT</td>");//datatable
+
+
+                        for (int i = 0; i < DtInward.Rows.Count; i++)
+                        {
+                      
+                            sb.Append("<tr>");
+
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["AnnACoilNo"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">Stock</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\"></td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["AnnAGrdVou"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">-</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["AnnAOD"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["AnnAThick"].ToString() + "</td>");
+                            var length = (Convert.ToDouble(DtInward.Rows[i]["AnnALength"]) * 0.3048);
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + length + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["AnnANoOfPipe"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["AnnAWeight"].ToString() + "</td>");
+
+
+
+                            sb.Append("</tr>");
+                        }
+                        for (int i = 0; i < DtInward.Rows.Count; i++)
+                        {
+                            sb.Append("<tr align=\"center\">");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("</tr>");
+                        }
+
+                        newbody = newbody.Replace("//First-Table//", sb.ToString());
+                        StringBuilder st = new StringBuilder();
+                        st.Append("<tr align=\"center\">");
+                        st.Append("<td rowspan=\"2\">SR NO.</td>");
+                        st.Append("<td colspan=\"4\">REMARKs</td>");
+                        st.Append("<td rowspan=\"2\">ROLLER RPM</td>");
+                        st.Append("<td rowspan=\"2\">NOS PER BATCH</td>");
+                        st.Append("<td rowspan=\"2\">FINAL/INTER</td>");
+                        st.Append("<td rowspan=\"2\" colspan=\"2\">REMARKS</td></tr>");
+                        st.Append("<tr align=\"center\">");
+                        st.Append("<td>I</td>");
+                        st.Append("<td>II</td>");
+                        st.Append("<td>III</td>");
+                        st.Append("<td>IV</td></tr>");
+                        for (int i = 0; i < DtInward.Rows.Count; i++)
+                        {
+                            st.Append("<tr align=\"center\">");
+                            st.Append("<td>"+(i +1)+"</td>");
+                            st.Append("<td>" + DtInward.Rows[i]["AnnATDC1"].ToString() + "</td>");
+                            st.Append("<td>" + DtInward.Rows[i]["AnnATDC2"].ToString() + "</td>");
+                            st.Append("<td>" + DtInward.Rows[i]["AnnATDC3"].ToString() + "</td>");
+                            st.Append("<td>" + DtInward.Rows[i]["AnnATDC4"].ToString() + "</td>");
+                            st.Append("<td>" + DtInward.Rows[i]["AnnARPM"].ToString() + "</td>");
+                            st.Append("<td>" + DtInward.Rows[i]["AnnANoPBatch"].ToString() + "</td>");
+                            st.Append("<td>-</td>");
+                            st.Append("<td></td>");
+                            st.Append("<td></td>");
+                            st.Append("</tr>");
+                        }
+                        newbody = newbody.Replace("//Second-Table//", st.ToString());
+                        obj.Html = newbody;
+                        obj.Id = id.ToString();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return obj;
+        }
+
+        public IActionResult AnnealingPrintDetials(long id, int copyType = 1)
+        {
+            try
+            {
+                AnnealingPrintDetails obj = GetAnnealingHtmlData(id);
+
+                string wwwroot = string.Empty;
+                string filePath = "/PrintPDF/" + id + ".pdf";
+                wwwroot = _iwebhostenviroment.WebRootPath + filePath;
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Save(wwwroot);
+                doc.Close();
+                return Json(filePath);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
+        public IActionResult AnnealingSendMail(long id, string email = "")
+        {
+            try
+            {
+                AnnealingPrintDetails obj = GetAnnealingHtmlData(id);
+                string wwwroot = string.Empty;
+                string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
+
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                //var render = new IronPdf.HtmlToPdf();
+                //using var doc = render.RenderHtmlAsPdf(obj.Html);
+                //doc.SaveAs(wwwroot);
+
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Save(wwwroot);
+                doc.Close();
+
+                bool result = SendEmail(email, "GODOWN TRANSFER REPORT", "Please find attachment", wwwroot);
+                if (result)
+                    return Json(new { result = result, message = "Mail Send Sucessfully" });
+                else
+                    return Json(new { result = result, message = "Internal server error" });
+
+
+                //return Json(new { result = result, message = "Please check your mail address" });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        public IActionResult AnnealingWhatApp(long id, string whatappNo = "")
+        {
+            try
+            {
+                AnnealingPrintDetails obj = GetAnnealingHtmlData(id);
+                string wwwroot = string.Empty;
+                string filenm = string.Empty;
+                string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
+
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                //wwwroot = "http://piosunmark.pioerp.com/wwwroot/PrintPDF/" + dateTime + ".pdf";
+                filenm = dateTime + ".pdf";
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Margins.Left = 25;
+                doc.Save(wwwroot);
+                doc.Close();
+
+                WhatAppAPIResponse apiResponse = SendWhatAppMessage(whatappNo, "GODOWN TRANSFER REPORT", wwwroot, filenm);
+                return Json(new { result = apiResponse.status, message = apiResponse.message });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
     }
 }

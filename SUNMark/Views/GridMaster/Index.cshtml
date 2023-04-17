@@ -543,6 +543,7 @@
         $('#tblDynamic').html('');
     });
     $('#btnrunoutquery').click(function () {
+        debugger;
         var Query = $('#GrdQryFields').val();
         if (Query != undefined && Query != null && Query != "" && Query != " ") {
             Query += " " + $('#GrdQryJoin').val();

@@ -95,6 +95,7 @@ namespace SUNMark.Controllers
                         objOpeningStock.FeetPer = decimal.Parse(DtOBLDetail.Rows[0]["LotFeetPer"].ToString());
                         objOpeningStock.PCS = decimal.Parse(DtOBLDetail.Rows[0]["LotPCS"].ToString());
                         objOpeningStock.LotPrcTypVou = int.Parse(DtOBLDetail.Rows[0]["LotPrcTypCD"].ToString());
+                        objOpeningStock.LotNextPrcVou = int.Parse(DtOBLDetail.Rows[0]["OblNextProc"].ToString());
                         objOpeningStock.OblRem = DtOBLDetail.Rows[0]["OblRem"].ToString();   
                     }
                 }
@@ -107,6 +108,7 @@ namespace SUNMark.Controllers
                 objOpeningStock.OblAccVouList = objProductHelper.GetSupplierMasterDropdown(companyId, administrator);
                 objOpeningStock.LotGradeList = objProductHelper.GetGradeMasterDropdown(companyId, administrator);
                 objOpeningStock.LotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                objOpeningStock.LotNextPrcVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
                 return View(objOpeningStock);
             }
             catch (Exception ex)
@@ -162,7 +164,7 @@ namespace SUNMark.Controllers
                 ViewBag.schList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
                 if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblGdnVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblLocVou).ToString()) && !string.IsNullOrWhiteSpace(obj.LotNB.ToString()) && !string.IsNullOrWhiteSpace(obj.LotSCH.ToString()))
                 {
-                    SqlParameter[] sqlParameters = new SqlParameter[32];
+                    SqlParameter[] sqlParameters = new SqlParameter[33];
                     sqlParameters[0] = new SqlParameter("@OblNVno", obj.OblNVno);
                     sqlParameters[1] = new SqlParameter("@OblDt", DateTime.Parse(obj.OblDt));
                     sqlParameters[2] = new SqlParameter("@OblCmpVou", obj.OblCmpVou);
@@ -200,6 +202,7 @@ namespace SUNMark.Controllers
                         sqlParameters[29] = new SqlParameter("@Flg", 2);
                     sqlParameters[30] = new SqlParameter("@NB", obj.LotNB);
                     sqlParameters[31] = new SqlParameter("@SCH", obj.LotSCH);
+                    sqlParameters[32] = new SqlParameter("@NextProc", obj.LotNextPrcVou);
                     DataTable DtState = ObjDBConnection.CallStoreProcedure("OBLMST_Insert", sqlParameters);
                     if (DtState != null && DtState.Rows.Count > 0)
                     {
@@ -225,6 +228,7 @@ namespace SUNMark.Controllers
                         objOpeningStock.OblAccVouList = objProductHelper.GetSupplierMasterDropdown(companyId, administrator);
                         objOpeningStock.LotGradeList = objProductHelper.GetGradeMasterDropdown(companyId, administrator);
                         objOpeningStock.LotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                        objOpeningStock.LotNextPrcVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
                     }
                 }
                 else
@@ -239,6 +243,7 @@ namespace SUNMark.Controllers
                     objOpeningStock.OblAccVouList = objProductHelper.GetSupplierMasterDropdown(companyId, administrator);
                     objOpeningStock.LotGradeList = objProductHelper.GetGradeMasterDropdown(companyId, administrator);
                     objOpeningStock.LotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                    objOpeningStock.LotNextPrcVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
                 }
             }
             catch (Exception ex)

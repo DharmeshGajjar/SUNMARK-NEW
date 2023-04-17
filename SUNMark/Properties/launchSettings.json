@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/SUNMark",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:6956",
       "sslPort": 0
@@ -14,7 +18,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
-      }
+      },
+      "sqlDebugging": false,
+      "nativeDebugging": true
     },
     "SUNMark": {
       "commandName": "Project",

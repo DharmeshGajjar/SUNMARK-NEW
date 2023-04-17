@@ -37,6 +37,11 @@ namespace SUNMark.Models
         public int LotPrcTypVou { get; set; }
         public List<SelectListItem> LotPrcTypVouList { get; set; }
         public int LotPrcTypCD { get; set; }
+
+        public int LotNextPrcVou { get; set; }
+        public List<SelectListItem> LotNextPrcVouList { get; set; }
+        public int LotNextPrcCD { get; set; }
+
         public string OblRem { get; set; }
 
         public decimal PCS { get; set; }

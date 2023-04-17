@@ -112,24 +112,26 @@ namespace SUNMark.Controllers
                 }
                 if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.Vno).ToString()) && !string.IsNullOrWhiteSpace(picklingMaster.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.PikCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.MachineNo).ToString()) && picklingMaster.Pikling.RecProduct.Length > 0 && picklingMaster.Pikling.Grade.Length > 0 && picklingMaster.Pikling.PikLength.Length > 0 && picklingMaster.Pikling.PikOD.Length > 0 && picklingMaster.Pikling.PikWeight.Length > 0 && picklingMaster.Pikling.PikNoOfPipe.Length > 0 && picklingMaster.Pikling.PikThick.Length > 0)
                 {
-                    SqlParameter[] sqlParameter = new SqlParameter[16];
-                    sqlParameter[0] = new SqlParameter("@AnnVou", picklingMaster.PikVou);
-                    sqlParameter[1] = new SqlParameter("@AnnCmpVou", picklingMaster.PikCmpVou);
-                    sqlParameter[2] = new SqlParameter("@AnnVno", picklingMaster.Vno);
-                    sqlParameter[3] = new SqlParameter("@AnnDt", picklingMaster.Date);
-                    sqlParameter[4] = new SqlParameter("@AnnShift", picklingMaster.Shift);
-                    sqlParameter[5] = new SqlParameter("@AnnMacNo", picklingMaster.MachineNo);
-                    sqlParameter[6] = new SqlParameter("@AnnSupEmpVou", picklingMaster.SupEmpVou);
-                    sqlParameter[7] = new SqlParameter("@AnnManEmpVou", picklingMaster.ManEmpVou);
-                    sqlParameter[8] = new SqlParameter("@AnnIssPrdVou", picklingMaster.IssuePrdVou);
-                    sqlParameter[9] = new SqlParameter("@AnnFinish", picklingMaster.Finish);
-                    sqlParameter[10] = new SqlParameter("@AnnFinishVou", picklingMaster.FinishVou);
-                    sqlParameter[11] = new SqlParameter("@AnnHFQty", picklingMaster.HFQty);
-                    sqlParameter[12] = new SqlParameter("@AnnRemarks", picklingMaster.Remarks);
-                    sqlParameter[13] = new SqlParameter("@AnnNextPrcVou", picklingMaster.NextPrcVou);
-                    sqlParameter[14] = new SqlParameter("@AnnNextProc", picklingMaster.NextProc);
-                    sqlParameter[15] = new SqlParameter("@Flg", "1");
-                    DataTable dt = ObjDBConnection.CallStoreProcedure("InsertAnnealing", sqlParameter);
+                    SqlParameter[] sqlParameter = new SqlParameter[18];
+                    sqlParameter[0] = new SqlParameter("@PikVou", picklingMaster.PikVou);
+                    sqlParameter[1] = new SqlParameter("@PikCmpVou", picklingMaster.PikCmpVou);
+                    sqlParameter[2] = new SqlParameter("@PikVno", picklingMaster.Vno);
+                    sqlParameter[3] = new SqlParameter("@PikDt", picklingMaster.Date);
+                    sqlParameter[4] = new SqlParameter("@PikShift", picklingMaster.Shift);
+                    sqlParameter[5] = new SqlParameter("@PikMacNo", picklingMaster.MachineNo);
+                    sqlParameter[6] = new SqlParameter("@PikSupEmpVou", picklingMaster.SupEmpVou);
+                    sqlParameter[7] = new SqlParameter("@PikManEmpVou", picklingMaster.ManEmpVou);
+                    sqlParameter[8] = new SqlParameter("@PikIssPrdVou", picklingMaster.IssuePrdVou);
+                    sqlParameter[9] = new SqlParameter("@PikFinish", picklingMaster.Finish);
+                    sqlParameter[10] = new SqlParameter("@PikFinishVou", picklingMaster.FinishVou);
+                    sqlParameter[11] = new SqlParameter("@PikHFQty", picklingMaster.HFQty);
+                    sqlParameter[12] = new SqlParameter("@PikNitricQty", picklingMaster.NitricQty);
+                    sqlParameter[13] = new SqlParameter("@PikLimeQty", picklingMaster.LimeQty);
+                    sqlParameter[14] = new SqlParameter("@PikRemarks", picklingMaster.Remarks);
+                    sqlParameter[15] = new SqlParameter("@PikNextPrcVou", picklingMaster.NextPrcVou);
+                    sqlParameter[16] = new SqlParameter("@PikNextProc", picklingMaster.NextProc);
+                    sqlParameter[17] = new SqlParameter("@Flg", "1");
+                    DataTable dt = ObjDBConnection.CallStoreProcedure("InsertPickling", sqlParameter);
                     if (dt != null && dt.Rows.Count > 0)
                     {
                         int masterId = DbConnection.ParseInt32(dt.Rows[0][0].ToString());
@@ -138,22 +140,22 @@ namespace SUNMark.Controllers
                             for (int i = 0; i < picklingMaster.Pikling.PikWeight.Length; i++)
                             {
                                 SqlParameter[] sqlParam = new SqlParameter[15];
-                                sqlParam[0] = new SqlParameter("@AnnAAnnVou", masterId);
-                                sqlParam[1] = new SqlParameter("@AnnCmpVou", picklingMaster.PikCmpVou);
-                                sqlParam[2] = new SqlParameter("@AnnGrdVou", picklingMaster.Pikling.Grade[i]);
-                                sqlParam[3] = new SqlParameter("@AnnThick", picklingMaster.Pikling.PikThick[i]);
-                                sqlParam[4] = new SqlParameter("@AnnOD", picklingMaster.Pikling.PikOD[i]);
-                                sqlParam[5] = new SqlParameter("@AnnLength", picklingMaster.Pikling.PikLength[i]);
-                                sqlParam[6] = new SqlParameter("@AnnNoOfPipe", picklingMaster.Pikling.PikNoOfPipe[i]);
-                                sqlParam[7] = new SqlParameter("@AnnQty", picklingMaster.Pikling.PikWeight[i]);
-                                sqlParam[8] = new SqlParameter("@AnnRecPrdVou", picklingMaster.Pikling.RecProduct[i]);
-                                sqlParam[9] = new SqlParameter("@AnnInTime", picklingMaster.Pikling.PikInTime[i + 1]);
-                                sqlParam[10] = new SqlParameter("@AnnOutTime", picklingMaster.Pikling.PikOutTime[i + 1]);
-                                sqlParam[11] = new SqlParameter("@AnnCoilNo", picklingMaster.Pikling.PikCoilNo[i + 1]);
-                                sqlParam[12] = new SqlParameter("@AnnStatus", picklingMaster.Pikling.PikStatus[i]);
-                                sqlParam[13] = new SqlParameter("@AnnType", picklingMaster.Pikling.PikType[i + 1]);
-                                sqlParam[14] = new SqlParameter("@AnnSrNo", (i + 1));
-                                DataTable dttrn = ObjDBConnection.CallStoreProcedure("InsertAnnealingTrn", sqlParam);
+                                sqlParam[0] = new SqlParameter("@PikAPikVou", masterId);
+                                sqlParam[1] = new SqlParameter("@PikCmpVou", picklingMaster.PikCmpVou);
+                                sqlParam[2] = new SqlParameter("@PikGrdVou", picklingMaster.Pikling.Grade[i]);
+                                sqlParam[3] = new SqlParameter("@PikThick", picklingMaster.Pikling.PikThick[i]);
+                                sqlParam[4] = new SqlParameter("@PikOD", picklingMaster.Pikling.PikOD[i]);
+                                sqlParam[5] = new SqlParameter("@PikLength", picklingMaster.Pikling.PikLength[i]);
+                                sqlParam[6] = new SqlParameter("@PikNoOfPipe", picklingMaster.Pikling.PikNoOfPipe[i]);
+                                sqlParam[7] = new SqlParameter("@PikQty", picklingMaster.Pikling.PikWeight[i]);
+                                sqlParam[8] = new SqlParameter("@PikRecPrdVou", picklingMaster.Pikling.RecProduct[i]);
+                                sqlParam[9] = new SqlParameter("@PikInTime", picklingMaster.Pikling.PikInTime[i + 1]);
+                                sqlParam[10] = new SqlParameter("@PikOutTime", picklingMaster.Pikling.PikOutTime[i + 1]);
+                                sqlParam[11] = new SqlParameter("@PikCoilNo", picklingMaster.Pikling.PikCoilNo[i + 1]);
+                                sqlParam[12] = new SqlParameter("@PikStatus", picklingMaster.Pikling.PikStatus[i]);
+                                sqlParam[13] = new SqlParameter("@PikType", picklingMaster.Pikling.PikType[i + 1]);
+                                sqlParam[14] = new SqlParameter("@PikSrNo", (i + 1));
+                                DataTable dttrn = ObjDBConnection.CallStoreProcedure("InsertPicklingTrn", sqlParam);
                             }
                             int Status = DbConnection.ParseInt32(dt.Rows[0][0].ToString());
                             if (Status == 0)
