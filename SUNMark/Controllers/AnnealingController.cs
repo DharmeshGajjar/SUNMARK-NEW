@@ -26,7 +26,7 @@ namespace SUNMark.Controllers
         }
         public IActionResult Index(int id)
         {
-            try
+            try 
             {
                 bool isreturn = false;
                 INIT(ref isreturn);
