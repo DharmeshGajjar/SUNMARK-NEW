@@ -408,7 +408,7 @@
                                             </div>
                                             <div class="table-responsive col-md-12" style="font-family:Verdana;font-size:small;font-display:inherit;margin:0 0 0 0">
                                                 <table class="table table-bordered overflow-auto table-head-fixed" id="tblDisplay">
-                                                    @if (Model != null && Model.Pikling != null && Model.Pikling.Grade != null && Model.Pikling.Grade.Length > 0)
+                                                    @if (Model != null && Model.LstPikling != null  && Model.LstPikling.Count > 0)
                                                     {
                                                         <thead>
                                                             <tr>
@@ -457,7 +457,7 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @for (int y = 0; y < Model.Pikling.PikWeight.Length; y++)
+                                                            @for (int y = 0; y < Model.LstPikling.Count; y++)
                                                             {
                                                                 <tr class="AddRows">
                                                                     <td style="padding:0 0 0 0">
@@ -466,47 +466,47 @@
                                                                     <td style="padding:0 0 0 12px">
                                                                         @if (Model != null && Model.Pikling != null && Model.Pikling.RecProductList != null && Model.Pikling.RecProductList.Count > 0)
                                                                         {
-                                                                            @Html.DropDownListFor(x => x.Pikling.RecProduct[y], new SelectList(Model.Pikling.RecProductList, "Value", "Text"), "Select", new { @class = "form-control select2 RecProduct", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                            @Html.DropDownListFor(x => x.LstPikling[y].RecProduct, new SelectList(Model.Pikling.RecProductList, "Value", "Text"), "Select", new { @class = "form-control select2 RecProduct", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
                                                                         }
                                                                     </td>
                                                                     <td style="padding:0 0 0 12px">
                                                                         @if (Model != null && Model.Pikling != null && Model.Pikling.GradeList != null && Model.Pikling.GradeList.Count > 0)
                                                                         {
-                                                                            @Html.DropDownListFor(x => x.Pikling.Grade[y], new SelectList(Model.Pikling.GradeList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                            @Html.DropDownListFor(x => x.LstPikling[y].Grade, new SelectList(Model.Pikling.GradeList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
                                                                         }
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Pikling.PikOD[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikOD", @onKeyUp = "numericFilter(this);" })
+                                                                        @Html.TextBoxFor(x => x.LstPikling[y].PikOD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikOD", @onKeyUp = "numericFilter(this);" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Pikling.PikThick[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssPiklingProduct(this)" })
+                                                                        @Html.TextBoxFor(x => x.LstPikling[y].PikThick, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssPiklingProduct(this)" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Pikling.PikLength[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikLength", @onKeyUp = "numericFilter(this);" })
+                                                                        @Html.TextBoxFor(x => x.LstPikling[y].PikLength, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikLength", @onKeyUp = "numericFilter(this);" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Pikling.PikNoOfPipe[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikNoOfPipe", @onKeyUp = "numericFilter(this);", @onblur = "GetCalculateQty(this)" })
+                                                                        @Html.TextBoxFor(x => x.LstPikling[y].PikNoOfPipe, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikNoOfPipe", @onKeyUp = "numericFilter(this);", @onblur = "GetCalculateQty(this)" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Pikling.PikWeight[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikWeigth", @onKeyUp = "numericFilter(this);" })
+                                                                        @Html.TextBoxFor(x => x.LstPikling[y].PikWeight, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikWeigth", @onKeyUp = "numericFilter(this);" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
                                                                         @if (Model != null && Model.Pikling != null && Model.Pikling.StatusList != null && Model.Pikling.StatusList.Count > 0)
                                                                         {
-                                                                            @Html.DropDownListFor(x => x.Pikling.PikStatus[y], new SelectList(Model.Pikling.StatusList, "Value", "Text"), "Select", new { @class = "form-control select2 PikStatus", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                            @Html.DropDownListFor(x => x.LstPikling[y].PikStatus, new SelectList(Model.Pikling.StatusList, "Value", "Text"), "Select", new { @class = "form-control select2 PikStatus", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
                                                                         }
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Pikling.PikInTime[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtPikInTime", @type = "time" })
+                                                                        @Html.TextBoxFor(x => x.LstPikling[y].PikInTime, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtPikInTime", @type = "time" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Pikling.PikOutTime[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtPikInTime", @type = "time" })
+                                                                        @Html.TextBoxFor(x => x.LstPikling[y].PikOutTime, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtPikInTime", @type = "time" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Pikling.PikCoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtPikCoilNoStr" })
+                                                                        @Html.TextBoxFor(x => x.LstPikling[y].PikCoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtPikCoilNoStr" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Pikling.PikType[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtPikTypeStr" })
+                                                                        @Html.TextBoxFor(x => x.LstPikling[y].PikType, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtPikTypeStr" })
                                                                     </td>
                                                                     <td class="text-center">
                                                                         <i class="fa fa-edit text-primary" onclick="EditRowsPikling(this)" style="font-size:18px"></i>
@@ -778,6 +778,8 @@
         if (ValidateTextbox()) {
             $('#Vno').removeAttr('disabled')
             $('#PikVou').removeAttr('disabled')
+            $("#tblDisplay tr td").find("select").attr('disabled', false);
+            $("#tblDisplay tr td").find("input").attr('disabled', false);
             //$('#SupEmpVou').removeAttr('disabled')
             //$('#ManEmpVou').removeAttr('disabled')
             $('#pickingForm').submit();
@@ -1077,31 +1079,31 @@
     function SetNamePikling(isRemove) {
         $('#tblDisplay').children('tbody').children('tr:last').children("td").eq(2).children("select").attr("Id", "Pikling.Grade999999");
         $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
-            $(this).children("td").eq(1).children("select").attr("name", "Pikling.RecProduct");
+            $(this).children("td").eq(1).children("select").attr("name", "LstPikling["+i+"].RecProduct");
             $(this).children("td").eq(1).children("select").attr("Id", "Pikling.RecProduct" + i + "");
-            $(this).children("td").eq(2).children("select").attr("name", "Pikling.Grade");
+            $(this).children("td").eq(2).children("select").attr("name", "LstPikling[" + i +"].Grade");
             $(this).children("td").eq(2).children("select").attr("Id", "Pikling.Grade" + i + "");
-            $(this).children("td").eq(3).children("input").attr("name", "Pikling.PikOD");
+            $(this).children("td").eq(3).children("input").attr("name", "LstPikling[" + i +"].PikOD");
             $(this).children("td").eq(3).children("input").attr("Id", "Pikling.PikOD" + i + "");
-            $(this).children("td").eq(4).children("input").attr("name", "Pikling.PikThick");
+            $(this).children("td").eq(4).children("input").attr("name", "LstPikling[" + i +"].PikThick");
             $(this).children("td").eq(4).children("input").attr("Id", "Pikling.PikThick" + i + "");
             if (!isRemove)
                 $(this).children("td").eq(4).children("input").attr("onblur", 'GetLotIssPiklingProduct(this)');
-            $(this).children("td").eq(5).children("input").attr("name", "Pikling.PikLength");
+            $(this).children("td").eq(5).children("input").attr("name", "LstPikling[" + i +"].PikLength");
             $(this).children("td").eq(5).children("input").attr("Id", "Pikling.PikLength" + i + "");
-            $(this).children("td").eq(6).children("input").attr("name", "Pikling.PikNoOfPipe");
+            $(this).children("td").eq(6).children("input").attr("name", "LstPikling[" + i +"].PikNoOfPipe");
             $(this).children("td").eq(6).children("input").attr("Id", "Pikling.PikNoOfPipe" + i + "");
-            $(this).children("td").eq(7).children("input").attr("name", "Pikling.PikWeight");
+            $(this).children("td").eq(7).children("input").attr("name", "LstPikling[" + i +"].PikWeight");
             $(this).children("td").eq(7).children("input").attr("Id", "Pikling.PikWeight" + i + "");
-            $(this).children("td").eq(8).children("select").attr("name", "Pikling.PikStatus");
+            $(this).children("td").eq(8).children("select").attr("name", "LstPikling[" + i +"].PikStatus");
             $(this).children("td").eq(8).children("select").attr("Id", "Pikling.PikStatus" + i + "");
-            $(this).children("td").eq(9).children("input").attr("name", "Pikling.PikInTime");
+            $(this).children("td").eq(9).children("input").attr("name", "LstPikling[" + i +"].PikInTime");
             $(this).children("td").eq(9).children("input").attr("Id", "Pikling.PikInTime" + i + "");
-            $(this).children("td").eq(10).children("input").attr("name", "Pikling.PikOutTime");
+            $(this).children("td").eq(10).children("input").attr("name", "LstPikling[" + i +"].PikOutTime");
             $(this).children("td").eq(10).children("input").attr("Id", "Pikling.PikOutTime" + i + "");
-            $(this).children("td").eq(11).children("input").attr("name", "Pikling.PikCoilNo");
+            $(this).children("td").eq(11).children("input").attr("name", "LstPikling[" + i +"].PikCoilNo");
             $(this).children("td").eq(11).children("input").attr("Id", "Pikling.PikCoilNo" + i + "");
-            $(this).children("td").eq(12).children("input").attr("name", "Pikling.PikType");
+            $(this).children("td").eq(12).children("input").attr("name", "LstPikling[" + i +"].PikType");
             $(this).children("td").eq(12).children("input").attr("Id", "Pikling.PikType" + i + "");
         });
     }

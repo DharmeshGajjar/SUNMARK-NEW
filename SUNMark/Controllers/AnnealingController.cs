@@ -67,44 +67,49 @@ namespace SUNMark.Controllers
                         annealingMasterModel.LDOQty = dt.Rows[0]["AnnLDOQty"].ToString();
                         annealingMasterModel.Remarks = dt.Rows[0]["AnnRemarks"].ToString();
 
-                        annealingMasterModel.Annel.Grade = new string[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnOD = new decimal[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnThick = new decimal[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnLength = new decimal[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnNoOfPipe = new decimal[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnWeight = new decimal[dt.Rows.Count];
-                        annealingMasterModel.Annel.RecProduct = new string[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnInTime = new string[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnOutTime = new string[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnCoilNo = new string[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnRPM = new decimal[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnTDS1 = new int[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnTDS2 = new int[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnTDS3 = new int[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnTDS4 = new int[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnNoPBatch = new int[dt.Rows.Count];
-                        annealingMasterModel.Annel.AnnType = new string[dt.Rows.Count];
-
+                        //annealingMasterModel.Annel.Grade = new string[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnOD = new decimal[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnThick = new decimal[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnLength = new decimal[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnNoOfPipe = new decimal[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnWeight = new decimal[dt.Rows.Count];
+                        //annealingMasterModel.Annel.RecProduct = new string[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnInTime = new string[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnOutTime = new string[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnCoilNo = new string[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnRPM = new decimal[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnTDS1 = new int[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnTDS2 = new int[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnTDS3 = new int[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnTDS4 = new int[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnNoPBatch = new int[dt.Rows.Count];
+                        //annealingMasterModel.Annel.AnnType = new string[dt.Rows.Count];
+                        //annealingMasterModel.AnnelList = new List<AnnelGridModel>[dt.Rows.Count];
+                        List<AnnelGridModel> lstAnnel = new List<AnnelGridModel>();
                         for (int i = 0; i < dt.Rows.Count; i++)
                         {
-                            annealingMasterModel.Annel.Grade[i] = dt.Rows[i]["AnnAGrdVou"].ToString();
-                            annealingMasterModel.Annel.AnnOD[i] = Convert.ToDecimal(dt.Rows[i]["AnnAOD"].ToString());
-                            annealingMasterModel.Annel.AnnThick[i] = Convert.ToDecimal(dt.Rows[i]["AnnAThick"].ToString());
-                            annealingMasterModel.Annel.AnnLength[i] = Convert.ToDecimal(dt.Rows[i]["AnnALength"].ToString());
-                            annealingMasterModel.Annel.AnnNoOfPipe[i] = Convert.ToDecimal(dt.Rows[i]["AnnANoOfPipe"].ToString());
-                            annealingMasterModel.Annel.AnnWeight[i] = Convert.ToDecimal(dt.Rows[i]["AnnAWeight"].ToString());
-                            annealingMasterModel.Annel.RecProduct[i] = dt.Rows[i]["AnnARecPrdVou"].ToString();
-                            annealingMasterModel.Annel.AnnInTime[i] = dt.Rows[i]["AnnAInTime"].ToString();
-                            annealingMasterModel.Annel.AnnOutTime[i] = dt.Rows[i]["AnnAOutTime"].ToString();
-                            annealingMasterModel.Annel.AnnCoilNo[i] = dt.Rows[i]["AnnACoilNo"].ToString();
-                            annealingMasterModel.Annel.AnnRPM[i] = Convert.ToDecimal(dt.Rows[i]["AnnARPM"].ToString());
-                            annealingMasterModel.Annel.AnnType[i] = dt.Rows[i]["AnnAType"].ToString();
-                            annealingMasterModel.Annel.AnnTDS1[i] = Convert.ToInt32(dt.Rows[i]["AnnATDC1"].ToString());
-                            annealingMasterModel.Annel.AnnTDS2[i] = Convert.ToInt32(dt.Rows[i]["AnnATDC2"].ToString());
-                            annealingMasterModel.Annel.AnnTDS3[i] = Convert.ToInt32(dt.Rows[i]["AnnATDC3"].ToString());
-                            annealingMasterModel.Annel.AnnTDS4[i] = Convert.ToInt32(dt.Rows[i]["AnnATDC4"].ToString());
-                            annealingMasterModel.Annel.AnnNoPBatch[i] = Convert.ToInt32(dt.Rows[i]["AnnANoPBatch"].ToString());
+                            AnnelGridModel Annel = new AnnelGridModel();
+                            Annel.Grade = dt.Rows[i]["AnnAGrdVou"].ToString();
+                            Annel.AnnOD = Convert.ToDecimal(dt.Rows[i]["AnnAOD"].ToString());
+                            Annel.AnnThick = Convert.ToDecimal(dt.Rows[i]["AnnAThick"].ToString());
+                            Annel.AnnLength = Convert.ToDecimal(dt.Rows[i]["AnnALength"].ToString());
+                            Annel.AnnNoOfPipe = Convert.ToDecimal(dt.Rows[i]["AnnANoOfPipe"].ToString());
+                            Annel.AnnWeight = Convert.ToDecimal(dt.Rows[i]["AnnAWeight"].ToString());
+                            Annel.RecProduct = dt.Rows[i]["AnnARecPrdVou"].ToString();
+                            Annel.AnnInTime = dt.Rows[i]["AnnAInTime"].ToString();
+                            Annel.AnnOutTime = dt.Rows[i]["AnnAOutTime"].ToString();
+                            Annel.AnnCoilNo = dt.Rows[i]["AnnACoilNo"].ToString();
+                            Annel.AnnRPM = Convert.ToDecimal(dt.Rows[i]["AnnARPM"].ToString());
+                            Annel.AnnType = dt.Rows[i]["AnnAType"].ToString();
+                            Annel.AnnTDS1 = Convert.ToInt32(dt.Rows[i]["AnnATDC1"].ToString());
+                            Annel.AnnTDS2 = Convert.ToInt32(dt.Rows[i]["AnnATDC2"].ToString());
+                            Annel.AnnTDS3 = Convert.ToInt32(dt.Rows[i]["AnnATDC3"].ToString());
+                            Annel.AnnTDS4 = Convert.ToInt32(dt.Rows[i]["AnnATDC4"].ToString());
+                            Annel.AnnNoPBatch = Convert.ToInt32(dt.Rows[i]["AnnANoPBatch"].ToString());
+
+                            lstAnnel.Add(Annel);
                         }
+                        annealingMasterModel.AnnelList = lstAnnel;
                     }
                 }
                 return View(annealingMasterModel);
@@ -128,7 +133,7 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
-                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.Vno).ToString()) && !string.IsNullOrWhiteSpace(annealingMasterModel.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.AnnCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.MachineNo).ToString()) && annealingMasterModel.Annel.RecProduct.Length > 0 && annealingMasterModel.Annel.Grade.Length > 0)
+                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.Vno).ToString()) && !string.IsNullOrWhiteSpace(annealingMasterModel.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.AnnCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.MachineNo).ToString()) && annealingMasterModel.AnnelList.Count > 0)
                 {
                     SqlParameter[] sqlParameter = new SqlParameter[16];
                     sqlParameter[0] = new SqlParameter("@AnnVou", annealingMasterModel.AnnVou);
@@ -153,29 +158,29 @@ namespace SUNMark.Controllers
                         int masterId = DbConnection.ParseInt32(dt.Rows[0][0].ToString());
                         if (masterId > 0)
                         {
-                            for (int i = 0; i < annealingMasterModel.Annel.AnnWeight.Length; i++)
+                            for (int i = 0; i < annealingMasterModel.AnnelList.Count; i++)
                             {
                                 SqlParameter[] sqlParam = new SqlParameter[20];
                                 sqlParam[0] = new SqlParameter("@AnnAAnnVou", masterId);
                                 sqlParam[1] = new SqlParameter("@AnnCmpVou", annealingMasterModel.AnnCmpVou);
-                                sqlParam[2] = new SqlParameter("@AnnGrdVou", annealingMasterModel.Annel.Grade[i]);
-                                sqlParam[3] = new SqlParameter("@AnnThick", annealingMasterModel.Annel.AnnThick[i]);
-                                sqlParam[4] = new SqlParameter("@AnnOD", annealingMasterModel.Annel.AnnOD[i]);
-                                sqlParam[5] = new SqlParameter("@AnnLength", annealingMasterModel.Annel.AnnLength[i]);
-                                sqlParam[6] = new SqlParameter("@AnnNoOfPipe", annealingMasterModel.Annel.AnnNoOfPipe[i]);
-                                sqlParam[7] = new SqlParameter("@AnnQty", annealingMasterModel.Annel.AnnWeight[i]);
-                                sqlParam[8] = new SqlParameter("@AnnRecPrdVou", annealingMasterModel.Annel.RecProduct[i]);
-                                sqlParam[9] = new SqlParameter("@AnnInTime", annealingMasterModel.Annel.AnnInTime[i]);
-                                sqlParam[10] = new SqlParameter("@AnnOutTime", annealingMasterModel.Annel.AnnOutTime[i]);
-                                sqlParam[11] = new SqlParameter("@AnnCoilNo", annealingMasterModel.Annel.AnnCoilNo[i]);
-                                sqlParam[12] = new SqlParameter("@AnnRPM", annealingMasterModel.Annel.AnnRPM[i]);
-                                sqlParam[13] = new SqlParameter("@AnnType", annealingMasterModel.Annel.AnnType[i]);
-                                sqlParam[14] = new SqlParameter("@AnnSrNo", (i + 2));
-                                sqlParam[15] = new SqlParameter("@AnnTDC1", annealingMasterModel.Annel.AnnTDS1[i]);
-                                sqlParam[16] = new SqlParameter("@AnnTDC2", annealingMasterModel.Annel.AnnTDS2[i]);
-                                sqlParam[17] = new SqlParameter("@AnnTDC3", annealingMasterModel.Annel.AnnTDS3[i]);
-                                sqlParam[18] = new SqlParameter("@AnnTDC4", annealingMasterModel.Annel.AnnTDS4[i]);
-                                sqlParam[19] = new SqlParameter("@AnnNoPBatch", annealingMasterModel.Annel.AnnNoPBatch[i]);
+                                sqlParam[2] = new SqlParameter("@AnnGrdVou", annealingMasterModel.AnnelList[i].Grade);
+                                sqlParam[3] = new SqlParameter("@AnnThick", annealingMasterModel.AnnelList[i].AnnThick);
+                                sqlParam[4] = new SqlParameter("@AnnOD", annealingMasterModel.AnnelList[i].AnnOD);
+                                sqlParam[5] = new SqlParameter("@AnnLength", annealingMasterModel.AnnelList[i].AnnLength);
+                                sqlParam[6] = new SqlParameter("@AnnNoOfPipe", annealingMasterModel.AnnelList[i].AnnNoOfPipe);
+                                sqlParam[7] = new SqlParameter("@AnnQty", annealingMasterModel.AnnelList[i].AnnWeight);
+                                sqlParam[8] = new SqlParameter("@AnnRecPrdVou", annealingMasterModel.AnnelList[i].RecProduct);
+                                sqlParam[9] = new SqlParameter("@AnnInTime", annealingMasterModel.AnnelList[i].AnnInTime);
+                                sqlParam[10] = new SqlParameter("@AnnOutTime", annealingMasterModel.AnnelList[i].AnnOutTime);
+                                sqlParam[11] = new SqlParameter("@AnnCoilNo", annealingMasterModel.AnnelList[i].AnnCoilNo);
+                                sqlParam[12] = new SqlParameter("@AnnRPM", annealingMasterModel.AnnelList[i].AnnRPM);
+                                sqlParam[13] = new SqlParameter("@AnnType", annealingMasterModel.AnnelList[i].AnnType);
+                                sqlParam[14] = new SqlParameter("@AnnSrNo", (i + 1));
+                                sqlParam[15] = new SqlParameter("@AnnTDC1", annealingMasterModel.AnnelList[i].AnnTDS1);
+                                sqlParam[16] = new SqlParameter("@AnnTDC2", annealingMasterModel.AnnelList[i].AnnTDS2);
+                                sqlParam[17] = new SqlParameter("@AnnTDC3", annealingMasterModel.AnnelList[i].AnnTDS3);
+                                sqlParam[18] = new SqlParameter("@AnnTDC4", annealingMasterModel.AnnelList[i].AnnTDS4);
+                                sqlParam[19] = new SqlParameter("@AnnNoPBatch", annealingMasterModel.AnnelList[i].AnnNoPBatch);
                                 DataTable dttrn = ObjDBConnection.CallStoreProcedure("InsertAnnealingTrn", sqlParam);
                             }
                             int Status = DbConnection.ParseInt32(dt.Rows[0][0].ToString());
