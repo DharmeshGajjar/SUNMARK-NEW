@@ -40,7 +40,7 @@ namespace SUNMark.Controllers
                     SqlParameter[] parameter = new SqlParameter[2];
                     parameter[0] = new SqlParameter("@PikVou", id);
                     parameter[1] = new SqlParameter("@Flg", 0);
-                    DataTable dt = ObjDBConnection.CallStoreProcedure("GetAnnealingMasterById", parameter);
+                    DataTable dt = ObjDBConnection.CallStoreProcedure("GetPicklingMasterById", parameter);
                     if (dt != null && dt.Rows.Count > 0)
                     {
                         picklingMasterModel.PikVou = id;
