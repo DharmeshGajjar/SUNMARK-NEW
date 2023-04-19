@@ -170,7 +170,7 @@ namespace SUNMark.Controllers
                                 sqlParam[11] = new SqlParameter("@AnnCoilNo", annealingMasterModel.Annel.AnnCoilNo[i]);
                                 sqlParam[12] = new SqlParameter("@AnnRPM", annealingMasterModel.Annel.AnnRPM[i]);
                                 sqlParam[13] = new SqlParameter("@AnnType", annealingMasterModel.Annel.AnnType[i]);
-                                sqlParam[14] = new SqlParameter("@AnnSrNo", (i + 1));
+                                sqlParam[14] = new SqlParameter("@AnnSrNo", (i + 2));
                                 sqlParam[15] = new SqlParameter("@AnnTDC1", annealingMasterModel.Annel.AnnTDS1[i]);
                                 sqlParam[16] = new SqlParameter("@AnnTDC2", annealingMasterModel.Annel.AnnTDS2[i]);
                                 sqlParam[17] = new SqlParameter("@AnnTDC3", annealingMasterModel.Annel.AnnTDS3[i]);
