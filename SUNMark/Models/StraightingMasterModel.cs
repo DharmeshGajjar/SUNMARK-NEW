@@ -21,8 +21,10 @@ namespace SUNMark.Models
         public string FinishVou { get; set; }
         public string NextProc { get; set; }
         public string NextPrcVou { get; set; }
-        public string LDOQty { get; set; }
         public string Remarks { get; set; }
+        public string HFQty { get; set; }
+        public string NitricQty { get; set; }
+        public string LimeQty { get; set; }
         public StrGridModel Straighting { get; set; }
     }
     public class StrGridModel
@@ -65,5 +67,9 @@ namespace SUNMark.Models
         public string StrTDS4Str { get; set; }
         public int[] StrNoPBatch { get; set; }
         public string StrNoPBatchStr { get; set; }
+        public string NitricQty { get; set; }
+        public string LimeQty { get; set; }
+        public List<SelectListItem> StatusList { get; set; }
+        public string[] StrStatus { get; set; }
     }
 }
