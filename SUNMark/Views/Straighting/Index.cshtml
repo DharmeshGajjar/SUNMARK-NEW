@@ -514,46 +514,28 @@
                                                     }
                                                 </table>
                                             </div>
-
-                                            <div class="table-responsive col-md-12" style="font-family:Verdana;font-size:small;font-display:inherit;margin:0 0 0 0">
-                                                <table>
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Grade</th>
-                                                            <th>OD</th>
-                                                            <th>Thick</th>
-                                                            <th>Length </th>
-                                                            <th>No Of Pipe</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        
-                                                    </tbody>
-                                                       </table>
-                                                </div>
-
-                                                <div class="col-md-12 text-center">
-                                                    @if (userRight.IsEdit && id > 0)
-                                                    {
-                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddStraighting()">
-                                                            Save (F10)
-                                                        </button>
-                                                        <a href="/Straighting/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
-                                                            Cancel (Esc)
-                                                        </a>
-                                                    }
-                                                    else if (userRight.IsAdd && id == 0)
-                                                    {
-                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddStraighting()">
-                                                            Save (F10)
-                                                        </button>
-                                                        <a href="/Straighting/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
-                                                            Cancel (Esc)
-                                                        </a>
-                                                    }
-                                                </div>
+                                            <div class="col-md-12 text-center">
+                                                @if (userRight.IsEdit && id > 0)
+                                                {
+                                                    <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddStraighting()">
+                                                        Save (F10)
+                                                    </button>
+                                                    <a href="/Straighting/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                        Cancel (Esc)
+                                                    </a>
+                                                }
+                                                else if (userRight.IsAdd && id == 0)
+                                                {
+                                                    <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddStraighting()">
+                                                        Save (F10)
+                                                    </button>
+                                                    <a href="/Straighting/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                        Cancel (Esc)
+                                                    </a>
+                                                }
                                             </div>
                                         </div>
+                                    </div>
                                 </form>
                             </div>
                         }
@@ -1401,56 +1383,4 @@
             $(previousRow).closest('tr').children('td').eq(7).children('input').val((weight2 * bpcs).toFixed(1));
         }
     }
-
-
-    function addNewRecord() {
-        if ($("#amount").val() == '' || $("#qty").val() == '' || $("#itemId").val() == '' || $("#ServiceFrequncy").val() == '') {
-            notify("error", "Error", "Please Fill Value");
-            return false;
-        }
-        if ($("#amount").val() == 0) {
-            notify("error", "Error", "Amount Shuld not be Zero");
-            $("#amount").focus();
-            return false;
-        }
-        else if ($("#qty").val() <= 0) {
-            notify("error", "Error", "Qty Value is Greater Than 0");
-            $("#qty").focus();
-            return false;
-        }
-        else {
-            let dataArray = $("#tblrateservices").find('tr');
-            let lenth = parseInt(dataArray.length);
-            for (var i = 0; i <= lenth; i++) {
-                if ($("#itemId").val() == $("#rateservicelist_" + i + "__ItemID").val()) {
-                    notify("error", "Error", "Can not Enter Same Service in One Package");
-                    $("#itemId").focus();
-                    return false;
-                }
-            }
-            let sum = parseInt($("#amount").val()) + parseInt($("#tax").val());
-            let total = parseInt(sum) * parseInt($("#qty").val());
-            let ActionToAppend = '';
-            ActionToAppend += '<a id="delete" class="btn table-btns table-delete-button"></a >'; /*<a class="btn table-btns table-view-button"></a > ';*/
-
-            let newRaw = '';
-            let newRaw = '';
-            newRaw += '<tr id="RowId_' + RowId + '">';
-            newRaw += '<td id = "Description_' + RowId + '" ></td >';
-            newRaw += '<td id = "qty_' + RowId + '" > </td >';
-            newRaw += '<td id = "rate_' + RowId + '" ></td >';
-            newRaw += '<td id="Gross_' + RowId + '"> </td>';
-            newRaw += '<td id="taxes_' + RowId + '"></td>';
-            $("#accbillTable").append(newRaw);
-            RowId = RowId + 1;
-
-            $("#amount").val('');
-            $("#tax").val('');
-            $("#qty").val(1);
-            $("#itemId").val('');
-            $("#ServiceFrequncy").val('');
-        }
-
-    }
-
 </script>
