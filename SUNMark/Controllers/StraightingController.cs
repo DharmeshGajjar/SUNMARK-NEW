@@ -29,76 +29,59 @@ namespace SUNMark.Controllers
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int administrator = 0;
                 long userId = GetIntSession("UserId");
-                StraightingMasterModel straightingMasterModel = new StraightingMasterModel();
-                straightingMasterModel.Straighting = new StrGridModel();
-                straightingMasterModel.Straighting.RecProductList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "PIPE");
-                straightingMasterModel.Straighting.GradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
-                straightingMasterModel.Vno = GetVoucherNo();
+                StraightingMasterModel straighMasterModel = new StraightingMasterModel();
+                straighMasterModel.Straighting = new StrGridModel();
+                straighMasterModel.Straighting.RecProductList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "PIPE");
+                straighMasterModel.Straighting.GradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
+                straighMasterModel.Straighting.StatusList = objProductHelper.GetPicklingStatus();
+                straighMasterModel.Vno = GetVoucherNo();
                 if (id > 0)
                 {
                     SqlParameter[] parameter = new SqlParameter[2];
                     parameter[0] = new SqlParameter("@StrVou", id);
                     parameter[1] = new SqlParameter("@Flg", 0);
-                    DataTable dt = ObjDBConnection.CallStoreProcedure("GetStrMasterById", parameter);
+                    DataTable dt = ObjDBConnection.CallStoreProcedure("GetStraightingMasterById", parameter);
                     if (dt != null && dt.Rows.Count > 0)
                     {
-                        straightingMasterModel.StrVou = id;
-                        straightingMasterModel.Vno = dt.Rows[0]["StrVno"].ToString(); ;
-                        straightingMasterModel.StrCmpVou = Convert.ToInt32(dt.Rows[0]["StrCmpVou"].ToString());
-                        straightingMasterModel.Date = Convert.ToDateTime(dt.Rows[0]["StrDt"]).ToString("yyyy-MM-dd");
-                        straightingMasterModel.Shift = dt.Rows[0]["StrShift"].ToString();
-                        straightingMasterModel.MachineNo = dt.Rows[0]["StrMacno"].ToString();
-                        straightingMasterModel.SupEmpVou = dt.Rows[0]["StrSupEmpVou"].ToString();
-                        straightingMasterModel.ManEmpVou = dt.Rows[0]["StrManEmpVou"].ToString();
-                        straightingMasterModel.IssuePrdVou = dt.Rows[0]["StrIssPrdVou"].ToString();
-                        straightingMasterModel.Finish = dt.Rows[0]["StrFinish"].ToString();
-                        straightingMasterModel.FinishVou = dt.Rows[0]["StrFinishVou"].ToString();
-                        straightingMasterModel.NextProc = dt.Rows[0]["StrNextProc"].ToString();
-                        straightingMasterModel.NextPrcVou = dt.Rows[0]["StrNextPrcVou"].ToString();
-                        straightingMasterModel.LDOQty = dt.Rows[0]["StrLDOQty"].ToString();
-                        straightingMasterModel.Remarks = dt.Rows[0]["StrRemarks"].ToString();
+                        straighMasterModel.StrVou = id;
+                        straighMasterModel.Vno = dt.Rows[0]["StrVno"].ToString(); ;
+                        straighMasterModel.StrCmpVou = Convert.ToInt32(dt.Rows[0]["StrCmpVou"].ToString());
+                        straighMasterModel.Date = Convert.ToDateTime(dt.Rows[0]["StrDt"]).ToString("yyyy-MM-dd");
+                        straighMasterModel.Shift = dt.Rows[0]["StrShift"].ToString();
+                        straighMasterModel.MachineNo = dt.Rows[0]["StrMacno"].ToString();
+                        straighMasterModel.SupEmpVou = dt.Rows[0]["StrSupEmpVou"].ToString();
+                        straighMasterModel.ManEmpVou = dt.Rows[0]["StrManEmpVou"].ToString();
+                        straighMasterModel.IssuePrdVou = dt.Rows[0]["StrIssPrdVou"].ToString();
+                        straighMasterModel.Finish = dt.Rows[0]["StrFinish"].ToString();
+                        straighMasterModel.FinishVou = dt.Rows[0]["StrFinishVou"].ToString();
+                        straighMasterModel.NextProc = dt.Rows[0]["StrNextProc"].ToString();
+                        straighMasterModel.NextPrcVou = dt.Rows[0]["StrNextPrcVou"].ToString();
+                        straighMasterModel.HFQty = dt.Rows[0]["StrHFQty"].ToString();
+                        straighMasterModel.Remarks = dt.Rows[0]["StrRemarks"].ToString();
 
-                        straightingMasterModel.Straighting.Grade = new string[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrOD = new decimal[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrThick = new decimal[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrLength = new decimal[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrNoOfPipe = new decimal[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrWeight = new decimal[dt.Rows.Count];
-                        straightingMasterModel.Straighting.RecProduct = new string[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrInTime = new string[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrOutTime = new string[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrCoilNo = new string[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrRPM = new decimal[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrTDS1 = new int[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrTDS2 = new int[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrTDS3 = new int[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrTDS4 = new int[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrNoPBatch = new int[dt.Rows.Count];
-                        straightingMasterModel.Straighting.StrType = new string[dt.Rows.Count];
 
+                        List<StrGridModel> List = new List<StrGridModel>();
                         for (int i = 0; i < dt.Rows.Count; i++)
                         {
-                            straightingMasterModel.Straighting.Grade[i] = dt.Rows[i]["StrAGrdVou"].ToString();
-                            straightingMasterModel.Straighting.StrOD[i] = Convert.ToDecimal(dt.Rows[i]["StrAOD"].ToString());
-                            straightingMasterModel.Straighting.StrThick[i] = Convert.ToDecimal(dt.Rows[i]["StrAThick"].ToString());
-                            straightingMasterModel.Straighting.StrLength[i] = Convert.ToDecimal(dt.Rows[i]["StrALength"].ToString());
-                            straightingMasterModel.Straighting.StrNoOfPipe[i] = Convert.ToDecimal(dt.Rows[i]["StrANoOfPipe"].ToString());
-                            straightingMasterModel.Straighting.StrWeight[i] = Convert.ToDecimal(dt.Rows[i]["StrAWeight"].ToString());
-                            straightingMasterModel.Straighting.RecProduct[i] = dt.Rows[i]["StrARecPrdVou"].ToString();
-                            straightingMasterModel.Straighting.StrInTime[i] = dt.Rows[i]["StrAInTime"].ToString();
-                            straightingMasterModel.Straighting.StrOutTime[i] = dt.Rows[i]["StrAOutTime"].ToString();
-                            straightingMasterModel.Straighting.StrCoilNo[i] = dt.Rows[i]["StrACoilNo"].ToString();
-                            straightingMasterModel.Straighting.StrRPM[i] = Convert.ToDecimal(dt.Rows[i]["StrARPM"].ToString());
-                            straightingMasterModel.Straighting.StrType[i] = dt.Rows[i]["StrAType"].ToString();
-                            straightingMasterModel.Straighting.StrTDS1[i] = Convert.ToInt32(dt.Rows[i]["StrATDC1"].ToString());
-                            straightingMasterModel.Straighting.StrTDS2[i] = Convert.ToInt32(dt.Rows[i]["StrATDC2"].ToString());
-                            straightingMasterModel.Straighting.StrTDS3[i] = Convert.ToInt32(dt.Rows[i]["StrATDC3"].ToString());
-                            straightingMasterModel.Straighting.StrTDS4[i] = Convert.ToInt32(dt.Rows[i]["StrATDC4"].ToString());
-                            straightingMasterModel.Straighting.StrNoPBatch[i] = Convert.ToInt32(dt.Rows[i]["StrANoPBatch"].ToString());
+                            StrGridModel Str = new StrGridModel();
+                            Str.Grade = dt.Rows[i]["StrAGrdVou"].ToString();
+                            Str.StrOD = Convert.ToDecimal(dt.Rows[i]["StrAOD"].ToString() == "" ? "0" : dt.Rows[i]["StrAOD"].ToString());
+                            Str.StrThick = Convert.ToDecimal(dt.Rows[i]["StrAThick"].ToString() == "" ? "0" : dt.Rows[i]["StrAThick"].ToString());
+                            Str.StrLength = Convert.ToDecimal(dt.Rows[i]["StrALength"].ToString() == "" ? "0" : dt.Rows[i]["StrALength"].ToString());
+                            Str.StrNoOfPipe = Convert.ToDecimal(dt.Rows[i]["StrANoOfPipe"].ToString() == "" ? "0" : dt.Rows[i]["StrANoOfPipe"].ToString());
+                            Str.StrWeight = Convert.ToDecimal(dt.Rows[i]["StrAWeight"].ToString() == "" ? "0" : dt.Rows[i]["StrAWeight"].ToString());
+                            Str.RecProduct = dt.Rows[i]["StrARecPrdVou"].ToString();
+                            Str.StrInTime = dt.Rows[i]["StrAInTime"].ToString();
+                            Str.StrOutTime = dt.Rows[i]["StrAOutTime"].ToString();
+                            Str.StrCoilNo = dt.Rows[i]["StrACoilNo"].ToString();
+                            Str.StrStatus = dt.Rows[i]["StrAStatus"].ToString();
+                            Str.StrType = dt.Rows[i]["StrAType"].ToString();
+                            List.Add(Str);
                         }
+                        straighMasterModel.LstStraighting = List;
                     }
                 }
-                return View(straightingMasterModel);
+                return View(straighMasterModel);
             }
             catch (Exception ex)
             {
@@ -119,9 +102,9 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
-                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.Vno).ToString()) && !string.IsNullOrWhiteSpace(StraightingMasterModel.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.StrCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.MachineNo).ToString()) && StraightingMasterModel.Straighting.RecProduct.Length > 0 && StraightingMasterModel.Straighting.Grade.Length > 0 && StraightingMasterModel.Straighting.StrLength.Length > 0 && StraightingMasterModel.Straighting.StrOD.Length > 0 && StraightingMasterModel.Straighting.StrWeight.Length > 0 && StraightingMasterModel.Straighting.StrNoOfPipe.Length > 0 && StraightingMasterModel.Straighting.StrThick.Length > 0)
+                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.Vno).ToString()) && !string.IsNullOrWhiteSpace(StraightingMasterModel.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.StrCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.MachineNo).ToString()) && StraightingMasterModel.Straighting.RecProduct.Length > 0 && StraightingMasterModel.Straighting.Grade.Length > 0 && StraightingMasterModel.LstStraighting.Count > 0)
                 {
-                    SqlParameter[] sqlParameter = new SqlParameter[16];
+                    SqlParameter[] sqlParameter = new SqlParameter[18];
                     sqlParameter[0] = new SqlParameter("@StrVou", StraightingMasterModel.StrVou);
                     sqlParameter[1] = new SqlParameter("@StrCmpVou", StraightingMasterModel.StrCmpVou);
                     sqlParameter[2] = new SqlParameter("@StrVno", StraightingMasterModel.Vno);
@@ -133,40 +116,37 @@ namespace SUNMark.Controllers
                     sqlParameter[8] = new SqlParameter("@StrIssPrdVou", StraightingMasterModel.IssuePrdVou);
                     sqlParameter[9] = new SqlParameter("@StrFinish", StraightingMasterModel.Finish);
                     sqlParameter[10] = new SqlParameter("@StrFinishVou", StraightingMasterModel.FinishVou);
-                    sqlParameter[11] = new SqlParameter("@StrLDOQty", StraightingMasterModel.LDOQty);
-                    sqlParameter[12] = new SqlParameter("@StrRemarks", StraightingMasterModel.Remarks);
-                    sqlParameter[13] = new SqlParameter("@StrNextPrcVou", StraightingMasterModel.NextPrcVou);
-                    sqlParameter[14] = new SqlParameter("@StrNextProc", StraightingMasterModel.NextProc);
-                    sqlParameter[15] = new SqlParameter("@Flg", "1");
-                    DataTable dt = ObjDBConnection.CallStoreProcedure("InsertStr", sqlParameter);
+                    sqlParameter[11] = new SqlParameter("@StrHFQty", StraightingMasterModel.HFQty);
+                    sqlParameter[12] = new SqlParameter("@StrNitricQty", StraightingMasterModel.NitricQty);
+                    sqlParameter[13] = new SqlParameter("@StrLimeQty", StraightingMasterModel.LimeQty);
+                    sqlParameter[14] = new SqlParameter("@StrRemarks", StraightingMasterModel.Remarks);
+                    sqlParameter[15] = new SqlParameter("@StrNextPrcVou", StraightingMasterModel.NextPrcVou);
+                    sqlParameter[16] = new SqlParameter("@StrNextProc", StraightingMasterModel.NextProc);
+                    sqlParameter[17] = new SqlParameter("@Flg", "1");
+                    DataTable dt = ObjDBConnection.CallStoreProcedure("InsertStrmst", sqlParameter);
                     if (dt != null && dt.Rows.Count > 0)
                     {
                         int masterId = DbConnection.ParseInt32(dt.Rows[0][0].ToString());
                         if (masterId > 0)
                         {
-                            for (int i = 0; i < StraightingMasterModel.Straighting.StrWeight.Length; i++)
+                            for (int i = 0; i < StraightingMasterModel.LstStraighting.Count; i++)
                             {
-                                SqlParameter[] sqlParam = new SqlParameter[20];
-                                sqlParam[0] = new SqlParameter("@StrAStrVou", masterId);
+                                SqlParameter[] sqlParam = new SqlParameter[15];
+                                sqlParam[0] = new SqlParameter("@StrAPikVou", masterId);
                                 sqlParam[1] = new SqlParameter("@StrCmpVou", StraightingMasterModel.StrCmpVou);
-                                sqlParam[2] = new SqlParameter("@StrGrdVou", StraightingMasterModel.Straighting.Grade[i]);
-                                sqlParam[3] = new SqlParameter("@StrThick", StraightingMasterModel.Straighting.StrThick[i]);
-                                sqlParam[4] = new SqlParameter("@StrOD", StraightingMasterModel.Straighting.StrOD[i]);
-                                sqlParam[5] = new SqlParameter("@StrLength", StraightingMasterModel.Straighting.StrLength[i]);
-                                sqlParam[6] = new SqlParameter("@StrNoOfPipe", StraightingMasterModel.Straighting.StrNoOfPipe[i]);
-                                sqlParam[7] = new SqlParameter("@StrQty", StraightingMasterModel.Straighting.StrWeight[i]);
-                                sqlParam[8] = new SqlParameter("@StrRecPrdVou", StraightingMasterModel.Straighting.RecProduct[i]);
-                                sqlParam[9] = new SqlParameter("@StrInTime", StraightingMasterModel.Straighting.StrInTime[i]);
-                               sqlParam[10] = new SqlParameter("@StrOutTime", StraightingMasterModel.Straighting.StrOutTime[i]);
-                               sqlParam[11] = new SqlParameter("@StrCoilNo", StraightingMasterModel.Straighting.StrCoilNo[i]);
-                               sqlParam[12] = new SqlParameter("@StrRPM", StraightingMasterModel.Straighting.StrRPM[i]);
-                               sqlParam[13] = new SqlParameter("@StrType", StraightingMasterModel.Straighting.StrType[i]);
-                               sqlParam[14] = new SqlParameter("@StrSrNo", (i + 1));
-                                sqlParam[15] = new SqlParameter("@StrTDC1", StraightingMasterModel.Straighting.StrTDS1[i]);
-                                sqlParam[16] = new SqlParameter("@StrTDC2", StraightingMasterModel.Straighting.StrTDS2[i]);
-                                sqlParam[17] = new SqlParameter("@StrTDC3", StraightingMasterModel.Straighting.StrTDS3[i]);
-                                sqlParam[18] = new SqlParameter("@StrTDC4", StraightingMasterModel.Straighting.StrTDS4[i]);
-                                sqlParam[19] = new SqlParameter("@StrNoPBatch", StraightingMasterModel.Straighting.StrNoPBatch[i]);
+                                sqlParam[2] = new SqlParameter("@StrGrdVou", StraightingMasterModel.LstStraighting[i].Grade);
+                                sqlParam[3] = new SqlParameter("@StrThick", StraightingMasterModel.LstStraighting[i].StrThick);
+                                sqlParam[4] = new SqlParameter("@StrOD", StraightingMasterModel.LstStraighting[i].StrOD);
+                                sqlParam[5] = new SqlParameter("@StrLength", StraightingMasterModel.LstStraighting[i].StrLength);
+                                sqlParam[6] = new SqlParameter("@StrNoOfPipe", StraightingMasterModel.LstStraighting[i].StrNoOfPipe);
+                                sqlParam[7] = new SqlParameter("@StrQty", StraightingMasterModel.LstStraighting[i].StrWeight);
+                                sqlParam[8] = new SqlParameter("@StrRecPrdVou", StraightingMasterModel.LstStraighting[i].RecProduct);
+                                sqlParam[9] = new SqlParameter("@StrInTime", StraightingMasterModel.LstStraighting[i].StrInTime);
+                                sqlParam[10] = new SqlParameter("@StrOutTime", StraightingMasterModel.LstStraighting[i].StrOutTime);
+                                sqlParam[11] = new SqlParameter("@StrCoilNo", StraightingMasterModel.LstStraighting[i].StrCoilNo);
+                                sqlParam[12] = new SqlParameter("@StrStatus", StraightingMasterModel.LstStraighting[i].StrStatus);
+                                sqlParam[13] = new SqlParameter("@StrType", StraightingMasterModel.LstStraighting[i].StrType);
+                                sqlParam[14] = new SqlParameter("@StrSrNo", (i + 1));
                                 DataTable dttrn = ObjDBConnection.CallStoreProcedure("InsertStrTrn", sqlParam);
                             }
                             int Status = DbConnection.ParseInt32(dt.Rows[0][0].ToString());

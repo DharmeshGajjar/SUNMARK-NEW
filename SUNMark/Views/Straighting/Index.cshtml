@@ -5,7 +5,7 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
-    List<SUNMark.Models.StraightingMasterModel> StraightingList = ViewBag.StraightingList as List<SUNMark.Models.StraightingMasterModel>;
+    List<SUNMark.Models.StraightingMasterModel> StrlingList = ViewBag.StrlingList as List<SUNMark.Models.StraightingMasterModel>;
     List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
     List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
     var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
@@ -311,7 +311,7 @@
                                                     <tbody>
                                                         <tr class="AddRows">
                                                             <td style="padding:0 0 0 0">
-                                                                <input type="number" class="form-control" onchange="GetDataBySrNoStraighting(this.value)" value="0" style="padding:0px !important;padding-left:3px !important;padding-right:3px !important;font-family: Verdana;font-size:small; height:30px;width:50px" />
+                                                                <input type="number" class="form-control" onchange="GetDataBySrNoStrling(this.value)" value="0" style="padding:0px !important;padding-left:3px !important;padding-right:3px !important;font-family: Verdana;font-size:small; height:30px;width:50px" />
                                                             </td>
                                                             <td style="padding:0 0 0 12px">
                                                                 @if (Model != null && Model.Straighting != null && Model.Straighting.RecProductList != null && Model.Straighting.RecProductList.Count > 0)
@@ -326,40 +326,40 @@
                                                                 }
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
-                                                                @Html.TextBoxFor(x => x.Straighting.StrOD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikOD", @onKeyUp = "numericFilter(this);" })
+                                                                @Html.TextBoxFor(x => x.Straighting.StrOD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtStrOD", @onKeyUp = "numericFilter(this);" })
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
-                                                                @Html.TextBoxFor(x => x.Straighting.StrThick, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssStraightingProduct(this)" })
+                                                                @Html.TextBoxFor(x => x.Straighting.StrThick, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtStrThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssStrlingProduct(this)" })
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
-                                                                @Html.TextBoxFor(x => x.Straighting.StrLength, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikLength", @onKeyUp = "numericFilter(this);" })
+                                                                @Html.TextBoxFor(x => x.Straighting.StrLength, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtStrLength", @onKeyUp = "numericFilter(this);" })
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
-                                                                @Html.TextBoxFor(x => x.Straighting.StrNoOfPipe, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikNoOfPipe", @onKeyUp = "numericFilter(this);", @onblur = "GetCalculateQty(this)" })
+                                                                @Html.TextBoxFor(x => x.Straighting.StrNoOfPipe, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtStrNoOfPipe", @onKeyUp = "numericFilter(this);", @onblur = "GetCalculateQty(this)" })
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
-                                                                @Html.TextBoxFor(x => x.Straighting.StrWeight, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikWeigth", @onKeyUp = "numericFilter(this);" })
+                                                                @Html.TextBoxFor(x => x.Straighting.StrWeight, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtStrWeigth", @onKeyUp = "numericFilter(this);" })
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
                                                                 @if (Model != null && Model.Straighting != null && Model.Straighting.StatusList != null && Model.Straighting.StatusList.Count > 0)
                                                                 {
-                                                                    @Html.DropDownListFor(x => x.Straighting.StrStatus, new SelectList(Model.Straighting.StatusList, "Value", "Text"), "Select", new { @class = "form-control select2 PikStatus", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                    @Html.DropDownListFor(x => x.Straighting.StrStatus, new SelectList(Model.Straighting.StatusList, "Value", "Text"), "Select", new { @class = "form-control select2 StrStatus", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
                                                                 }
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
-                                                                @Html.TextBoxFor(x => x.Straighting.StrInTime, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtPikInTime", @type = "time" })
+                                                                @Html.TextBoxFor(x => x.Straighting.StrInTime, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtStrInTime", @type = "time" })
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
-                                                                @Html.TextBoxFor(x => x.Straighting.StrOutTime, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtPikInTime", @type = "time" })
+                                                                @Html.TextBoxFor(x => x.Straighting.StrOutTime, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtStrInTime", @type = "time" })
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
-                                                                @Html.TextBoxFor(x => x.Straighting.StrCoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtPikCoilNoStr" })
+                                                                @Html.TextBoxFor(x => x.Straighting.StrCoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtStrCoilNoStr" })
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
-                                                                @Html.TextBoxFor(x => x.Straighting.StrType, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtPikTypeStr" })
+                                                                @Html.TextBoxFor(x => x.Straighting.StrType, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtStrTypeStr" })
                                                             </td>
                                                             <td class="text-center">
-                                                                <i class="fa fa-plus text-blue" onclick="AddRowsStraighting(this)" style="font-size:18px"></i>
+                                                                <i class="fa fa-plus text-blue" onclick="AddRowsStrling(this)" style="font-size:18px"></i>
                                                                 <i class="fa fa-sync text-blue ml-3" onclick="RefreshAnnel(this)" style="font-size:18px"></i>
                                                             </td>
                                                         </tr>
@@ -408,7 +408,7 @@
                                             </div>
                                             <div class="table-responsive col-md-12" style="font-family:Verdana;font-size:small;font-display:inherit;margin:0 0 0 0">
                                                 <table class="table table-bordered overflow-auto table-head-fixed" id="tblDisplay">
-                                                    @if (Model != null && Model.Straighting != null && Model.Straighting.Grade != null && Model.Straighting.Grade.Length > 0)
+                                                    @if (Model != null && Model.LstStraighting != null && Model.LstStraighting.Count > 0)
                                                     {
                                                         <thead>
                                                             <tr>
@@ -457,60 +457,60 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @for (int y = 0; y < Model.Straighting.StrWeight.Length; y++)
+                                                            @for (int y = 0; y < Model.LstStraighting.Count; y++)
                                                             {
                                                                 <tr class="AddRows">
                                                                     <td style="padding:0 0 0 0">
-                                                                        <input type="number" class="form-control" onblur="GetDataBySrNoStraighting(this.value)" value="@(y+1)" style="padding:0px !important;padding-left:3px !important;padding-right:3px !important;font-family: Verdana;font-size:small; height:30px;" disabled />
+                                                                        <input type="number" class="form-control" onblur="GetDataBySrNoStrling(this.value)" value="@(y+1)" style="padding:0px !important;padding-left:3px !important;padding-right:3px !important;font-family: Verdana;font-size:small; height:30px;" disabled />
                                                                     </td>
                                                                     <td style="padding:0 0 0 12px">
                                                                         @if (Model != null && Model.Straighting != null && Model.Straighting.RecProductList != null && Model.Straighting.RecProductList.Count > 0)
                                                                         {
-                                                                            @Html.DropDownListFor(x => x.Straighting.RecProduct[y], new SelectList(Model.Straighting.RecProductList, "Value", "Text"), "Select", new { @class = "form-control select2 RecProduct", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                          @Html.DropDownListFor(x => x.LstStraighting[y].RecProduct, new SelectList(Model.Straighting.RecProductList, "Value", "Text"), "Select", new { @class = "form-control select2 RecProduct", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
                                                                         }
                                                                     </td>
                                                                     <td style="padding:0 0 0 12px">
                                                                         @if (Model != null && Model.Straighting != null && Model.Straighting.GradeList != null && Model.Straighting.GradeList.Count > 0)
                                                                         {
-                                                                            @Html.DropDownListFor(x => x.Straighting.Grade[y], new SelectList(Model.Straighting.GradeList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                            @Html.DropDownListFor(x => x.LstStraighting[y].Grade, new SelectList(Model.Straighting.GradeList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
                                                                         }
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Straighting.StrOD[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikOD", @onKeyUp = "numericFilter(this);" })
+                                                                        @Html.TextBoxFor(x => x.LstStraighting[y].StrOD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtStrOD", @onKeyUp = "numericFilter(this);" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Straighting.StrThick[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssStraightingProduct(this)" })
+                                                                        @Html.TextBoxFor(x => x.LstStraighting[y].StrThick, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtStrThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssStrlingProduct(this)" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Straighting.StrLength[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikLength", @onKeyUp = "numericFilter(this);" })
+                                                                        @Html.TextBoxFor(x => x.LstStraighting[y].StrLength, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtStrLength", @onKeyUp = "numericFilter(this);" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Straighting.StrNoOfPipe[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikNoOfPipe", @onKeyUp = "numericFilter(this);", @onblur = "GetCalculateQty(this)" })
+                                                                        @Html.TextBoxFor(x => x.LstStraighting[y].StrNoOfPipe, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtStrNoOfPipe", @onKeyUp = "numericFilter(this);", @onblur = "GetCalculateQty(this)" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Straighting.StrWeight[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikWeigth", @onKeyUp = "numericFilter(this);" })
+                                                                        @Html.TextBoxFor(x => x.LstStraighting[y].StrWeight, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtStrWeigth", @onKeyUp = "numericFilter(this);" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
                                                                         @if (Model != null && Model.Straighting != null && Model.Straighting.StatusList != null && Model.Straighting.StatusList.Count > 0)
                                                                         {
-                                                                            @Html.DropDownListFor(x => x.Straighting.StrStatus[y], new SelectList(Model.Straighting.StatusList, "Value", "Text"), "Select", new { @class = "form-control select2 PikStatus", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                            @Html.DropDownListFor(x => x.LstStraighting[y].StrStatus, new SelectList(Model.Straighting.StatusList, "Value", "Text"), "Select", new { @class = "form-control select2 StrStatus", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
                                                                         }
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Straighting.StrInTime[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtPikInTime", @type = "time" })
+                                                                        @Html.TextBoxFor(x => x.LstStraighting[y].StrInTime, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtStrInTime", @type = "time" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Straighting.StrOutTime[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtPikInTime", @type = "time" })
+                                                                        @Html.TextBoxFor(x => x.LstStraighting[y].StrOutTime, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:100px !important", @name = "txtStrInTime", @type = "time" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Straighting.StrCoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtPikCoilNoStr" })
+                                                                        @Html.TextBoxFor(x => x.LstStraighting[y].StrCoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtStrCoilNoStr" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.Straighting.StrType[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtPikTypeStr" })
+                                                                        @Html.TextBoxFor(x => x.LstStraighting[y].StrType, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtStrTypeStr" })
                                                                     </td>
                                                                     <td class="text-center">
-                                                                        <i class="fa fa-edit text-primary" onclick="EditRowsStraighting(this)" style="font-size:18px"></i>
-                                                                        <i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsStraighting(this)" style="font-size:18px"></i>
+                                                                        <i class="fa fa-edit text-primary" onclick="EditRowsStrling(this)" style="font-size:18px"></i>
+                                                                        <i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsStrling(this)" style="font-size:18px"></i>
                                                                     </td>
                                                                 </tr>
                                                             }
@@ -521,7 +521,7 @@
                                             <div class="col-md-12 text-center">
                                                 @if (userRight.IsEdit && id > 0)
                                                 {
-                                                    <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddStraighting()">
+                                                    <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="Addstraighting()">
                                                         Save (F10)
                                                     </button>
                                                     <a href="/Straighting/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
@@ -530,7 +530,7 @@
                                                 }
                                                 else if (userRight.IsAdd && id == 0)
                                                 {
-                                                    <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddStraighting()">
+                                                    <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="Addstraighting()">
                                                         Save (F10)
                                                     </button>
                                                     <a href="/Straighting/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
@@ -577,8 +577,8 @@
         var id = '@Html.Raw(Model.StrVou)';
         if(!id || id == 0)
             GetVoucherNumber();
-        if ($('#StrCmpVou').children('option').length == 2) {
-            $('#StrCmpVou').val($('#StrCmpVou').children('option').eq(1).attr('value'));
+        if ($('#txtInwCmpVou').children('option').length == 2) {
+            $('#txtInwCmpVou').val($('#txtInwCmpVou').children('option').eq(1).attr('value'));
             SetSelect2()
             //$('#txtBilDepVou').attr('disabled', true);
         }
@@ -625,21 +625,21 @@
                 .on('Pagedown', function () {
                     if (!isRecentCalledAddRows) {
                         isRecentCalledAddRows = true;
-                        AddRowsStraighting();
+                        AddRowsStrling();
                         setTimeout(function () {
                             isRecentCalledAddRows = false;
                         }, 500)
                     }
                 })
                 .on('Alt+I', function () {
-                    AddRowsStraighting();
+                    AddRowsStrling();
                 })
                 .on('Alt+C', function () {
                     if (confirm("Do you want to exit without save?")) {
                         location.href = '/Straighting/Index'
                     }
                     else {
-                        $('#PikCmpVou').focus();
+                        $('#StrCmpVou').focus();
                     }
 
                 }).on('Escape', function () {
@@ -755,7 +755,7 @@
     var isSaveCalled = false;
     function ValidateTextbox() {
         var isAllow = true;
-        if (!$('select[name="PikCmpVou"]').val()) {
+        if (!$('select[name="StrCmpVou"]').val()) {
             sAllow = false;
         }
         if (!$('input[name="Vno"]').val()) {
@@ -774,10 +774,12 @@
         return isAllow;
     }
 
-    function AddStraighting() {
+    function Addstraighting() {
         if (ValidateTextbox()) {
             $('#Vno').removeAttr('disabled')
             $('#StrVou').removeAttr('disabled')
+            $("#tblDisplay tr td").find("select").attr('disabled', false);
+            $("#tblDisplay tr td").find("input").attr('disabled', false);
             //$('#SupEmpVou').removeAttr('disabled')
             //$('#ManEmpVou').removeAttr('disabled')
             $('#straightingForm').submit();
@@ -854,8 +856,7 @@
     var isExcelUpload = false;
     var isPasteDone = false;
 
-    function AddRowsStraighting() {
-        debugger;
+    function AddRowsStrling() {
         if (!isRecentCall) {
             var previousRow = $('#tblStraighting').children('tbody').children('tr:last').prev();
             if (previousRow != null) {
@@ -951,7 +952,7 @@
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').val(coilno);
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(12).children('input').val(type);
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(13).addClass('text-center')
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsStraighting(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsStraighting(this)" style="font-size:18px"></i>`)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsStrling(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsStrling(this)" style="font-size:18px"></i>`)
 
 
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('select').attr('disabled', true)
@@ -1016,7 +1017,7 @@
                                 $(this).children('td').eq(11).children('input').val(coilno);
                                 $(this).children('td').eq(12).children('input').val(type);
                                 $(this).children('td').eq(13).addClass('text-center')
-                                $(this).children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsStraighting(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsStraighting(this)" style="font-size:18px"></i>`)
+                                $(this).children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsStrling(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsStrling(this)" style="font-size:18px"></i>`)
                                 $('#btnSave').prop('disabled', false);
                             }
                         })
@@ -1024,8 +1025,8 @@
 
 
 
-                    SetSerialNumberStraighting();
-                    SetNameStraighting();
+                    SetSerialNumberStrling();
+                    SetNameStrling();
                     SetSelect2();
                     //CalculateCoil();
                     isRecentCall = true
@@ -1046,7 +1047,7 @@
         }
     }
 
-    function DeleteRowsStraighting(obj) {
+    function DeleteRowsStrling(obj) {
         Swal.fire({
             title: 'Are you sure want to delete row?',
             showCancelButton: true,
@@ -1054,7 +1055,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $(obj).closest('tr').remove();
-                SetSerialNumberStraighting();
+                SetSerialNumberStrling();
                 if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
                     $('#tblDisplay').children('thead').remove();
                     $('#tblDisplay').children('tbody').remove();
@@ -1065,7 +1066,7 @@
 
     }
 
-    function SetSerialNumberStraighting() {
+    function SetSerialNumberStrling() {
         var count = 1;
         $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function () {
             $(this).children('td').eq(0).children('input').val(count);
@@ -1075,39 +1076,39 @@
         });
     }
 
-    function SetNameStraighting(isRemove) {
-        $('#tblDisplay').children('tbody').children('tr:last').children("td").eq(2).children("select").attr("Id", "Straighting.Grade999999");
+    function SetNameStrling(isRemove) {
+        $('#tblDisplay').children('tbody').children('tr:last').children("td").eq(2).children("select").attr("Id", "Strling.Grade999999");
         $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
-            $(this).children("td").eq(1).children("select").attr("name", "Straighting.RecProduct");
-            $(this).children("td").eq(1).children("select").attr("Id", "Straighting.RecProduct" + i + "");
-            $(this).children("td").eq(2).children("select").attr("name", "Straighting.Grade");
-            $(this).children("td").eq(2).children("select").attr("Id", "Straighting.Grade" + i + "");
-            $(this).children("td").eq(3).children("input").attr("name", "Straighting.strOD");
-            $(this).children("td").eq(3).children("input").attr("Id", "Straighting.strOD" + i + "");
-            $(this).children("td").eq(4).children("input").attr("name", "Straighting.StrThick");
-            $(this).children("td").eq(4).children("input").attr("Id", "Straighting.StrThick" + i + "");
+            $(this).children("td").eq(1).children("select").attr("name", "LstStrling["+i+"].RecProduct");
+            $(this).children("td").eq(1).children("select").attr("Id", "Strling.RecProduct" + i + "");
+            $(this).children("td").eq(2).children("select").attr("name", "LstStrling[" + i +"].Grade");
+            $(this).children("td").eq(2).children("select").attr("Id", "Strling.Grade" + i + "");
+            $(this).children("td").eq(3).children("input").attr("name", "LstStrling[" + i +"].StrOD");
+            $(this).children("td").eq(3).children("input").attr("Id", "Strling.StrOD" + i + "");
+            $(this).children("td").eq(4).children("input").attr("name", "LstStrling[" + i +"].StrThick");
+            $(this).children("td").eq(4).children("input").attr("Id", "Strling.StrThick" + i + "");
             if (!isRemove)
-                $(this).children("td").eq(4).children("input").attr("onblur", 'GetLotIssStraightingProduct(this)');
-            $(this).children("td").eq(5).children("input").attr("name", "Straighting.StrLength");
-            $(this).children("td").eq(5).children("input").attr("Id", "Straighting.StrLength" + i + "");
-            $(this).children("td").eq(6).children("input").attr("name", "Straighting.StrNoOfPipe");
-            $(this).children("td").eq(6).children("input").attr("Id", "Straighting.StrNoOfPipe" + i + "");
-            $(this).children("td").eq(7).children("input").attr("name", "Straighting.StrWeight");
-            $(this).children("td").eq(7).children("input").attr("Id", "Straighting.StrWeight" + i + "");
-            $(this).children("td").eq(8).children("select").attr("name", "Straighting.StrStatus");
-            $(this).children("td").eq(8).children("select").attr("Id", "Straighting.StrStatus" + i + "");
-            $(this).children("td").eq(9).children("input").attr("name", "Straighting.StrInTime");
-            $(this).children("td").eq(9).children("input").attr("Id", "Straighting.StrInTime" + i + "");
-            $(this).children("td").eq(10).children("input").attr("name", "Straighting.StrOutTime");
-            $(this).children("td").eq(10).children("input").attr("Id", "Straighting.StrOutTime" + i + "");
-            $(this).children("td").eq(11).children("input").attr("name", "Straighting.StrCoilNo");
-            $(this).children("td").eq(11).children("input").attr("Id", "Straighting.StrCoilNo" + i + "");
-            $(this).children("td").eq(12).children("input").attr("name", "Straighting.StrType");
-            $(this).children("td").eq(12).children("input").attr("Id", "Straighting.StrType" + i + "");
+                $(this).children("td").eq(4).children("input").attr("onblur", 'GetLotIssStrlingProduct(this)');
+            $(this).children("td").eq(5).children("input").attr("name", "LstStrling[" + i +"].StrLength");
+            $(this).children("td").eq(5).children("input").attr("Id", "Strling.StrLength" + i + "");
+            $(this).children("td").eq(6).children("input").attr("name", "LstStrling[" + i +"].StrNoOfPipe");
+            $(this).children("td").eq(6).children("input").attr("Id", "Strling.StrNoOfPipe" + i + "");
+            $(this).children("td").eq(7).children("input").attr("name", "LstStrling[" + i +"].StrWeight");
+            $(this).children("td").eq(7).children("input").attr("Id", "Strling.StrWeight" + i + "");
+            $(this).children("td").eq(8).children("select").attr("name", "LstStrling[" + i +"].StrStatus");
+            $(this).children("td").eq(8).children("select").attr("Id", "Strling.StrStatus" + i + "");
+            $(this).children("td").eq(9).children("input").attr("name", "LstStrling[" + i +"].StrInTime");
+            $(this).children("td").eq(9).children("input").attr("Id", "Strling.StrInTime" + i + "");
+            $(this).children("td").eq(10).children("input").attr("name", "LstStrling[" + i +"].StrOutTime");
+            $(this).children("td").eq(10).children("input").attr("Id", "Strling.StrOutTime" + i + "");
+            $(this).children("td").eq(11).children("input").attr("name", "LstStrling[" + i +"].StrCoilNo");
+            $(this).children("td").eq(11).children("input").attr("Id", "Strling.StrCoilNo" + i + "");
+            $(this).children("td").eq(12).children("input").attr("name", "LstStrling[" + i +"].StrType");
+            $(this).children("td").eq(12).children("input").attr("Id", "Strling.StrType" + i + "");
         });
     }
 
-    function EditRowsStraighting(obj) {
+    function EditRowsStrling(obj) {
         if (obj != null) {
             var srno = $(obj).closest('tr').children('td').eq(0).children('input').val();
             var csrno = $(obj).closest('tr').children('td').eq(0).children('input').val();
@@ -1147,10 +1148,10 @@
         }
     }
 
-    function GetDataBySrNoStraighting(value) {
+    function GetDataBySrNoStrling(value) {
         $('#tblDisplay').children('tbody').children('tr').each(function () {
             if ($(this).children('td').eq(0).html() == value || $(this).children('td').eq(0).children('input').val() == value) {
-                EditRowsStraighting($(this));
+                EditRowsStrling($(this));
                 //$('#tblStraighting').children('tbody').children('tr').children('td').eq(0).children('input').val(value);
                 $('#tblStraighting').children('tbody').children('tr:last').children('td').eq(1).children('select').focus();
             }
@@ -1182,8 +1183,8 @@
     }
 
     $(function () {
-        var strVou = '@Html.Raw(Model.StrVou)';
-        if (strVou != null && strVou != '' && strVou != 0) {
+        var Strvou = '@Html.Raw(Model.StrVou)';
+        if (Strvou != null && Strvou != '' && Strvou != 0) {
             GoToAddTab()
             var arecprd = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val();
             var agrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val();
@@ -1245,14 +1246,13 @@
     })
 
     $("#btnSave").click(function () {
-        debugger;
         localStorage.setItem("Straighting", "1");
         if (!isRecentCall) {
             var previousRow = $('#tblStraighting').children('tbody').children('tr:last').prev();
             if (previousRow != null) {
                 var eqty = $(previousRow).children('td').eq(7).children('input').val();
                 if (eqty != 0) {
-                    AddRowsStraighting()
+                    AddRowsStrling()
                 }
             }
         }
@@ -1287,9 +1287,9 @@
     });
 
 
-    function GetLotIssStraightingProduct(previousRow, isExists) {
+    function GetLotIssStrlingProduct(previousRow, isExists) {
         if (previousRow != null) {
-            var strVou = '@Html.Raw(Model.StrVou)';
+            var Strvou = '@Html.Raw(Model.StrVou)';
             var dt = $('#Date').val();
             var recProdId = $(previousRow).closest('tr').children('td').eq(1).children('select').val();
             var gradeId = $(previousRow).closest('tr').children('td').eq(2).children('select').val();
@@ -1298,15 +1298,15 @@
             var gsrno = $(previousRow).closest('tr').children('td').eq(0).children('input').val();
             if (thick != 0) {
                 $.ajax({
-                    url: '/Straighting/GetLotIssStraightingProduct',
+                    url: '/Straighting/GetLotIssStraightProduct',
                     type: 'POST',
-                    data: { 'recProdId': recProdId, 'strVou': strVou, 'gradeId': gradeId, 'od': od, 'thick': thick, 'dt': dt, "gsrno": gsrno },
+                    data: { 'recProdId': recProdId, 'Strvou': Strvou, 'gradeId': gradeId, 'od': od, 'thick': thick, 'dt': dt, "gsrno": gsrno },
                     dataType: 'JSON',
                     traditional: true, // add this
                     success: function (data) {
                         if (data.result) {
                             if (data.data == "1" && !isExists) {
-                                showErrorMessage("Pickling OD Size Not Exsits!");
+                                showErrorMessage("Straighting OD Size Not Exsits!");
                                 $(previousRow).closest('tr').children('td').eq(5).children('input').val('');
                                 $(previousRow).closest('tr').children('td').eq(6).children('input').val('');
                                 $(previousRow).closest('tr').children('td').eq(7).children('input').val('');
@@ -1353,7 +1353,7 @@
 
     function GetCalculateQty(previousRow, isExists) {
         if (previousRow != null) {
-            var strVou = '@Html.Raw(Model.StrVou)';
+            var Strvou = '@Html.Raw(Model.StrVou)';
             var bod = $(previousRow).closest('tr').children('td').eq(3).children('input').val();
             var bthick = $(previousRow).closest('tr').children('td').eq(4).children('input').val();
             var blength = $(previousRow).closest('tr').children('td').eq(5).children('input').val();
@@ -1365,5 +1365,5 @@
             $(previousRow).closest('tr').children('td').eq(7).children('input').val((weight2 * bpcs).toFixed(1));
         }
     }
-    //Dharmesh
+
 </script>

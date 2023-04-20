@@ -21,49 +21,43 @@ namespace SUNMark.Models
         public string FinishVou { get; set; }
         public string NextProc { get; set; }
         public string NextPrcVou { get; set; }
-        public string LDOQty { get; set; }
+        public string HFQty { get; set; }
+        public string NitricQty { get; set; }
+        public string LimeQty { get; set; }
         public string Remarks { get; set; }
         public StrGridModel Straighting { get; set; }
+        public List<StrGridModel> LstStraighting { get; set; }
     }
     public class StrGridModel
     {
         public long StrAVou { get; set; }
         public long StrAStrVou { get; set; }
-        public string[] Grade { get; set; }
-        public int[] GradeVou { get; set; }
+        public string Grade { get; set; }
+        public int GradeVou { get; set; }
         public List<SelectListItem> GradeList { get; set; }
-        public decimal[] StrThick { get; set; }
+        public decimal StrThick { get; set; }
         public string StrThickStr { get; set; }
-        public decimal[] StrOD { get; set; }
+        public decimal StrOD { get; set; }
         public string StrODStr { get; set; }
-        public decimal[] StrLength { get; set; }
+        public decimal StrLength { get; set; }
         public string StrLengthStr { get; set; }
-        public decimal[] StrNoOfPipe { get; set; }
+        public decimal StrNoOfPipe { get; set; }
         public string StrNoOfPipeStr { get; set; }
-        public decimal[] StrWeight { get; set; }
+        public decimal StrWeight { get; set; }
         public string StrWeightStr { get; set; }
-        public int[] RecPrdVou { get; set; }
+        public int RecPrdVou { get; set; }
         public List<SelectListItem> RecProductList { get; set; }
-        public string[] RecProduct { get; set; }
-        public string[] StrInTime { get; set; }
+        public string RecProduct { get; set; }
+        public int StatusVou { get; set; }
+        public List<SelectListItem> StatusList { get; set; }
+        public string StrStatus { get; set; }
+        public string StrInTime { get; set; }
         public string StrInTimeStr { get; set; }
-        public string[] StrOutTime { get; set; }
+        public string StrOutTime { get; set; }
         public string StrOutTimeStr { get; set; }
-        public string[] StrCoilNo { get; set; }
+        public string StrCoilNo { get; set; }
         public string StrCoilNoStr { get; set; }
-        public string[] StrType { get; set; }
+        public string StrType { get; set; }
         public string StrTypeStr { get; set; }
-        public decimal[] StrRPM { get; set; }
-        public string StrRPMStr { get; set; }
-        public int[] StrTDS1 { get; set; }
-        public string StrTDS1Str { get; set; }
-        public int[] StrTDS2 { get; set; }
-        public string StrTDS2Str { get; set; }
-        public int[] StrTDS3 { get; set; }
-        public string StrTDS3Str { get; set; }
-        public int[] StrTDS4 { get; set; }
-        public string StrTDS4Str { get; set; }
-        public int[] StrNoPBatch { get; set; }
-        public string StrNoPBatchStr { get; set; }
     }
 }
