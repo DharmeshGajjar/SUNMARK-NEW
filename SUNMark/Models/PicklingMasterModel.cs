@@ -26,38 +26,39 @@ namespace SUNMark.Models
         public string LimeQty { get; set; }
         public string Remarks { get; set; }
         public PikGridModel Pikling { get; set; }
+        public List<PikGridModel> LstPikling { get; set; }
 
     }
     public class PikGridModel
     {
         public long PikAVou { get; set; }
         public long PikAPikVou { get; set; }
-        public string[] Grade { get; set; }
-        public int[] GradeVou { get; set; }
+        public string Grade { get; set; }
+        public int GradeVou { get; set; }
         public List<SelectListItem> GradeList { get; set; }
-        public decimal[] PikThick { get; set; }
+        public decimal PikThick { get; set; }
         public string PikThickStr { get; set; }
-        public decimal[] PikOD { get; set; }
+        public decimal PikOD { get; set; }
         public string PikODStr { get; set; }
-        public decimal[] PikLength { get; set; }
+        public decimal PikLength { get; set; }
         public string PikLengthStr { get; set; }
-        public decimal[] PikNoOfPipe { get; set; }
+        public decimal PikNoOfPipe { get; set; }
         public string PikNoOfPipeStr { get; set; }
-        public decimal[] PikWeight { get; set; }
+        public decimal PikWeight { get; set; }
         public string PikWeightStr { get; set; }
-        public int[] RecPrdVou { get; set; }
+        public int RecPrdVou { get; set; }
         public List<SelectListItem> RecProductList { get; set; }
-        public string[] RecProduct { get; set; }
-        public int[] StatusVou { get; set; }
+        public string RecProduct { get; set; }
+        public int StatusVou { get; set; }
         public List<SelectListItem> StatusList { get; set; }
-        public string[] PikStatus { get; set; }
-        public string[] PikInTime { get; set; }
+        public string PikStatus { get; set; }
+        public string PikInTime { get; set; }
         public string PikInTimeStr { get; set; }
-        public string[] PikOutTime { get; set; }
+        public string PikOutTime { get; set; }
         public string PikOutTimeStr { get; set; }
-        public string[] PikCoilNo { get; set; }
+        public string PikCoilNo { get; set; }
         public string PikCoilNoStr { get; set; }
-        public string[] PikType { get; set; }
+        public string PikType { get; set; }
         public string PikTypeStr { get; set; }
     }
 }
