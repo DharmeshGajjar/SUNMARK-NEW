@@ -132,7 +132,7 @@ namespace SUNMark.Controllers
                             for (int i = 0; i < StraightingMasterModel.LstStraighting.Count; i++)
                             {
                                 SqlParameter[] sqlParam = new SqlParameter[15];
-                                sqlParam[0] = new SqlParameter("@StrAPikVou", masterId);
+                                sqlParam[0] = new SqlParameter("@StrAStrVou", masterId);
                                 sqlParam[1] = new SqlParameter("@StrCmpVou", StraightingMasterModel.StrCmpVou);
                                 sqlParam[2] = new SqlParameter("@StrGrdVou", StraightingMasterModel.LstStraighting[i].Grade);
                                 sqlParam[3] = new SqlParameter("@StrThick", StraightingMasterModel.LstStraighting[i].StrThick);

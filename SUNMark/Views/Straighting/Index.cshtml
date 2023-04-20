@@ -1079,32 +1079,32 @@
     function SetNameStrling(isRemove) {
         $('#tblDisplay').children('tbody').children('tr:last').children("td").eq(2).children("select").attr("Id", "Strling.Grade999999");
         $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
-            $(this).children("td").eq(1).children("select").attr("name", "LstStrling["+i+"].RecProduct");
-            $(this).children("td").eq(1).children("select").attr("Id", "Strling.RecProduct" + i + "");
-            $(this).children("td").eq(2).children("select").attr("name", "LstStrling[" + i +"].Grade");
-            $(this).children("td").eq(2).children("select").attr("Id", "Strling.Grade" + i + "");
-            $(this).children("td").eq(3).children("input").attr("name", "LstStrling[" + i +"].StrOD");
-            $(this).children("td").eq(3).children("input").attr("Id", "Strling.StrOD" + i + "");
-            $(this).children("td").eq(4).children("input").attr("name", "LstStrling[" + i +"].StrThick");
-            $(this).children("td").eq(4).children("input").attr("Id", "Strling.StrThick" + i + "");
+            $(this).children("td").eq(1).children("select").attr("name", "LstStraighting["+i+"].RecProduct");
+            $(this).children("td").eq(1).children("select").attr("Id", "Straighting.RecProduct" + i + "");
+            $(this).children("td").eq(2).children("select").attr("name", "LstStraighting[" + i +"].Grade");
+            $(this).children("td").eq(2).children("select").attr("Id", "Straighting.Grade" + i + "");
+            $(this).children("td").eq(3).children("input").attr("name", "LstStraighting[" + i +"].StrOD");
+            $(this).children("td").eq(3).children("input").attr("Id", "Straighting.StrOD" + i + "");
+            $(this).children("td").eq(4).children("input").attr("name", "LstStraighting[" + i +"].StrThick");
+            $(this).children("td").eq(4).children("input").attr("Id", "Straighting.StrThick" + i + "");
             if (!isRemove)
                 $(this).children("td").eq(4).children("input").attr("onblur", 'GetLotIssStrlingProduct(this)');
-            $(this).children("td").eq(5).children("input").attr("name", "LstStrling[" + i +"].StrLength");
-            $(this).children("td").eq(5).children("input").attr("Id", "Strling.StrLength" + i + "");
-            $(this).children("td").eq(6).children("input").attr("name", "LstStrling[" + i +"].StrNoOfPipe");
-            $(this).children("td").eq(6).children("input").attr("Id", "Strling.StrNoOfPipe" + i + "");
-            $(this).children("td").eq(7).children("input").attr("name", "LstStrling[" + i +"].StrWeight");
-            $(this).children("td").eq(7).children("input").attr("Id", "Strling.StrWeight" + i + "");
-            $(this).children("td").eq(8).children("select").attr("name", "LstStrling[" + i +"].StrStatus");
-            $(this).children("td").eq(8).children("select").attr("Id", "Strling.StrStatus" + i + "");
-            $(this).children("td").eq(9).children("input").attr("name", "LstStrling[" + i +"].StrInTime");
-            $(this).children("td").eq(9).children("input").attr("Id", "Strling.StrInTime" + i + "");
-            $(this).children("td").eq(10).children("input").attr("name", "LstStrling[" + i +"].StrOutTime");
-            $(this).children("td").eq(10).children("input").attr("Id", "Strling.StrOutTime" + i + "");
-            $(this).children("td").eq(11).children("input").attr("name", "LstStrling[" + i +"].StrCoilNo");
-            $(this).children("td").eq(11).children("input").attr("Id", "Strling.StrCoilNo" + i + "");
-            $(this).children("td").eq(12).children("input").attr("name", "LstStrling[" + i +"].StrType");
-            $(this).children("td").eq(12).children("input").attr("Id", "Strling.StrType" + i + "");
+            $(this).children("td").eq(5).children("input").attr("name", "LstStraighting[" + i +"].StrLength");
+            $(this).children("td").eq(5).children("input").attr("Id", "Straighting.StrLength" + i + "");
+            $(this).children("td").eq(6).children("input").attr("name", "LstStraighting[" + i +"].StrNoOfPipe");
+            $(this).children("td").eq(6).children("input").attr("Id", "Straighting.StrNoOfPipe" + i + "");
+            $(this).children("td").eq(7).children("input").attr("name", "LstStraighting[" + i +"].StrWeight");
+            $(this).children("td").eq(7).children("input").attr("Id", "Straighting.StrWeight" + i + "");
+            $(this).children("td").eq(8).children("select").attr("name", "LstStraighting[" + i +"].StrStatus");
+            $(this).children("td").eq(8).children("select").attr("Id", "Straighting.StrStatus" + i + "");
+            $(this).children("td").eq(9).children("input").attr("name", "LstStraighting[" + i +"].StrInTime");
+            $(this).children("td").eq(9).children("input").attr("Id", "Straighting.StrInTime" + i + "");
+            $(this).children("td").eq(10).children("input").attr("name", "LstStraighting[" + i +"].StrOutTime");
+            $(this).children("td").eq(10).children("input").attr("Id", "Straighting.StrOutTime" + i + "");
+            $(this).children("td").eq(11).children("input").attr("name", "LstStraighting[" + i +"].StrCoilNo");
+            $(this).children("td").eq(11).children("input").attr("Id", "Straighting.StrCoilNo" + i + "");
+            $(this).children("td").eq(12).children("input").attr("name", "LstStraighting[" + i +"].StrType");
+            $(this).children("td").eq(12).children("input").attr("Id", "Straighting.StrType" + i + "");
         });
     }
 
