@@ -36,7 +36,7 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
-                //dharmesh
+
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int administrator = 0;
                 long userId = GetIntSession("UserId");
