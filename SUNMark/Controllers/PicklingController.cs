@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using SUNMark.Classes;
+using SUNMark.Common;
 using SUNMark.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SUNMark.Controllers
@@ -15,7 +19,11 @@ namespace SUNMark.Controllers
         DbConnection ObjDBConnection = new DbConnection();
         AccountMasterHelpers ObjAccountMasterHelpers = new AccountMasterHelpers();
         ProductHelpers objProductHelper = new ProductHelpers();
-
+        private readonly IWebHostEnvironment _iwebhostenviroment;
+        public PicklingController(IWebHostEnvironment iwebhostenviroment)
+        {
+            _iwebhostenviroment = iwebhostenviroment;
+        }
         public IActionResult Index(int id)
         {
             try
@@ -102,7 +110,7 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
-                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.Vno).ToString()) && !string.IsNullOrWhiteSpace(picklingMaster.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.PikCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.MachineNo).ToString()) && picklingMaster.Pikling.RecProduct.Length > 0 && picklingMaster.Pikling.Grade.Length > 0 && picklingMaster.LstPikling.Count > 0 )
+                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.Vno).ToString()) && !string.IsNullOrWhiteSpace(picklingMaster.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.PikCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.MachineNo).ToString())  && picklingMaster.LstPikling.Count > 0 )
                 {
                     SqlParameter[] sqlParameter = new SqlParameter[18];
                     sqlParameter[0] = new SqlParameter("@PikVou", picklingMaster.PikVou);
@@ -156,6 +164,13 @@ namespace SUNMark.Controllers
                             }
                             else
                             {
+                                if (picklingMaster.isPrint != 0)
+                                {
+                                    TempData["ReturnId"] = id.ToString();
+                                    TempData["Savedone"] = "1";
+                                    TempData["IsPrint"] = picklingMaster.isPrint.ToString();
+                                    return RedirectToAction("Index", new { id = id });
+                                }
                                 if (id > 0)
                                 {
                                     SetSuccessMessage("Record updated succesfully!");
@@ -402,7 +417,188 @@ namespace SUNMark.Controllers
             {
                 throw;
             }
-        }
+        } 
+        public PicklingPrintDetails GetPicklingHtmlData(long id)
+        {
+            PicklingPrintDetails obj = new PicklingPrintDetails();
 
+            try
+            {
+                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                int YearId = Convert.ToInt32(GetIntSession("YearId"));
+                long userId = GetIntSession("UserId");
+
+                SqlParameter[] sqlParameters = new SqlParameter[1];
+                sqlParameters[0] = new SqlParameter("@PikVou", id);
+                DataTable DtInward = ObjDBConnection.CallStoreProcedure("GetPicklingDetailsforPDF", sqlParameters);
+                if (DtInward != null && DtInward.Rows.Count > 0)
+                {
+                    string path = _iwebhostenviroment.WebRootPath + "/Reports";
+                    string body = string.Empty;
+                    string newbody = string.Empty;
+                    string filename = "";
+                    //using streamreader for reading my htmltemplate   
+                    string CmpCode = string.Empty;
+                    string CmpName = string.Empty;
+                    string CmpVou = string.Empty;
+                    string Layout = string.Empty;
+                    string CmpWeb = string.Empty;
+                    string CmpAdd = string.Empty;
+                    string CmpEmail = string.Empty;
+
+                    Layout = "Pickling";
+                    filename = "Pickling.html";
+
+                    using (StreamReader reader = new StreamReader(Path.Combine(path, filename)))
+                    {
+                        body = reader.ReadToEnd();
+                    }
+                    if (!string.IsNullOrEmpty(body))
+                    {
+                        newbody = body.Replace("//Address//", DtInward.Rows[0]["DepAdd"].ToString());
+                        newbody = newbody.Replace("//Email//", DtInward.Rows[0]["DepEmail"].ToString());
+                        newbody = newbody.Replace("//Web//", CmpWeb);
+                        string BilDate = DateTime.Parse(DtInward.Rows[0]["PikDt"].ToString()).ToString("dd-MM-yyyy");
+                        newbody = newbody.Replace("//Date//", BilDate);
+                        newbody = newbody.Replace("//Shift//", DtInward.Rows[0]["PikShift"].ToString());
+                        newbody = newbody.Replace("//Logo//", !string.IsNullOrWhiteSpace(DtInward.Rows[0]["DepLogo"].ToString()) ? "http://piosunmark.pioerp.com/Uploads/" + DtInward.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
+                        newbody = newbody.Replace("//Nitric//", DtInward.Rows[0]["PikNitricQty"].ToString());
+                        newbody = newbody.Replace("//Lime//", DtInward.Rows[0]["PikLimeQty"].ToString());
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.Append("<tr align=\"center\"><td>WO NO</td><td>Coil NO</td><td>GRADE</td><td>HEAT NO.</td><td>OD</td><td>THK</td><td>LNG</td><td>NOS</td><td>TOTAL WEIGHT</td><td>STATUS</td>");//datatable
+
+
+                        for (int i = 0; i < DtInward.Rows.Count; i++)
+                        {
+
+                            sb.Append("<tr>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">E+ Stock</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikACoilNo"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAGrdVou"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">-</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAOD"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAThick"].ToString() + "</td>");
+                            var length = (Convert.ToDouble(DtInward.Rows[i]["PikALength"]) * 0.3048);
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + length + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikANoOfPipe"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAWeight"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAStatus"].ToString() + "</td>");
+
+
+                            sb.Append("</tr>");
+                        }
+                        for (int i = 0; i < DtInward.Rows.Count; i++)
+                        {
+                            sb.Append("<tr align=\"center\">");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("</tr>");
+                        }
+                        newbody = newbody.Replace("//First-Table//", sb.ToString());
+                     
+                        obj.Html = newbody;
+                        obj.Id = id.ToString();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return obj;
+        }
+        public IActionResult PicklingPrintDetials(long id, int copyType = 1)
+        {
+            try
+            {
+                PicklingPrintDetails obj = GetPicklingHtmlData(id);
+
+                string wwwroot = string.Empty;
+                string filePath = "/PrintPDF/" + id + ".pdf";
+                wwwroot = _iwebhostenviroment.WebRootPath + filePath;
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Save(wwwroot);
+                doc.Close();
+                return Json(filePath);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+         
+        public IActionResult PicklingSendMail(long id, string email = "")
+        {
+            try
+            {
+                //PicklingPrintDetails obj = GetPicklingHtmlData(id);
+                PicklingPrintDetails obj = GetPicklingHtmlData(id);
+                string wwwroot = string.Empty;
+                string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
+
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                //var render = new IronPdf.HtmlToPdf();
+                //using var doc = render.RenderHtmlAsPdf(obj.Html);
+                //doc.SaveAs(wwwroot);
+
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Save(wwwroot);
+                doc.Close();
+
+                bool result = SendEmail(email, "Pickling TRANSFER REPORT", "Please find attachment", wwwroot);
+                if (result)
+                    return Json(new { result = result, message = "Mail Send Sucessfully" });
+                else
+                    return Json(new { result = result, message = "Internal server error" });
+
+
+                //return Json(new { result = result, message = "Please check your mail address" });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        public IActionResult PicklingWhatApp(long id, string whatappNo = "")
+        {
+            try
+            {
+                PicklingPrintDetails obj = GetPicklingHtmlData(id);
+                string wwwroot = string.Empty;
+                string filenm = string.Empty;
+                string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
+
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                //wwwroot = "http://piosunmark.pioerp.com/wwwroot/PrintPDF/" + dateTime + ".pdf";
+                filenm = dateTime + ".pdf";
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Margins.Left = 25;
+                doc.Save(wwwroot);
+                doc.Close();
+
+                WhatAppAPIResponse apiResponse = SendWhatAppMessage(whatappNo, "Pickling TRANSFER REPORT", wwwroot, filenm);
+                return Json(new { result = apiResponse.status, message = apiResponse.message });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
     }
 }

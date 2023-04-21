@@ -73,6 +73,52 @@
             </div>
             <div class="card-body">
                 <div class="col-md-12">
+                    <button type="button" id="modelPopup" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="Display:none">
+                        Launch demo modal
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Print Option</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-check">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <input type="radio" class="form-check-input" id="radio1" name="printOption" value="Print" checked>
+                                                <label class="form-check-label" for="radio1">Print/View </label>
+                                            </div>
+                                            <div class="col-md-2 ">
+                                                <input type="radio" class="form-check-input" id="radio2" name="printOption" value="Email">
+                                                <label class="form-check-label" for="radio2">Email</label>
+                                            </div>
+                                            <div class="col-md-10 form-group">
+                                                <input type="email" name="EmailAddress" Id="EmailAddress" class="from-control" style="display:none" required />
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="radio" class="form-check-input" id="radio3" name="printOption" value="WhatApp">
+                                                <label class="form-check-label" for="radio2">WhatApp</label>
+                                            </div>
+                                            <div class="col-md-10 form-group">
+                                                <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"> Esc - Cancle</button>
+                                    <button type="button" class="btn btn-primary" id="btn_ViewMailWhatapp">Submit (F9)</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="tab-content" id="custom-tabs-three-tabContent">
                         @if (userRight != null && userRight.IsList)
                         {
@@ -323,10 +369,11 @@
                                                                 @if (Model != null && Model.Pikling != null && Model.Pikling.GradeList != null && Model.Pikling.GradeList.Count > 0)
                                                                 {
                                                                     @Html.DropDownListFor(x => x.Pikling.Grade, new SelectList(Model.Pikling.GradeList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                    @*@Html.DropDownListFor(x => x.Pikling.Grade, new SelectList(Model.Pikling.GradeList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })*@
                                                                 }
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
-                                                                @Html.TextBoxFor(x => x.Pikling.PikOD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikOD", @onKeyUp = "numericFilter(this);" })
+                                                                @Html.TextBoxFor(x => x.Pikling.PikOD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikOD", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssPiklingProduct(this)" })
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
                                                                 @Html.TextBoxFor(x => x.Pikling.PikThick, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtPikThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssPiklingProduct(this)" })
@@ -408,7 +455,7 @@
                                             </div>
                                             <div class="table-responsive col-md-12" style="font-family:Verdana;font-size:small;font-display:inherit;margin:0 0 0 0">
                                                 <table class="table table-bordered overflow-auto table-head-fixed" id="tblDisplay">
-                                                    @if (Model != null && Model.LstPikling != null  && Model.LstPikling.Count > 0)
+                                                    @if (Model != null && Model.LstPikling != null && Model.LstPikling.Count > 0)
                                                     {
                                                         <thead>
                                                             <tr>
@@ -527,6 +574,9 @@
                                                     <a href="/Pickling/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
                                                         Cancel (Esc)
                                                     </a>
+                                                    <button class="btn btn-primary px-md-4 mb-2 text-white" id="btnPrint" style="font-family:Verdana;font-size:medium" type="button" onclick="AddPickling()">
+                                                        Print (F9)
+                                                    </button>
                                                 }
                                                 else if (userRight.IsAdd && id == 0)
                                                 {
@@ -536,6 +586,9 @@
                                                     <a href="/Pickling/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
                                                         Cancel (Esc)
                                                     </a>
+                                                    <button class="btn btn-primary px-md-4 mb-2 text-white" id="btnPrint" style="font-family:Verdana;font-size:medium" type="button" onclick="AddPickling()">
+                                                        Print (F9)
+                                                    </button>
                                                 }
                                             </div>
                                         </div>
@@ -551,6 +604,8 @@
 </div>
 
 <script>
+    var ReturnId = 0;
+    var Savedone;
     $(document).ready(function () {
         var Vou = '@Html.Raw(Model.PikVou)';
         if (Vou != null && Vou != '' && Vou != 0) {
@@ -564,9 +619,127 @@
         if (focusType != null && focusType != '' && focusType == 1) {
             GoToAddTab();
         }
-
+         ReturnId = '@TempData["ReturnId"]';
+         Savedone = '@Html.Raw(TempData["Savedone"])';
+        if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
+            $("#modelPopup").click();//$("#btn_ViewMailWhatapp").click();
+        }
     });
+     $(".form-check input[name='printOption']").click(function () {
+        $("#EmailAddress").hide();
+        $("#WhatappNo").hide();
+        var optionVal = $('input:radio[name=printOption]:checked').val();
+        if (optionVal == "Print") {
 
+        }
+        else if (optionVal == "WhatApp") {
+            $("#WhatappNo").show();
+        }
+        else {
+            $("#EmailAddress").show();
+        }
+    });
+    $("#btn_ViewMailWhatapp").click(function () {
+        debugger;
+        if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
+            printPickling();
+        }
+    });
+    function printPickling() {
+         let optionVal = $('input:radio[name=printOption]:checked').val();
+                if (optionVal == "Print") {
+                    $('#exampleModal').modal('hide');
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("PicklingPrintDetials", "Pickling")',
+                        data: { "id": ReturnId},
+                        dataType: "JSON",
+                        success: function (data) {
+                            var host = window.location.origin + data;
+                            $('#exampleModal').modal('hide');
+                            //$("[name=" + activeEle + "]").focus();
+                            var win = window.open(host, '_blank');
+                            if (win) {
+                                win.focus();
+                            } else {
+                                alert('Please allow popups for this website');
+                            }
+                        },
+                        error: function (response) {
+                            $("#EmailAddress").val("");
+                        }
+                    });
+                }
+                else if (optionVal == "Email") {
+                    if ($("#EmailAddress").val() != "" && $("#EmailAddress").val() != null) {
+                        $.ajax({
+                            type: "POST",
+                            url: '/AnnealingPrintDetials/AnnealingSendMail',
+                            data: { "id": ReturnId, "email": $("#EmailAddress").val() },
+                            dataType: "JSON",
+                            success: function (data) {
+                                //$("[name=" + activeEle + "]").focus();
+                                if (data.result) {
+                                     showSuccessMessage(data.message);
+                                }
+                                else {
+                                    showErrorMessage(data.message);
+                                }
+                                $('#radio1').prop('checked', true);
+                                $("#EmailAddress").val("");
+                                $('#exampleModal').modal('toggle');
+                            },
+                            error: function (response) {
+                                 $("#EmailAddress").val("");
+                            }
+                        });
+                    }
+                    else {
+                        alert("Please Enter Email Address")
+                    }
+
+
+                    //window.location.href = "/JobWorkEntry/JobWorkSendMail?id=" + ReturnId + "&email=" + $("#EmailAddress").val();
+
+                }
+                else if (optionVal == "WhatApp") {
+                    let whNO = $("#WhatappNo").val();
+                    if (whNO != "" && whNO != null) {
+                        if (whNO.length == 10) {
+                            $.ajax({
+                                type: "POST",
+                                url: '/AnnealingPrintDetials/AnnealingWhatApp',
+                                data: { "id": ReturnId, "whatappNo": whNO },
+                                dataType: "JSON",
+                                success: function (data) {
+                                    if (data.result == "error") {
+                                        showErrorMessage(data.message)
+                                    }
+                                    else {
+                                        showSuccessMessage(data.message);
+                                    }
+                                    $('#radio1').prop('checked', true);
+                                    $("#WhatappNo").val("");
+                                    $("#WhatappNo").hide();
+                                    $('#exampleModal').modal('toggle');
+                                },
+                                error: function (data) {
+                                    $("#WhatappNo").val("");
+                                }
+                            });
+                        }
+                        else {
+                            alert("Please enter 10 digit number")
+                        }
+                    }
+                    else {
+                        alert("Please enter what app number")
+                    }
+
+        }
+        Savedone = '';
+    }
     function GoToAddTab() {
         $('#custom-tabs-three-list-tab').removeClass('active');
         $('#custom-tabs-three-add-tab').addClass('active');
@@ -618,8 +791,9 @@
                             isRecentCalledSave = false;
                         }, 1000)
                     }
-                })
-                .on('Alt+L', function () {
+                }).on('F9', function () {
+                    $("#btnPrint").click();
+                }).on('Alt+L', function () {
                     GoToListTab();
                 })
                 .on('Pagedown', function () {
@@ -1018,7 +1192,7 @@
                                 $(this).children('td').eq(12).children('input').val(type);
                                 $(this).children('td').eq(13).addClass('text-center')
                                 $(this).children('td').eq(13).html(`<i class="fa fa-edit text-primary" onclick="EditRowsPikling(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsPikling(this)" style="font-size:18px"></i>`)
-                                $('#btnSave').prop('disabled', false);
+                                //$('#btnSave').prop('disabled', false);
                             }
                         })
                     }
@@ -1365,5 +1539,18 @@
             $(previousRow).closest('tr').children('td').eq(7).children('input').val((weight2 * bpcs).toFixed(1));
         }
     }
-
+    $("#btnPrint").click(function () {
+        debugger;
+        $("#tblDisplay tr td").find("select").attr('disabled', false);
+        $("#tblDisplay tr td").find("input").attr('disabled', false);
+        $('#txtIsPrint').val('1');
+        $('#Vno').removeAttr('disabled');
+        $('#AnnVou').removeAttr('disabled');
+        $('#pickingForm').submit();
+        //$("#modelPopup").click();
+    })
+    $("#btnSave").click(function () {
+        $('#txtIsPrint').val('0');
+        $('#frmGdnTrans').submit();
+    })
 </script>

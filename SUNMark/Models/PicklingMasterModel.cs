@@ -8,6 +8,7 @@ namespace SUNMark.Models
 {
     public class PicklingMasterModel
     {
+        
         public int PikVou { get; set; }
         public int PikCmpVou { get; set; }
         public string Vno { get; set; }
@@ -27,7 +28,7 @@ namespace SUNMark.Models
         public string Remarks { get; set; }
         public PikGridModel Pikling { get; set; }
         public List<PikGridModel> LstPikling { get; set; }
-
+        public int isPrint { get; set; }
     }
     public class PikGridModel
     {
@@ -60,5 +61,12 @@ namespace SUNMark.Models
         public string PikCoilNoStr { get; set; }
         public string PikType { get; set; }
         public string PikTypeStr { get; set; }
+    }
+    public class PicklingPrintDetails
+    {
+        public string Id { get; set; }
+        public string Html { get; set; }
+        //public string Html { get; set; }
+
     }
 }

@@ -27,6 +27,7 @@ namespace SUNMark.Models
         public string Remarks { get; set; }
         public StrGridModel Straighting { get; set; }
         public List<StrGridModel> LstStraighting { get; set; }
+        public int isPrint { get; set; }
     }
     public class StrGridModel
     {
@@ -59,5 +60,14 @@ namespace SUNMark.Models
         public string StrCoilNoStr { get; set; }
         public string StrType { get; set; }
         public string StrTypeStr { get; set; }
+
+    }
+
+    public class StraightingPrintDetails
+    {
+        public string Id { get; set; }
+        public string Html { get; set; }
+        //public string Html { get; set; }
+
     }
 }

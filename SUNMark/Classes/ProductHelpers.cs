@@ -929,6 +929,29 @@ namespace SUNMark.Classes
             return StatusList;
         }
 
+        public List<SelectListItem> GetStraightingStatus()
+        {
+            List<SelectListItem> StatusList = new List<SelectListItem>();
+            try
+            {
+                StatusList.Add(new SelectListItem
+                {
+                    Text = "AP",
+                    Value = "1"
+                });
+                StatusList.Add(new SelectListItem
+                {
+                    Text = "Final Straighting",
+                    Value = "2"
+                });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return StatusList;
+        }
+
         public List<SelectListItem> GetInwardCoilType()
         {
             List<SelectListItem> CoilTypeList = new List<SelectListItem>();

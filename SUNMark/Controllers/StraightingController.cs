@@ -1,11 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using SUNMark.Classes;
+using SUNMark.Common;
 using SUNMark.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SUNMark.Controllers
@@ -15,7 +20,12 @@ namespace SUNMark.Controllers
         DbConnection ObjDBConnection = new DbConnection();
         AccountMasterHelpers ObjAccountMasterHelpers = new AccountMasterHelpers();
         ProductHelpers objProductHelper = new ProductHelpers();
+        private readonly IWebHostEnvironment _iwebhostenviroment;
 
+        public StraightingController(IWebHostEnvironment iwebhostenviroment)
+        {
+            _iwebhostenviroment = iwebhostenviroment;
+        }
         public IActionResult Index(int id)
         {
             try
@@ -33,7 +43,7 @@ namespace SUNMark.Controllers
                 straighMasterModel.Straighting = new StrGridModel();
                 straighMasterModel.Straighting.RecProductList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "PIPE");
                 straighMasterModel.Straighting.GradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
-                straighMasterModel.Straighting.StatusList = objProductHelper.GetPicklingStatus();
+                straighMasterModel.Straighting.StatusList = objProductHelper.GetStraightingStatus();
                 straighMasterModel.Vno = GetVoucherNo();
                 
                 if (id > 0)
@@ -103,7 +113,7 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
-                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.Vno).ToString()) && !string.IsNullOrWhiteSpace(StraightingMasterModel.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.StrCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.MachineNo).ToString()) && StraightingMasterModel.Straighting.RecProduct.Length > 0 && StraightingMasterModel.Straighting.Grade.Length > 0 && StraightingMasterModel.LstStraighting.Count > 0)
+                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.Vno).ToString()) && !string.IsNullOrWhiteSpace(StraightingMasterModel.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.StrCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.MachineNo).ToString()) && StraightingMasterModel.LstStraighting.Count > 0)
                 {
                     SqlParameter[] sqlParameter = new SqlParameter[18];
                     sqlParameter[0] = new SqlParameter("@StrVou", StraightingMasterModel.StrVou);
@@ -157,6 +167,13 @@ namespace SUNMark.Controllers
                             }
                             else
                             {
+                                if (StraightingMasterModel.isPrint != 0)
+                                {
+                                    TempData["ReturnId"] = id.ToString();
+                                    TempData["Savedone"] = "1";
+                                    TempData["IsPrint"] = StraightingMasterModel.isPrint.ToString();
+                                    return RedirectToAction("Index", new { id = id });
+                                }
                                 if (id > 0)
                                 {
                                     SetSuccessMessage("Record updated succesfully!");
@@ -403,6 +420,192 @@ namespace SUNMark.Controllers
             {
                 throw;
             }
+        }
+
+        public StraightingPrintDetails GetStraightingHtmlData(long id)
+        {
+            StraightingPrintDetails obj = new StraightingPrintDetails();
+
+            try
+            {
+                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                int YearId = Convert.ToInt32(GetIntSession("YearId"));
+                long userId = GetIntSession("UserId");
+
+                SqlParameter[] sqlParameters = new SqlParameter[1];
+                sqlParameters[0] = new SqlParameter("@StrVou", id);
+                DataTable DtInward = ObjDBConnection.CallStoreProcedure("GetStraightingDetailrPDF", sqlParameters);
+                if (DtInward != null && DtInward.Rows.Count > 0)
+                {
+                    string path = _iwebhostenviroment.WebRootPath + "/Reports";
+                    string body = string.Empty;
+                    string newbody = string.Empty;
+                    string filename = "";
+                    //using streamreader for reading my htmltemplate   
+                    string CmpCode = string.Empty;
+                    string CmpName = string.Empty;
+                    string CmpVou = string.Empty;
+                    string Layout = string.Empty;
+                    string CmpWeb = string.Empty;
+                    string CmpAdd = string.Empty;
+                    string CmpEmail = string.Empty;
+
+                    Layout = "Straighting";
+                    filename = "Straighting.html";
+
+                    using (StreamReader reader = new StreamReader(Path.Combine(path, filename)))
+                    {
+                        body = reader.ReadToEnd();
+                    }
+                    if (!string.IsNullOrEmpty(body))
+                    {
+                        newbody = body.Replace("//Address//", DtInward.Rows[0]["DepAdd"].ToString());
+                        newbody = newbody.Replace("//Email//", DtInward.Rows[0]["DepEmail"].ToString());
+                        newbody = newbody.Replace("//Web//", CmpWeb);
+                        string BilDate = DateTime.Parse(DtInward.Rows[0]["StrDt"].ToString()).ToString("dd-MM-yyyy");
+                        newbody = newbody.Replace("//Date//", BilDate);
+                        newbody = newbody.Replace("//Shift//", DtInward.Rows[0]["StrShift"].ToString());
+                        newbody = newbody.Replace("//Logo//", !string.IsNullOrWhiteSpace(DtInward.Rows[0]["DepLogo"].ToString()) ? "http://piosunmark.pioerp.com/Uploads/" + DtInward.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
+                        newbody = newbody.Replace("//Nitric//", DtInward.Rows[0]["StrNitricQty"].ToString());
+                        newbody = newbody.Replace("//Lime//", DtInward.Rows[0]["StrLimeQty"].ToString());
+                        StringBuilder sb = new StringBuilder();
+
+                        //sb.Append("<tr align=\"center\"><td>WO NO</td><td>Coil NO</td><td>GRADE</td><td>HEAT NO.</td><td>OD</td><td>THK</td><td>LNG</td><td>NOS</td><td>TOTAL WEIGHT</td><td>STATUS</td>");//datatable
+
+
+                        for (int i = 0; i < DtInward.Rows.Count; i++)
+                        {
+
+                            sb.Append("<tr>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">E+ Stock</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["StrACoilNo"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["StrAGrdVou"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">-</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["StrAOD"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["StrAThick"].ToString() + "</td>");
+                            var length = (Convert.ToDouble(DtInward.Rows[i]["StrALength"]) * 0.3048);
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + length + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["StrANoOfPipe"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["StrAWeight"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["StrAWeight"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">-</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["StrNextProc"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["StrRemarks"].ToString() + "</td>");
+                            sb.Append("</tr>");
+                        }
+                        for (int i = 0; i < DtInward.Rows.Count; i++)
+                        {
+                            sb.Append("<tr align=\"center\">");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("<td>&nbsp;</td>");
+                            sb.Append("</tr>");
+                        }
+                        newbody = newbody.Replace("//First-Table//", sb.ToString());
+                        obj.Html = newbody;
+                        obj.Id = id.ToString();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return obj;
+        }
+        public IActionResult StraightingPrintDetials(long id, int copyType = 1)
+        {
+            try
+            {
+                StraightingPrintDetails obj = GetStraightingHtmlData(id);
+
+                string wwwroot = string.Empty;
+                string filePath = "/PrintPDF/" + id + ".pdf";
+                wwwroot = _iwebhostenviroment.WebRootPath + filePath;
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Save(wwwroot);
+                doc.Close();
+                return Json(filePath);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
+        public IActionResult StraightingSendMail(long id, string email = "")
+        {
+            try
+            {
+                //PicklingPrintDetails obj = GetPicklingHtmlData(id);
+                StraightingPrintDetails obj = GetStraightingHtmlData(id);
+                string wwwroot = string.Empty;
+                string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
+
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                //var render = new IronPdf.HtmlToPdf();
+                //using var doc = render.RenderHtmlAsPdf(obj.Html);
+                //doc.SaveAs(wwwroot);
+
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Save(wwwroot);
+                doc.Close();
+
+                bool result = SendEmail(email, "Pickling TRANSFER REPORT", "Please find attachment", wwwroot);
+                if (result)
+                    return Json(new { result = result, message = "Mail Send Sucessfully" });
+                else
+                    return Json(new { result = result, message = "Internal server error" });
+
+
+                //return Json(new { result = result, message = "Please check your mail address" });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        public IActionResult StraightingWhatApp(long id, string whatappNo = "")
+        {
+            try
+            {
+                StraightingPrintDetails obj = GetStraightingHtmlData(id);
+                string wwwroot = string.Empty;
+                string filenm = string.Empty;
+                string dateTime = DateTime.Now.ToString("ddMMyyyhhmmss");
+
+                wwwroot = _iwebhostenviroment.WebRootPath + "/PrintPDF/" + dateTime + ".pdf";
+                //wwwroot = "http://piosunmark.pioerp.com/wwwroot/PrintPDF/" + dateTime + ".pdf";
+                filenm = dateTime + ".pdf";
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
+                doc.Margins.Left = 25;
+                doc.Save(wwwroot);
+                doc.Close();
+
+                WhatAppAPIResponse apiResponse = SendWhatAppMessage(whatappNo, "Straighting TRANSFER REPORT", wwwroot, filenm);
+                return Json(new { result = apiResponse.status, message = apiResponse.message });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
     }
 }

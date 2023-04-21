@@ -73,6 +73,51 @@
             </div>
             <div class="card-body">
                 <div class="col-md-12">
+                    <button type="button" id="modelPopup" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="Display:none">
+                        Launch demo modal
+                    </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Print Option</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-check">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <input type="radio" class="form-check-input" id="radio1" name="printOption" value="Print" checked>
+                                                <label class="form-check-label" for="radio1">Print/View </label>
+                                            </div>
+                                            <div class="col-md-2 ">
+                                                <input type="radio" class="form-check-input" id="radio2" name="printOption" value="Email">
+                                                <label class="form-check-label" for="radio2">Email</label>
+                                            </div>
+                                            <div class="col-md-10 form-group">
+                                                <input type="email" name="EmailAddress" Id="EmailAddress" class="from-control" style="display:none" required />
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="radio" class="form-check-input" id="radio3" name="printOption" value="WhatApp">
+                                                <label class="form-check-label" for="radio2">WhatApp</label>
+                                            </div>
+                                            <div class="col-md-10 form-group">
+                                                <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"> Esc - Cancle</button>
+                                    <button type="button" class="btn btn-primary" id="btn_ViewMailWhatapp">Submit (F9)</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="tab-content" id="custom-tabs-three-tabContent">
                         @if (userRight != null && userRight.IsList)
                         {
@@ -466,7 +511,7 @@
                                                                     <td style="padding:0 0 0 12px">
                                                                         @if (Model != null && Model.Straighting != null && Model.Straighting.RecProductList != null && Model.Straighting.RecProductList.Count > 0)
                                                                         {
-                                                                          @Html.DropDownListFor(x => x.LstStraighting[y].RecProduct, new SelectList(Model.Straighting.RecProductList, "Value", "Text"), "Select", new { @class = "form-control select2 RecProduct", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                            @Html.DropDownListFor(x => x.LstStraighting[y].RecProduct, new SelectList(Model.Straighting.RecProductList, "Value", "Text"), "Select", new { @class = "form-control select2 RecProduct", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
                                                                         }
                                                                     </td>
                                                                     <td style="padding:0 0 0 12px">
@@ -527,6 +572,9 @@
                                                     <a href="/Straighting/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
                                                         Cancel (Esc)
                                                     </a>
+                                                    <button class="btn btn-primary px-md-4 mb-2 text-white" id="btnPrint" style="font-family:Verdana;font-size:medium" type="button" onclick="Addstraighting()">
+                                                        Print (F9)
+                                                    </button>
                                                 }
                                                 else if (userRight.IsAdd && id == 0)
                                                 {
@@ -536,6 +584,10 @@
                                                     <a href="/Straighting/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
                                                         Cancel (Esc)
                                                     </a>
+
+                                                    <button class="btn btn-primary px-md-4 mb-2 text-white" id="btnPrint" style="font-family:Verdana;font-size:medium" type="button" onclick="Addstraighting()">
+                                                        Print (F9)
+                                                    </button>
                                                 }
                                             </div>
                                         </div>
@@ -551,6 +603,8 @@
 </div>
 
 <script>
+    var ReturnId = 0;
+    var Savedon
     $(document).ready(function () {
         var Vou = '@Html.Raw(Model.StrVou)';
         if (Vou != null && Vou != '' && Vou != 0) {
@@ -564,8 +618,128 @@
         if (focusType != null && focusType != '' && focusType == 1) {
             GoToAddTab();
         }
+        ReturnId = '@TempData["ReturnId"]';
+         Savedone = '@Html.Raw(TempData["Savedone"])';
+        if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
+            $("#modelPopup").click();//$("#btn_ViewMailWhatapp").click();
+        }
 
     });
+    $(".form-check input[name='printOption']").click(function () {
+        $("#EmailAddress").hide();
+        $("#WhatappNo").hide();
+        var optionVal = $('input:radio[name=printOption]:checked').val();
+        if (optionVal == "Print") {
+
+        }
+        else if (optionVal == "WhatApp") {
+            $("#WhatappNo").show();
+        }
+        else {
+            $("#EmailAddress").show();
+        }
+    });
+    $("#btn_ViewMailWhatapp").click(function () {
+        debugger;
+        if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
+            printPickling();
+        }
+    });
+    function printPickling() {
+         let optionVal = $('input:radio[name=printOption]:checked').val();
+                if (optionVal == "Print") {
+                    $('#exampleModal').modal('hide');
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("StraightingPrintDetials", "Straighting")',
+                        data: { "id": ReturnId},
+                        dataType: "JSON",
+                        success: function (data) {
+                            var host = window.location.origin + data;
+                            $('#exampleModal').modal('hide');
+                            //$("[name=" + activeEle + "]").focus();
+                            var win = window.open(host, '_blank');
+                            if (win) {
+                                win.focus();
+                            } else {
+                                alert('Please allow popups for this website');
+                            }
+                        },
+                        error: function (response) {
+                            $("#EmailAddress").val("");
+                        }
+                    });
+                }
+                else if (optionVal == "Email") {
+                    if ($("#EmailAddress").val() != "" && $("#EmailAddress").val() != null) {
+                        $.ajax({
+                            type: "POST",
+                            url: '/StraightingPrintDetials/StraightingSendMail',
+                            data: { "id": ReturnId, "email": $("#EmailAddress").val() },
+                            dataType: "JSON",
+                            success: function (data) {
+                                //$("[name=" + activeEle + "]").focus();
+                                if (data.result) {
+                                     showSuccessMessage(data.message);
+                                }
+                                else {
+                                    showErrorMessage(data.message);
+                                }
+                                $('#radio1').prop('checked', true);
+                                $("#EmailAddress").val("");
+                                $('#exampleModal').modal('toggle');
+                            },
+                            error: function (response) {
+                                 $("#EmailAddress").val("");
+                            }
+                        });
+                    }
+                    else {
+                        alert("Please Enter Email Address")
+                    }
+
+
+                    //window.location.href = "/JobWorkEntry/JobWorkSendMail?id=" + ReturnId + "&email=" + $("#EmailAddress").val();
+
+                }
+                else if (optionVal == "WhatApp") {
+                    let whNO = $("#WhatappNo").val();
+                    if (whNO != "" && whNO != null) {
+                        if (whNO.length == 10) {
+                            $.ajax({
+                                type: "POST",
+                                url: '/StraightingPrintDetials/StraightingWhatApp',
+                                data: { "id": ReturnId, "whatappNo": whNO },
+                                dataType: "JSON",
+                                success: function (data) {
+                                    if (data.result == "error") {
+                                        showErrorMessage(data.message)
+                                    }
+                                    else {
+                                        showSuccessMessage(data.message);
+                                    }
+                                    $('#radio1').prop('checked', true);
+                                    $("#WhatappNo").val("");
+                                    $("#WhatappNo").hide();
+                                    $('#exampleModal').modal('toggle');
+                                },
+                                error: function (data) {
+                                    $("#WhatappNo").val("");
+                                }
+                            });
+                        }
+                        else {
+                            alert("Please enter 10 digit number")
+                        }
+                    }
+                    else {
+                        alert("Please enter what app number")
+                    }
+
+        }
+        Savedone = '';
+    }
 
     function GoToAddTab() {
         $('#custom-tabs-three-list-tab').removeClass('active');
@@ -618,6 +792,8 @@
                             isRecentCalledSave = false;
                         }, 1000)
                     }
+                }).on('F9', function () {
+                    $("#btnPrint").click();
                 })
                 .on('Alt+L', function () {
                     GoToListTab();
@@ -1366,4 +1542,18 @@
         }
     }
 
+    $("#btnPrint").click(function () {
+        debugger;
+        $("#tblDisplay tr td").find("select").attr('disabled', false);
+        $("#tblDisplay tr td").find("input").attr('disabled', false);
+        $('#txtIsPrint').val('1');
+        $('#Vno').removeAttr('disabled');
+        $('#AnnVou').removeAttr('disabled');
+        $('#straightingForm').submit();
+        //$("#modelPopup").click();
+    })
+    $("#btnSave").click(function () {
+        $('#txtIsPrint').val('0');
+        $('#frmGdnTrans').submit();
+    })
 </script>
