@@ -320,7 +320,7 @@ namespace SUNMark.Controllers
                             {
                                 for (int i = 0; i < purchaseOrderModel.PurchaseOrder.OrdGrdCoil.Length; i++)
                                 {
-                                    SqlParameter[] parameter = new SqlParameter[17];
+                                    SqlParameter[] parameter = new SqlParameter[28];
                                     parameter[0] = new SqlParameter("@OrdOrmVou", masterId);
                                     parameter[1] = new SqlParameter("@OrdSrNo", (i + 1));
                                     parameter[2] = new SqlParameter("@OrdPrdVou", "0");
@@ -344,7 +344,19 @@ namespace SUNMark.Controllers
                                     {
                                         parameter[15] = new SqlParameter("@OrdRem", purchaseOrderModel.PurchaseOrder.OrdRemksCoil[i]);
                                     }
-                                    parameter[16] = new SqlParameter("@OrdRt", purchaseOrderModel.PurchaseOrder.OrdRtCoil[i]);
+
+                                    parameter[16] = new SqlParameter("@OrdSupSrno", "");
+                                    parameter[17] = new SqlParameter("@OrdSupPrdDesc", "");
+                                    parameter[18] = new SqlParameter("@OrdSupPrdCd", "");
+                                    parameter[19] = new SqlParameter("@OrdMasUnit", "");
+                                    parameter[20] = new SqlParameter("@OrdRtPer", "");
+                                    parameter[21] = new SqlParameter("@OrdRt", "0");
+                                    parameter[22] = new SqlParameter("@OrdEnd", "");
+                                    parameter[23] = new SqlParameter("@OrdPipe", "");
+                                    parameter[24] = new SqlParameter("@OrdFinish", "");
+                                    parameter[25] = new SqlParameter("@OrdWeight", "");
+                                    parameter[26] = new SqlParameter("@OrdNB", "");
+                                    parameter[27] = new SqlParameter("@OrdSCH", "");
                                     DataTable DtOrdTrn = ObjDBConnection.CallStoreProcedure("PurOrderTrn_Insert", parameter);
                                 }
                                 int Status = DbConnection.ParseInt32(DtOrdMst.Rows[0][0].ToString());
@@ -477,7 +489,7 @@ namespace SUNMark.Controllers
                             {
                                 for (int i = 0; i < purchaseOrderModel.PurchaseOrder.SpecifiName.Length; i++)
                                 {
-                                    SqlParameter[] parameter = new SqlParameter[17];
+                                    SqlParameter[] parameter = new SqlParameter[28];
                                     parameter[0] = new SqlParameter("@OrdOrmVou", masterId);
                                     parameter[1] = new SqlParameter("@OrdSrNo", (i + 1));
                                     parameter[2] = new SqlParameter("@OrdPrdVou", "0");
@@ -485,41 +497,51 @@ namespace SUNMark.Controllers
                                     parameter[4] = new SqlParameter("@OrdSpacifi", purchaseOrderModel.PurchaseOrder.SpecifiName[i]);
                                     parameter[5] = new SqlParameter("@OrdWidth", "0");
                                     parameter[6] = new SqlParameter("@OrdThick", purchaseOrderModel.PurchaseOrder.OrdThickPipe[i]);
-                                    parameter[7] = new SqlParameter("@OrdQty", purchaseOrderModel.PurchaseOrder.Quantity[i]);
-                                    parameter[9] = new SqlParameter("@OrdPenQty", purchaseOrderModel.PurchaseOrder.Quantity[i]);
-                                    parameter[8] = new SqlParameter("@OrdOD", purchaseOrderModel.PurchaseOrder.OrdOD[i]);
-                                    parameter[9] = new SqlParameter("@OrdPcs", purchaseOrderModel.PurchaseOrder.OrdPcs[i]);
-                                    parameter[10] = new SqlParameter("@OrdPenPcs", purchaseOrderModel.PurchaseOrder.OrdPcs[i]);
+                                    parameter[7] = new SqlParameter("@OrdActThick", purchaseOrderModel.PurchaseOrder.OrdActThickPipe[i]);
+                                    parameter[8] = new SqlParameter("@OrdQty", "0");
+                                    parameter[9] = new SqlParameter("@OrdPenQty", "0");
+                                    parameter[10] = new SqlParameter("@OrdOD", purchaseOrderModel.PurchaseOrder.OrdOD[i]);
+                                    parameter[11] = new SqlParameter("@OrdPcs", purchaseOrderModel.PurchaseOrder.OrdPcs[i]);
+                                    parameter[12] = new SqlParameter("@OrdPenPcs", purchaseOrderModel.PurchaseOrder.OrdPcs[i]);
+                                    parameter[13] = new SqlParameter("@OrdFeetPer", purchaseOrderModel.PurchaseOrder.Length[i]);
+                                    parameter[14] = new SqlParameter("@OrdFoot", purchaseOrderModel.PurchaseOrder.Quantity[i]);
                                     if (purchaseOrderModel.PurchaseOrder.OrdRemksPipe[i] == "-1")
                                     {
-                                        parameter[11] = new SqlParameter("@OrdRem", "");
+                                        parameter[15] = new SqlParameter("@OrdRem", "");
                                     }
                                     else
                                     {
-                                        parameter[11] = new SqlParameter("@OrdRem", purchaseOrderModel.PurchaseOrder.OrdRemksPipe[i]);
+                                        parameter[15] = new SqlParameter("@OrdRem", purchaseOrderModel.PurchaseOrder.OrdRemksPipe[i]);
                                     }
 
                                     if (purchaseOrderModel.PurchaseOrder.OrdRate[i] == "-1")
                                     {
-                                        parameter[12] = new SqlParameter("@OrdRt", "0");
+                                        parameter[16] = new SqlParameter("@OrdRt", "0");
                                     }
                                     else
                                     {
-                                        parameter[12] = new SqlParameter("@OrdRt", purchaseOrderModel.PurchaseOrder.OrdRate[i]);
+                                        parameter[16] = new SqlParameter("@OrdRt", purchaseOrderModel.PurchaseOrder.OrdRate[i]);
                                     }
 
                                     if (purchaseOrderModel.PurchaseOrder.RatePer[i] == "-1")
                                     {
-                                        parameter[13] = new SqlParameter("@OrdRtPer", "0");
+                                        parameter[17] = new SqlParameter("@OrdRtPer", "0");
                                     }
                                     else
                                     {
-                                        parameter[13] = new SqlParameter("@OrdRtPer", purchaseOrderModel.PurchaseOrder.RatePer[i]);
+                                        parameter[17] = new SqlParameter("@OrdRtPer", purchaseOrderModel.PurchaseOrder.RatePer[i]);
                                     }
 
-                                    parameter[14] = new SqlParameter("@OrdFinish", purchaseOrderModel.PurchaseOrder.OrdFinish[i]);
-                                    parameter[15] = new SqlParameter("@OrdNB", purchaseOrderModel.PurchaseOrder.OrdNB[i]);
-                                    parameter[16] = new SqlParameter("@OrdSch", purchaseOrderModel.PurchaseOrder.OrdSCH[i]);
+                                    parameter[18] = new SqlParameter("@OrdSupSrno", "0");
+                                    parameter[19] = new SqlParameter("@OrdSupPrdDesc", "");
+                                    parameter[20] = new SqlParameter("@OrdSupPrdCd", "");
+                                    parameter[21] = new SqlParameter("@OrdEnd", "");
+                                    parameter[22] = new SqlParameter("@OrdPipe", "");
+                                    parameter[23] = new SqlParameter("@OrdFinish", purchaseOrderModel.PurchaseOrder.OrdFinish[i]);
+                                    parameter[24] = new SqlParameter("@OrdWeight", 0);
+                                    parameter[25] = new SqlParameter("@OrdNB", purchaseOrderModel.PurchaseOrder.OrdNB[i]);
+                                    parameter[26] = new SqlParameter("@OrdSch", purchaseOrderModel.PurchaseOrder.OrdSCH[i]);
+                                    parameter[27] = new SqlParameter("@OrdMasUnit", "");
                                     DataTable DtOrdTrn = ObjDBConnection.CallStoreProcedure("PurOrderTrn_Insert", parameter);
                                 }
                                 int Status = DbConnection.ParseInt32(DtOrdMst.Rows[0][0].ToString());
@@ -654,7 +676,7 @@ namespace SUNMark.Controllers
                             {
                                 for (int i = 0; i < purchaseOrderModel.PurchaseOrder.OrdPrdVou.Length; i++)
                                 {
-                                    SqlParameter[] parameter = new SqlParameter[17];
+                                    SqlParameter[] parameter = new SqlParameter[28];
                                     parameter[0] = new SqlParameter("@OrdOrmVou", masterId);
                                     parameter[1] = new SqlParameter("@OrdSrNo", (i + 1));
                                     parameter[2] = new SqlParameter("@OrdPrdVou", purchaseOrderModel.PurchaseOrder.OrdPrdVou[i]);
@@ -678,7 +700,18 @@ namespace SUNMark.Controllers
                                     {
                                         parameter[15] = new SqlParameter("@OrdRem", purchaseOrderModel.PurchaseOrder.OrdRemksOther[i]);
                                     }
-                                    parameter[16] = new SqlParameter("@OrdRt", "0");
+                                    parameter[16] = new SqlParameter("@OrdSupSrno", "");
+                                    parameter[17] = new SqlParameter("@OrdSupPrdDesc", "");
+                                    parameter[18] = new SqlParameter("@OrdSupPrdCd", "");
+                                    parameter[19] = new SqlParameter("@OrdMasUnit", "");
+                                    parameter[20] = new SqlParameter("@OrdRtPer", "");
+                                    parameter[21] = new SqlParameter("@OrdRt", "0");
+                                    parameter[22] = new SqlParameter("@OrdEnd", "");
+                                    parameter[23] = new SqlParameter("@OrdPipe", "");
+                                    parameter[24] = new SqlParameter("@OrdFinish", "");
+                                    parameter[25] = new SqlParameter("@OrdWeight", "");
+                                    parameter[26] = new SqlParameter("@OrdNB", "");
+                                    parameter[27] = new SqlParameter("@OrdSCH", "");
                                     DataTable DtOrdTrn = ObjDBConnection.CallStoreProcedure("PurOrderTrn_Insert", parameter);
                                 }
                                 int Status = DbConnection.ParseInt32(DtOrdMst.Rows[0][0].ToString());
