@@ -233,7 +233,7 @@ namespace SUNMark.Classes
                                 #region Insert code
 
                                 string voucherNo = GetVoucherNo(sessionCompanyId);
-                                SqlParameter[] sqlParameters = new SqlParameter[37];
+                                SqlParameter[] sqlParameters = new SqlParameter[38];
                                 sqlParameters[0] = new SqlParameter("@OblNVno", voucherNo);
                                 sqlParameters[1] = new SqlParameter("@OblDt", DateTime.Parse(dt.Rows[i]["INWARD DATE"].ToString()));
                                 sqlParameters[2] = new SqlParameter("@OblCmpVou", companyId);
@@ -383,6 +383,8 @@ namespace SUNMark.Classes
                                 }
 
                                 sqlParameters[36] = new SqlParameter("@CoilNo", _strLotCoilNo);
+                                sqlParameters[37] = new SqlParameter("@NextProc", 0);
+
 
                                 if (!string.IsNullOrWhiteSpace(gradeId) && !string.IsNullOrWhiteSpace(partyId) && !string.IsNullOrWhiteSpace(godownId))
                                 {
@@ -417,6 +419,8 @@ namespace SUNMark.Classes
                     var godownList = objProductHelper.GetGoDownMasterDropdown(sessionCompanyId, 0);
                     var gradeList = objProductHelper.GetGradeMasterDropdown(sessionCompanyId, 0);
                     var partyList = objProductHelper.GetSupplierMasterDropdown(sessionCompanyId, 0);
+                    var processList = objProductHelper.GetLotPrcTypMasterDropdown(sessionCompanyId, 0);
+                    var nextprocessList = objProductHelper.GetLotPrcTypMasterDropdown(sessionCompanyId, 0);
 
                     for (int i = 0; i < dt.Rows.Count; i++)
                     {
@@ -435,7 +439,7 @@ namespace SUNMark.Classes
                             }
 
                             sqlParameters = null;
-                            sqlParameters = new SqlParameter[30];
+                            sqlParameters = new SqlParameter[38];
                             sqlParameters[0] = new SqlParameter("@OblNVno", voucherNo);
                             sqlParameters[1] = new SqlParameter("@OblDt", DateTime.Parse(dt.Rows[i]["INWARD DATE"].ToString()));
                             sqlParameters[2] = new SqlParameter("@OblCmpVou", companyId);
@@ -534,12 +538,52 @@ namespace SUNMark.Classes
                             sqlParameters[24] = new SqlParameter("@LotNo", coilnumber);
 
                             string _strLotCoilNo = string.Format("{0}", dt.Rows[i]["COIL NO"].ToString());
-                            sqlParameters[25] = new SqlParameter("@CoilNo", _strLotCoilNo);
-                            sqlParameters[26] = new SqlParameter("@Flg", 1);
+                            sqlParameters[25] = new SqlParameter("@Flg", 1);
+                            
 
-                            sqlParameters[27] = new SqlParameter("@RefNo", dt.Rows[i]["MEMO NO"].ToString());
-                            sqlParameters[28] = new SqlParameter("@LotPCS", dt.Rows[i]["NOS"].ToString());
-                            sqlParameters[29] = new SqlParameter("@LotOD", dt.Rows[i]["SIZE"].ToString());
+                            sqlParameters[26] = new SqlParameter("@RefNo", dt.Rows[i]["MEMO NO"].ToString());
+                            sqlParameters[27] = new SqlParameter("@LotOD", dt.Rows[i]["SIZE"].ToString());
+                            
+                            #region Process
+                            string processId = string.Empty;
+                            string process = string.Empty;
+                            if (processList != null && processList.Count > 0)
+                            {
+                                processId = processList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["PROCESS DONE"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
+                                process = processList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["PROCESS DONE"].ToString().Trim().ToLower())).Select(x => x.Text).FirstOrDefault();
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(processId))
+                            {
+                                sqlParameters[28] = new SqlParameter("@@LotPrcTypCD", processId);
+                            }
+                            #endregion
+
+                            sqlParameters[29] = new SqlParameter("@LotPCS", dt.Rows[i]["NOS"].ToString());
+                            sqlParameters[30] = new SqlParameter("@LotFeetPer", dt.Rows[i]["LENGTH"].ToString());
+
+                            sqlParameters[31] = new SqlParameter("@NB", dt.Rows[i]["NB"].ToString());
+                            sqlParameters[32] = new SqlParameter("@SCH", dt.Rows[i]["SCH"].ToString());
+
+                            sqlParameters[33] = new SqlParameter("@CoilType", "");
+                            sqlParameters[34] = new SqlParameter("@CoilTypeVou", 0);
+                            sqlParameters[35] = new SqlParameter("@CoilSuffix", 0);
+                            sqlParameters[36] = new SqlParameter("@CoilNo", _strLotCoilNo);
+
+                            #region NextProcess
+                            string nxtprocessId = string.Empty;
+                            string nxtprocess = string.Empty;
+                            if (nextprocessList != null && nextprocessList.Count > 0)
+                            {
+                                nxtprocessId = nextprocessList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["NEXT PROCESS"].ToString().Trim().ToLower())).Select(x => x.Value).FirstOrDefault();
+                                nxtprocess = nextprocessList.Where(x => x.Text.ToLower().Trim().ToString().Equals(dt.Rows[i]["NEXT PROCESS"].ToString().Trim().ToLower())).Select(x => x.Text).FirstOrDefault();
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(nxtprocessId))
+                            {
+                                sqlParameters[37] = new SqlParameter("@@LotPrcTypCD", nxtprocessId);
+                            }
+                            #endregion
 
                             if (!string.IsNullOrWhiteSpace(gradeId) && !string.IsNullOrWhiteSpace(finishId) && !string.IsNullOrWhiteSpace(partyId) && !string.IsNullOrWhiteSpace(godownId))
                             {
