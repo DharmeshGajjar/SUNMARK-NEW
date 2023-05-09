@@ -190,13 +190,6 @@ namespace SUNMark.Controllers
                             }
                             else
                             { 
-                                if (annealingMasterModel.isPrint != 0)
-                                {
-                                    TempData["ReturnId"] = id.ToString();
-                                    TempData["Savedone"] = "1";
-                                    TempData["IsPrint"] = annealingMasterModel.isPrint.ToString();
-                                    return RedirectToAction("Index", new { id = id });
-                                }
                                 if (id > 0)
                                 {
                                     SetSuccessMessage("Record updated succesfully!");
@@ -204,6 +197,13 @@ namespace SUNMark.Controllers
                                 else
                                 {
                                     SetSuccessMessage("Record inserted succesfully!");
+                                }
+                                if (annealingMasterModel.isPrint != 0)
+                                {
+                                    TempData["ReturnId"] = id.ToString();
+                                    TempData["Savedone"] = "1";
+                                    TempData["IsPrint"] = annealingMasterModel.isPrint.ToString();
+                                    return RedirectToAction("Index", new { id = id });
                                 }
 
                             }

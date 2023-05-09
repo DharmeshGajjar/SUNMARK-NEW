@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using SelectPdf;
 using SUNMark.Classes;
 using SUNMark.Common;
 using SUNMark.Models;
@@ -535,6 +536,7 @@ namespace SUNMark.Controllers
                 string filePath = "/PrintPDF/" + id + ".pdf";
                 wwwroot = _iwebhostenviroment.WebRootPath + filePath;
                 SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                converter.Options.PdfPageOrientation = PdfPageOrientation.Landscape;
                 SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
                 doc.Save(wwwroot);
                 doc.Close();

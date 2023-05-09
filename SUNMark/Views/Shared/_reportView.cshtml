@@ -62,11 +62,11 @@
                             {
                                 if (item.GrdAAlign == "2")
                                 {
-                                    <th class="@hideClass text-right" width="@item.GrdAWidth%" style="@canGrow"><a style="cursor:pointer;font-family:Verdana;font-size:small;text-align:right" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@Html.Raw(item.GrdANewColNm.Replace(";","<br>")) <i class="text-primary"></i><i class=" text-primary"></i></a></th>
+                                    <th class="@hideClass text-right" width="@item.GrdAWidth%" style="@canGrow"><a style="cursor:pointer;font-family:Verdana;font-size:small;text-align:right" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@Html.Raw(item.GrdANewColNm.Replace(";", "<br>")) <i class="text-primary"></i><i class=" text-primary"></i></a></th>
                                 }
                                 else
                                 {
-                                    <th class="@hideClass" width="@item.GrdAWidth%" style="@canGrow"><a style="cursor:pointer;font-family:Verdana;font-size:small" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@Html.Raw(item.GrdANewColNm.Replace(";","<br>")) <i class="text-primary"></i><i class=" text-primary"></i></a></th>
+                                    <th class="@hideClass" width="@item.GrdAWidth%" style="@canGrow"><a style="cursor:pointer;font-family:Verdana;font-size:small" onclick="SortingBy('@item.DbFldName', '@item.OrderBy')">@Html.Raw(item.GrdANewColNm.Replace(";", "<br>")) <i class="text-primary"></i><i class=" text-primary"></i></a></th>
                                 }
 
                             }
@@ -112,13 +112,31 @@
                                         @if (Model.ControllerName == "Inward")
                                         {
                                             <a target="_blank" href="/@Model.ControllerName/RawInwardPrintDetials/@item[0]"> <i class="fa fa-print text-orange pr-2"></i></a>
-                                            
+
                                         }
                                         @if (Model.ControllerName == "JobWorkEntry")
-                                            {
-                                               
+                                        {
+
                                             @*<a target="_blank" href="/@Model.ControllerName/JobWorkPrintDetials/@item[0]"> <i class="fa fa-print text-orange pr-2"></i></a>*@
                                             <a href="#" onclick="PrintJobWorkReport(@item[0])"> <i class="fa fa-print text-orange pr-2"></i></a>
+                                        }
+                                        @if (Model.ControllerName == "Annealing")
+                                        {
+
+                                            @*<a target="_blank" href="/@Model.ControllerName/JobWorkPrintDetials/@item[0]"> <i class="fa fa-print text-orange pr-2"></i></a>*@
+                                            <a href="#" onclick="PrintAnnealingReport(@item[0])"> <i class="fa fa-print text-orange pr-2"></i></a>
+                                        }
+                                        @if (Model.ControllerName == "Pickling")
+                                        {
+
+                                            @*<a target="_blank" href="/@Model.ControllerName/JobWorkPrintDetials/@item[0]"> <i class="fa fa-print text-orange pr-2"></i></a>*@
+                                            <a href="#" onclick="PrintPicklingReport(@item[0])"> <i class="fa fa-print text-orange pr-2"></i></a>
+                                        }
+                                        @if (Model.ControllerName == "Straighting")
+                                        {
+
+                                            @*<a target="_blank" href="/@Model.ControllerName/JobWorkPrintDetials/@item[0]"> <i class="fa fa-print text-orange pr-2"></i></a>*@
+                                            <a href="#" onclick="PrintStraightingReport(@item[0])"> <i class="fa fa-print text-orange pr-2"></i></a>
                                         }
                                         @if (Model.ControllerName == "GodownTransfer")
                                         {

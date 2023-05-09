@@ -1729,3 +1729,138 @@
     })
 
 </script>
+<script>
+    var ReturnId = 0;
+    function PrintAnnealingReport(returnID) {
+
+        ReturnId = returnID;
+        $('#exampleModal').modal('toggle');
+    }
+
+        $(document).ready(function () {
+
+            ReturnId = '@Html.Raw(TempData["ReturnId"])';
+            var Savedone = '@Html.Raw(TempData["Savedone"])';
+            if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
+               // $("#modelPopup").click();
+
+                //window.open(
+                //    '/JobWorkEntry/JobWorkPrintDetials/'+ReturnId+'',
+                //    '_blank' // <- This is what makes it open in a new window.
+                //);
+            }
+
+            $("#btn_ViewMailWhatapp").click(function () {
+                let optionVal = $('input:radio[name=printOption]:checked').val();
+                if (optionVal == "Print") {
+                    $('#exampleModal').modal('hide');
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("AnnealingPrintDetials", "Annealing")',
+                        data: { "id": ReturnId},
+                        dataType: "JSON",
+                        success: function (data) {
+                            var host = window.location.origin + data;
+                            $('#exampleModal').modal('hide');
+                            //$("[name=" + activeEle + "]").focus();
+                            var win = window.open(host, '_blank');
+                            if (win) {
+                                win.focus();
+                            } else {
+                                alert('Please allow popups for this website');
+                            }
+                        },
+                        error: function (response) {
+                            $("#EmailAddress").val("");
+                        }
+                    });
+                }
+                else if (optionVal == "Email") {
+                    if ($("#EmailAddress").val() != "" && $("#EmailAddress").val() != null) {
+                        $.ajax({
+                            type: "POST",
+                            url: '/Annealing/AnnealingSendMail',
+                            data: { "id": ReturnId, "email": $("#EmailAddress").val() },
+                            dataType: "JSON",
+                            success: function (data) {
+                                //$("[name=" + activeEle + "]").focus();
+                                if (data.result) {
+                                     showSuccessMessage(data.message);
+                                }
+                                else {
+                                    showErrorMessage(data.message);
+                                }
+                                $('#radio1').prop('checked', true);
+                                $("#EmailAddress").val("");
+                                $('#exampleModal').modal('toggle');
+                            },
+                            error: function (response) {
+                                 $("#EmailAddress").val("");
+                            }
+                        });
+                    }
+                    else {
+                        alert("Please Enter Email Address")
+                    }
+
+
+                    //window.location.href = "/JobWorkEntry/JobWorkSendMail?id=" + ReturnId + "&email=" + $("#EmailAddress").val();
+
+                }
+                else if (optionVal == "WhatApp") {
+                    let whNO = $("#WhatappNo").val();
+                    if (whNO != "" && whNO != null) {
+                        if (whNO.length == 10) {
+                            $.ajax({
+                                type: "POST",
+                                url:  '/Annealing/AnnealingWhatApp',
+                                data: { "id": ReturnId, "whatappNo": whNO },
+                                dataType: "JSON",
+                                success: function (data) {
+                                    //$("[name=" + activeEle + "]").focus();
+                                    if (data.result == "error") {
+                                        showErrorMessage(data.message)
+                                    }
+                                    else {
+                                        showSuccessMessage(data.message);
+                                    }
+                                    $('#radio1').prop('checked', true);
+                                    $("#WhatappNo").val("");
+                                    $("#WhatappNo").hide();
+                                    $('#exampleModal').modal('toggle');
+                                },
+                                error: function (data) {
+                                    $("#WhatappNo").val("");
+                                }
+                            });
+                        }
+                        else {
+                            alert("Please enter 10 digit number")
+                        }
+                    }
+                    else {
+                        alert("Please enter what app number")
+                    }
+
+                }
+
+            });
+
+            $(".form-check input[name='printOption']").click(function () {
+                $("#EmailAddress").hide();
+                $("#WhatappNo").hide();
+                let optionVal = $('input:radio[name=printOption]:checked').val();
+                if (optionVal == "Print") {
+
+                }
+                else if (optionVal == "WhatApp") {
+                    $("#WhatappNo").show();
+                }
+                else {
+                    $("#EmailAddress").show();
+                }
+            });
+        })
+
+</script>
