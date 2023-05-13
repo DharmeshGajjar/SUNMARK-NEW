@@ -182,8 +182,8 @@ namespace SUNMark.Controllers
                             sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilPCS"].ToString() + "</td>");
                             sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilRecQty"].ToString() + "</td>");
                             sb.Append("<td>3 TO 10</td>");
-                                sb.Append("<td style=\"width: 5%;\">" + DtBilty.Rows[i]["MilRLPCS"].ToString() + "</td>");
-                                sb.Append("<td style=\"width: 5%;\">" + DtBilty.Rows[i]["MilRLWeight"].ToString() + "</td>");
+                            sb.Append("<td style=\"width: 5%;\">" + DtBilty.Rows[i]["MilRLPCS"].ToString() + "</td>");
+                            sb.Append("<td style=\"width: 5%;\">" + DtBilty.Rows[i]["MilRLWeight"].ToString() + "</td>");
                             sb.Append("<td rowspan=\"3\">" + DtBilty.Rows[i]["MilScrQty"].ToString() + "</td>");
                             sb.Append("<td style=\"width: 3%;\">" + DtBilty.Rows[i]["MilTouNo"].ToString() + "</td>");
                             sb.Append("<td style=\"width: 3%;\">" + DtBilty.Rows[i]["MilWeldSpeed"].ToString() + "</td>");
@@ -215,8 +215,8 @@ namespace SUNMark.Controllers
 
                             sb2.Append("<tr>");
                             sb2.Append("<td>" + sb2Cnt + "</td>");
-                            
-                            if (DtBilty.Rows[i]["MilStopFrTm1"].ToString() == "" || DtBilty.Rows[i]["MilStopToTm1"].ToString() =="")
+
+                            if (DtBilty.Rows[i]["MilStopFrTm1"].ToString() == "" || DtBilty.Rows[i]["MilStopToTm1"].ToString() == "")
                             {
                                 sb2.Append("<td></td>");
                                 sb2.Append("<td></td>");
@@ -228,13 +228,13 @@ namespace SUNMark.Controllers
                                 sb2.Append("<td>" + (DateTime.ParseExact(DtBilty.Rows[i]["MilStopFrTm1"].ToString(), "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)).ToString("dd/MM/yyyy hh:mm tt") + "</td>");
                                 sb2.Append("<td>" + (DateTime.ParseExact(DtBilty.Rows[i]["MilStopToTm1"].ToString(), "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)).ToString("dd/MM/yyyy hh:mm tt") + "</td>");
                                 sb2.Append("<td>" + DtBilty.Rows[i]["MilStopReson1"].ToString() + "</td>");
-                                sb2.Append("<td>" + (DateTime.ParseExact(DtBilty.Rows[i]["MilStopToTm1"].ToString(), "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)- DateTime.ParseExact(DtBilty.Rows[i]["MilStopFrTm1"].ToString(), "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)) + "</td>");
+                                sb2.Append("<td>" + (DateTime.ParseExact(DtBilty.Rows[i]["MilStopToTm1"].ToString(), "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture) - DateTime.ParseExact(DtBilty.Rows[i]["MilStopFrTm1"].ToString(), "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)) + "</td>");
                             }
                             sb2.Append("</tr>");
                             sb2.Append("<tr>");
                             sb2Cnt++;
                             sb2.Append("<td>" + sb2Cnt + "</td>");
-                            
+
                             if (DtBilty.Rows[i]["MilStopFrTm2"].ToString() == "" || DtBilty.Rows[i]["MilStopToTm2"].ToString() == "")
                             {
                                 sb2.Append("<td></td>");
@@ -254,7 +254,7 @@ namespace SUNMark.Controllers
 
                             sb3.Append("<tr>");
                             sb3.Append("<td>" + DtBilty.Rows[i]["MilLotNo"].ToString() + "</td>");
-                            sb3.Append("<td>" + ((txtPCSWeight*100)/Weight).ToString("0.##") + "</td>");
+                            sb3.Append("<td>" + ((txtPCSWeight * 100) / Weight).ToString("0.##") + "</td>");
                             sb3.Append("<td>" + ((RLWeight * 100) / Weight).ToString("0.##") + "</td>");
                             sb3.Append("<td>" + ((ScrapWeight * 100) / Weight).ToString("0.##") + "</td>");
                             sb3.Append("<td>" + (F / Weight).ToString("0.##") + "</td>");
@@ -286,7 +286,7 @@ namespace SUNMark.Controllers
                 throw ex;
             }
         }
-        public IActionResult MillSendMail(string dt, int machine, int shift,string email)
+        public IActionResult MillSendMail(string dt, int machine, int shift, string email)
         {
             try
             {

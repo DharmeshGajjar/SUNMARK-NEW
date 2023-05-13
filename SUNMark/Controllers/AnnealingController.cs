@@ -26,7 +26,7 @@ namespace SUNMark.Controllers
         }
         public IActionResult Index(int id)
         {
-            try 
+            try
             {
                 bool isreturn = false;
                 INIT(ref isreturn);
@@ -189,7 +189,7 @@ namespace SUNMark.Controllers
                                 SetErrorMessage("Dulplicate Vou.No Details");
                             }
                             else
-                            { 
+                            {
                                 if (id > 0)
                                 {
                                     SetSuccessMessage("Record updated succesfully!");
@@ -497,7 +497,7 @@ namespace SUNMark.Controllers
 
                         for (int i = 0; i < DtInward.Rows.Count; i++)
                         {
-                      
+
                             sb.Append("<tr>");
 
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["AnnACoilNo"].ToString() + "</td>");
@@ -546,7 +546,7 @@ namespace SUNMark.Controllers
                         for (int i = 0; i < DtInward.Rows.Count; i++)
                         {
                             st.Append("<tr align=\"center\"style=\"font-size:16px;\">");
-                            st.Append("<td>"+(i +1)+"</td>");
+                            st.Append("<td>" + (i + 1) + "</td>");
                             st.Append("<td>" + DtInward.Rows[i]["AnnATDC1"].ToString() + "</td>");
                             st.Append("<td>" + DtInward.Rows[i]["AnnATDC2"].ToString() + "</td>");
                             st.Append("<td>" + DtInward.Rows[i]["AnnATDC3"].ToString() + "</td>");

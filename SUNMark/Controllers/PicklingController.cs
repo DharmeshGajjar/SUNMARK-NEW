@@ -72,18 +72,18 @@ namespace SUNMark.Controllers
                         for (int i = 0; i < dt.Rows.Count; i++)
                         {
                             PikGridModel Pick = new PikGridModel();
-                           Pick.Grade = dt.Rows[i]["PikAGrdVou"].ToString();
-                           Pick.PikOD = Convert.ToDecimal(dt.Rows[i]["PikAOD"].ToString() == "" ? "0" : dt.Rows[i]["PikAOD"].ToString());
-                           Pick.PikThick = Convert.ToDecimal(dt.Rows[i]["PikAThick"].ToString() == "" ? "0" : dt.Rows[i]["PikAThick"].ToString());
-                           Pick.PikLength = Convert.ToDecimal(dt.Rows[i]["PikALength"].ToString() == "" ? "0" : dt.Rows[i]["PikALength"].ToString());
-                           Pick.PikNoOfPipe = Convert.ToDecimal(dt.Rows[i]["PikANoOfPipe"].ToString() == "" ? "0" : dt.Rows[i]["PikANoOfPipe"].ToString());
-                           Pick.PikWeight = Convert.ToDecimal(dt.Rows[i]["PikAWeight"].ToString() == "" ? "0" : dt.Rows[i]["PikAWeight"].ToString());
-                           Pick.RecProduct = dt.Rows[i]["PikARecPrdVou"].ToString();
-                           Pick.PikInTime = dt.Rows[i]["PikAInTime"].ToString();
-                           Pick.PikOutTime = dt.Rows[i]["PikAOutTime"].ToString();
-                           Pick.PikCoilNo = dt.Rows[i]["PikACoilNo"].ToString();
-                           Pick.PikStatus = dt.Rows[i]["PikAStatus"].ToString();
-                           Pick.PikType = dt.Rows[i]["PikAType"].ToString();
+                            Pick.Grade = dt.Rows[i]["PikAGrdVou"].ToString();
+                            Pick.PikOD = Convert.ToDecimal(dt.Rows[i]["PikAOD"].ToString() == "" ? "0" : dt.Rows[i]["PikAOD"].ToString());
+                            Pick.PikThick = Convert.ToDecimal(dt.Rows[i]["PikAThick"].ToString() == "" ? "0" : dt.Rows[i]["PikAThick"].ToString());
+                            Pick.PikLength = Convert.ToDecimal(dt.Rows[i]["PikALength"].ToString() == "" ? "0" : dt.Rows[i]["PikALength"].ToString());
+                            Pick.PikNoOfPipe = Convert.ToDecimal(dt.Rows[i]["PikANoOfPipe"].ToString() == "" ? "0" : dt.Rows[i]["PikANoOfPipe"].ToString());
+                            Pick.PikWeight = Convert.ToDecimal(dt.Rows[i]["PikAWeight"].ToString() == "" ? "0" : dt.Rows[i]["PikAWeight"].ToString());
+                            Pick.RecProduct = dt.Rows[i]["PikARecPrdVou"].ToString();
+                            Pick.PikInTime = dt.Rows[i]["PikAInTime"].ToString();
+                            Pick.PikOutTime = dt.Rows[i]["PikAOutTime"].ToString();
+                            Pick.PikCoilNo = dt.Rows[i]["PikACoilNo"].ToString();
+                            Pick.PikStatus = dt.Rows[i]["PikAStatus"].ToString();
+                            Pick.PikType = dt.Rows[i]["PikAType"].ToString();
                             List.Add(Pick);
                         }
                         picklingMasterModel.LstPikling = List;
@@ -110,7 +110,7 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
-                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.Vno).ToString()) && !string.IsNullOrWhiteSpace(picklingMaster.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.PikCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.MachineNo).ToString())  && picklingMaster.LstPikling.Count > 0 )
+                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.Vno).ToString()) && !string.IsNullOrWhiteSpace(picklingMaster.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.PikCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.MachineNo).ToString()) && picklingMaster.LstPikling.Count > 0)
                 {
                     SqlParameter[] sqlParameter = new SqlParameter[18];
                     sqlParameter[0] = new SqlParameter("@PikVou", picklingMaster.PikVou);
@@ -417,7 +417,7 @@ namespace SUNMark.Controllers
             {
                 throw;
             }
-        } 
+        }
         public PicklingPrintDetails GetPicklingHtmlData(long id)
         {
             PicklingPrintDetails obj = new PicklingPrintDetails();
@@ -491,7 +491,7 @@ namespace SUNMark.Controllers
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikAStatus"].ToString() + "</td>");
                             sb.Append("</tr>");
                         }
-                        
+
                         for (int i = 0; i < DtInward.Rows.Count; i++)
                         {
                             sb.Append("<tr align=\"center\"style =\"font-size:16px;\">");
@@ -541,7 +541,7 @@ namespace SUNMark.Controllers
             }
 
         }
-         
+
         public IActionResult PicklingSendMail(long id, string email = "")
         {
             try

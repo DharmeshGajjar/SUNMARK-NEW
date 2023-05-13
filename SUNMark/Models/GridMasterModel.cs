@@ -9,6 +9,7 @@ namespace SUNMark.Models
     public class GridMasterModel
     {
         public int GrdVou { get; set; }
+        public int GrdFlg { get; set; }
         public int GrdMnuVou { get; set; }
         public string MnuName { get; set; }
         public List<SelectListItem> MenuList { get; set; }

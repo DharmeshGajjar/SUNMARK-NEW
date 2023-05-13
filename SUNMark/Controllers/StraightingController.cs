@@ -47,7 +47,7 @@ namespace SUNMark.Controllers
                 straighMasterModel.Straighting.GradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
                 straighMasterModel.Straighting.StatusList = objProductHelper.GetStraightingStatus();
                 straighMasterModel.Vno = GetVoucherNo();
-                
+
                 if (id > 0)
                 {
                     SqlParameter[] parameter = new SqlParameter[2];
