@@ -527,6 +527,7 @@ namespace SUNMark.Controllers
             }
             return obj;
         }
+
         public IActionResult StraightingPrintDetials(long id, int copyType = 1)
         {
             try
