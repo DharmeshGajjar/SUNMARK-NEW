@@ -469,12 +469,21 @@ namespace SUNMark.Controllers
                         for (int i = 0; i < DtInward.Rows.Count; i++)
                         {
                             sb.Append("<tr>");
+<<<<<<< HEAD
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">E+ Stock</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikACoilNo"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["Grade"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">-</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikAOD"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikAThick"].ToString() + "</td>");
+=======
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">E+ Stock</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikACoilNo"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["Grade"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">-</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAOD"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAThick"].ToString() + "</td>");
+>>>>>>> fe97c1e6c96620de93b77acdd183f7bc9b4e5fd7
                             var length = (Convert.ToDouble(DtInward.Rows[i]["PikALength"]) * 0.3048);
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + length + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikANoOfPipe"].ToString() + "</td>");
