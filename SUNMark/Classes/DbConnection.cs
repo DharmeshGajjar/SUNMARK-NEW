@@ -17,7 +17,7 @@ namespace SUNMark.Classes
         //=======
         //public static string ConnectionString = "Server=144.91.71.201;Database=PIOSUN;User ID=Piosun;Password=pio*123";
         //>>>>>>> 8daeec391f04a8e54ddca2328276bd8948d5a6a1
-        public static string ConnectionString = "Server=144.91.71.201;Database=SUNMark;User ID=Sun;Password=pio*123";
+        public static string ConnectionString = "Server=144.91.71.201;Database=PIOSUN;User ID=Sun;Password=pio*123";
 
         public static int GridTypeView = 1;
 

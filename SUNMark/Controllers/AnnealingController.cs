@@ -492,7 +492,7 @@ namespace SUNMark.Controllers
 
                         StringBuilder sb = new StringBuilder();
 
-                        sb.Append("<tr align=\"center\"><td>Coil NO</td><td>WO NO</td><td>ASTM</td><td>GRADE</td><td>HEAT NO.</td><td>OD</td><td>THK</td><td>LNG</td><td>NOS</td><td>TOTAL WEIGHT</td>");//datatable
+                        sb.Append("<tr align=\"center\"style=\"font-weight: bold;\"><td>Coil NO</td><td>WO NO</td><td>ASTM</td><td>GRADE</td><td>HEAT NO.</td><td>OD</td><td>THK</td><td>LNG</td><td>NOS</td><td>TOTAL WEIGHT</td>");//datatable
 
 
                         for (int i = 0; i < DtInward.Rows.Count; i++)
@@ -500,20 +500,17 @@ namespace SUNMark.Controllers
                       
                             sb.Append("<tr>");
 
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["AnnACoilNo"].ToString() + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">Stock</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\"></td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["AnnAGrdVou"].ToString() + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">-</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["AnnAOD"].ToString() + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["AnnAThick"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["AnnACoilNo"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">Stock</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\"></td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["Grade"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">-</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["AnnAOD"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["AnnAThick"].ToString() + "</td>");
                             var length = (Convert.ToDouble(DtInward.Rows[i]["AnnALength"]) * 0.3048);
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + length + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["AnnANoOfPipe"].ToString() + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["AnnAWeight"].ToString() + "</td>");
-
-
-
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + length + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["AnnANoOfPipe"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["AnnAWeight"].ToString() + "</td>");
                             sb.Append("</tr>");
                         }
                         for (int i = 0; i < DtInward.Rows.Count; i++)
@@ -534,7 +531,7 @@ namespace SUNMark.Controllers
 
                         newbody = newbody.Replace("//First-Table//", sb.ToString());
                         StringBuilder st = new StringBuilder();
-                        st.Append("<tr align=\"center\">");
+                        st.Append("<tr align=\"center\"style=\"font-weight: bold;\">");
                         st.Append("<td rowspan=\"2\">SR NO.</td>");
                         st.Append("<td colspan=\"4\">REMARKs</td>");
                         st.Append("<td rowspan=\"2\">ROLLER RPM</td>");
@@ -548,7 +545,7 @@ namespace SUNMark.Controllers
                         st.Append("<td>IV</td></tr>");
                         for (int i = 0; i < DtInward.Rows.Count; i++)
                         {
-                            st.Append("<tr align=\"center\">");
+                            st.Append("<tr align=\"center\"style=\"font-size:16px;\">");
                             st.Append("<td>"+(i +1)+"</td>");
                             st.Append("<td>" + DtInward.Rows[i]["AnnATDC1"].ToString() + "</td>");
                             st.Append("<td>" + DtInward.Rows[i]["AnnATDC2"].ToString() + "</td>");

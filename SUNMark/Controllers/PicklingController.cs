@@ -466,31 +466,26 @@ namespace SUNMark.Controllers
                         newbody = newbody.Replace("//Lime//", DtInward.Rows[0]["PikLimeQty"].ToString());
                         StringBuilder sb = new StringBuilder();
 
-                        sb.Append("<tr align=\"center\"><td>WO NO</td><td>Coil NO</td><td>GRADE</td><td>HEAT NO.</td><td>OD</td><td>THK</td><td>LNG</td><td>NOS</td><td>TOTAL WEIGHT</td><td>STATUS</td>");//datatable
-
-
                         for (int i = 0; i < DtInward.Rows.Count; i++)
                         {
-
                             sb.Append("<tr>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">E+ Stock</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikACoilNo"].ToString() + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAGrdVou"].ToString() + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">-</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAOD"].ToString() + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAThick"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">E+ Stock</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikACoilNo"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["Grade"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">-</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikAOD"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikAThick"].ToString() + "</td>");
                             var length = (Convert.ToDouble(DtInward.Rows[i]["PikALength"]) * 0.3048);
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + length + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikANoOfPipe"].ToString() + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAWeight"].ToString() + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAStatus"].ToString() + "</td>");
-
-
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + length + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikANoOfPipe"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikAWeight"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikAStatus"].ToString() + "</td>");
                             sb.Append("</tr>");
                         }
+                        
                         for (int i = 0; i < DtInward.Rows.Count; i++)
                         {
-                            sb.Append("<tr align=\"center\">");
+                            sb.Append("<tr align=\"center\"style =\"font-size:16px;\">");
                             sb.Append("<td>&nbsp;</td>");
                             sb.Append("<td>&nbsp;</td>");
                             sb.Append("<td>&nbsp;</td>");
@@ -504,7 +499,6 @@ namespace SUNMark.Controllers
                             sb.Append("</tr>");
                         }
                         newbody = newbody.Replace("//First-Table//", sb.ToString());
-                     
                         obj.Html = newbody;
                         obj.Id = id.ToString();
                     }

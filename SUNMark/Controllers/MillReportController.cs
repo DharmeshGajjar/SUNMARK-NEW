@@ -95,6 +95,7 @@ namespace SUNMark.Controllers
                 string filePath = "/PrintPDF/" + "Mill-" + dt + ".pdf";
                 wwwroot = _iwebhostenviroment.WebRootPath + filePath;
                 SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                converter.Options.PdfPageSize = PdfPageSize.Legal;
                 converter.Options.PdfPageOrientation = PdfPageOrientation.Landscape;
                 SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
                 doc.Save(wwwroot);
@@ -131,6 +132,7 @@ namespace SUNMark.Controllers
                     string CmpName = string.Empty;
                     string CmpVou = string.Empty;
                     string Layout = string.Empty;
+                    string CmpWeb = string.Empty;
 
                     Layout = "MillRpt";
                     filename = "MillRpt.html";
@@ -146,6 +148,11 @@ namespace SUNMark.Controllers
                         newbody = newbody.Replace("#*#*Oper*#*", DtBilty.Rows[0]["Operator1"].ToString() + "/" + DtBilty.Rows[0]["Operator2"].ToString());
                         newbody = newbody.Replace("#*#*MillNo*#*", DtBilty.Rows[0]["MacNm"].ToString());
                         newbody = newbody.Replace("#*#*Shift*#*", DtBilty.Rows[0]["MilShiftName"].ToString());
+
+                        newbody = body.Replace("#*#*Address*#*", DtBilty.Rows[0]["DepAdd"].ToString());
+                        newbody = newbody.Replace("#*#*Mail*#*", DtBilty.Rows[0]["DepEmail"].ToString());
+                        newbody = newbody.Replace("#*#*Web*#*", CmpWeb);
+                        newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "http://piosunmark.pioerp.com/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
                         StringBuilder sb = new StringBuilder();
                         StringBuilder sb2 = new StringBuilder();
                         StringBuilder sb3 = new StringBuilder();

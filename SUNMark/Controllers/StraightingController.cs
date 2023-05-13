@@ -461,6 +461,11 @@ namespace SUNMark.Controllers
                     }
                     if (!string.IsNullOrEmpty(body))
                     {
+                        //string str = DtInward.Rows[0]["DepAdd"].ToString();
+                        //string str1 = new string(str.SkipWhile(c => c != ';')
+                        //   .Skip(1)
+                        //   .ToArray()).Trim();
+
                         newbody = body.Replace("//Address//", DtInward.Rows[0]["DepAdd"].ToString());
                         newbody = newbody.Replace("//Email//", DtInward.Rows[0]["DepEmail"].ToString());
                         newbody = newbody.Replace("//Web//", CmpWeb);
@@ -472,16 +477,12 @@ namespace SUNMark.Controllers
                         newbody = newbody.Replace("//Lime//", DtInward.Rows[0]["StrLimeQty"].ToString());
                         StringBuilder sb = new StringBuilder();
 
-                        //sb.Append("<tr align=\"center\"><td>WO NO</td><td>Coil NO</td><td>GRADE</td><td>HEAT NO.</td><td>OD</td><td>THK</td><td>LNG</td><td>NOS</td><td>TOTAL WEIGHT</td><td>STATUS</td>");//datatable
-
-
                         for (int i = 0; i < DtInward.Rows.Count; i++)
                         {
-
                             sb.Append("<tr>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">E+ Stock</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["Grade"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["StrACoilNo"].ToString() + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["StrAGrdVou"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">-</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["StrAOD"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["StrAThick"].ToString() + "</td>");
