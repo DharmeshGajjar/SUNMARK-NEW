@@ -62,6 +62,7 @@
                             <form method="post" class="mt-1">
                                 <div class="row">
                                     <div class="col-md-2">
+                                        <input type="hidden" name="GrdFlg" id="txtGrdFlg" value="@Model.GrdFlg" />
                                         <input type="hidden" name="GrdVou" id="txtGrdVou" value="@Model.GrdVou" />
                                         <label class="control-label col-xl-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
                                             Menu <span class="required">*</span>
@@ -456,9 +457,9 @@
                                         <button class="btn btn-primary px-4 text-white" style="font-family:Verdana;font-size:medium;margin-right:10px" id="btnSave">
                                             Save (F10)
                                         </button>
-                                        @*<button class="btn btn-primary px-4 text-white" style="font-family:Verdana;font-size:medium;margin-right:10px" id="btnSaveAs">
+                                        <button class="btn btn-primary px-4 text-white" style="font-family:Verdana;font-size:medium;margin-right:10px" id="btnSaveAs">
                                             Save As(Alt+F10)
-                                        </button>*@
+                                        </button>
                                         <a href="/GridMaster/index" class="btn btn-warning px-4 text-dark" style="font-family:Verdana;font-size:medium">
                                             Cancel (Alt+C)
                                         </a>
@@ -582,6 +583,7 @@
         $('#custom-tabs-three-add').addClass('active');
         $('#custom-tabs-three-add').addClass('show');
         $('#txtGrdMnuVou').focus();
+        SetSelect2() 
     }
     function GoToListTab() {
         $('#custom-tabs-three-list-tab').addClass('active');
@@ -615,6 +617,9 @@
         }
     }
 
+    var isRecentCalledEsc = false;
+    var isRecentCalledAddRows = false;
+    var isRecentCalledSave = false;
     (function (code) {
         code(window.jQuery, document, window);
     }(function ($, document, window) {
@@ -624,10 +629,17 @@
                 .on('F2', function () {
                     GoToAddTab()
                 }).on('F10', function () {
-                    $("#btnSave").click();
-                //}).on('Alt+F10', function () {
-                //    $('#GrdVou').val(0);
-                //    $("#btnSaveAs").click();
+                    if (!isRecentCalledSave) {
+                        $("#btnSave").click();
+                        isRecentCalledSave = true;
+                        setTimeout(function () {
+                            isRecentCalledSave = false;
+                        }, 1000)
+                    }
+
+                    //$("#btnSave").click();
+                }).on('Alt+F10', function () {
+                    $("#btnSaveAs").click();
                 })
                 .on('Alt+L', function () {
                     GoToListTab();
@@ -784,6 +796,7 @@
                     $('#tblGridTransaction').children().find('tr.lastRow').prev().children('td').eq(1).children('input').focus();
                     SetSerialNumber();
                     SetName();
+                    SetSelect2()
                 }
                 else {
                     showErrorMessage("Please enter all required fields");
@@ -975,61 +988,40 @@
         $('#tblGridTransaction').children().find('tr.lastRow').prev().children('td').eq(1).children('input').focus();
     })
 
-    $("#btnSaveAs").click(function () {
-        
-        var Grdvou = '@Html.Raw(Model.GrdVou)';
-        var ATotYN = $('.ATotYN');
-        var AHideYN = $('.AHideYN');
-        var canGrow = $('.canGrow');
-        var ALinkYN = $('.ALinkYN');
-
-        var ATotYNString = ''
-        var AHideYNString = ''
-        var ALinkYNString = ''
-        var canGrowString = ''
-
-        $(ATotYN).each(function () {
-            if ($(this).is(":checked")) {
-                ATotYNString += '1,';
-            }
-            else {
-                ATotYNString += '0,';
-            }
-        });
-
-        $(AHideYN).each(function () {
-            if ($(this).is(":checked")) {
-                AHideYNString += '1,';
-            }
-            else {
-                AHideYNString += '0,';
-            }
-        });
-        $(canGrow).each(function () {
-            if ($(this).is(":checked")) {
-                canGrowString += '1,';
-            }
-            else {
-                canGrowString += '0,';
-            }
-        });
-
-        $(ALinkYN).each(function () {
-            if ($(this).is(":checked")) {
-                ALinkYNString += '1,';
-            }
-            else {
-                ALinkYNString += '0,';
-            }
-        });
-
-        $('#GrdAHideYNString').val(AHideYNString);
-        $('#canGrowString').val(canGrowString);
-        $('#GrdALinkYNString').val(ALinkYNString);
-        $('#GrdATotYNString').val(ATotYNString);
-    })
-
     $('#txtGrdMultiSelYN').focusout(function () {
         $('#tblGridTransaction').children().find('tr.lastRow').prev().children('td').eq(1).children('input').focus();
     })
+
+
+    $("#btnSaveAs").click(function () {
+        var mnuVou = $('#txtGrdMnuVou').children('option:selected').val();
+        var grdnm = $('#GrdName').val();
+        if (grdnm != null && grdnm != "") {
+            $.ajax({
+                type: "POST",
+                url: '/GridMaster/SaveAs',
+                data: { 'grdnm': grdnm, 'mnuVou': mnuVou },
+                dataType: "JSON",
+                success: function (response) {
+                    if (response.result) {
+                        // window.location.href = '/jobworkentry/index'
+                        return true;
+                    }
+                    else {
+                        showErrorMessage(response.message);
+                    }
+                },
+                error: function (response) {
+                    errorMessage(response);;
+                }
+            });
+        }
+    });
+
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+
 </script>

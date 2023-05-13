@@ -95,6 +95,7 @@ namespace SUNMark.Controllers
                 string filePath = "/PrintPDF/" + "Mill-" + dt + ".pdf";
                 wwwroot = _iwebhostenviroment.WebRootPath + filePath;
                 SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                converter.Options.PdfPageSize = PdfPageSize.Legal;
                 converter.Options.PdfPageOrientation = PdfPageOrientation.Landscape;
                 SelectPdf.PdfDocument doc = converter.ConvertHtmlString(obj.Html);
                 doc.Save(wwwroot);

@@ -51,6 +51,7 @@ namespace SUNMark.Controllers
                         if (DtGrdMst != null && DtGrdMst.Rows.Count > 0)
                         {
                             gridMasterModel.GrdVou = DbConnection.ParseInt32(id);
+                            gridMasterModel.GrdFlg = 1;
                             gridMasterModel.GrdMnuVou = DbConnection.ParseInt32(DtGrdMst.Rows[0]["GrdMnuVou"].ToString());
                             gridMasterModel.GrdType = DtGrdMst.Rows[0]["GrdType"].ToString();
                             gridMasterModel.GrdName = DtGrdMst.Rows[0]["GrdName"].ToString();
@@ -179,6 +180,7 @@ namespace SUNMark.Controllers
                     gridMasterModel.Gridshort = new GridShortGridModel();
                 gridMasterModel.Gridshort.DefaultYNList = ObjProductHelpers.GetProductYesNo();
                 string WrongFiledName = "";
+                int flg = gridMasterModel.GrdFlg;
 
                 if (!string.IsNullOrWhiteSpace(gridMasterModel.GrdQryFields))
                 {
@@ -209,7 +211,15 @@ namespace SUNMark.Controllers
                             sqlParameters[4] = new SqlParameter("@GrdQryFields", gridMasterModel.GrdQryFields);
                             sqlParameters[5] = new SqlParameter("@GrdQryJoin", gridMasterModel.GrdQryJoin);
                             sqlParameters[6] = new SqlParameter("@GrdQryOrderBy", gridMasterModel.GrdQryOrderBy);
-                            sqlParameters[7] = new SqlParameter("@GrdVou", id);
+                            if (flg == 0)
+                            {
+                                sqlParameters[7] = new SqlParameter("@GrdVou", 0);
+                            }
+                            else
+                            {
+                                sqlParameters[7] = new SqlParameter("@GrdVou", id);
+                            }
+
                             sqlParameters[8] = new SqlParameter("@GrdDftYNo", gridMasterModel.GrdDftYNo);
                             sqlParameters[9] = new SqlParameter("@GrdTitle", gridMasterModel.GrdTitle);
                             sqlParameters[10] = new SqlParameter("@PageSize", gridMasterModel.PageSize);
@@ -581,6 +591,207 @@ namespace SUNMark.Controllers
 
                 objreturnList
             );
+        }
+
+        public IActionResult SaveAs(string grdnm, string mnuVou)
+        {
+            GridMasterModel gridMasterModel = new GridMasterModel();
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(mnuVou) && !string.IsNullOrWhiteSpace(grdnm))
+                {
+                    long id = gridMasterModel.GrdVou;
+                    SqlParameter[] sqlPara = new SqlParameter[2];
+                    sqlPara[0] = new SqlParameter("@GrdMnuVou", mnuVou);
+                    sqlPara[1] = new SqlParameter("@GrdName", grdnm);
+                    DataTable dtgrdMst = ObjDBConnection.CallStoreProcedure("GetGridMasterDetailsCheck", sqlPara);
+                    if (dtgrdMst != null && dtgrdMst.Rows.Count > 0)
+                    {
+                        int status = Convert.ToInt32(dtgrdMst.Rows[0][0].ToString());
+                        gridMasterModel.TypeList = ObjProductHelpers.GetReportView();
+                        gridMasterModel.MultiYNList = ObjProductHelpers.GetProductYesNo();
+                        gridMasterModel.MenuList = ObjProductHelpers.GetMenuMasterDropdown();
+                        if (gridMasterModel.Gridtransaction == null)
+                            gridMasterModel.Gridtransaction = new GridTransactionGridModel();
+                        gridMasterModel.Gridtransaction.DataTypeList = ObjProductHelpers.GetDataType();
+                        gridMasterModel.Gridtransaction.AlignList = ObjProductHelpers.GetTextAlign();
+                        gridMasterModel.Gridtransaction.TotalYNList = ObjProductHelpers.GetProductYesNo();
+                        gridMasterModel.Gridtransaction.LinkYNList = ObjProductHelpers.GetProductYesNo();
+                        gridMasterModel.Gridtransaction.HideList = ObjProductHelpers.GetProductYesNo();
+                        if (gridMasterModel.Gridshort == null)
+                            gridMasterModel.Gridshort = new GridShortGridModel();
+                        gridMasterModel.Gridshort.DefaultYNList = ObjProductHelpers.GetProductYesNo();
+                        string WrongFiledName = "";
+                        if (status == 1)
+                        {
+                            gridMasterModel.GrdFlg = 0;
+                        }
+                        else
+                        {
+                            gridMasterModel.GrdFlg = 1;
+                        }
+                        int flg = gridMasterModel.GrdFlg;
+                        
+
+                        if (!string.IsNullOrWhiteSpace(gridMasterModel.GrdQryFields))
+                        {
+                            if (gridMasterModel.Gridtransaction.GrdADbFld != null)
+                            {
+                                for (int i = 0; i < gridMasterModel.Gridtransaction.GrdADbFld.Length; i++)
+                                {
+                                    if (string.IsNullOrWhiteSpace(gridMasterModel.Gridtransaction.GrdADbFld[i]))
+                                    {
+                                        gridMasterModel.Gridtransaction.GrdADbFld[i] = "";
+                                    }
+                                    if (!Regex.Match(gridMasterModel.GrdQryFields.ToLower(), @"\b" + gridMasterModel.Gridtransaction.GrdADbFld[i].ToLower() + @"\b").Success)
+                                    {
+                                        WrongFiledName = gridMasterModel.Gridtransaction.GrdADbFld[i];
+                                        break;
+                                    }
+                                }
+                            }
+                            if (string.IsNullOrEmpty(WrongFiledName))
+                            {
+                                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(gridMasterModel.GrdMnuVou).ToString()) && !string.IsNullOrWhiteSpace(gridMasterModel.GrdType) && !string.IsNullOrWhiteSpace(gridMasterModel.GrdName))
+                                {
+                                    SqlParameter[] sqlParameters = new SqlParameter[11];
+                                    sqlParameters[0] = new SqlParameter("@GrdMnuVou", gridMasterModel.GrdMnuVou);
+                                    sqlParameters[1] = new SqlParameter("@GrdType", gridMasterModel.GrdType);
+                                    sqlParameters[2] = new SqlParameter("@GrdName", gridMasterModel.GrdName);
+                                    sqlParameters[3] = new SqlParameter("@GrdMultiSelYN", gridMasterModel.GrdMultiSelYN);
+                                    sqlParameters[4] = new SqlParameter("@GrdQryFields", gridMasterModel.GrdQryFields);
+                                    sqlParameters[5] = new SqlParameter("@GrdQryJoin", gridMasterModel.GrdQryJoin);
+                                    sqlParameters[6] = new SqlParameter("@GrdQryOrderBy", gridMasterModel.GrdQryOrderBy);
+                                    if (flg == 0)
+                                    {
+                                        sqlParameters[7] = new SqlParameter("@GrdVou", 0);
+                                    }
+                                    else
+                                    {
+                                        sqlParameters[7] = new SqlParameter("@GrdVou", id);
+                                    }
+
+                                    sqlParameters[8] = new SqlParameter("@GrdDftYNo", gridMasterModel.GrdDftYNo);
+                                    sqlParameters[9] = new SqlParameter("@GrdTitle", gridMasterModel.GrdTitle);
+                                    sqlParameters[10] = new SqlParameter("@PageSize", gridMasterModel.PageSize);
+                                    DataTable DtGrid = ObjDBConnection.CallStoreProcedure("GridMaster_Insert", sqlParameters);
+                                    if (DtGrid != null && DtGrid.Rows.Count > 0)
+                                    {
+                                        int masterId = DbConnection.ParseInt32(DtGrid.Rows[0][0].ToString());
+                                        if (masterId > 0)
+                                        {
+                                            if (gridMasterModel.Gridtransaction.GrdADbFld != null)
+                                            {
+                                                string[] aTotYN = gridMasterModel.GrdATotYNString.TrimEnd(',').Split(',');
+                                                string[] canGrow = gridMasterModel.canGrowString.TrimEnd(',').Split(',');
+                                                string[] aLinkYN = gridMasterModel.GrdALinkYNString.TrimEnd(',').Split(',');
+                                                string[] aHideYN = gridMasterModel.GrdAHideYNString.TrimEnd(',').Split(',');
+                                                for (int i = 0; i < gridMasterModel.Gridtransaction.GrdADbFld.Length; i++)
+                                                {
+                                                    SqlParameter[] parameter = new SqlParameter[15];
+                                                    parameter[0] = new SqlParameter("@GrdAGrdVou", masterId);
+                                                    parameter[1] = new SqlParameter("@GrdADbFld", gridMasterModel.Gridtransaction.GrdADbFld[i]);
+                                                    parameter[2] = new SqlParameter("@GrdAColNm", gridMasterModel.Gridtransaction.GrdAColNm[i]);
+                                                    parameter[3] = new SqlParameter("@GrdANewColNm", gridMasterModel.Gridtransaction.GrdANewColNm[i]);
+                                                    parameter[4] = new SqlParameter("@GrdAPosition", gridMasterModel.Gridtransaction.GrdAPosition[i]);
+                                                    parameter[5] = new SqlParameter("@GrdADataType", gridMasterModel.Gridtransaction.GrdADataType[i]);
+                                                    parameter[6] = new SqlParameter("@GrdAWidth", gridMasterModel.Gridtransaction.GrdAWidth[i]);
+                                                    parameter[7] = new SqlParameter("@GrdADecUpTo", gridMasterModel.Gridtransaction.GrdADecUpTo[i]);
+                                                    parameter[8] = new SqlParameter("@GrdAAlign", gridMasterModel.Gridtransaction.GrdAAlign[i]);
+                                                    //parameter[9] = new SqlParameter("@GrdATotYN", gridMasterModel.Gridtransaction.GrdATotYN[i] ? "1" : "0");
+                                                    //parameter[10] = new SqlParameter("@GrdALinkYN", gridMasterModel.Gridtransaction.GrdALinkYN[i] ? "1" : "0");
+                                                    //parameter[11] = new SqlParameter("@GrdAHideYN", gridMasterModel.Gridtransaction.GrdAHideYN[i] ? "1" : "0");
+                                                    parameter[9] = new SqlParameter("@GrdATotYN", aTotYN[i]);
+                                                    parameter[10] = new SqlParameter("@GrdCanGrow", canGrow[i]);
+                                                    parameter[11] = new SqlParameter("@GrdALinkYN", aLinkYN[i]);
+                                                    parameter[12] = new SqlParameter("@GrdAHideYN", aHideYN[i]);
+                                                    parameter[13] = new SqlParameter("@GrdASuppressIFVal", gridMasterModel.Gridtransaction.GrdASuppressIFVal[i]);
+                                                    parameter[14] = new SqlParameter("@SrNo", (i + 1));
+                                                    DataTable DtGrdTrn = ObjDBConnection.CallStoreProcedure("GridTransaction_Insert", parameter);
+                                                }
+                                            }
+                                            if (gridMasterModel.Gridshort.GrdBDbFld != null && gridMasterModel.Gridshort.GrdBDbFld[0] != null)
+                                            {
+                                                for (int i = 0; i < gridMasterModel.Gridshort.GrdBDbFld.Length; i++)
+                                                {
+                                                    SqlParameter[] parameter = new SqlParameter[5];
+                                                    parameter[0] = new SqlParameter("@GrdBGrdVou", masterId);
+                                                    parameter[1] = new SqlParameter("@GrdBDbFld", gridMasterModel.Gridshort.GrdBDbFld[i]);
+                                                    parameter[2] = new SqlParameter("@GrdBColNm", gridMasterModel.Gridshort.GrdBColNm[i]);
+                                                    parameter[3] = new SqlParameter("@GrdBDefYN", gridMasterModel.Gridshort.GrdBDefYN[i] ? "1" : "0");
+                                                    parameter[4] = new SqlParameter("@SrNo", (i + 1));
+                                                    DataTable DtGrdTrn = ObjDBConnection.CallStoreProcedure("GridShort_Insert", parameter);
+                                                }
+                                            }
+                                            int Status = DbConnection.ParseInt32(DtGrid.Rows[0][0].ToString());
+                                            if (Status == 0)
+                                            {
+                                                gridMasterModel.GrdVou = DbConnection.ParseInt32(id);
+                                                SetErrorMessage("Dulplicate Type Details");
+                                                ViewBag.FocusType = "1";
+                                                return View(gridMasterModel);
+                                            }
+                                            else
+                                            {
+                                                if (id > 0)
+                                                {
+                                                    SetSuccessMessage("Updated Sucessfully");
+                                                }
+                                                else
+                                                {
+                                                    SetSuccessMessage("Inserted Sucessfully");
+                                                }
+                                                return RedirectToAction("index", "GridMaster", new { id = 0 });
+                                            }
+                                        }
+                                        else
+                                        {
+                                            gridMasterModel.GrdVou = DbConnection.ParseInt32(id);
+                                            SetErrorMessage("Insert error");
+                                            ViewBag.FocusType = "1";
+                                            return View(gridMasterModel);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        gridMasterModel.GrdVou = DbConnection.ParseInt32(id);
+                                        SetErrorMessage("Please Enter the Value");
+                                        ViewBag.FocusType = "1";
+                                        return View(gridMasterModel);
+                                    }
+                                }
+                                else
+                                {
+                                    gridMasterModel.GrdVou = DbConnection.ParseInt32(id);
+                                    SetErrorMessage("Please Enter the Value");
+                                    ViewBag.FocusType = "1";
+                                    return View(gridMasterModel);
+                                }
+                            }
+                            else
+                            {
+                                gridMasterModel.GrdVou = DbConnection.ParseInt32(id);
+                                SetErrorMessage("“" + WrongFiledName + " ” field does not match in query");
+                                ViewBag.FocusType = "1";
+                                return View(gridMasterModel);
+                            }
+                        }
+                        else
+                        {
+                            gridMasterModel.GrdVou = DbConnection.ParseInt32(id);
+                            SetErrorMessage("Please Enter Mandatory Field");
+                            ViewBag.FocusType = "1";
+                            return View(gridMasterModel);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, message = "Internal Error!" });
+            }
+            return Json(new { result = false, message = "" });
+
         }
 
     }

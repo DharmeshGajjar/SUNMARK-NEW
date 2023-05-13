@@ -475,7 +475,7 @@ namespace SUNMark.Controllers
                             sb.Append("<tr>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">E+ Stock</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikACoilNo"].ToString() + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAGrdVou"].ToString() + "</td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["Grade"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">-</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAOD"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["PikAThick"].ToString() + "</td>");
