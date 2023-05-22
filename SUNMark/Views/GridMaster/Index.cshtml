@@ -460,10 +460,10 @@
                                         <button class="btn btn-primary px-4 text-white" style="font-family:Verdana;font-size:medium;margin-right:10px" id="btnSaveAs">
                                             Save As(Alt+F10)
                                         </button>
+                     
                                         <a href="/GridMaster/index" class="btn btn-warning px-4 text-dark" style="font-family:Verdana;font-size:medium">
                                             Cancel (Alt+C)
                                         </a>
-
                                     </div>
                                 </div>
 
@@ -636,10 +636,14 @@
                             isRecentCalledSave = false;
                         }, 1000)
                     }
-
-                    //$("#btnSave").click();
                 }).on('Alt+F10', function () {
-                    $("#btnSaveAs").click();
+                    if (!isRecentCalledSave) {
+                        $("#btnSave").click();
+                        isRecentCalledSave = true;
+                        setTimeout(function () {
+                            isRecentCalledSave = false;
+                        }, 1000)
+                    }
                 })
                 .on('Alt+L', function () {
                     GoToListTab();
@@ -993,30 +997,31 @@
     })
 
 
-    $("#btnSaveAs").click(function () {
-        var mnuVou = $('#txtGrdMnuVou').children('option:selected').val();
-        var grdnm = $('#GrdName').val();
-        if (grdnm != null && grdnm != "") {
-            $.ajax({
-                type: "POST",
-                url: '/GridMaster/SaveAs',
-                data: { 'grdnm': grdnm, 'mnuVou': mnuVou },
-                dataType: "JSON",
-                success: function (response) {
-                    if (response.result) {
-                        // window.location.href = '/jobworkentry/index'
-                        return true;
-                    }
-                    else {
-                        showErrorMessage(response.message);
-                    }
-                },
-                error: function (response) {
-                    errorMessage(response);;
-                }
-            });
-        }
-    });
+    //function SaveAsGridMst() {
+    //    var mnuVou = $('#txtGrdMnuVou').children('option:selected').val();
+    //    var grdnm = $('#GrdName').val();
+    //    var queryflds = $('#GrdQryFields').val();        
+    //    if (grdnm != null && grdnm != "") {
+    //        $.ajax({
+    //            type: "POST",
+    //            url: '/GridMaster/SaveAsGridMst',
+    //            data: { 'grdnm': grdnm, 'mnuVou': mnuVou, 'queryflds': queryflds },
+    //            dataType: "JSON",
+    //            success: function (response) {
+    //                if (response.result) {
+    //                    // window.location.href = '/jobworkentry/index'
+    //                    return true;
+    //                }
+    //                else {
+    //                    showErrorMessage(response.message);
+    //                }
+    //            },
+    //            error: function (response) {
+    //                errorMessage(response);;
+    //            }
+    //        });
+    //    }
+    //};
 
     function SetSelect2() {
         $(".select2").select2({

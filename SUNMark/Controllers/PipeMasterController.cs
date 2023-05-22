@@ -105,59 +105,59 @@ namespace SUNMark.Controllers
                 DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("RPT_PIPEMASTER", sqlParameters);
 
                 string whereConditionQuery = string.Empty;
-                if (gridMstId != 48)
-                {
-                    if (!string.IsNullOrWhiteSpace(coilNo))
-                    {
-                        whereConditionQuery += " AND LotMst.LotCoilNo='" + coilNo + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(frWidth))
-                    {
-                        whereConditionQuery += " AND LotMst.LotWidth>='" + frWidth + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(toWidth))
-                    {
-                        whereConditionQuery += " AND LotMst.LotWidth<='" + toWidth + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(frthick))
-                    {
-                        whereConditionQuery += " AND LotMst.LotThick>='" + frthick + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(tothick))
-                    {
-                        whereConditionQuery += " AND LotMst.LotThick<='" + tothick + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(frWeigth))
-                    {
-                        whereConditionQuery += " AND LotMst.LotQty >='" + frWeigth + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(toWeigth))
-                    {
-                        whereConditionQuery += " AND LotMst.LotQty <='" + toWeigth + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(gradeid))
-                    {
-                        whereConditionQuery += " AND LotMst.LotGrdMscVou='" + gradeid + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(frRecDt))
-                    {
-                        whereConditionQuery += " AND LotMst.LotDt>='" + frRecDt + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(toRecDt))
-                    {
-                        whereConditionQuery += " AND LotMst.LotDt<='" + toRecDt + "'";
-                    }
-                    //if (!string.IsNullOrWhiteSpace(DoneProc))
-                    //{
-                    //    whereConditionQuery += " AND LotMst.LotDt ='" + DoneProc + "'";
-                    //}
-                    //if (!string.IsNullOrWhiteSpace(NextProc))
-                    //{
-                    //    whereConditionQuery += " AND LotMst.LotDt<='" + NextProc + "'";
-                    //}
-                }
-                else
-                {
+                //if (gridMstId != 48)
+                //{
+                //    if (!string.IsNullOrWhiteSpace(coilNo))
+                //    {
+                //        whereConditionQuery += " AND LotMst.LotCoilNo='" + coilNo + "'";
+                //    }
+                //    if (!string.IsNullOrWhiteSpace(frWidth))
+                //    {
+                //        whereConditionQuery += " AND LotMst.LotWidth>='" + frWidth + "'";
+                //    }
+                //    if (!string.IsNullOrWhiteSpace(toWidth))
+                //    {
+                //        whereConditionQuery += " AND LotMst.LotWidth<='" + toWidth + "'";
+                //    }
+                //    if (!string.IsNullOrWhiteSpace(frthick))
+                //    {
+                //        whereConditionQuery += " AND LotMst.LotThick>='" + frthick + "'";
+                //    }
+                //    if (!string.IsNullOrWhiteSpace(tothick))
+                //    {
+                //        whereConditionQuery += " AND LotMst.LotThick<='" + tothick + "'";
+                //    }
+                //    if (!string.IsNullOrWhiteSpace(frWeigth))
+                //    {
+                //        whereConditionQuery += " AND LotMst.LotQty >='" + frWeigth + "'";
+                //    }
+                //    if (!string.IsNullOrWhiteSpace(toWeigth))
+                //    {
+                //        whereConditionQuery += " AND LotMst.LotQty <='" + toWeigth + "'";
+                //    }
+                //    if (!string.IsNullOrWhiteSpace(gradeid))
+                //    {
+                //        whereConditionQuery += " AND LotMst.LotGrdMscVou='" + gradeid + "'";
+                //    }
+                //    if (!string.IsNullOrWhiteSpace(frRecDt))
+                //    {
+                //        whereConditionQuery += " AND LotMst.LotDt>='" + frRecDt + "'";
+                //    }
+                //    if (!string.IsNullOrWhiteSpace(toRecDt))
+                //    {
+                //        whereConditionQuery += " AND LotMst.LotDt<='" + toRecDt + "'";
+                //    }
+                //    //if (!string.IsNullOrWhiteSpace(DoneProc))
+                //    //{
+                //    //    whereConditionQuery += " AND LotMst.LotDt ='" + DoneProc + "'";
+                //    //}
+                //    //if (!string.IsNullOrWhiteSpace(NextProc))
+                //    //{
+                //    //    whereConditionQuery += " AND LotMst.LotDt<='" + NextProc + "'";
+                //    //}
+                //}
+                //else
+                //{
                     if (!string.IsNullOrWhiteSpace(coilNo))
                     {
                         whereConditionQuery += " AND PipeMst.CoilNo='" + coilNo + "'";
@@ -206,7 +206,7 @@ namespace SUNMark.Controllers
                     {
                         whereConditionQuery += " AND PipeMst.NextProc<='" + NextProc + "'";
                     }
-                }
+                //}
                 getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                 if (getReportDataModel.IsError)
                 {

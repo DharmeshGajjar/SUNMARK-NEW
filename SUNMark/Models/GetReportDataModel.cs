@@ -14,6 +14,7 @@ namespace SUNMark.Models
         public int totalRecord { get; set; }
 
         public int pageIndex { get; set; }
+        public int multiYN { get; set; }
 
         public int pageSize { get; set; }
 

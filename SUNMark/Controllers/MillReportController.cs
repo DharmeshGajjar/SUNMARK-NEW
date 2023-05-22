@@ -149,10 +149,10 @@ namespace SUNMark.Controllers
                         newbody = newbody.Replace("#*#*MillNo*#*", DtBilty.Rows[0]["MacNm"].ToString());
                         newbody = newbody.Replace("#*#*Shift*#*", DtBilty.Rows[0]["MilShiftName"].ToString());
 
-                        newbody = body.Replace("#*#*Address*#*", DtBilty.Rows[0]["DepAdd"].ToString());
+                        newbody = newbody.Replace("#*#*Address*#*", DtBilty.Rows[0]["DepAdd"].ToString());
                         newbody = newbody.Replace("#*#*Mail*#*", DtBilty.Rows[0]["DepEmail"].ToString());
                         newbody = newbody.Replace("#*#*Web*#*", CmpWeb);
-                        newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "http://piosunmark.pioerp.com/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
+                        //newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "http://piosunmark.pioerp.com/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
                         StringBuilder sb = new StringBuilder();
                         StringBuilder sb2 = new StringBuilder();
                         StringBuilder sb3 = new StringBuilder();
@@ -269,8 +269,9 @@ namespace SUNMark.Controllers
 
 
 
+                        //newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "<img src='http://piosunmark.pioerp.com/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "' style='max-width:100%; ' />" : string.Empty);
 
-                        newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
+                        newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "http://piosunmark.pioerp.com/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
                         //newbody = newbody.Replace("#*#*logo*#*#", !string.IsNullOrWhiteSpace(DtBilty.Rows[0]["DepLogo"].ToString()) ? "http://piosunmark.pioerp.com/Uploads/" + DtBilty.Rows[0]["DepLogo"].ToString() + "" : string.Empty);
 
 

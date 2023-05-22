@@ -528,8 +528,8 @@ namespace SUNMark.Classes
 
                             for (int c = 0; c < coilano.Length; c++)
                             {
-                                if (Char.IsDigit(coilano[i]))
-                                    temp += coilano[i];
+                                if (Char.IsDigit(coilano[c]))
+                                    temp += coilano[c];
                             }
 
                             if (temp.Length > 0)
@@ -555,7 +555,7 @@ namespace SUNMark.Classes
 
                             if (!string.IsNullOrWhiteSpace(processId))
                             {
-                                sqlParameters[28] = new SqlParameter("@@LotPrcTypCD", processId);
+                                sqlParameters[28] = new SqlParameter("@LotPrcTypCD", processId);
                             }
                             #endregion
 
@@ -581,7 +581,7 @@ namespace SUNMark.Classes
 
                             if (!string.IsNullOrWhiteSpace(nxtprocessId))
                             {
-                                sqlParameters[37] = new SqlParameter("@@LotPrcTypCD", nxtprocessId);
+                                sqlParameters[37] = new SqlParameter("@NextProc", nxtprocessId);
                             }
                             #endregion
 
