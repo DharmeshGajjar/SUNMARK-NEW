@@ -182,6 +182,7 @@ namespace SUNMark.Controllers
                 string WrongFiledName = "";
                 //int flg = gridMasterModel.GrdFlg;
                 SqlParameter[] sqlPara = new SqlParameter[2];
+                string GrdSaveas = gridMasterModel.GrdSaveAs;
                 sqlPara[0] = new SqlParameter("@GrdMnuVou", gridMasterModel.GrdMnuVou);
                 sqlPara[1] = new SqlParameter("@GrdName", gridMasterModel.GrdName);
                 DataTable dtgrdMst = ObjDBConnection.CallStoreProcedure("GetGridMasterDetailsCheck", sqlPara);
@@ -194,7 +195,18 @@ namespace SUNMark.Controllers
                     }
                     else
                     {
-                        gridMasterModel.GrdFlg = 1;
+                        if (GrdSaveas == "1")
+                        {
+                            gridMasterModel.GrdSaveAs = "0";
+                            SetErrorMessage("Layout Name Already Exist!");
+                            ViewBag.FocusType = "1";
+                            return View(gridMasterModel);
+                        }
+                        else
+                        {
+                            gridMasterModel.GrdFlg = 1;
+                        }
+                        
                     }
                     int flg = gridMasterModel.GrdFlg;
                     if (!string.IsNullOrWhiteSpace(gridMasterModel.GrdQryFields))
@@ -243,6 +255,13 @@ namespace SUNMark.Controllers
                                 if (DtGrid != null && DtGrid.Rows.Count > 0)
                                 {
                                     int masterId = DbConnection.ParseInt32(DtGrid.Rows[0][0].ToString());
+                                    if (masterId == 1)
+                                    {
+                                        gridMasterModel.GrdVou = DbConnection.ParseInt32(id);
+                                        SetErrorMessage("Layout Name Already Exist!");
+                                        ViewBag.FocusType = "1";
+                                        return View(gridMasterModel);
+                                    }
                                     if (masterId > 0)
                                     {
                                         if (gridMasterModel.Gridtransaction.GrdADbFld != null)

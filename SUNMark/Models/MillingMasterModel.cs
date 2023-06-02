@@ -24,6 +24,7 @@ namespace SUNMark.Models
 
         public string Operator2 { get; set; }
         public string Supervisor { get; set; }
+        public string ProductCode { get; set; }
         public string IssueCoilNo { get; set; }
 
         public string IssueCoilNoVou { get; set; }

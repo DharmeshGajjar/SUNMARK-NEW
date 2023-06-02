@@ -47,6 +47,8 @@ namespace SUNMark.Models
         public decimal PCS { get; set; }
         public decimal FeetPer { get; set; }
 
+        public string ProductCode { get; set; }
+
         #region " LOT Table Fields"
         public string LotSupCoilNo { get; set; }
         public int LotFinMscVou { get; set; }

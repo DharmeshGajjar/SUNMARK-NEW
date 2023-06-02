@@ -96,6 +96,7 @@ namespace SUNMark.Controllers
                         objOpeningStock.PCS = decimal.Parse(DtOBLDetail.Rows[0]["LotPCS"].ToString());
                         objOpeningStock.LotPrcTypVou = int.Parse(DtOBLDetail.Rows[0]["LotPrcTypCD"].ToString());
                         objOpeningStock.LotNextPrcVou = int.Parse(DtOBLDetail.Rows[0]["OblNextProc"].ToString());
+                        objOpeningStock.ProductCode = DtOBLDetail.Rows[0]["LotPrdCd"].ToString();
                         objOpeningStock.OblRem = DtOBLDetail.Rows[0]["OblRem"].ToString();   
                     }
                 }
@@ -164,7 +165,7 @@ namespace SUNMark.Controllers
                 ViewBag.schList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
                 if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblGdnVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblLocVou).ToString()) && !string.IsNullOrWhiteSpace(obj.LotNB.ToString()) && !string.IsNullOrWhiteSpace(obj.LotSCH.ToString()))
                 {
-                    SqlParameter[] sqlParameters = new SqlParameter[33];
+                    SqlParameter[] sqlParameters = new SqlParameter[34];
                     sqlParameters[0] = new SqlParameter("@OblNVno", obj.OblNVno);
                     sqlParameters[1] = new SqlParameter("@OblDt", DateTime.Parse(obj.OblDt));
                     sqlParameters[2] = new SqlParameter("@OblCmpVou", obj.OblCmpVou);
@@ -203,6 +204,7 @@ namespace SUNMark.Controllers
                     sqlParameters[30] = new SqlParameter("@NB", obj.LotNB);
                     sqlParameters[31] = new SqlParameter("@SCH", obj.LotSCH);
                     sqlParameters[32] = new SqlParameter("@NextProc", obj.LotNextPrcVou);
+                    sqlParameters[33] = new SqlParameter("@LotPrdCd", obj.ProductCode.ToUpper());
                     DataTable DtState = ObjDBConnection.CallStoreProcedure("OBLMST_Insert", sqlParameters);
                     if (DtState != null && DtState.Rows.Count > 0)
                     {
@@ -451,6 +453,37 @@ namespace SUNMark.Controllers
                     {
                         decimal lotwidth = Convert.ToDecimal(width) / Convert.ToDecimal("3.14");
                         return Json(new { result = true, lotOD = (lotwidth.ToString("0.##")) });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Json(new { result = false });
+        }
+
+        public JsonResult CheckProductCodeExitsOrNot(string productcode,int Id)
+        {
+            OpeningStokModel obj = new OpeningStokModel();
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(productcode))
+                {
+                    SqlParameter[] sqlParameters = new SqlParameter[3];
+                    sqlParameters[0] = new SqlParameter("@LotProCd", productcode);
+                    sqlParameters[1] = new SqlParameter("@MilYou", Id);
+                    sqlParameters[2] = new SqlParameter("@Type", "opening");
+                    DataTable dtNBSCH = ObjDBConnection.CallStoreProcedure("CheckProductCodeExitsOrNot", sqlParameters);
+                    if (dtNBSCH != null && dtNBSCH.Rows.Count > 0)
+                    {
+                        
+                        return Json(new { result = true, message = "Product code already exits" });
+                    }
+                    else
+                    {
+                      //  decimal lotwidth = Convert.ToDecimal(width) / Convert.ToDecimal("3.14");
+                        return Json(new { result = false, message = "" });
                     }
                 }
             }
