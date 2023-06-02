@@ -585,7 +585,7 @@ namespace SUNMark.Classes
                             }
                             #endregion
 
-                            if (!string.IsNullOrWhiteSpace(gradeId) && !string.IsNullOrWhiteSpace(finishId) && !string.IsNullOrWhiteSpace(partyId) && !string.IsNullOrWhiteSpace(godownId))
+                            if (!string.IsNullOrWhiteSpace(gradeId) && !string.IsNullOrWhiteSpace(finishId) && !string.IsNullOrWhiteSpace(godownId))
                             {
                                 DataTable DtState = ObjDBConnection.CallStoreProcedure("OBLMST_Insert", sqlParameters);
                                 if (DtState != null && DtState.Rows.Count > 0)

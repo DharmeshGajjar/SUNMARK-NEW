@@ -62,6 +62,7 @@
                             <form method="post" class="mt-1">
                                 <div class="row">
                                     <div class="col-md-2">
+                                        <input type="hidden" name="GrdSaveAs" id="txtGrdSaveAs" value="@Model.GrdSaveAs" />
                                         <input type="hidden" name="GrdFlg" id="txtGrdFlg" value="@Model.GrdFlg" />
                                         <input type="hidden" name="GrdVou" id="txtGrdVou" value="@Model.GrdVou" />
                                         <label class="control-label col-xl-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
@@ -71,7 +72,7 @@
                                         <div class="form-outline form-white mb-2">
                                             @if (Model != null && Model.MenuList != null && Model.MenuList.Count > 0)
                                             {
-                                                @Html.DropDownListFor(x => x.GrdMnuVou, Model.MenuList, "Select", new { @class = "form-control select2", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width: 150px", @required = "required", @id = "txtGrdMnuVou" }) }
+                                                @Html.DropDownListFor(x => x.GrdMnuVou, Model.MenuList, "Select", new { @class = "form-control select2", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width: 250px", @required = "required", @id = "txtGrdMnuVou" }) }
                                             else
                                             {
                                                 @Html.DropDownListFor(x => x.GrdMnuVou, new List<SelectListItem>(), "Select", new { @class = "form-control select2", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width: 150px", @required = "required", @id = "txtGrdMnuVou" })}
@@ -92,7 +93,7 @@
                                             Layout <span class="required">*</span>
                                         </label>
                                         <div class="form-outline form-white mb-2">
-                                            @Html.TextBoxFor(x => x.GrdName, new { @class = "form-control form-control-lg", @placeholder = "Layout Name", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:38px; width: 150px", @required = "required" })
+                                            @Html.TextBoxFor(x => x.GrdName, new { @class = "form-control form-control-lg", @placeholder = "Layout Name", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:38px; width: 250px", @required = "required" })
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -127,7 +128,7 @@
                                             Title <span class="required">*</span>
                                         </label>
                                         <div class="form-outline form-white mb-2">
-                                            @Html.TextBoxFor(x => x.GrdTitle, new { @class = "form-control form-control-lg", @placeholder = "Title", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:38px; width: 150px", @required = "required" })
+                                            @Html.TextBoxFor(x => x.GrdTitle, new { @class = "form-control form-control-lg", @placeholder = "Title", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:38px; width: 250px", @required = "required" })
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -135,7 +136,7 @@
                                             Page Size <span class="required">*</span>
                                         </label>
                                         <div class="form-outline form-white mb-2">
-                                            @Html.DropDownListFor(x => x.PageSize, Html.GetEnumSelectList<EnumPageSize>(), "Select", new { @class = "form-control select2", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px; width: 100px", @required = "required" })
+                                            @Html.DropDownListFor(x => x.PageSize, Html.GetEnumSelectList<EnumPageSize>(), "Select", new { @class = "form-control select2", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px; width: 180px", @required = "required" })
 
                                         </div>
                                     </div>
@@ -458,9 +459,8 @@
                                             Save (F10)
                                         </button>
                                         <button class="btn btn-primary px-4 text-white" style="font-family:Verdana;font-size:medium;margin-right:10px" id="btnSaveAs">
-                                            Save As(Alt+F10)
+                                            Save As (Alt+F10)
                                         </button>
-                     
                                         <a href="/GridMaster/index" class="btn btn-warning px-4 text-dark" style="font-family:Verdana;font-size:medium">
                                             Cancel (Alt+C)
                                         </a>
@@ -638,7 +638,10 @@
                     }
                 }).on('Alt+F10', function () {
                     if (!isRecentCalledSave) {
-                        $("#btnSave").click();
+                        var grdsaveas = $('input[name="GrdSaveAs"]').val("1");
+                        if (grdsaveas == "1") {
+                            $("#btnSave").click();
+                        }
                         isRecentCalledSave = true;
                         setTimeout(function () {
                             isRecentCalledSave = false;
@@ -713,9 +716,10 @@
                 'orderable': false
             },
             {
+
                 "render": function (data, type, row) {
                     var html = `<a href="/GridMaster/index/` + row.grdVou + `"> <i class="fa fa-pen text-primary"></i></a>
-                                                                                <a href="/GridMaster/delete/`+ row.grdVou + `"> <i class="fa fa-trash text-danger ml-3"></a></i>`;
+                                                                                        <a href="/GridMaster/delete/`+ row.grdVou + `"> <i class="fa fa-trash text-danger ml-3"></a></i>`;
                     return html;
                 },
                 "targets": 1
@@ -797,6 +801,9 @@
                     var html = $('#tblGridTransaction').children().find('tr.AddRows').html();
                     $('#tblGridTransaction').children().find('tr.lastRow').before("<tr>" + html + "</tr>");
                     $('#tblGridTransaction').children().find('tr.lastRow').prev().children('td').eq(2).children('input').val('0');
+                    $('#tblGridTransaction').children().find('tr.lastRow').prev().children('td').eq(1).children('input').val('');
+                    $('#tblGridTransaction').children().find('tr.lastRow').prev().children('td').eq(3).children('input').val('');
+                    $('#tblGridTransaction').children().find('tr.lastRow').prev().children('td').eq(6).children('input').val('');
                     $('#tblGridTransaction').children().find('tr.lastRow').prev().children('td').eq(1).children('input').focus();
                     SetSerialNumber();
                     SetName();
@@ -932,9 +939,63 @@
             $(this).children("td").eq(3).children("input").attr("name", "Gridshort.GrdBDefYN");
 
         });
-
-
     }
+
+    $("#btnSaveAs").click(function () {
+        var ATotYN = $('.ATotYN');
+        var AHideYN = $('.AHideYN');
+        var canGrow = $('.canGrow');
+        var ALinkYN = $('.ALinkYN');
+
+        var ATotYNString = ''
+        var AHideYNString = ''
+        var ALinkYNString = ''
+        var canGrowString = ''
+
+        $(ATotYN).each(function () {
+            if ($(this).is(":checked")) {
+                ATotYNString += '1,';
+            }
+            else {
+                ATotYNString += '0,';
+            }
+        });
+
+        $(AHideYN).each(function () {
+            if ($(this).is(":checked")) {
+                AHideYNString += '1,';
+            }
+            else {
+                AHideYNString += '0,';
+            }
+        });
+        $(canGrow).each(function () {
+            if ($(this).is(":checked")) {
+                canGrowString += '1,';
+            }
+            else {
+                canGrowString += '0,';
+            }
+        });
+
+        $(ALinkYN).each(function () {
+            if ($(this).is(":checked")) {
+                ALinkYNString += '1,';
+            }
+            else {
+                ALinkYNString += '0,';
+            }
+        });
+
+        $('#GrdAHideYNString').val(AHideYNString);
+        $('#canGrowString').val(canGrowString);
+        $('#GrdALinkYNString').val(ALinkYNString);
+        $('#GrdATotYNString').val(ATotYNString);
+        var grdsaveas = $('input[name="GrdSaveAs"]').val("1");
+        if (grdsaveas == "1") {
+            $("#btnSave").click();
+        }
+    });
 
     $("#btnSave").click(function () {
         var ATotYN = $('.ATotYN');
@@ -997,20 +1058,24 @@
     })
 
 
-    //function SaveAsGridMst() {
+    //function SaveAsGridMaster() {
     //    var mnuVou = $('#txtGrdMnuVou').children('option:selected').val();
     //    var grdnm = $('#GrdName').val();
-    //    var queryflds = $('#GrdQryFields').val();        
+    //    var grdvou = $('#GrdVou').val();
     //    if (grdnm != null && grdnm != "") {
     //        $.ajax({
     //            type: "POST",
     //            url: '/GridMaster/SaveAsGridMst',
-    //            data: { 'grdnm': grdnm, 'mnuVou': mnuVou, 'queryflds': queryflds },
+    //            data: { 'grdnm': grdnm, 'mnuVou': mnuVou, 'grdvou': grdvou },
     //            dataType: "JSON",
     //            success: function (response) {
-    //                if (response.result) {
-    //                    // window.location.href = '/jobworkentry/index'
-    //                    return true;
+    //                if (response.data) {
+    //                    if (data.status == 0) {
+    //                        success("Layout Already Exists")
+    //                    }
+    //                    else {
+    //                        $('#GrdFlg').val(0);
+    //                    }
     //                }
     //                else {
     //                    showErrorMessage(response.message);

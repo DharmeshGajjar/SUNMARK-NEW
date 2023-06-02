@@ -30,7 +30,7 @@ namespace SUNMark.Models
 
         public string GrdAHideYNString { get; set; }
         public string canGrowString { get; set; }
-
+        public string GrdSaveAs { get; set; } = "0";
 
         public GridTransactionGridModel Gridtransaction { get; set; }
         public GridShortGridModel Gridshort { get; set; }
