@@ -45,6 +45,7 @@ namespace SUNMark.Controllers
                     millingMasterModel.ScrapPipeProductVou = dtMill.Rows[0]["MilScrPrdVou"].ToString();
                     millingMasterModel.ProcessVou = dtMill.Rows[0]["MilNextPrcVou"].ToString();
                     millingMasterModel.PrcVou = dtMill.Rows[0]["MilPrcVou"].ToString();
+                    //millingMasterModel.ProductCode = dtMill.Rows[0]["ProductCode"].ToString();
                 }
 
                 millingMasterModel.Vno = GetVoucherNo();
@@ -110,6 +111,7 @@ namespace SUNMark.Controllers
                         millingMasterModel.NoOfTourch2 = dt.Rows[0]["MilTouNo2"].ToString();
                         millingMasterModel.AMP2 = dt.Rows[0]["MilWeldAMP2"].ToString();
                         millingMasterModel.Voltage2 = dt.Rows[0]["MilWeldVolt2"].ToString();
+                        millingMasterModel.ProductCode = dt.Rows[0]["MilPrdCd"].ToString();
                     }
                 }
             }
@@ -135,7 +137,7 @@ namespace SUNMark.Controllers
                 }
                 //if (ModelState.IsValid)
                 //{
-                    SqlParameter[] parameter = new SqlParameter[51];
+                    SqlParameter[] parameter = new SqlParameter[52];
                     parameter[0] = new SqlParameter("@MilVou", millingMasterModel.Vou);
                     parameter[1] = new SqlParameter("@MilCmpVou", millingMasterModel.CompanyVou);
                     parameter[2] = new SqlParameter("@MilVno", millingMasterModel.Vno);
@@ -187,6 +189,7 @@ namespace SUNMark.Controllers
                     parameter[48] = new SqlParameter("@MilWeldAMP2", millingMasterModel.AMP2);
                     parameter[49] = new SqlParameter("@MilWeldVolt2", millingMasterModel.Voltage2);
                     parameter[50] = new SqlParameter("@MilTouNo2", millingMasterModel.NoOfTourch2);
+                parameter[51] = new SqlParameter("@MilPrdCd", millingMasterModel.ProductCode.ToUpper());
                 DataTable dt = ObjDBConnection.CallStoreProcedure("AddMilling", parameter);
                         if (dt != null && dt.Rows.Count > 0)
                         {
@@ -568,6 +571,78 @@ namespace SUNMark.Controllers
             {
                 return Json(new { result = false, message = "Invalid Coil No!" });
             }
+        }
+
+        //public ActionResult CheckProductCodeExitsorNot(string ProductCode, string MacId)
+        //{
+        //    try
+        //    {
+        //        MillingMasterModel millingMasterModel = new MillingMasterModel();
+        //        SqlParameter[] parameter = new SqlParameter[2];
+        //        parameter[0] = new SqlParameter("@COILNO", ProductCode);
+        //        parameter[1] = new SqlParameter("@MACVOU", MacId);
+        //        DataSet ds = ObjDBConnection.GetDataSet("GetDataByCoilNoMilling", parameter);
+        //        if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables.Count == 6)
+        //        {
+        //            List<object> data = new List<object>();
+        //            DataTable dtMacMst = ds.Tables[4];
+
+        //            string MilMaxOD = "";
+        //            string MilMinOD = "";
+
+        //            if (dtMacMst != null && dtMacMst.Rows.Count > 0)
+        //            {
+        //                MilMaxOD = Convert.ToString(Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGTO"].ToString()));
+        //                MilMinOD = Convert.ToString(Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGFR"].ToString()));
+        //                return Json(new { result = true, data = data, MilMaxOD = MilMaxOD, MilMinOD = MilMinOD });
+        //            }
+        //            else
+        //            {
+        //                return Json(new { result = false, message = "Something went wrong!" });
+        //            }
+
+
+        //        }
+        //        else
+        //        {
+        //            return Json(new { result = false, message = "Invalid Coil No!" });
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return Json(new { result = false, message = "Invalid Coil No!" });
+        //    }
+        //}
+
+        public JsonResult CheckProductCodeExitsOrNot(string productcode, int Id)
+        {
+            OpeningStokModel obj = new OpeningStokModel();
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(productcode))
+                {
+                    SqlParameter[] sqlParameters = new SqlParameter[3];
+                    sqlParameters[0] = new SqlParameter("@LotProCd", productcode);
+                    sqlParameters[1] = new SqlParameter("@MilYou", Id);
+                    sqlParameters[2] = new SqlParameter("@Type", "MIL");
+                    DataTable dtNBSCH = ObjDBConnection.CallStoreProcedure("CheckProductCodeExitsOrNot", sqlParameters);
+                    if (dtNBSCH != null && dtNBSCH.Rows.Count > 0)
+                    {
+
+                        return Json(new { result = true, message = "Product code already exits" });
+                    }
+                    else
+                    {
+                        //  decimal lotwidth = Convert.ToDecimal(width) / Convert.ToDecimal("3.14");
+                        return Json(new { result = false, message = "" });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Json(new { result = false });
         }
     }
 }

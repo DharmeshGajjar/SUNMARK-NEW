@@ -18,7 +18,7 @@ namespace SUNMark.Controllers
         AccountMasterHelpers ObjAccountMasterHelpers = new AccountMasterHelpers();
         ProductHelpers objProductHelper = new ProductHelpers();
 
-        public IActionResult Index(int id)
+        public IActionResult Index(int id,bool IsAdded=false)
         {
             PackingMasterModel packingMasterModel = new PackingMasterModel();
             try
@@ -30,6 +30,7 @@ namespace SUNMark.Controllers
                     return RedirectToAction("index", "dashboard");
                 }
                 packingMasterModel.BundleNo = GetBundleNo();
+                packingMasterModel.SrNo = GetSrNo();
                 SqlParameter[] parameter = new SqlParameter[1];
                 parameter[0] = new SqlParameter("@PkgVou", id);
                 DataTable dt = ObjDBConnection.CallStoreProcedure("GetPackingNoById", parameter);
@@ -39,8 +40,13 @@ namespace SUNMark.Controllers
                     packingMasterModel.CompanyVou = Convert.ToInt32(dt.Rows[0]["PkgCmpVou"].ToString());
                     packingMasterModel.Type = dt.Rows[0]["PkgType"].ToString();
                     if (id > 0)
+                    {
                         packingMasterModel.BundleNo = dt.Rows[0]["PkgBndNo"].ToString();
-                    packingMasterModel.SrNo = dt.Rows[0]["PkgSrNo"].ToString();
+                        packingMasterModel.SrNo = dt.Rows[0]["PkgVou"].ToString();
+                        packingMasterModel.QtyInKg = dt.Rows[0]["PkgQty"].ToString();
+                    }
+                        
+                   
                     packingMasterModel.WONumber = dt.Rows[0]["PkgWoNo"].ToString();
                     packingMasterModel.PONumber = dt.Rows[0]["PkgPoNo"].ToString();
                     packingMasterModel.ProductVou = dt.Rows[0]["PkgPrdVou"].ToString();
@@ -58,13 +64,23 @@ namespace SUNMark.Controllers
                     packingMasterModel.FeetInPCS = dt.Rows[0]["PkgFeetPer"].ToString();
                     packingMasterModel.QtyInFeet = dt.Rows[0]["PkgFeet"].ToString();
                     packingMasterModel.QtyInMeter = dt.Rows[0]["PkgMeter"].ToString();
-                    packingMasterModel.QtyInKg = dt.Rows[0]["PkgQty"].ToString();
+                    if(id>0 || IsAdded==true)
+                    {
+                        packingMasterModel.IsUpdate = true;
+                        
+                          
+
+                    }
                     packingMasterModel.PackerName = dt.Rows[0]["PkgPkgBy"].ToString();
                     packingMasterModel.QualityCheckerName = dt.Rows[0]["PkgChkBy"].ToString();
                     packingMasterModel.SubBundleNumber = dt.Rows[0]["PkgSubSr"].ToString();
                     packingMasterModel.PackingDate = Convert.ToDateTime(dt.Rows[0]["PkgPkgDt"].ToString()).ToString("yyyy-MM-dd");
-                    packingMasterModel.OutDate = Convert.ToDateTime(dt.Rows[0]["PkgOutDt"].ToString()).ToString("yyyy-MM-dd");
+                    packingMasterModel.OutDate =!string.IsNullOrEmpty(dt.Rows[0]["PkgOutDt"].ToString())? Convert.ToDateTime(dt.Rows[0]["PkgOutDt"].ToString()).ToString("yyyy-MM-dd"):"";
                     packingMasterModel.OutBy = dt.Rows[0]["PkgOutBy"].ToString();
+
+                    //packingMasterModel.NB = dt.Rows[0]["PkgNB"].ToString();
+                    //packingMasterModel.SCH = dt.Rows[0]["PkgSch"].ToString();
+
                 }
             }
             catch (Exception ex)
@@ -119,6 +135,7 @@ namespace SUNMark.Controllers
                     parameter[26] = new SqlParameter("@PkgPkgDt", packingMasterModel.PackingDate);
                     parameter[27] = new SqlParameter("@PkgOutDt", packingMasterModel.OutDate);
                     parameter[28] = new SqlParameter("@PkgOutBy", packingMasterModel.OutBy);
+                    //parameter[29] = new SqlParameter("@LotPrdCd", packingMasterModel.ProductCode);
                     DataTable dt = ObjDBConnection.CallStoreProcedure("INSERTPackageMaster", parameter);
                     if (dt != null && dt.Rows.Count > 0)
                     {
@@ -126,7 +143,7 @@ namespace SUNMark.Controllers
                         if (status > 0)
                         {
                             SetSuccessMessage("Packing master record inserted successfully");
-                            return RedirectToAction("Index", "PackingMaster", new { id = 0 });
+                            return RedirectToAction("Index", "PackingMaster", new { id = 0,IsAdded=true });
                         }
                         else
                         {
@@ -212,6 +229,24 @@ namespace SUNMark.Controllers
             try
             {
                 DataTable dt = ObjDBConnection.CallStoreProcedure("GetPackingBundleNo", null);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    return dt.Rows[0][0].ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            return string.Empty;
+        }
+
+        private string GetSrNo()
+        {
+            try
+            {
+                DataTable dt = ObjDBConnection.CallStoreProcedure("GetPackingSrNo", null);
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     return dt.Rows[0][0].ToString();
@@ -365,7 +400,9 @@ namespace SUNMark.Controllers
                 PackingMasterModel packingMasterModel = new PackingMasterModel();
                 SqlParameter[] parameter = new SqlParameter[1];
                 parameter[0] = new SqlParameter("@ProductCode", ProductCode);
-                DataSet ds = ObjDBConnection.GetDataSet("GetDataByProductCodePacking", parameter);
+               // DataSet ds = ObjDBConnection.GetDataSet("GetDataByProductCodePacking", parameter); //old
+                DataSet ds = ObjDBConnection.GetDataSet("GetLotMstDetailsByProductCode", parameter); //changes by jitendra
+                
                 if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables.Count == 1)
                 {
                     List<object> data = new List<object>();
@@ -379,7 +416,8 @@ namespace SUNMark.Controllers
                         data.Add(dtLotMst.Rows[0]["LotPCS"].ToString());
                         data.Add(dtLotMst.Rows[0]["LotFeetPer"].ToString());
                         data.Add(Convert.ToDecimal(dtLotMst.Rows[0]["LotPCS"].ToString())* Convert.ToDecimal(dtLotMst.Rows[0]["LotFeetPer"].ToString()));
-                        data.Add(Convert.ToDecimal(dtLotMst.Rows[0]["LotPCS"].ToString()) * Convert.ToDecimal(dtLotMst.Rows[0]["LotFeetPer"].ToString())* Convert.ToDecimal(0.3048));
+                        string b = String.Format("{0:0.00}", Convert.ToDecimal(dtLotMst.Rows[0]["LotPCS"].ToString()) * Convert.ToDecimal(dtLotMst.Rows[0]["LotFeetPer"].ToString()) * Convert.ToDecimal(0.3048));
+                        data.Add(b);
                         data.Add(dtLotMst.Rows[0]["LotNB"].ToString());
                         data.Add(dtLotMst.Rows[0]["LotSch"].ToString());
                     }
@@ -398,6 +436,49 @@ namespace SUNMark.Controllers
                 {
                     return Json(new { result = false, message = "Invalid Product Code!" });
                 }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, message = "Invalid Product Code!" });
+            }
+        }
+
+        public ActionResult GetLastPackerAndQualityName()
+        {
+            try
+            {
+                PackingMasterModel packingMasterModel = new PackingMasterModel();
+                SqlParameter[] parameter = new SqlParameter[1];
+                parameter[0] = new SqlParameter("@ProductCode", "");
+                DataSet ds = ObjDBConnection.GetDataSet("GetLastPackerAndQualityName", parameter); 
+
+                if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables.Count == 1)
+                {
+                    List<object> data = new List<object>();
+                    DataTable dtLotMst = ds.Tables[0];
+                    if (dtLotMst != null && dtLotMst.Rows.Count > 0)
+                    {
+                        data.Add(dtLotMst.Rows[0]["PkgPkgBy"].ToString());
+                        data.Add(dtLotMst.Rows[0]["PkgChkBy"].ToString());
+                        data.Add(Convert.ToDateTime(dtLotMst.Rows[0]["PkgPkgDt"].ToString()).ToString("yyyy-MM-dd"));
+
+                        
+                    }
+
+                    if (data != null && data.Count>0)
+                    {
+                        return Json(new { result = true, data = data });
+                    }
+                    else
+                    {
+                        data.Add(4);
+                        data.Add(5);
+                        data.Add(Convert.ToDateTime(DateTime.Now).ToString("yyyy-MM-dd"));
+                        return Json(new { result = true, data = data });
+                    }
+
+                }
+                return Json(new { result = false, message = "Invalid Product Code!" });
             }
             catch (Exception ex)
             {

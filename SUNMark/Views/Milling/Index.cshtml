@@ -216,10 +216,16 @@
                                                         @Html.DropDownListFor(x => x.Operator2, new SelectList(employeeList, "Value", "Text"), "Select", new { @class = "form-control select2", @style = "width:100% " })
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3 col-6">
+                                                <div class="col-md-2 col-6">
                                                     <div class="form-group">
                                                         <label>Supervisor<span class="text-danger" style="font-family: Verdana"></span></label>
                                                         @Html.DropDownListFor(x => x.Supervisor, new SelectList(supervisorList, "Value", "Text"), "Select", new { @class = "form-control select2", @style = "width:100% " })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 col-6">
+                                                    <div class="form-group">
+                                                        <label>Product Code<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                        @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control select2", @style = "width:100%; text-transform:uppercase", @maxlength = "15", @placeholder = "Product Code", @onchange = "CheckProductCodeExitsOrNot()" })
                                                     </div>
                                                 </div>
                                             </div>
@@ -580,13 +586,14 @@
 </div>
 
 @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">*@
-@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>*@
-@*<script src="~/js/moment.js"></script>
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>*@
+@*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<script src="~/js/moment.js"></script>
 <script src="~/js/bootstrap-datetimepicker.min.js"></script>*@
 
 <script>
     $(document).ready(function () {
+        debugger;
         var Vou = '@Html.Raw(Model.Vou)';
         if (Vou != null && Vou != '' && Vou != 0) {
             GoToAddTab()
@@ -784,6 +791,7 @@
 
     });
     function loadData(pageIndex, columnName, sortBy) {
+        debugger;
         isRecentCalled = true;
         if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
             pageIndex = 1;
@@ -792,7 +800,7 @@
 
         if (!layoutId) {
             $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
-                SetSelect2()
+               // SetSelect2()
 
         }
         if (!columnName) {
@@ -801,6 +809,7 @@
         if (!sortBy) {
             sortBy = '';
         }
+        debugger;
         $('.dataTable').html();
         $.ajax({
             url: '/Milling/GetReportView',
@@ -1029,7 +1038,13 @@
         var MilMaxODMilMaxOD = $('#MilMaxODMilMaxOD').val();
         var MilMinODMilMinOD = $('#MilMinODMilMinOD').val();
         var OD = $('#OD').val();
-
+        var ProductCode = $('#ProductCode').val();
+        if (ProductCode=="")  {
+            showErrorMessage("Enter Product Code");
+            $('#ProductCode').focus();
+            IsSubmit = 0;
+            return false;
+        }
         if (!(parseFloat(MilMaxODMilMaxOD) >= parseFloat(OD) && parseFloat(MilMinODMilMinOD) <= parseFloat(OD)) /*$('#ODValidCheck').val() == '0' || $('#ODValidCheck').val() == 0*/) {
             showErrorMessage('Coil OD Size is Not Range to this Machine!');
             IsSubmit = 0;
@@ -1241,6 +1256,7 @@
         }
     });
     function GetSupervisor() {
+
         $('#ODValidCheck').val('1');
         $('#MilMaxODMilMaxOD').val('0');
         $('#MilMinODMilMinOD').val('0');
@@ -1256,6 +1272,8 @@
                 data: { shift: shift, macNo: macNo },
                 dataType: 'JSON',
                 success: function (data) {
+                    $('#load_screen').hide();
+
                     if (data) {
                         if (data.result) {
                             $('#Supervisor').val(data.sup);
@@ -1288,6 +1306,7 @@
                 data: { macNo: macNo },
                 dataType: 'JSON',
                 success: function (response) {
+
                     if (response) {
                         if (response.result) {
                             $('#ODValidCheck').val('1');
@@ -1514,4 +1533,37 @@
             }
         });
     }
+
+    function CheckProductCodeExitsOrNot() {
+        debugger;
+        var ProductCode = $('#ProductCode').val();
+        if (ProductCode) {
+            $.ajax({
+                type: "GET",
+                url: '/Milling/CheckProductCodeExitsOrNot',
+                data: { "ProductCode": ProductCode, "Id": 0 },
+                dataType: "JSON",
+                success: function (response) {
+                    debugger;
+                    if (response.message) {
+                        showErrorMessage(response.message);
+                        $('#ProductCode').val('');
+                        $('#ProductCode').focus();
+                    }
+                    else {
+
+                    }
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+        else {
+            showErrorMessage("Enter Product Code");
+            $('#ProductCode').focus();
+        }
+    }
+
+
 </script>

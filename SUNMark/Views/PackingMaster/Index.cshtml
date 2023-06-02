@@ -44,6 +44,20 @@
         headerAddTrue = true;
     }
 }
+<style>
+    #packingForm .custom-text-decorate {
+        color: red;
+        font-weight: bold;
+        font-size: 18px;
+    }
+    #packingForm label {
+        color: blue !important
+    }
+    #packingForm .form-control {
+        font-weight: bold !important;
+        font-size: 18px !important
+    }
+</style>
 <div class="card card-primary">
     <div class="card-header" style="font-family:Verdana">
         <h6> @ViewData["Title"]</h6>
@@ -142,6 +156,7 @@
                                                         <label>Company<span class="text-danger" style="font-family: Verdana">*</span></label>
                                                         @Html.DropDownListFor(x => x.CompanyVou, companyList, "Select", new { @class = "form-control select2" })
                                                         @Html.TextBoxFor(x => x.Vou, new { @class = "form-control ", @placeholder = "Bundle No", @type = "hidden" })
+                                                        @Html.TextBoxFor(x => x.IsUpdate, new { @class = "form-control ", @placeholder = "Bundle No", @type = "hidden" })
                                                     </div>
                                                 </div>
 
@@ -167,7 +182,7 @@
                                                 <div class="col-md-2 col-6">
                                                     <div class="form-group">
                                                         <label>WO No<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                        @Html.TextBoxFor(x => x.WONumber, new { @class = "form-control ", @placeholder = "WO Number", @type = "text",@onchange = "GetDataByWONumber()" })
+                                                        @Html.TextBoxFor(x => x.WONumber, new { @class = "form-control ", @placeholder = "WO Number", @type = "text",@onchange = "GetDataByWONumber()",@style="background-color:yellow" })
                                                     </div>
                                                 </div>
                                             </div>
@@ -187,7 +202,7 @@
                                                         @*@Html.DropDownListFor(x => x.ProductVou, new SelectList(productList, "Value", "Text"), "Select", new { @class = "form-control select2" })*@
 
 
-                                                        @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control ", @placeholder = "Product Code", @onchange = "GetDataByProductCode()" })
+                                                        @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control ", @maxlength = "15", @placeholder = "Product Code", @onchange = "GetDataByProductCode()" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-6">
@@ -238,13 +253,13 @@
                                                 <div class="col-md-2 col-6">
                                                     <div class="form-group">
                                                         <label>Qty(In PCS)<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                        @Html.TextBoxFor(x => x.Qty, new { @class = "form-control ", @placeholder = "QTY(In PCS)", @type = "number" })
+                                                        @Html.TextBoxFor(x => x.Qty, new { @class = "form-control ", @placeholder = "QTY(In PCS)", @type = "number", @onchange = "CalculateFeetAndMeter()" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-6">
                                                     <div class="form-group">
-                                                        <label>Feet Per PCS<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                        @Html.TextBoxFor(x => x.FeetInPCS, new { @class = "form-control ", @placeholder = "Feet Per PCS", @type = "number" })
+                                                        <label style="color:red !important">Feet Per PCS<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                        @Html.TextBoxFor(x => x.FeetInPCS, new { @class = "form-control ", @placeholder = "Feet Per PCS", @type = "number",@style="border-color:red; background-color:white" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-6">
@@ -274,7 +289,7 @@
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>Qty In KG<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                        @Html.TextBoxFor(x => x.QtyInKg, new { @class = "form-control ", @placeholder = "Qty In KG", @type = "number" })
+                                                        @Html.TextBoxFor(x => x.QtyInKg, new { @class = "form-control custom-text-decorate ", @placeholder = "Qty In KG", @type = "number"})
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
@@ -304,13 +319,13 @@
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>Out Date<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                        <label>Out Date</label>
                                                         @Html.TextBoxFor(x => x.OutDate, new { @class = "form-control ", @placeholder = "Out Date", @type = "date" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
-                                                        <label>Out By<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                        <label>Out By</label>
                                                         @Html.TextBoxFor(x => x.OutBy, new { @class = "form-control ", @placeholder = "Out By", @type = "text" })
                                                     </div>
                                                 </div>
@@ -346,12 +361,20 @@
         </div>
     </div>
 </div>
-
+@*<script>
+    setFocusToTextBox();
+    function setFocusToTextBox() {
+        document.getElementById("QtyInKg").focus();
+    }
+</script>*@
 <script>
     $(document).ready(function () {
+        debugger;
         var CompanyVou = $('#CompanyVou').val();
-        if (CompanyVou != null && CompanyVou != '') {
+        var IsUpdate = $('#IsUpdate').val();
+        if (IsUpdate=="True") {
             GoToAddTab()
+           
         }
         else {
             name = "CompanyVou"
@@ -471,6 +494,7 @@
 
     });
     function loadData(pageIndex, columnName, sortBy) {
+        debugger;
         isRecentCalled = true;
         if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
             pageIndex = 1;
@@ -520,15 +544,29 @@
 
 
     function AddPacking() {
-        if (ValidateTextbox()) {
-            $('#packingForm').submit();
+        var ProductCode = $('#ProductCode').val();
+        var Qty = $('#Qty').val();
+        if (ProductCode == "") {
+            showErrorMessage("Enter Product Code");
+            $('#ProductCode').focus();
+        }
+        else if (Qty == "") {
+            showErrorMessage("Enter Qty In Pcs");
+            $('#Qty').focus();
         }
         else {
-            showErrorMessage("Please enter all compulsory fields.");
+
+            if (ValidateTextbox()) {
+                $('#packingForm').submit();
+            }
+            else {
+                showErrorMessage("Please enter all compulsory fields.");
+            }
         }
     }
 
     function ValidateTextbox() {
+        debugger;
         var isAllow = true;
         if (!$('select[name="CompanyVou"]').val()) {
             sAllow = false;
@@ -548,9 +586,9 @@
         if (!$('input[name="PONumber"]').val()) {
             isAllow = false;
         }
-        if (!$('select[name="ProductVou"]').val()) {
-            isAllow = false;
-        }
+        //if (!$('select[name="ProductVou"]').val()) {
+        //    isAllow = false;
+        //}
         if (!$('input[name="ProductCode"]').val()) {
             isAllow = false;
         }
@@ -602,12 +640,12 @@
         if (!$('input[name="PackingDate"]').val()) {
             isAllow = false;
         }
-        if (!$('input[name="OutDate"]').val()) {
-            isAllow = false;
-        }
-        if (!$('input[name="OutBy"]').val()) {
-            isAllow = false;
-        }
+        //if (!$('input[name="OutDate"]').val()) {
+        //    isAllow = false;
+        //}
+        //if (!$('input[name="OutBy"]').val()) {
+        //    isAllow = false;
+        //}
         return isAllow;
     }
 
@@ -656,7 +694,7 @@
         $('#Width').attr('readonly', true);
         $('#Thick').attr('readonly', true);
         $('#OD').attr('readonly', true);
-        $('#Qty').attr('readonly', true);
+       // $('#Qty').attr('readonly', true);
         $('#FeetInPCS').attr('readonly', true);
         $('#QtyInFeet').attr('readonly', true);
         $('#QtyInMeter').attr('readonly', true);
@@ -702,6 +740,7 @@
             $('#WONumber').focus();
         }
     }
+    GetDataByProductCode();
     function GetDataByProductCode() {
         var ProductCode = $('#ProductCode').val();
         if (ProductCode) {
@@ -718,12 +757,13 @@
                             $('#Width').val(response.data[1]);
                             $('#Thick').val(response.data[2]);
                             $('#OD').val(response.data[3]);
-                            $('#Qty').val(response.data[4]);
+                            //$('#Qty').val(response.data[4]);
                             $('#FeetInPCS').val(response.data[5]);
                             $('#QtyInFeet').val(response.data[6]);
                             $('#QtyInMeter').val(response.data[7]);
                             $('#NB').val(response.data[8]);
                             $('#SCH').val(response.data[9]);
+                            CalculateFeetAndMeter();
 
                         }
                         else {
@@ -732,7 +772,7 @@
                             $('#Width').val('');
                             $('#Thick').val('');
                             $('#OD').val('');
-                            $('#Qty').val('');
+                            //$('#Qty').val('');
                             $('#FeetInPCS').val('');
                             $('#QtyInFeet').val('');
                             $('#QtyInMeter').val('');
@@ -767,5 +807,43 @@
             showErrorMessage("Enter Product Code");
             $('#ProductCode').focus();
         }
+    }
+    GetLastPackerAndQualityName();
+    function GetLastPackerAndQualityName() {
+     
+            $.ajax({
+                type: "GET",
+                url: '/PackingMaster/GetLastPackerAndQualityName',
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+                        if (response.result) {
+                            //alert(response.data[0]);
+                            $('#PackerName').val(response.data[0]);
+                            $('#QualityCheckerName').val(response.data[1]);
+                            $('#PackingDate').val(response.data[2]);
+                            
+                        }
+                    }
+                   
+                },
+                error: function (response) {
+
+                }
+            });
+       
+    }
+
+    function CalculateFeetAndMeter() {
+        var qty = $('#Qty').val();
+        var FeetInPCS = $('#FeetInPCS').val();
+        var QtyInFeet = qty * FeetInPCS;
+        $('#QtyInFeet').val(QtyInFeet);
+        var lengthmtr = (QtyInFeet * 0.3048).toFixed(2);
+      //  var QtyInMeter = qty * FeetInPCS * 0.3048;
+        $('#QtyInMeter').val(lengthmtr);
+        //QtyInMeter
+        //0.3048
+
     }
 </script>
