@@ -12,14 +12,18 @@ namespace SUNMark.Models
         public int CompanyVou { get; set; }
 
         public string Type { get; set; }
+        public string SearchType { get; set; }
 
         public string BundleNo { get; set; }
+        public string SearcBundleNo { get; set; }
 
         public string SrNo { get; set; }
 
         public string WONumber { get; set; }
+        public string SearcWONumber { get; set; }
 
         public string PONumber { get; set; }
+        public string SearcPONumber { get; set; }
 
         public string ProductVou { get; set; }
 
@@ -44,6 +48,7 @@ namespace SUNMark.Models
         public string HeatNumber { get; set; }
 
         public string Qty { get; set; }
+        public string NoOfCopy { get; set; }
 
         public string FeetInPCS { get; set; }
 
@@ -66,8 +71,11 @@ namespace SUNMark.Models
         public string OutBy { get; set; }
         public string NB { get; set; }
         public string SCH { get; set; }
+        public string NbSCHBind { get; set; }
 
         public bool IsUpdate { get; set; } = false;
+        public string FrRecDt { get; set; }
+        public string ToRecDt { get; set; }
 
 
     }
