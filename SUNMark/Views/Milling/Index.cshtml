@@ -55,7 +55,7 @@
 <style>
     .bootstrap-datetimepicker-widget.dropdown-menu {
         display: none;
-        width:auto !important;
+        width: auto !important;
     }
 
     /*li.collapse.in {
@@ -222,12 +222,12 @@
                                                         @Html.DropDownListFor(x => x.Supervisor, new SelectList(supervisorList, "Value", "Text"), "Select", new { @class = "form-control select2", @style = "width:100% " })
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2 col-6">
-                                                    <div class="form-group">
-                                                        <label>Product Code<span class="text-danger" style="font-family: Verdana">*</span></label>
-                                                        @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control select2", @style = "width:100%; text-transform:uppercase", @maxlength = "15", @placeholder = "Product Code", @onchange = "CheckProductCodeExitsOrNot()" })
-                                                    </div>
-                                                </div>
+                                                @*<div class="col-md-2 col-6">
+                                                        <div class="form-group">
+                                                            <label>Product Code<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                            @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control select2", @style = "width:100%; text-transform:uppercase", @maxlength = "15", @placeholder = "Product Code", @onchange = "CheckProductCodeExitsOrNot()" })
+                                                        </div>
+                                                    </div>*@
                                             </div>
                                         </div>
                                         <div class="col-md-12">
@@ -261,7 +261,7 @@
                                                     <div class="form-group">
                                                         <label>Weight<span class="text-danger" style="font-family: Verdana"></span></label>
                                                         <label class="control-label pl-1" style="font-family: Verdana;width:110px;text-align:right" id="PCSWeight">-</label>
-                                                        @Html.TextBoxFor(x => x.Weight, new { @class = "form-control ", @placeholder = "Weight", @type = "text", @disabled = "disabled", @onkeyup = "numericFilter(this)", @style = "text-align:right",@onchange = "GetAllPercentageCalculation()", @onblur = "GetAllPercentageCalculation()"})
+                                                        @Html.TextBoxFor(x => x.Weight, new { @class = "form-control ", @placeholder = "Weight", @type = "text", @disabled = "disabled", @onkeyup = "numericFilter(this)", @style = "text-align:right", @onchange = "GetAllPercentageCalculation()", @onblur = "GetAllPercentageCalculation()" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 col-6">
@@ -362,11 +362,11 @@
                                                     </div>
                                                 </div>
                                                 @*<div class="col-md-2 col-12">
-            <div class="form-group">
-                <label>Scrap Length<span class="text-danger" style="font-family: Verdana"></span></label>
-                @Html.TextBoxFor(x => x.ScrapLength, new { @class = "form-control ", @placeholder = "Scrap Length", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
-            </div>
-        </div>*@
+                                                        <div class="form-group">
+                                                            <label>Scrap Length<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                            @Html.TextBoxFor(x => x.ScrapLength, new { @class = "form-control ", @placeholder = "Scrap Length", @type = "number", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                                        </div>
+                                                    </div>*@
                                                 <div class="col-md-2 col-12">
                                                     <div class="form-group">
                                                         <label>Scrap Weight<span class="text-danger" style="font-family: Verdana"></span></label>
@@ -561,6 +561,9 @@
                                                         <a href="/Milling/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
                                                             Cancel (Esc)
                                                         </a>
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" id="btnPrint" style="font-family:Verdana;font-size:medium" type="button" onclick="AddPickling()">
+                                                            Print (F9)
+                                                        </button>
                                                     }
                                                     else if (userRight.IsAdd && id == 0)
                                                     {
@@ -570,6 +573,9 @@
                                                         <a href="/Milling/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
                                                             Cancel (Esc)
                                                         </a>
+                                                        <button class="btn btn-primary px-md-4 mb-2 text-white" id="btnPrint" style="font-family:Verdana;font-size:medium" type="button" onclick="AddPickling()">
+                                                            Print (F9)
+                                                        </button>
                                                     }
                                                 </div>
                                             </div>
@@ -588,8 +594,8 @@
 @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">*@
 @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>*@
 @*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-<script src="~/js/moment.js"></script>
-<script src="~/js/bootstrap-datetimepicker.min.js"></script>*@
+    <script src="~/js/moment.js"></script>
+    <script src="~/js/bootstrap-datetimepicker.min.js"></script>*@
 
 <script>
     $(document).ready(function () {
@@ -629,15 +635,15 @@
         //});
         TimeDiffHours(1);
         TimeDiffHours(2);
-        
+
         //$('.picker-switch .accordion-toggle').click();
     });
     function TimeDiffHours(n) {
         //alert()
         var FromDate1 = $('.StopFromTime'+n).val();
         var ToDate1 = $('.StopToTime' + n).val();
-        
-        
+
+
         if (FromDate1 != '' && ToDate1 != '') {
             var diff = new Date(ToDate1).getTime() - new Date(FromDate1).getTime();
             //alert(diff);
@@ -656,9 +662,9 @@
         }
     }
     function GetAllPercentageCalculation() {
-        var Weight = $('#Weight').val(); 
-        var txtPCSWeight = $('#txtPCSWeight').val(); 
-        var RLWeight = $('#RLWeight').val(); 
+        var Weight = $('#Weight').val();
+        var txtPCSWeight = $('#txtPCSWeight').val();
+        var RLWeight = $('#RLWeight').val();
         var ScrapWeight = $('#ScrapWeight').val();
         if (Weight == '' || Weight == undefined) {
             Weight = 0;
@@ -724,6 +730,8 @@
                             isRecentCalledSave = false;
                         }, 1000)
                     }
+                }).on('F9', function () {
+                    $("#btnPrint").click();
                 })
                 .on('Alt+L', function () {
                     GoToListTab();
@@ -1033,7 +1041,7 @@
                 return false;
             }
         }
-        
+
         GetODRangeByCoilMacNo($('#IssueCoilNo').val(),$('#MillNo').val());
         var MilMaxODMilMaxOD = $('#MilMaxODMilMaxOD').val();
         var MilMinODMilMinOD = $('#MilMinODMilMinOD').val();

@@ -15,6 +15,7 @@ namespace SUNMark.Controllers
         DbConnection ObjDBConnection = new DbConnection();
         ProductHelpers objProductHelper = new ProductHelpers();
         TaxMasterHelpers ObjTaxMasterHelpers = new TaxMasterHelpers();
+        AccountMasterHelpers ObjAccountMasterHelpers = new AccountMasterHelpers();
         public IActionResult Index(long id)
         {
             CoilMasterModel coilMasterModel = new CoilMasterModel();
@@ -39,7 +40,11 @@ namespace SUNMark.Controllers
                 coilMasterModel.GradeList = objProductHelper.GetGradeMasterDropdown(companyId, administrator);
                 coilMasterModel.CompanyList = objProductHelper.GetCompanyMasterDropdown(companyId, administrator);
                 ViewBag.processList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
-                //coilMasterModel.StockYNList = objProductHelper.GetStockYN();
+                coilMasterModel.StockYNList = objProductHelper.GetStockYNNew();
+                coilMasterModel.NBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                coilMasterModel.SCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
+                coilMasterModel.FinishList = objProductHelper.GetFinishMasterDropdown(companyId,0);
+                coilMasterModel.StockYNVou = 1;
             }
             catch (Exception ex)
             {
@@ -75,7 +80,7 @@ namespace SUNMark.Controllers
             #endregion
         }
 
-        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string coilNo, string frWidth, string toWidth, string frthick, string tothick, string frWeigth, string toWeigth, string gradeid, string frRecDt, string toRecDt, string companyid,string DoneProc,string NextProc)
+        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string od, string feetper, string nb, string sch, string gradeid, string frRecDt, string toRecDt, string companyid, string DoneProc, string NextProc, string stockYN, string finishId)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -100,9 +105,10 @@ namespace SUNMark.Controllers
                     startRecord = (pageIndex - 1) * pageSize;
                 }
 
-                SqlParameter[] sqlParameters = new SqlParameter[1];
+                SqlParameter[] sqlParameters = new SqlParameter[2];
                 sqlParameters[0] = new SqlParameter("@SESSID", userId);
-                DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("RPT_PIPEMASTER", sqlParameters);
+                sqlParameters[1] = new SqlParameter("@StockYN", stockYN);
+                DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("RPT_PIPEMASTER_NEW", sqlParameters);
 
                 string whereConditionQuery = string.Empty;
                 //if (gridMstId != 48)
@@ -158,55 +164,46 @@ namespace SUNMark.Controllers
                 //}
                 //else
                 //{
-                    if (!string.IsNullOrWhiteSpace(coilNo))
-                    {
-                        whereConditionQuery += " AND PipeMst.CoilNo='" + coilNo + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(frWidth))
-                    {
-                        whereConditionQuery += " AND PipeMst.Width>='" + frWidth + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(toWidth))
-                    {
-                        whereConditionQuery += " AND PipeMst.Width<='" + toWidth + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(frthick))
-                    {
-                        whereConditionQuery += " AND PipeMst.Thick>='" + frthick + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(tothick))
-                    {
-                        whereConditionQuery += " AND PipeMst.Thick<='" + tothick + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(frWeigth))
-                    {
-                        whereConditionQuery += " AND PipeMst.Qty >='" + frWeigth + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(toWeigth))
-                    {
-                        whereConditionQuery += " AND PipeMst.Qty <='" + toWeigth + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(gradeid))
-                    {
-                        whereConditionQuery += " AND PipeMst.GrdVou='" + gradeid + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(frRecDt))
-                    {
-                        whereConditionQuery += " AND PipeMst.RecDt>='" + frRecDt + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(toRecDt))
-                    {
-                        whereConditionQuery += " AND PipeMst.RecDt<='" + toRecDt + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(DoneProc))
-                    {
-                        whereConditionQuery += " AND PipeMst.DoneProc<='" + DoneProc + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(NextProc))
-                    {
-                        whereConditionQuery += " AND PipeMst.NextProc<='" + NextProc + "'";
-                    }
-                //}
+                if (!string.IsNullOrWhiteSpace(od))
+                {
+                    whereConditionQuery += " AND PipeMst.OD='" + od + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(feetper))
+                {
+                    whereConditionQuery += " AND PipeMst.FeetPer='" + feetper + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(nb))
+                {
+                    whereConditionQuery += " AND PipeMst.NB='" + nb + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(sch))
+                {
+                    whereConditionQuery += " AND PipeMst.SCH='" + sch + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(gradeid))
+                {
+                    whereConditionQuery += " AND PipeMst.GrdVou='" + gradeid + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(frRecDt))
+                {
+                    whereConditionQuery += " AND PipeMst.RecDt>='" + frRecDt + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(toRecDt))
+                {
+                    whereConditionQuery += " AND PipeMst.RecDt<='" + toRecDt + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(DoneProc))
+                {
+                    whereConditionQuery += " AND PipeMst.DoneProc<='" + DoneProc + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(NextProc))
+                {
+                    whereConditionQuery += " AND PipeMst.NextProc='" + NextProc + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(finishId))
+                {
+                    whereConditionQuery += " AND PipeMst.NextProc='" + NextProc + "'";
+                }
                 getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                 if (getReportDataModel.IsError)
                 {
@@ -214,7 +211,7 @@ namespace SUNMark.Controllers
                     return PartialView("_reportView");
                 }
                 getReportDataModel.pageIndex = pageIndex;
-                getReportDataModel.ControllerName = "CoilMaster";
+                getReportDataModel.ControllerName = "PipeMaster";
             }
             catch (Exception ex)
             {
@@ -223,7 +220,7 @@ namespace SUNMark.Controllers
             return PartialView("_reportView", getReportDataModel);
         }
 
-        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string coilNo, string frWidth, string toWidth, string frthick, string tothick, string frWeigth, string toWeigth, string gradeid, string frRecDt, string toRecDt, string companyid)
+        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string od, string feetper, string nb, string sch, string gradeid, string frRecDt, string toRecDt, string companyid, string finishId)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -236,37 +233,29 @@ namespace SUNMark.Controllers
                 string whereConditionQuery = string.Empty;
                 if (gridMstId != 48)
                 {
-                    if (!string.IsNullOrWhiteSpace(coilNo))
+                    if (!string.IsNullOrWhiteSpace(od))
                     {
-                        whereConditionQuery += " AND LotMst.LotCoilNo='" + coilNo + "'";
+                        whereConditionQuery += " AND LotMst.LotOD='" + od + "'";
                     }
-                    if (!string.IsNullOrWhiteSpace(frWidth))
+                    if (!string.IsNullOrWhiteSpace(feetper))
                     {
-                        whereConditionQuery += " AND LotMst.LotWidth>='" + frWidth + "'";
+                        whereConditionQuery += " AND LotMst.LotFeetPer='" + feetper + "'";
                     }
-                    if (!string.IsNullOrWhiteSpace(toWidth))
+                    if (!string.IsNullOrWhiteSpace(nb))
                     {
-                        whereConditionQuery += " AND LotMst.LotWidth<='" + toWidth + "'";
+                        whereConditionQuery += " AND LotMst.LotNB='" + nb + "'";
                     }
-                    if (!string.IsNullOrWhiteSpace(frthick))
+                    if (!string.IsNullOrWhiteSpace(sch))
                     {
-                        whereConditionQuery += " AND LotMst.LotThick>='" + frthick + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(tothick))
-                    {
-                        whereConditionQuery += " AND LotMst.LotThick<='" + tothick + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(frWeigth))
-                    {
-                        whereConditionQuery += " AND LotMst.LotWeigth>='" + frWeigth + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(toWeigth))
-                    {
-                        whereConditionQuery += " AND LotMst.LotWeigth<='" + toWeigth + "'";
+                        whereConditionQuery += " AND LotMst.LotSCH='" + sch + "'";
                     }
                     if (!string.IsNullOrWhiteSpace(gradeid))
                     {
                         whereConditionQuery += " AND LotMst.LotGrdMscVou='" + gradeid + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(finishId))
+                    {
+                        whereConditionQuery += " AND LotMst.LotFinMscVou='" + finishId + "'";
                     }
                     if (!string.IsNullOrWhiteSpace(frRecDt))
                     {
@@ -279,33 +268,21 @@ namespace SUNMark.Controllers
                 }
                 else
                 {
-                    if (!string.IsNullOrWhiteSpace(coilNo))
+                    if (!string.IsNullOrWhiteSpace(od))
                     {
-                        whereConditionQuery += " AND PipeMst.CoilNo='" + coilNo + "'";
+                        whereConditionQuery += " AND PipeMst.OD='" + od + "'";
                     }
-                    if (!string.IsNullOrWhiteSpace(frWidth))
+                    if (!string.IsNullOrWhiteSpace(feetper))
                     {
-                        whereConditionQuery += " AND PipeMst.Width>='" + frWidth + "'";
+                        whereConditionQuery += " AND PipeMst.FeetPer='" + feetper + "'";
                     }
-                    if (!string.IsNullOrWhiteSpace(toWidth))
+                    if (!string.IsNullOrWhiteSpace(nb))
                     {
-                        whereConditionQuery += " AND PipeMst.Width<='" + toWidth + "'";
+                        whereConditionQuery += " AND PipeMst.NB='" + nb + "'";
                     }
-                    if (!string.IsNullOrWhiteSpace(frthick))
+                    if (!string.IsNullOrWhiteSpace(sch))
                     {
-                        whereConditionQuery += " AND PipeMst.Thick>='" + frthick + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(tothick))
-                    {
-                        whereConditionQuery += " AND PipeMst.Thick<='" + tothick + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(frWeigth))
-                    {
-                        whereConditionQuery += " AND PipeMst.Qty >='" + frWeigth + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(toWeigth) && toWeigth != "0")
-                    {
-                        whereConditionQuery += " AND PipeMst.Qty <='" + toWeigth + "'";
+                        whereConditionQuery += " AND PipeMst.SCH='" + sch + "'";
                     }
                     if (!string.IsNullOrWhiteSpace(gradeid))
                     {
@@ -318,6 +295,10 @@ namespace SUNMark.Controllers
                     if (!string.IsNullOrWhiteSpace(toRecDt))
                     {
                         whereConditionQuery += " AND PipeMst.RecDt<='" + toRecDt + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(finishId))
+                    {
+                        whereConditionQuery += " AND PipeMst.FinishVou='" + finishId + "'";
                     }
                 }
 

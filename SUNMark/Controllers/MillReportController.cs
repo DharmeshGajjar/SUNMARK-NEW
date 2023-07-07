@@ -49,7 +49,7 @@ namespace SUNMark.Controllers
                     return RedirectToAction("index", "dashboard");
                 }
                 stockLedgerModel.ShiftList = objProductHelper.GetShiftNew(); ;
-                stockLedgerModel.MachineList = ObjAccountMasterHelpers.GetMachineMasterDropdown(companyId);
+                stockLedgerModel.MachineList = ObjAccountMasterHelpers.GetMachineMasterDropdown(companyId, "MILLING");
             }
             catch (Exception ex)
             {

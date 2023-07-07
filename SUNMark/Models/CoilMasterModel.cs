@@ -15,6 +15,14 @@ namespace SUNMark.Models
         public string ToThick { get; set; }
         public string FrWeight { get; set; }
         public string ToWeight { get; set; }
+        public string OD { get; set; }
+        public List<SelectListItem> NBList { get; set; }
+        public string NB { get; set; }
+        public List<SelectListItem> SCHList { get; set; }
+        public string SCH { get; set; }
+        public string FeetPer { get; set; }
+        public int FInishVou { get; set; }
+        public List<SelectListItem> FinishList { get; set; }
 
         public int GradeVou { get; set; }
         public List<SelectListItem> GradeList { get; set; }

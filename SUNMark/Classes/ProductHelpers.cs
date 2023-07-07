@@ -868,6 +868,31 @@ namespace SUNMark.Classes
             return StockYNList;
         }
 
+        public List<SelectListItem> GetStockYNNew()
+        {
+            List<SelectListItem> StockYNList = new List<SelectListItem>();
+            try
+            {
+                StockYNList.Add(new SelectListItem
+                {
+                    Text = "Yes",
+                    Value = "1",
+                    Selected = true
+                });
+
+                StockYNList.Add(new SelectListItem
+                {
+                    Text = "No",
+                    Value = "2"
+                });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return StockYNList;
+        }
+
         public List<SelectListItem> GetMainCoilType()
         {
             List<SelectListItem> CoilTypeList = new List<SelectListItem>();

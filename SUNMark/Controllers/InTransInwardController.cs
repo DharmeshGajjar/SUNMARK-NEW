@@ -259,7 +259,7 @@ namespace SUNMark.Controllers
                         }
                         else
                         {
-                            if (count != inwardModel.Inward.SupCoilNo.Length - 1)
+                            if (count != inwardModel.Inward.SupCoilNo.Length)
                             {
                                 SetSuccessMessage("Supplier Coil No is Already Exists");
                                 ViewBag.FocusType = "1";
@@ -362,7 +362,7 @@ namespace SUNMark.Controllers
                                     parameter[10] = new SqlParameter("@IntCmpVou", inwardModel.InwCmpVou);
                                     parameter[11] = new SqlParameter("@IntPOTVou", "0");
                                     parameter[12] = new SqlParameter("@IntLotVou", "0");
-                                    parameter[13] = new SqlParameter("@IntGdnVou", inwardModel.Inward.IntGdnCoil[i + 1]);
+                                    parameter[13] = new SqlParameter("@IntGdnVou", inwardModel.InwGdnVou);
                                     parameter[14] = new SqlParameter("@IntLocVou", "0");
                                     parameter[15] = new SqlParameter("@IntSupCoilNo", inwardModel.Inward.SupCoilNo[i + 1]);
                                     parameter[16] = new SqlParameter("@IntHeatNo", inwardModel.Inward.HeatNo[i + 1]);

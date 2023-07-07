@@ -18,10 +18,10 @@ namespace SUNMark.Models
         public string SupEmpVou { get; set; }
         public string ManEmpVou { get; set; }
         public string IssuePrdVou { get; set; }
-        public string Finish { get; set; }
-        public string FinishVou { get; set; }
-        public string NextProc { get; set; }
-        public string NextPrcVou { get; set; }
+        //public string Finish { get; set; }
+        //public string FinishVou { get; set; }
+        //public string NextProc { get; set; }
+        //public string NextPrcVou { get; set; }
         public string HFQty { get; set; }
         public string NitricQty { get; set; }
         public string LimeQty { get; set; }
@@ -37,6 +37,12 @@ namespace SUNMark.Models
         public string Grade { get; set; }
         public int GradeVou { get; set; }
         public List<SelectListItem> GradeList { get; set; }
+        public string NB { get; set; }
+        public int[] NbVou { get; set; }
+        public List<SelectListItem> NBList { get; set; }
+        public string SCH { get; set; }
+        public int[] SchVou { get; set; }
+        public List<SelectListItem> SCHList { get; set; }
         public decimal PikThick { get; set; }
         public string PikThickStr { get; set; }
         public decimal PikOD { get; set; }
@@ -53,6 +59,12 @@ namespace SUNMark.Models
         public int StatusVou { get; set; }
         public List<SelectListItem> StatusList { get; set; }
         public string PikStatus { get; set; }
+        public int FinishVou { get; set; }
+        public List<SelectListItem> FinishList { get; set; }
+        public string PikFinish { get; set; }
+        public int NextProcVou { get; set; }
+        public List<SelectListItem> NextProcList { get; set; }
+        public string PikNextProc { get; set; }
         public string PikInTime { get; set; }
         public string PikInTimeStr { get; set; }
         public string PikOutTime { get; set; }

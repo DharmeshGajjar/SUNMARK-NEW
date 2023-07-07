@@ -1403,7 +1403,7 @@
         if (thick != '' && od != '') {
             $.ajax({
                 type: "POST",
-                url: '/Milling/GetNBSCH',
+                url: '/OpeningStock/GetNBSCH',
                 data: { "thick": thick, "od": od },
                 dataType: "JSON",
                 success: function (response) {

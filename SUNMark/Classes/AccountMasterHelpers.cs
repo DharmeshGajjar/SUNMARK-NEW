@@ -505,7 +505,7 @@ namespace SUNMark.Classes
             return UserRoleList;
         }
 
-        public List<SelectListItem> GetMachineMasterDropdown(int CompanyId,string jobType= "MILLING")
+        public List<SelectListItem> GetMachineMasterDropdown(int CompanyId,string jobType)
         {
             List<SelectListItem> MachTypeList = new List<SelectListItem>();
             try

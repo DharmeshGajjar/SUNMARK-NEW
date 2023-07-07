@@ -66,7 +66,7 @@ namespace SUNMark.Classes
                 var oper1List = ObjAccountMasterHelpers.GetEmployeeCustomDropdown(sessionCompanyId, 0);
                 var supervisorList = ObjAccountMasterHelpers.GetSupervisorCustomDropdown(sessionCompanyId, 0);
                 var processList = objProductHelper.GetLotPrcTypMasterDropdown(sessionCompanyId, 0);
-                var milprocessList = ObjAccountMasterHelpers.GetMachineMasterDropdown(sessionCompanyId);
+                var milprocessList = ObjAccountMasterHelpers.GetMachineMasterDropdown(sessionCompanyId, "");
 
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {

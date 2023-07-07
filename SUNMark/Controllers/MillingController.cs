@@ -189,7 +189,7 @@ namespace SUNMark.Controllers
                     parameter[48] = new SqlParameter("@MilWeldAMP2", millingMasterModel.AMP2);
                     parameter[49] = new SqlParameter("@MilWeldVolt2", millingMasterModel.Voltage2);
                     parameter[50] = new SqlParameter("@MilTouNo2", millingMasterModel.NoOfTourch2);
-                parameter[51] = new SqlParameter("@MilPrdCd", millingMasterModel.ProductCode.ToUpper());
+                    parameter[51] = new SqlParameter("@MilPrdCd", "");
                 DataTable dt = ObjDBConnection.CallStoreProcedure("AddMilling", parameter);
                         if (dt != null && dt.Rows.Count > 0)
                         {
@@ -276,7 +276,7 @@ namespace SUNMark.Controllers
             ViewBag.productList = objProductHelper.GetProductMasterDropdown(companyId); 
             ViewBag.shiftList = objProductHelper.GetShiftNew(); 
             ViewBag.processList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
-            ViewBag.milprocessList = ObjAccountMasterHelpers.GetMachineMasterDropdown(companyId);
+            ViewBag.milprocessList = ObjAccountMasterHelpers.GetMachineMasterDropdown(companyId, "MILLING");
             ViewBag.nbList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
             ViewBag.schList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
 

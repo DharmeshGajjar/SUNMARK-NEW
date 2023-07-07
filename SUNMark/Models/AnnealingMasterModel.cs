@@ -37,6 +37,12 @@ namespace SUNMark.Models
         public string Grade { get; set; }
         public int[] GradeVou { get; set; }
         public List<SelectListItem> GradeList { get; set; }
+        public string NB { get; set; }
+        public int[] NbVou { get; set; }
+        public List<SelectListItem> NBList { get; set; }
+        public string SCH { get; set; }
+        public int[] SchVou { get; set; }
+        public List<SelectListItem> SCHList { get; set; }
         public decimal AnnThick { get; set; }
         public string AnnThickStr { get; set; }
         public decimal AnnOD { get; set; }
@@ -58,6 +64,8 @@ namespace SUNMark.Models
         public string AnnCoilNoStr { get; set; }
         public string AnnType { get; set; }
         public string AnnTypeStr { get; set; }
+        public string AnnLotVou { get; set; }
+        public string AnnLotVouStr { get; set; }
         public decimal AnnRPM { get; set; }
         public string AnnRPMStr { get; set; }
         public int AnnTDS1 { get; set; }

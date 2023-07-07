@@ -28,8 +28,6 @@
     List<SelectListItem> finishList = ViewBag.finishList != null ? ViewBag.finishList as List<SelectListItem> : null;
     List<SelectListItem> nextProcList = ViewBag.nextProcList != null ? ViewBag.nextProcList as List<SelectListItem> : null;
 
-
-
     if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
     {
         headerList = "active";
@@ -202,6 +200,19 @@
                                                 }
 
                                             </div>
+                                            <div class="d-none" id="dropdownNB">
+                                                @if (Model != null && Model.Annel != null && Model.Annel.NBList != null && Model.Annel.NBList.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Annel.NbVou, new SelectList(Model.Annel.NBList, "Value", "Text"), "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
+
+                                            </div>
+                                            <div class="d-none" id="dropdownSCH">
+                                                @if (Model != null && Model.Annel != null && Model.Annel.SCHList != null && Model.Annel.SCHList.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Annel.SchVou, new SelectList(Model.Annel.SCHList, "Value", "Text"), "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
+                                            </div>
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-1 col-12">
@@ -301,6 +312,12 @@
                                                             <th style="width:15% !important">
                                                                 Grade <span class="text-danger">*</span>
                                                             </th>
+                                                            <th style="width:15% !important">
+                                                                NB
+                                                            </th>
+                                                            <th style="width:15% !important">
+                                                                SCH
+                                                            </th>
                                                             <th style="width:12%;text-align:right !important">
                                                                 OD <span class="text-danger">*</span>
                                                             </th>
@@ -346,6 +363,9 @@
                                                             <th style="width:12% !important">
                                                                 Type
                                                             </th>
+                                                            @*<th style="width:12% !important">
+                                                                lotvou
+                                                            </th>*@
                                                             <th style="width:5% !important">
                                                                 Actions
                                                             </th>
@@ -368,15 +388,27 @@
                                                                     @Html.DropDownListFor(x => x.Annel.Grade, new SelectList(Model.Annel.GradeList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
                                                                 }
                                                             </td>
+                                                            <td style="padding:0 0 0 12px">
+                                                                @if (Model != null && Model.Annel != null && Model.Annel.NBList != null && Model.Annel.NBList.Count > 0)
+                                                                {
+                                                                    @Html.DropDownListFor(x => x.Annel.NB, new SelectList(Model.Annel.NBList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                }
+                                                            </td>
+                                                            <td style="padding:0 0 0 12px">
+                                                                @if (Model != null && Model.Annel != null && Model.Annel.SCHList != null && Model.Annel.SCHList.Count > 0)
+                                                                {
+                                                                    @Html.DropDownListFor(x => x.Annel.SCH, new SelectList(Model.Annel.SCHList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                }
+                                                            </td>
                                                             <td style="padding:0 0 0 8px">
-                                                                @Html.TextBoxFor(x => x.Annel.AnnOD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnOD", @onKeyUp = "numericFilter(this);" })
+                                                                @Html.TextBoxFor(x => x.Annel.AnnOD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnOD", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
                                                                 @Html.TextBoxFor(x => x.Annel.AnnThick, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
                                                             </td>
 
                                                             <td style="padding:0 0 0 8px">
-                                                                @Html.TextBoxFor(x => x.Annel.AnnLength, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnLength", @onKeyUp = "numericFilter(this);" })
+                                                                @Html.TextBoxFor(x => x.Annel.AnnLength, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnLength", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
                                                                 @Html.TextBoxFor(x => x.Annel.AnnNoOfPipe, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnNoOfPipe", @onKeyUp = "numericFilter(this);", @onblur = "GetCalculateQty(this)" })
@@ -414,6 +446,9 @@
                                                             <td style="padding:0 0 0 8px">
                                                                 @Html.TextBoxFor(x => x.Annel.AnnType, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtAnnTypeStr" })
                                                             </td>
+                                                            @*<td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Annel.AnnLotVou, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtAnnLotVouStr" })
+                                                            </td>*@
                                                             <td class="text-center">
                                                                 <i class="fa fa-plus text-blue" onclick="AddRowsAnnel(this)" style="font-size:18px"></i>
                                                                 <i class="fa fa-sync text-blue ml-3" onclick="RefreshAnnel(this)" style="font-size:18px"></i>
@@ -429,6 +464,12 @@
                                                             <td style="padding:0 0 0 12px">
                                                                 <label class="control-label pl-1"></label>
                                                             </td>
+                                                            <td style="padding:0 0 0 12px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
+                                                            <td style="padding:0 0 0 12px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>
                                                             <td style="padding:0 0 0 8px">
                                                                 <label class="control-label pl-1"></label>
                                                             </td>
@@ -471,6 +512,9 @@
                                                             <td style="padding:0 0 0 8px">
                                                                 <label class="control-label pl-1"></label>
                                                             </td>
+                                                            @*<td style="padding:0 0 0 8px">
+                                                                <label class="control-label pl-1"></label>
+                                                            </td>*@
                                                             <td>
                                                             </td>
                                                         </tr>
@@ -491,6 +535,12 @@
                                                                 </th>
                                                                 <th style="width:15% !important">
                                                                     Grade <span class="text-danger">*</span>
+                                                                </th>
+                                                                <th style="width:15% !important">
+                                                                    NB 
+                                                                </th>
+                                                                <th style="width:15% !important">
+                                                                    SCH
                                                                 </th>
                                                                 <th style="width:12%;text-align:right !important">
                                                                     OD <span class="text-danger">*</span>
@@ -537,6 +587,9 @@
                                                                 <th style="width:12% !important">
                                                                     Type
                                                                 </th>
+                                                                @*<th style="width:12% !important">
+                                                                    lotvou
+                                                                </th>*@
                                                                 <th style="width:5% !important">
                                                                     Actions
                                                                 </th>
@@ -561,14 +614,26 @@
                                                                             @Html.DropDownListFor(x => x.AnnelList[y].Grade, new SelectList(Model.Annel.GradeList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
                                                                         }
                                                                     </td>
+                                                                    <td style="padding:0 0 0 12px">
+                                                                        @if (Model != null && Model.Annel != null && Model.Annel.NBList != null && Model.Annel.NBList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.AnnelList[y].NB, new SelectList(Model.Annel.NBList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                        }
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 12px">
+                                                                        @if (Model != null && Model.Annel != null && Model.Annel.SCHList != null && Model.Annel.SCHList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.AnnelList[y].SCH, new SelectList(Model.Annel.SCHList, "Value", "Text"), "Select", new { @class = "form-control select2 Grade", @style = "font-family: Verdana;font-size:small; height:30px;width:130px !important" })
+                                                                        }
+                                                                    </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.AnnelList[y].AnnOD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnOD", @onKeyUp = "numericFilter(this);" })
+                                                                        @Html.TextBoxFor(x => x.AnnelList[y].AnnOD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnOD", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
                                                                         @Html.TextBoxFor(x => x.AnnelList[y].AnnThick, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.AnnelList[y].AnnLength, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnLength", @onKeyUp = "numericFilter(this);" })
+                                                                        @Html.TextBoxFor(x => x.AnnelList[y].AnnLength, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnLength", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
                                                                         @Html.TextBoxFor(x => x.AnnelList[y].AnnNoOfPipe, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnNoOfPipe", @onKeyUp = "numericFilter(this);", @onblur = "GetCalculateQty(this)" })
@@ -606,6 +671,9 @@
                                                                     <td style="padding:0 0 0 8px">
                                                                         @Html.TextBoxFor(x => x.AnnelList[y].AnnType, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtAnnTypeStr" })
                                                                     </td>
+                                                                    @*<td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.AnnelList[y].AnnLotVou, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtAnnLotVouStr" })
+                                                                    </td>*@
                                                                     <td class="text-center">
                                                                         <i class="fa fa-edit text-primary" onclick="EditRowsAnnel(this)" style="font-size:18px"></i>
                                                                         <i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsAnnel(this)" style="font-size:18px"></i>
@@ -1108,24 +1176,29 @@
                 var recproductvou = $(previousRow).children('td').eq(1).children('select').val();
                 var grade = $(previousRow).children('td').eq(2).children('select').children('option:selected').text();
                 var gradevou = $(previousRow).children('td').eq(2).children('select').val();
-                var od = $(previousRow).children('td').eq(3).children('input').val();
-                var thick = $(previousRow).children('td').eq(4).children('input').val();
-                var length = $(previousRow).children('td').eq(5).children('input').val();
-                var noofpipe = $(previousRow).children('td').eq(6).children('input').val();
-                var qty = $(previousRow).children('td').eq(7).children('input').val();
-                var tdc1 = $(previousRow).children('td').eq(8).children('input').val();
-                var tdc2 = $(previousRow).children('td').eq(9).children('input').val();
-                var tdc3 = $(previousRow).children('td').eq(10).children('input').val();
-                var tdc4 = $(previousRow).children('td').eq(11).children('input').val();
-                var rpm = $(previousRow).children('td').eq(12).children('input').val();
-                var nopbatch = $(previousRow).children('td').eq(13).children('input').val();
-                var intime = $(previousRow).children('td').eq(14).children('input').val();
-                var outtime = $(previousRow).children('td').eq(15).children('input').val();
-                var coilno = $(previousRow).children('td').eq(16).children('input').val();
-                var type = $(previousRow).children('td').eq(17).children('input').val();
+                var NB = $(previousRow).children('td').eq(3).children('select').children('option:selected').text();
+                var NBvou = $(previousRow).children('td').eq(3).children('select').val();
+                var SCH = $(previousRow).children('td').eq(4).children('select').children('option:selected').text();
+                var SCHvou = $(previousRow).children('td').eq(4).children('select').val();
+                var od = $(previousRow).children('td').eq(5).children('input').val();
+                var thick = $(previousRow).children('td').eq(6).children('input').val();
+                var length = $(previousRow).children('td').eq(7).children('input').val();
+                var noofpipe = $(previousRow).children('td').eq(8).children('input').val();
+                var qty = $(previousRow).children('td').eq(9).children('input').val();
+                var tdc1 = $(previousRow).children('td').eq(10).children('input').val();
+                var tdc2 = $(previousRow).children('td').eq(11).children('input').val();
+                var tdc3 = $(previousRow).children('td').eq(12).children('input').val();
+                var tdc4 = $(previousRow).children('td').eq(13).children('input').val();
+                var rpm = $(previousRow).children('td').eq(14).children('input').val();
+                var nopbatch = $(previousRow).children('td').eq(15).children('input').val();
+                var intime = $(previousRow).children('td').eq(16).children('input').val();
+                var outtime = $(previousRow).children('td').eq(17).children('input').val();
+                var coilno = $(previousRow).children('td').eq(18).children('input').val();
+                var type = $(previousRow).children('td').eq(19).children('input').val();
+                //var lotvou = $(previousRow).children('td').eq(20).children('input').val();
 
                 var srNo = $(previousRow).children('td').eq(0).children('input').val();
-                if (recproduct != null && grade != null && thick != null && qty != null && od != null && length != null && noofpipe != null && recproduct != "" && grade != "" && thick != "" && qty != "" && od != "" && length != "" && noofpipe != "") {
+                if (recproduct != null && grade != null && NB != null && SCH != null && thick != null && qty != null && od != null && length != null && noofpipe != null && recproduct != "" && grade != "" && NB != "" && SCH != "" && thick != "" && qty != "" && od != "" && length != "" && noofpipe != "") {
 
                     if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
                         var html = $('#tblAnnel').children().find('tr.AddRows:first').html();
@@ -1141,21 +1214,27 @@
                     $('#tblAnnel').children('tbody').children('tr:last').removeClass('d-none')
                     $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(1).children('label').html(recproduct);
                     $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(2).children('label').html(grade);
-                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(3).children('label').html(od);
-                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(4).children('label').html(thick);
-                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(5).children('label').html(length);
-                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(6).children('label').html(noofpipe);
-                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(7).children('label').html(qty);
-                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(8).children('label').html(rpm);
-                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(9).children('label').html(intime);
-                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(10).children('label').html(outtime);
-                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(11).children('label').html(coilno);
-                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(12).children('label').html(type);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(3).children('label').html(NB);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(4).children('label').html(SCH);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(5).children('label').html(od);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(6).children('label').html(thick);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(7).children('label').html(length);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(8).children('label').html(noofpipe);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(9).children('label').html(qty);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(10).children('label').html(tdc1);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(11).children('label').html(tdc2);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(12).children('label').html(tdc3);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(13).children('label').html(tdc4);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(14).children('label').html(rpm);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(15).children('label').html(nopbatch);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(16).children('label').html(intime);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(17).children('label').html(outtime);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(18).children('label').html(coilno);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(19).children('label').html(type);
+                    //$('#tblAnnel').children('tbody').children('tr:last').children('td').eq(20).children('label').html(lotvou);
                     $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(0).children('label').html(srNo);
 
 
-                    $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val('');
-                    $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val('');
                     $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val('');
                     $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
                     $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
@@ -1169,6 +1248,9 @@
                     $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(15).children('input').val('');
                     $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(16).children('input').val('');
                     $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(17).children('input').val('');
+                    $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(18).children('input').val('');
+                    $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(19).children('input').val('');
+                    //$('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(20).children('input').val('');
                     $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
 
                     if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
@@ -1187,30 +1269,45 @@
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val(gradevou);
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').removeClass('select2')
 
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val(od);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val(thick);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val(length);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val(noofpipe);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val(qty);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val(tdc1);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val(tdc2);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').val(tdc3);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').val(tdc4);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(12).children('input').val(rpm);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(13).children('input').val(nopbatch);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(14).children('input').val(intime);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(15).children('input').val(outtime);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(16).children('input').val(coilno);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(17).children('input').val(type);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(18).addClass('text-center')
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(18).html(`<i class="fa fa-edit text-primary" onclick="EditRowsAnnel(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsAnnel(this)" style="font-size:18px"></i>`)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('select').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('span').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).html($('#dropdownNB').html());
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('select').addClass('select2');
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('select').val(NBvou);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('select').removeClass('select2')
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('select').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('span').remove();
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).html($('#dropdownSCH').html());
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('select').addClass('select2');
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('select').val(SCHvou);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('select').removeClass('select2')
+
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val(od);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val(thick);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val(length);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val(noofpipe);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val(qty);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').val(tdc1);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').val(tdc2);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(12).children('input').val(tdc3);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(13).children('input').val(tdc4);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(14).children('input').val(rpm);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(15).children('input').val(nopbatch);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(16).children('input').val(intime);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(17).children('input').val(outtime);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(18).children('input').val(coilno);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(19).children('input').val(type);
+                        //$('#tblDisplay').children('tbody').children('tr:last').children('td').eq(20).children('input').val(lotvou);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(21).addClass('text-center')
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(21).html(`<i class="fa fa-edit text-primary" onclick="EditRowsAnnel(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsAnnel(this)" style="font-size:18px"></i>`)
 
 
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('select').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').attr('disabled', true)
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('select').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('select').attr('disabled', true)
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').attr('disabled', true)
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').attr('disabled', true)
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').attr('disabled', true)
@@ -1224,6 +1321,9 @@
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(15).children('input').attr('disabled', true)
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(16).children('input').attr('disabled', true)
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(17).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(18).children('input').attr('disabled', true)
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(19).children('input').attr('disabled', true)
+                        //$('#tblDisplay').children('tbody').children('tr:last').children('td').eq(20).children('input').attr('disabled', true)
 
                         $('#tblDisplay').children('tbody').children().find('input').each(function () {
                             $(this).removeAttr('onfocusin')
@@ -1251,25 +1351,42 @@
                                 $(this).children('td').eq(2).children('select').removeClass('select2')
                                 $(this).children('td').eq(2).children('select').attr('disabled', true)
 
-                                $(this).children('td').eq(3).children('input').val(od);
-                                $(this).children('td').eq(4).children('input').val(thick);
+                                $(this).children('td').eq(3).children('select').remove();
+                                $(this).children('td').eq(3).children('span').remove();
+                                $(this).children('td').eq(3).html($('#dropdownNB').html());
+                                $(this).children('td').eq(3).children('select').addClass('select2');
+                                $(this).children('td').eq(3).children('select').val(NBvou);
+                                $(this).children('td').eq(3).children('select').removeClass('select2')
+                                $(this).children('td').eq(3).children('select').attr('disabled', true)
+
+                                $(this).children('td').eq(4).children('select').remove();
+                                $(this).children('td').eq(4).children('span').remove();
+                                $(this).children('td').eq(4).html($('#dropdownSCH').html());
+                                $(this).children('td').eq(4).children('select').addClass('select2');
+                                $(this).children('td').eq(4).children('select').val(SCHvou);
+                                $(this).children('td').eq(4).children('select').removeClass('select2')
+                                $(this).children('td').eq(4).children('select').attr('disabled', true)
+
+                                $(this).children('td').eq(5).children('input').val(od);
+                                $(this).children('td').eq(6).children('input').val(thick);
 
 
-                                $(this).children('td').eq(5).children('input').val(length);
-                                $(this).children('td').eq(6).children('input').val(noofpipe);
-                                $(this).children('td').eq(7).children('input').val(qty);
-                                $(this).children('td').eq(8).children('input').val(tdc1);
-                                $(this).children('td').eq(9).children('input').val(tdc2);
-                                $(this).children('td').eq(10).children('input').val(tdc3);
-                                $(this).children('td').eq(11).children('input').val(tdc4);
-                                $(this).children('td').eq(12).children('input').val(rpm);
-                                $(this).children('td').eq(13).children('input').val(nopbatch);
-                                $(this).children('td').eq(14).children('input').val(intime);
-                                $(this).children('td').eq(15).children('input').val(outtime);
-                                $(this).children('td').eq(16).children('input').val(coilno);
-                                $(this).children('td').eq(17).children('input').val(type);
-                                $(this).children('td').eq(18).addClass('text-center')
-                                $(this).children('td').eq(18).html(`<i class="fa fa-edit text-primary" onclick="EditRowsAnnel(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsAnnel(this)" style="font-size:18px"></i>`)
+                                $(this).children('td').eq(7).children('input').val(length);
+                                $(this).children('td').eq(8).children('input').val(noofpipe);
+                                $(this).children('td').eq(9).children('input').val(qty);
+                                $(this).children('td').eq(10).children('input').val(tdc1);
+                                $(this).children('td').eq(11).children('input').val(tdc2);
+                                $(this).children('td').eq(12).children('input').val(tdc3);
+                                $(this).children('td').eq(13).children('input').val(tdc4);
+                                $(this).children('td').eq(14).children('input').val(rpm);
+                                $(this).children('td').eq(15).children('input').val(nopbatch);
+                                $(this).children('td').eq(16).children('input').val(intime);
+                                $(this).children('td').eq(17).children('input').val(outtime);
+                                $(this).children('td').eq(18).children('input').val(coilno);
+                                $(this).children('td').eq(19).children('input').val(type);
+                                //$(this).children('td').eq(20).children('input').val(lotvou);
+                                $(this).children('td').eq(21).addClass('text-center')
+                                $(this).children('td').eq(21).html(`<i class="fa fa-edit text-primary" onclick="EditRowsAnnel(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsAnnel(this)" style="font-size:18px"></i>`)
                                 $('#btnSave').prop('disabled', false);
                             }
                         })
@@ -1335,41 +1452,51 @@
             $(this).children("td").eq(1).children("select").attr("Id", "Annel.RecProduct" + (i) + "");
             $(this).children("td").eq(2).children("select").attr("name", "AnnelList[" + (i) + "].Grade");
             $(this).children("td").eq(2).children("select").attr("Id", "Annel.Grade" + (i) + "");
-            $(this).children("td").eq(3).children("input").attr("name", "AnnelList[" + (i) + "].AnnOD");
-            $(this).children("td").eq(3).children("input").attr("Id", "Annel.AnnOD" + (i) + "");
-            $(this).children("td").eq(4).children("input").attr("name", "AnnelList[" + (i) + "].AnnThick");
-            $(this).children("td").eq(4).children("input").attr("Id", "Annel.AnnThick" + (i) + "");
+            $(this).children("td").eq(3).children("select").attr("name", "AnnelList[" + (i) + "].NB");
+            $(this).children("td").eq(3).children("select").attr("Id", "Annel.Grade" + (i) + "");
+            $(this).children("td").eq(4).children("select").attr("name", "AnnelList[" + (i) + "].SCH");
+            $(this).children("td").eq(4).children("select").attr("Id", "Annel.Grade" + (i) + "");
+            $(this).children("td").eq(5).children("input").attr("name", "AnnelList[" + (i) + "].AnnOD");
+            $(this).children("td").eq(5).children("input").attr("Id", "Annel.AnnOD" + (i) + "");
             if (!isRemove)
-                $(this).children("td").eq(4).children("input").attr("onblur", 'GetLotIssAnnelProduct(this)');
-            $(this).children("td").eq(5).children("input").attr("name", "AnnelList[" + (i) + "].AnnLength");
-            $(this).children("td").eq(5).children("input").attr("Id", "Annel.AnnLength" + (i) + "");
-            $(this).children("td").eq(6).children("input").attr("name", "AnnelList[" + (i) + "].AnnNoOfPipe");
-            $(this).children("td").eq(6).children("input").attr("Id", "Annel.AnnNoOfPipe" + (i) + "");
-            $(this).children("td").eq(7).children("input").attr("name", "AnnelList[" + (i) + "].AnnWeight");
-            $(this).children("td").eq(7).children("input").attr("Id", "Annel.AnnWeight" + (i) + "");
+                $(this).children("td").eq(5).children("input").attr("onblur", 'GetLotIssAnnelProduct(this)');
+            $(this).children("td").eq(6).children("input").attr("name", "AnnelList[" + (i) + "].AnnThick");
+            $(this).children("td").eq(6).children("input").attr("Id", "Annel.AnnThick" + (i) + "");
+            if (!isRemove)
+                $(this).children("td").eq(6).children("input").attr("onblur", 'GetLotIssAnnelProduct(this)');
+            $(this).children("td").eq(7).children("input").attr("name", "AnnelList[" + (i) + "].AnnLength");
+            $(this).children("td").eq(7).children("input").attr("Id", "Annel.AnnLength" + (i) + "");
+            if (!isRemove)
+                $(this).children("td").eq(7).children("input").attr("onblur", 'GetLotIssAnnelProduct(this)');
+            $(this).children("td").eq(8).children("input").attr("name", "AnnelList[" + (i) + "].AnnNoOfPipe");
+            $(this).children("td").eq(8).children("input").attr("Id", "Annel.AnnNoOfPipe" + (i) + "");
+            $(this).children("td").eq(9).children("input").attr("name", "AnnelList[" + (i) + "].AnnWeight");
+            $(this).children("td").eq(9).children("input").attr("Id", "Annel.AnnWeight" + (i) + "");
 
-            $(this).children("td").eq(8).children("input").attr("name", "AnnelList[" + (i) + "].AnnTDS1");
-            $(this).children("td").eq(8).children("input").attr("Id", "Annel.AnnTDS1" + (i) + "");
-            $(this).children("td").eq(9).children("input").attr("name", "AnnelList[" + (i) + "].AnnTDS2");
-            $(this).children("td").eq(9).children("input").attr("Id", "Annel.AnnTDS2" + (i) + "");
-            $(this).children("td").eq(10).children("input").attr("name", "AnnelList[" + (i ) + "].AnnTDS3");
-            $(this).children("td").eq(10).children("input").attr("Id", "Annel.AnnTDS3" + (i) + "");
-            $(this).children("td").eq(11).children("input").attr("name", "AnnelList[" + (i) + "].AnnTDS4");
-            $(this).children("td").eq(11).children("input").attr("Id", "Annel.AnnTDS4" + (i) + "");
+            $(this).children("td").eq(10).children("input").attr("name", "AnnelList[" + (i) + "].AnnTDS1");
+            $(this).children("td").eq(10).children("input").attr("Id", "Annel.AnnTDS1" + (i) + "");
+            $(this).children("td").eq(11).children("input").attr("name", "AnnelList[" + (i) + "].AnnTDS2");
+            $(this).children("td").eq(11).children("input").attr("Id", "Annel.AnnTDS2" + (i) + "");
+            $(this).children("td").eq(12).children("input").attr("name", "AnnelList[" + (i ) + "].AnnTDS3");
+            $(this).children("td").eq(12).children("input").attr("Id", "Annel.AnnTDS3" + (i) + "");
+            $(this).children("td").eq(13).children("input").attr("name", "AnnelList[" + (i) + "].AnnTDS4");
+            $(this).children("td").eq(13).children("input").attr("Id", "Annel.AnnTDS4" + (i) + "");
 
-            $(this).children("td").eq(12).children("input").attr("name", "AnnelList[" + (i) + "].AnnRPM");
-            $(this).children("td").eq(12).children("input").attr("Id", "Annel.AnnRPM" + (i) + "");
-            $(this).children("td").eq(13).children("input").attr("name", "AnnelList[" + (i) + "].AnnNoPBatch");
-            $(this).children("td").eq(13).children("input").attr("Id", "Annel.AnnNoPBatch" + (i) + "");
+            $(this).children("td").eq(14).children("input").attr("name", "AnnelList[" + (i) + "].AnnRPM");
+            $(this).children("td").eq(14).children("input").attr("Id", "Annel.AnnRPM" + (i) + "");
+            $(this).children("td").eq(15).children("input").attr("name", "AnnelList[" + (i) + "].AnnNoPBatch");
+            $(this).children("td").eq(15).children("input").attr("Id", "Annel.AnnNoPBatch" + (i) + "");
 
-            $(this).children("td").eq(14).children("input").attr("name", "AnnelList[" + (i) + "].AnnInTime");
-            $(this).children("td").eq(14).children("input").attr("Id", "Annel.AnnInTime" + (i) + "");
-            $(this).children("td").eq(15).children("input").attr("name", "AnnelList[" + (i) + "].AnnOutTime");
-            $(this).children("td").eq(15).children("input").attr("Id", "Annel.AnnOutTime" + (i) + "");
-            $(this).children("td").eq(16).children("input").attr("name", "AnnelList[" + (i) + "].AnnCoilNo");
-            $(this).children("td").eq(16).children("input").attr("Id", "Annel.AnnCoilNo" + (i) + "");
-            $(this).children("td").eq(17).children("input").attr("name", "AnnelList[" + (i) + "].AnnType");
-            $(this).children("td").eq(17).children("input").attr("Id", "Annel.AnnType" + (i) + "");
+            $(this).children("td").eq(16).children("input").attr("name", "AnnelList[" + (i) + "].AnnInTime");
+            $(this).children("td").eq(16).children("input").attr("Id", "Annel.AnnInTime" + (i) + "");
+            $(this).children("td").eq(17).children("input").attr("name", "AnnelList[" + (i) + "].AnnOutTime");
+            $(this).children("td").eq(17).children("input").attr("Id", "Annel.AnnOutTime" + (i) + "");
+            $(this).children("td").eq(18).children("input").attr("name", "AnnelList[" + (i) + "].AnnCoilNo");
+            $(this).children("td").eq(18).children("input").attr("Id", "Annel.AnnCoilNo" + (i) + "");
+            $(this).children("td").eq(19).children("input").attr("name", "AnnelList[" + (i) + "].AnnType");
+            $(this).children("td").eq(19).children("input").attr("Id", "Annel.AnnType" + (i) + "");
+            //$(this).children("td").eq(20).children("input").attr("name", "AnnelList[" + (i) + "].AnnLotVou");
+            //$(this).children("td").eq(20).children("input").attr("Id", "Annel.AnnType" + (i) + "");
         });
     }
 
@@ -1379,42 +1506,48 @@
             var csrno = $(obj).closest('tr').children('td').eq(0).children('input').val();
             var crecproduct = $(obj).closest('tr').children('td').eq(1).children('select').val();
             var cgrade = $(obj).closest('tr').children('td').eq(2).children('select').val();
-            var cod = $(obj).closest('tr').children('td').eq(3).children('input').val();
-            var cthick = $(obj).closest('tr').children('td').eq(4).children('input').val();
-            var clength = $(obj).closest('tr').children('td').eq(5).children('input').val();
-            var cnoofpipe = $(obj).closest('tr').children('td').eq(6).children('input').val();
-            var cqty = $(obj).closest('tr').children('td').eq(7).children('input').val();
-            var ctdc1 = $(obj).closest('tr').children('td').eq(8).children('input').val();
-            var ctdc2 = $(obj).closest('tr').children('td').eq(9).children('input').val();
-            var ctdc3 = $(obj).closest('tr').children('td').eq(10).children('input').val();
-            var ctdc4 = $(obj).closest('tr').children('td').eq(11).children('input').val();
-            var crpm = $(obj).closest('tr').children('td').eq(12).children('input').val();
-            var cnopbatch = $(obj).closest('tr').children('td').eq(13).children('input').val();
-            var cintime = $(obj).closest('tr').children('td').eq(14).children('input').val();
-            var couttime = $(obj).closest('tr').children('td').eq(15).children('input').val();
-            var ccoilno = $(obj).closest('tr').children('td').eq(16).children('input').val();
-            var ctype = $(obj).closest('tr').children('td').eq(17).children('input').val();
+            var cnb = $(obj).closest('tr').children('td').eq(3).children('select').val();
+            var csch = $(obj).closest('tr').children('td').eq(4).children('select').val();
+            var cod = $(obj).closest('tr').children('td').eq(5).children('input').val();
+            var cthick = $(obj).closest('tr').children('td').eq(6).children('input').val();
+            var clength = $(obj).closest('tr').children('td').eq(7).children('input').val();
+            var cnoofpipe = $(obj).closest('tr').children('td').eq(8).children('input').val();
+            var cqty = $(obj).closest('tr').children('td').eq(9).children('input').val();
+            var ctdc1 = $(obj).closest('tr').children('td').eq(10).children('input').val();
+            var ctdc2 = $(obj).closest('tr').children('td').eq(11).children('input').val();
+            var ctdc3 = $(obj).closest('tr').children('td').eq(12).children('input').val();
+            var ctdc4 = $(obj).closest('tr').children('td').eq(13).children('input').val();
+            var crpm = $(obj).closest('tr').children('td').eq(14).children('input').val();
+            var cnopbatch = $(obj).closest('tr').children('td').eq(15).children('input').val();
+            var cintime = $(obj).closest('tr').children('td').eq(16).children('input').val();
+            var couttime = $(obj).closest('tr').children('td').eq(17).children('input').val();
+            var ccoilno = $(obj).closest('tr').children('td').eq(18).children('input').val();
+            var ctype = $(obj).closest('tr').children('td').eq(19).children('input').val();
+            //var clotvou = $(obj).closest('tr').children('td').eq(20).children('input').val();
 
 
 
             $('#tblAnnel').children('tbody').children('tr').children('td').eq(0).children('input').val(srno);
             $('#tblAnnel').children('tbody').children('tr').children('td').eq(1).children('select').val(crecproduct);
             $('#tblAnnel').children('tbody').children('tr').children('td').eq(2).children('select').val(cgrade);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(3).children('input').val(cod);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(4).children('input').val(cthick);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(5).children('input').val(clength);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(6).children('input').val(cnoofpipe);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(7).children('input').val(cqty);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(8).children('input').val(ctdc1);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(9).children('input').val(ctdc2);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(10).children('input').val(ctdc3);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(11).children('input').val(ctdc4);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(12).children('input').val(crpm);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(13).children('input').val(cnopbatch);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(14).children('input').val(cintime);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(15).children('input').val(couttime);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(16).children('input').val(ccoilno);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(17).children('input').val(ctype);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(3).children('select').val(cnb);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(4).children('select').val(csch);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(5).children('input').val(cod);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(6).children('input').val(cthick);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(7).children('input').val(clength);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(8).children('input').val(cnoofpipe);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(9).children('input').val(cqty);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(10).children('input').val(ctdc1);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(11).children('input').val(ctdc2);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(12).children('input').val(ctdc3);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(13).children('input').val(ctdc4);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(14).children('input').val(crpm);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(15).children('input').val(cnopbatch);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(16).children('input').val(cintime);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(17).children('input').val(couttime);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(18).children('input').val(ccoilno);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(19).children('input').val(ctype);
+            //$('#tblAnnel').children('tbody').children('tr').children('td').eq(20).children('input').val(clotvou);
             $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
             SetSelect2();
             //$('#btnSave').prop('disabled', true);
@@ -1436,16 +1569,18 @@
     function RefreshAnnel() {
         var rrecproduct = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val();
         var rgrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val();
-        var rod = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
-        var rlenght = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val();
+        var rnb = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('select').val();
+        var rsch = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('select').val();
+        var rod = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val();
+        var rlenght = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val();
 
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val(rrecproduct);
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').val(rgrade);
-        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val(od);
-        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val('');
-        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val(rlenght);
+        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(3).children('select').val(rnb);
+        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(4).children('select').val(rsch);
+        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val(od);
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
-        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
+        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val(rlenght);
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(8).children('input').val('');
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(9).children('input').val('');
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(10).children('input').val('');
@@ -1456,6 +1591,9 @@
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(15).children('input').val('');
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(16).children('input').val('');
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(17).children('input').val('');
+        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(18).children('input').val('');
+        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(19).children('input').val('');
+        //$('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(20).children('input').val('');
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
         SetSelect2();
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
@@ -1467,47 +1605,53 @@
             GoToAddTab()
             var arecprd = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val();
             var agrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val();
-            var aod = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
-            var athick = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val();
-            var alength = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val();
-            var anoofpipe = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val();
-            var aqty = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val();
-            var atdc1 = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val();
-            var atdc2 = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val();
-            var atdc3 = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val();
-            var atdc4 = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val();
-            var armp = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val();
-            var anopbatch = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val();
-            var aintime =  $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val();
-            var aouttime = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').val();
-            var acoilno = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').val();
-            var atype = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(12).children('input').val();
+            var anb = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('select').val();
+            var asch = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('select').val();
+            var aod = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val();
+            var athick = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val();
+            var alength = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val();
+            var anoofpipe = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val();
+            var aqty = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val();
+            var atdc1 = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').val();
+            var atdc2 = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(11).children('input').val();
+            var atdc3 = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(12).children('input').val();
+            var atdc4 = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(13).children('input').val();
+            var armp = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(14).children('input').val();
+            var anopbatch = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(15).children('input').val();
+            var aintime =  $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(16).children('input').val();
+            var aouttime = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(17).children('input').val();
+            var acoilno = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(18).children('input').val();
+            var atype = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(19).children('input').val();
+            //var alotvou = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(20).children('input').val();
             var asrno = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').val();
             $('#tblAnnel').children('tbody').children('tr:last').removeClass('d-none')
             $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(1).children('label').html(arecprd);
             $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(2).children('label').html(agrade);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(3).children('label').html(aod);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(4).children('label').html(athick);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(5).children('label').html(alength);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(6).children('label').html(anoofpipe);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(7).children('label').html(aqty);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(8).children('label').html(atdc1);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(9).children('label').html(atdc2);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(10).children('label').html(atdc3);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(11).children('label').html(atdc4);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(12).children('label').html(armp);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(13).children('label').html(anopbatch);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(14).children('label').html(aintime);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(15).children('label').html(aouttime);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(16).children('label').html(acoilno);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(17).children('label').html(atype);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(3).children('label').html(anb);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(4).children('label').html(asch);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(5).children('label').html(aod);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(6).children('label').html(athick);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(7).children('label').html(alength);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(8).children('label').html(anoofpipe);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(9).children('label').html(aqty);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(10).children('label').html(atdc1);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(11).children('label').html(atdc2);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(12).children('label').html(atdc3);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(13).children('label').html(atdc4);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(14).children('label').html(armp);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(15).children('label').html(anopbatch);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(16).children('label').html(aintime);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(17).children('label').html(aouttime);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(18).children('label').html(acoilno);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(19).children('label').html(atype);
+            //$('#tblAnnel').children('tbody').children('tr:last').children('td').eq(20).children('label').html(alotvou);
             $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(0).children('label').html(asrno);
             $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(0).children('label').html(asrno);
 
             $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val('');
             $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').val('');
-            $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val('');
-            $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val('');
+            $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(3).children('select').val('');
+            $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(4).children('select').val('');
             $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val('');
             $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
             $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
@@ -1521,12 +1665,15 @@
             $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(15).children('input').val('');
             $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(16).children('input').val('');
             $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(17).children('input').val('');
+            $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(18).children('input').val('');
+            $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(19).children('input').val('');
+            //$('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(20).children('input').val('');
             $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
             $('#tblDisplay').children('tbody').children('tr').each(function (i) {
                 $(this).children("td").eq(1).children('select').attr('disabled', true);
                 $(this).children("td").eq(2).children('select').attr('disabled', true);
-                $(this).children("td").eq(3).children('input').attr('disabled', true);
-                $(this).children("td").eq(4).children('input').attr('disabled', true);
+                $(this).children("td").eq(3).children('select').attr('disabled', true);
+                $(this).children("td").eq(4).children('select').attr('disabled', true);
                 $(this).children("td").eq(5).children('input').attr('disabled', true);
                 $(this).children("td").eq(6).children('input').attr('disabled', true);
                 $(this).children("td").eq(7).children('input').attr('disabled', true);
@@ -1540,6 +1687,9 @@
                 $(this).children("td").eq(15).children('input').attr('disabled', true);
                 $(this).children("td").eq(16).children('input').attr('disabled', true);
                 $(this).children("td").eq(17).children('input').attr('disabled', true);
+                $(this).children("td").eq(18).children('input').attr('disabled', true);
+                $(this).children("td").eq(19).children('input').attr('disabled', true);
+                //$(this).children("td").eq(20).children('input').attr('disabled', true);
                 $(this).children("td").eq(0).children('input').attr('disabled', true);
             });
         }
@@ -1550,19 +1700,13 @@
         if (!isRecentCall) {
             var previousRow = $('#tblAnnel').children('tbody').children('tr:last').prev();
             if (previousRow != null) {
-                var eqty = $(previousRow).children('td').eq(7).children('input').val();
+                var eqty = $(previousRow).children('td').eq(9).children('input').val();
                 if (eqty != 0) {
                     AddRowsAnnel()
                 }
             }
         }
         $('#tblDisplay').children('tbody').children('tr').each(function (i) {
-            if (!$(this).children("td").eq(8).children("input").val()) {
-                $(this).children("td").eq(8).children("input").val("-1")
-            }
-            if (!$(this).children("td").eq(9).children("input").val()) {
-                $(this).children("td").eq(9).children("input").val("-1")
-            }
             if (!$(this).children("td").eq(10).children("input").val()) {
                 $(this).children("td").eq(10).children("input").val("-1")
             }
@@ -1587,11 +1731,20 @@
             if (!$(this).children("td").eq(17).children("input").val()) {
                 $(this).children("td").eq(17).children("input").val("-1")
             }
+            if (!$(this).children("td").eq(18).children("input").val()) {
+                $(this).children("td").eq(18).children("input").val("-1")
+            }
+            if (!$(this).children("td").eq(19).children("input").val()) {
+                $(this).children("td").eq(19).children("input").val("-1")
+            }
+            //if (!$(this).children("td").eq(20).children("input").val()) {
+            //    $(this).children("td").eq(20).children("input").val("-1")
+            //}
 
             $(this).children("td").eq(1).children('select').attr('disabled', false);
             $(this).children("td").eq(2).children('select').attr('disabled', false);
-            $(this).children("td").eq(3).children('input').attr('disabled', false);
-            $(this).children("td").eq(4).children('input').attr('disabled', false);
+            $(this).children("td").eq(3).children('select').attr('disabled', false);
+            $(this).children("td").eq(4).children('select').attr('disabled', false);
             $(this).children("td").eq(5).children('input').attr('disabled', false);
             $(this).children("td").eq(6).children('input').attr('disabled', false);
             $(this).children("td").eq(7).children('input').attr('disabled', false);
@@ -1605,59 +1758,83 @@
             $(this).children("td").eq(15).children('input').attr('disabled', false);
             $(this).children("td").eq(16).children('input').attr('disabled', false);
             $(this).children("td").eq(17).children('input').attr('disabled', false);
+            $(this).children("td").eq(18).children('input').attr('disabled', false);
+            $(this).children("td").eq(19).children('input').attr('disabled', false);
+            //$(this).children("td").eq(20).children('input').attr('disabled', false);
             $(this).children("td").eq(0).children('input').attr('disabled', false);
         });
     });
 
 
     function GetLotIssAnnelProduct(previousRow, isExists) {
-        debugger
-                if (previousRow != null) {
+        
+        if (previousRow != null) {
             var annvou = '@Html.Raw(Model.AnnVou)';
             var dt = $('#Date').val();
             var recProdId = $(previousRow).closest('tr').children('td').eq(1).children('select').val();
             var gradeId = $(previousRow).closest('tr').children('td').eq(2).children('select').val();
-            var od = $(previousRow).closest('tr').children('td').eq(3).children('input').val();
-            var thick = $(previousRow).closest('tr').children('td').eq(4).children('input').val();
+            var nbId = $(previousRow).closest('tr').children('td').eq(3).children('select').val();
+            var schId = $(previousRow).closest('tr').children('td').eq(4).children('select').val();
+            var finishId = $('#FinishVou').val();
+            var od = $(previousRow).closest('tr').children('td').eq(5).children('input').val();
+            var thick = $(previousRow).closest('tr').children('td').eq(6).children('input').val();
+            var langth = $(previousRow).closest('tr').children('td').eq(7).children('input').val();
+            var pcs = $(previousRow).closest('tr').children('td').eq(8).children('input').val();
             var gsrno = $(previousRow).closest('tr').children('td').eq(0).children('input').val();
-            if (thick != 0) {
+            if (gradeId != "" && od != "" && (pcs == "0" || pcs == "") ) {
                 $.ajax({
                     url: '/Annealing/GetLotIssAnnelProduct',
                     type: 'POST',
-                    data: { 'recProdId': recProdId, 'annvou': annvou, 'gradeId': gradeId, 'od': od, 'thick': thick, 'dt': dt, "gsrno": gsrno },
+                    data: { 'recProdId': recProdId, 'annvou': annvou, 'gradeId': gradeId, 'nbId': nbId, 'schId': schId, 'od': od, 'dt': dt, "gsrno": gsrno, "thick": thick, "langth": langth, "finishId": finishId },
                     dataType: 'JSON',
                     traditional: true, // add this
                     success: function (data) {
                         if (data.result) {
                             if (data.data == "1" && !isExists) {
-                                showErrorMessage("Annealing OD Size Not Exsits!");
-                                $('#Annel_AnnThick').val('');
-                                $(previousRow).closest('tr').children('td').eq(5).children('input').val('');
-                                $(previousRow).closest('tr').children('td').eq(6).children('input').val('');
-                                $(previousRow).closest('tr').children('td').eq(7).children('input').val('');
-                                $(previousRow).closest('tr').children('td').eq(3).children('input').focus();
+                                if (nbId != "" && schId != "") {
+                                    showErrorMessage("Annealing OD Size Not Exsits!");
+                                    $(previousRow).closest('tr').children('td').eq(8).children('input').val('');
+                                    $(previousRow).closest('tr').children('td').eq(9).children('input').val('');
+                                    $(previousRow).closest('tr').children('td').eq(20).children('input').val('');
+                                    $(previousRow).closest('tr').children('td').eq(3).children('input').focus();
+                                }
                             }
                             else if (data.data == "2" && !isExists) {
                                 showErrorMessage("Annealing Date Should be Grater Then!");
-                                $(previousRow).closest('tr').children('td').eq(5).children('input').val('');
-                                $(previousRow).closest('tr').children('td').eq(6).children('input').val('');
                                 $(previousRow).closest('tr').children('td').eq(7).children('input').val('');
+                                $(previousRow).closest('tr').children('td').eq(8).children('input').val('');
+                                $(previousRow).closest('tr').children('td').eq(9).children('input').val('');
+                                //$(previousRow).closest('tr').children('td').eq(20).children('input').val('');
                                 document.getElementById('Date').focus();
                             }
                             else if (data.data == "3" && !isExists) {
-                                $(previousRow).closest('tr').children('td').eq(5).children('input').focus();
+                                $(previousRow).closest('tr').children('td').eq(7).children('input').focus();
                             }
                             else {
-                                $(previousRow).closest('tr').children('td').eq(5).children('input').val("20");
-                                $(previousRow).closest('tr').children('td').eq(6).children('input').val(data.lotPcs);
-                                $(previousRow).closest('tr').children('td').eq(7).children('input').val(data.lotQty);
-                                var length = $(previousRow).closest('tr').children('td').eq(5).children('input').val();
-                                var lengthmtr = (length * 0.3048).toFixed(4);
-                                var weight = (((od) - thick) * thick * 0.02503 * lengthmtr).toFixed(2);
-                                var weight2 = (((od) - thick) * thick * 0.02503 * lengthmtr).toFixed(8);
-                                var pcs = parseInt(data.lotQty / weight);
-                                $(previousRow).closest('tr').children('td').eq(6).children('input').val(pcs);
-                                $(previousRow).closest('tr').children('td').eq(7).children('input').val((weight2 * pcs).toFixed(1));
+                                if (nbId != "" && schId != "") {
+                                    $(previousRow).closest('tr').children('td').eq(7).children('input').val("20");
+                                    $(previousRow).closest('tr').children('td').eq(6).children('input').val(data.lotThick);
+                                    $(previousRow).closest('tr').children('td').eq(8).children('input').val(data.lotPcs);
+                                    $(previousRow).closest('tr').children('td').eq(9).children('input').val(data.lotQty);
+                                    //$(previousRow).closest('tr').children('td').eq(20).children('input').val(data.lotvou);
+                                    var length = $(previousRow).closest('tr').children('td').eq(7).children('input').val();
+                                    var lengthmtr = (length * 0.3048).toFixed(4);
+                                    var weight = (((od) - thick) * thick * 0.02503 * lengthmtr).toFixed(2);
+                                    var weight2 = (((od) - thick) * thick * 0.02503 * lengthmtr).toFixed(8);
+                                    var pcs = $(previousRow).closest('tr').children('td').eq(8).children('input').val();
+                                    $(previousRow).closest('tr').children('td').eq(9).children('input').val((weight2 * pcs).toFixed(1));
+                                }
+                                else {
+                                    $(previousRow).closest('tr').children('td').eq(8).children('input').val(data.lotPcs);
+                                    $(previousRow).closest('tr').children('td').eq(9).children('input').val(data.lotQty);
+                                    //$(previousRow).closest('tr').children('td').eq(20).children('input').val(data.lotvou);
+                                    var length = $(previousRow).closest('tr').children('td').eq(7).children('input').val();
+                                    var lengthmtr = (length * 0.3048).toFixed(4);
+                                    var weight = (((od) - thick) * thick * 0.02503 * lengthmtr).toFixed(2);
+                                    var weight2 = (((od) - thick) * thick * 0.02503 * lengthmtr).toFixed(8);
+                                    var pcs = $(previousRow).closest('tr').children('td').eq(8).children('input').val();
+                                    $(previousRow).closest('tr').children('td').eq(9).children('input').val((weight2 * pcs).toFixed(1));
+                                }
                             }
                         }
                         else {
@@ -1680,15 +1857,15 @@
         debugger;
         if (previousRow != null) {
             var annvou = '@Html.Raw(Model.AnnVou)';
-            var bod = $(previousRow).closest('tr').children('td').eq(3).children('input').val();
-            var bthick = $(previousRow).closest('tr').children('td').eq(4).children('input').val();
-            var blength = $(previousRow).closest('tr').children('td').eq(5).children('input').val();
-            var bpcs = $(previousRow).closest('tr').children('td').eq(6).children('input').val();
-            var bqty = $(previousRow).closest('tr').children('td').eq(7).children('input').val();
+            var bod = $(previousRow).closest('tr').children('td').eq(5).children('input').val();
+            var bthick = $(previousRow).closest('tr').children('td').eq(6).children('input').val();
+            var blength = $(previousRow).closest('tr').children('td').eq(7).children('input').val();
+            var bpcs = $(previousRow).closest('tr').children('td').eq(8).children('input').val();
+            var bqty = $(previousRow).closest('tr').children('td').eq(9).children('input').val();
             var blengthmtr = (blength * 0.3048).toFixed(4);
             var bweight = (((bod) - bthick) * bthick * 0.02503 * blengthmtr).toFixed(2);
             var weight2 = (((bod) - bthick) * bthick * 0.02503 * blengthmtr).toFixed(8);
-            $(previousRow).closest('tr').children('td').eq(7).children('input').val((weight2 * bpcs).toFixed(1));
+            $(previousRow).closest('tr').children('td').eq(9).children('input').val((weight2 * bpcs).toFixed(1));
         }
     }
     @*function printAnnealing() {

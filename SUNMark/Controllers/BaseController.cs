@@ -202,6 +202,7 @@ namespace SUNMark.Controllers
                         if (dtGridMst != null && dtGridMst.Rows.Count > 0)
                         {
                             returnModel.ReportType = Convert.ToInt32(dtGridMst.Rows[0]["GrdType"].ToString());
+                            returnModel.multiYN = Convert.ToInt32(dtGridMst.Rows[0]["GrdMultiSelYN"].ToString());
                             returnModel.GrdTitle = dtGridMst.Rows[0]["GrdTitle"].ToString();
                             returnModel.DocumentPageSize = DbConnection.ParseInt32(dtGridMst.Rows[0]["PageSize"].ToString());
                             Query = "SELECT * FROM (" + dtGridMst.Rows[0]["GrdQryFields"].ToString() + " " + dtGridMst.Rows[0]["GrdQryJoin"].ToString();

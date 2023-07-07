@@ -45,7 +45,12 @@ namespace SUNMark.Controllers
                 straighMasterModel.Straighting = new StrGridModel();
                 straighMasterModel.Straighting.RecProductList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "PIPE");
                 straighMasterModel.Straighting.GradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
+                straighMasterModel.Straighting.NBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                straighMasterModel.Straighting.SCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
                 straighMasterModel.Straighting.StatusList = objProductHelper.GetStraightingStatus();
+                straighMasterModel.Straighting.FinishList = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
+                straighMasterModel.Straighting.NextProcList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+
                 straighMasterModel.Vno = GetVoucherNo();
 
                 if (id > 0)
@@ -65,11 +70,11 @@ namespace SUNMark.Controllers
                         straighMasterModel.SupEmpVou = dt.Rows[0]["StrSupEmpVou"].ToString();
                         straighMasterModel.ManEmpVou = dt.Rows[0]["StrManEmpVou"].ToString();
                         straighMasterModel.IssuePrdVou = dt.Rows[0]["StrIssPrdVou"].ToString();
-                        straighMasterModel.Finish = dt.Rows[0]["StrFinish"].ToString();
-                        straighMasterModel.FinishVou = dt.Rows[0]["StrFinishVou"].ToString();
-                        straighMasterModel.NextProc = dt.Rows[0]["StrNextProc"].ToString();
-                        straighMasterModel.NextPrcVou = dt.Rows[0]["StrNextPrcVou"].ToString();
-                        straighMasterModel.HFQty = dt.Rows[0]["StrHFQty"].ToString();
+                        //straighMasterModel.Finish = dt.Rows[0]["StrFinish"].ToString();
+                        //straighMasterModel.FinishVou = dt.Rows[0]["StrFinishVou"].ToString();
+                        //straighMasterModel.NextProc = dt.Rows[0]["StrNextProc"].ToString();
+                        //straighMasterModel.NextPrcVou = dt.Rows[0]["StrNextPrcVou"].ToString();
+                        //straighMasterModel.HFQty = dt.Rows[0]["StrHFQty"].ToString();
                         straighMasterModel.Remarks = dt.Rows[0]["StrRemarks"].ToString();
 
 
@@ -87,8 +92,12 @@ namespace SUNMark.Controllers
                             Str.StrInTime = dt.Rows[i]["StrAInTime"].ToString();
                             Str.StrOutTime = dt.Rows[i]["StrAOutTime"].ToString();
                             Str.StrCoilNo = dt.Rows[i]["StrACoilNo"].ToString();
+                            Str.StrFinish = dt.Rows[i]["StrAFinish"].ToString();
+                            Str.StrNextProc = dt.Rows[i]["StrANextProc"].ToString();
                             Str.StrStatus = dt.Rows[i]["StrAStatus"].ToString();
                             Str.StrType = dt.Rows[i]["StrAType"].ToString();
+                            Str.NB = dt.Rows[i]["StrANB"].ToString();
+                            Str.SCH = dt.Rows[i]["StrASCH"].ToString();
                             List.Add(Str);
                         }
                         straighMasterModel.LstStraighting = List;
@@ -127,14 +136,14 @@ namespace SUNMark.Controllers
                     sqlParameter[6] = new SqlParameter("@StrSupEmpVou", StraightingMasterModel.SupEmpVou);
                     sqlParameter[7] = new SqlParameter("@StrManEmpVou", StraightingMasterModel.ManEmpVou);
                     sqlParameter[8] = new SqlParameter("@StrIssPrdVou", StraightingMasterModel.IssuePrdVou);
-                    sqlParameter[9] = new SqlParameter("@StrFinish", StraightingMasterModel.Finish);
-                    sqlParameter[10] = new SqlParameter("@StrFinishVou", StraightingMasterModel.FinishVou);
-                    sqlParameter[11] = new SqlParameter("@StrHFQty", StraightingMasterModel.HFQty);
-                    sqlParameter[12] = new SqlParameter("@StrNitricQty", StraightingMasterModel.NitricQty);
-                    sqlParameter[13] = new SqlParameter("@StrLimeQty", StraightingMasterModel.LimeQty);
+                    sqlParameter[9] = new SqlParameter("@StrFinish", "");
+                    sqlParameter[10] = new SqlParameter("@StrFinishVou", 0);
+                    sqlParameter[11] = new SqlParameter("@StrHFQty", 0);
+                    sqlParameter[12] = new SqlParameter("@StrNitricQty", 0);
+                    sqlParameter[13] = new SqlParameter("@StrLimeQty", 0);
                     sqlParameter[14] = new SqlParameter("@StrRemarks", StraightingMasterModel.Remarks);
-                    sqlParameter[15] = new SqlParameter("@StrNextPrcVou", StraightingMasterModel.NextPrcVou);
-                    sqlParameter[16] = new SqlParameter("@StrNextProc", StraightingMasterModel.NextProc);
+                    sqlParameter[15] = new SqlParameter("@StrNextPrcVou", 0);
+                    sqlParameter[16] = new SqlParameter("@StrNextProc", "");
                     sqlParameter[17] = new SqlParameter("@Flg", "1");
                     DataTable dt = ObjDBConnection.CallStoreProcedure("InsertStrmst", sqlParameter);
                     if (dt != null && dt.Rows.Count > 0)
@@ -144,7 +153,7 @@ namespace SUNMark.Controllers
                         {
                             for (int i = 0; i < StraightingMasterModel.LstStraighting.Count; i++)
                             {
-                                SqlParameter[] sqlParam = new SqlParameter[15];
+                                SqlParameter[] sqlParam = new SqlParameter[19];
                                 sqlParam[0] = new SqlParameter("@StrAStrVou", masterId);
                                 sqlParam[1] = new SqlParameter("@StrCmpVou", StraightingMasterModel.StrCmpVou);
                                 sqlParam[2] = new SqlParameter("@StrGrdVou", StraightingMasterModel.LstStraighting[i].Grade);
@@ -160,6 +169,10 @@ namespace SUNMark.Controllers
                                 sqlParam[12] = new SqlParameter("@StrStatus", StraightingMasterModel.LstStraighting[i].StrStatus);
                                 sqlParam[13] = new SqlParameter("@StrType", StraightingMasterModel.LstStraighting[i].StrType);
                                 sqlParam[14] = new SqlParameter("@StrSrNo", (i + 1));
+                                sqlParam[15] = new SqlParameter("@StrNB", StraightingMasterModel.LstStraighting[i].NB);
+                                sqlParam[16] = new SqlParameter("@StrSCH", StraightingMasterModel.LstStraighting[i].SCH);
+                                sqlParam[17] = new SqlParameter("@StrFinish", StraightingMasterModel.LstStraighting[i].StrFinish);
+                                sqlParam[18] = new SqlParameter("@StrNextProc", StraightingMasterModel.LstStraighting[i].StrNextProc);
                                 DataTable dttrn = ObjDBConnection.CallStoreProcedure("InsertStrTrn", sqlParam);
                             }
                             int Status = DbConnection.ParseInt32(dt.Rows[0][0].ToString());
@@ -241,10 +254,10 @@ namespace SUNMark.Controllers
             ViewBag.supervisorList = ObjAccountMasterHelpers.GetSupervisorCustomDropdown(companyId, 0); ;
             ViewBag.productList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "PIPE"); ;
             ViewBag.shiftList = objProductHelper.GetShiftNew(); ;
-            ViewBag.milprocessList = ObjAccountMasterHelpers.GetMachineMasterDropdown(companyId);
+            ViewBag.milprocessList = ObjAccountMasterHelpers.GetMachineMasterDropdown(companyId, "STRAIGHTENING");
 
-            ViewBag.finishList = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-            ViewBag.nextProcList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+            //ViewBag.finishList = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
+            //ViewBag.nextProcList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
         }
 
         public IActionResult Delete(int id)
@@ -374,44 +387,118 @@ namespace SUNMark.Controllers
                 return Json(new { result = false });
             }
         }
-        public IActionResult GetLotIssStraightProduct(int recProdId, int Strvou, int gradeId, decimal od, decimal thick, string dt, int gsrno)
+        public IActionResult GetLotIssStraightProduct(int recProdId, int strvou, int gradeId, string nbId, string schId, decimal od, string dt, int gsrno, decimal thick, decimal langth, int finishId)
         {
             try
             {
-                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
-                SqlParameter[] sqlParameters = new SqlParameter[8];
-                sqlParameters[0] = new SqlParameter("@AnnVou", Strvou);
-                sqlParameters[1] = new SqlParameter("@RecProd", recProdId);
-                sqlParameters[2] = new SqlParameter("@Grade", gradeId);
-                sqlParameters[3] = new SqlParameter("@od", od);
-                sqlParameters[4] = new SqlParameter("@thick", thick);
-                sqlParameters[5] = new SqlParameter("@dt", dt);
-                sqlParameters[6] = new SqlParameter("@FLG", "3");
-                sqlParameters[7] = new SqlParameter("@GSrNo", gsrno);
-                DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotIssAnnelProduct", sqlParameters);
-                if (DtInw != null)
+                if (nbId != "" && schId != "" && nbId != null && schId != null)
                 {
-                    int Status = DbConnection.ParseInt32(DtInw.Rows[0][0].ToString());
-                    if (Status == 1)
+                    int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                    SqlParameter[] sqlParameters = new SqlParameter[12];
+                    sqlParameters[0] = new SqlParameter("@AnnVou", strvou);
+                    sqlParameters[1] = new SqlParameter("@RecProd", recProdId);
+                    sqlParameters[2] = new SqlParameter("@Grade", gradeId);
+                    sqlParameters[3] = new SqlParameter("@od", od);
+                    sqlParameters[4] = new SqlParameter("@nb", nbId);
+                    sqlParameters[5] = new SqlParameter("@sch", schId);
+                    sqlParameters[6] = new SqlParameter("@thick", thick);
+                    sqlParameters[7] = new SqlParameter("@langth", langth);
+                    sqlParameters[8] = new SqlParameter("@finish", finishId);
+                    sqlParameters[9] = new SqlParameter("@dt", dt);
+                    sqlParameters[10] = new SqlParameter("@FLG", "3");
+                    sqlParameters[11] = new SqlParameter("@GSrNo", gsrno);
+                    DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotIssAnnelProduct", sqlParameters);
+                    if (DtInw != null)
                     {
-                        return Json(new { result = true, data = "1" });
-                    }
-                    else if (Status == 2)
-                    {
-                        return Json(new { result = true, data = "2" });
-                    }
-                    else if (Status == 3)
-                    {
-                        return Json(new { result = true, data = "3" });
+                        int Status = DbConnection.ParseInt32(DtInw.Rows[0][0].ToString());
+                        if (Status == 1)
+                        {
+                            return Json(new { result = true, data = "1" });
+                        }
+                        else if (Status == 2)
+                        {
+                            return Json(new { result = true, data = "2" });
+                        }
+                        else if (Status == 3)
+                        {
+                            return Json(new { result = true, data = "3" });
+                        }
+                        else
+                        {
+                            decimal LotPcs = 0, LotQty = 0, LotThick = 0, Length = 0;
+                            string LotVou = "";
+                            for (int i = 0; i < DtInw.Rows.Count; i++)
+                            {
+                                LotPcs += Convert.ToDecimal(DtInw.Rows[i]["LotPCS"].ToString());
+                                LotQty += Convert.ToDecimal(DtInw.Rows[i]["LotQty"].ToString());
+                                LotThick = Convert.ToDecimal(DtInw.Rows[i]["LotThick"].ToString());
+                                Length = Convert.ToDecimal(DtInw.Rows[i]["LotFeetPer"].ToString());
+                            }
+                            string LotPcs1 = Convert.ToDecimal(LotPcs).ToString();
+                            string LotQty1 = Convert.ToDecimal(LotQty).ToString();
+                            string LotThick1 = Convert.ToDecimal(LotThick).ToString();
+                            string Length1 = Convert.ToDecimal(Length).ToString();
+                            return Json(new { result = true, lotPcs = LotPcs1, lotQty = LotQty1, lotThick = LotThick1, length = Length1, lotvou = LotVou });
+                        }
+
                     }
                     else
                     {
-                        string LotPcs = DtInw.Rows[0]["LotPCS"].ToString();
-                        string LotQty = DtInw.Rows[0]["LotQty"].ToString();
-                        string Length = DtInw.Rows[0]["Length"].ToString();
-                        return Json(new { result = true, lotPcs = LotPcs, lotQty = LotQty, length = Length });
+                        return Json(new { result = true, data = "1" });
                     }
+                }
+                else if (od != 0 && thick != 0 && langth != 0)
+                {
 
+                    int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                    SqlParameter[] sqlParameters = new SqlParameter[12];
+                    sqlParameters[0] = new SqlParameter("@AnnVou", strvou);
+                    sqlParameters[1] = new SqlParameter("@RecProd", recProdId);
+                    sqlParameters[2] = new SqlParameter("@Grade", gradeId);
+                    sqlParameters[3] = new SqlParameter("@od", od);
+                    sqlParameters[4] = new SqlParameter("@nb", "");
+                    sqlParameters[5] = new SqlParameter("@sch", "");
+                    sqlParameters[6] = new SqlParameter("@thick", thick);
+                    sqlParameters[7] = new SqlParameter("@langth", langth);
+                    sqlParameters[8] = new SqlParameter("@finish", finishId);
+                    sqlParameters[9] = new SqlParameter("@dt", dt);
+                    sqlParameters[10] = new SqlParameter("@FLG", "3");
+                    sqlParameters[11] = new SqlParameter("@GSrNo", gsrno);
+                    DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotIssAnnelProduct", sqlParameters);
+                    if (DtInw != null)
+                    {
+                        int Status = DbConnection.ParseInt32(DtInw.Rows[0][0].ToString());
+                        if (Status == 1)
+                        {
+                            return Json(new { result = true, data = "1" });
+                        }
+                        else if (Status == 2)
+                        {
+                            return Json(new { result = true, data = "2" });
+                        }
+                        else if (Status == 3)
+                        {
+                            return Json(new { result = true, data = "3" });
+                        }
+                        else
+                        {
+                            decimal LotPcs = 0, LotQty = 0, LotThick = 0, Length = 0;
+                            string LotVou = "";
+                            for (int i = 0; i < DtInw.Rows.Count; i++)
+                            {
+                                LotPcs += Convert.ToDecimal(DtInw.Rows[i]["LotPCS"].ToString());
+                                LotQty += Convert.ToDecimal(DtInw.Rows[i]["LotQty"].ToString());
+                            }
+                            string LotPcs1 = Convert.ToDecimal(LotPcs).ToString();
+                            string LotQty1 = Convert.ToDecimal(LotQty).ToString();
+                            return Json(new { result = true, lotPcs = LotPcs1, lotQty = LotQty1, lotThick = "", length = "", lotvou = LotVou });
+                        }
+
+                    }
+                    else
+                    {
+                        return Json(new { result = true, data = "1" });
+                    }
                 }
                 else
                 {

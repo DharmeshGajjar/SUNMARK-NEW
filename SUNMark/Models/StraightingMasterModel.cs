@@ -36,6 +36,12 @@ namespace SUNMark.Models
         public string Grade { get; set; }
         public int GradeVou { get; set; }
         public List<SelectListItem> GradeList { get; set; }
+        public string NB { get; set; }
+        public int[] NbVou { get; set; }
+        public List<SelectListItem> NBList { get; set; }
+        public string SCH { get; set; }
+        public int[] SchVou { get; set; }
+        public List<SelectListItem> SCHList { get; set; }
         public decimal StrThick { get; set; }
         public string StrThickStr { get; set; }
         public decimal StrOD { get; set; }
@@ -52,6 +58,12 @@ namespace SUNMark.Models
         public int StatusVou { get; set; }
         public List<SelectListItem> StatusList { get; set; }
         public string StrStatus { get; set; }
+        public int FinishVou { get; set; }
+        public List<SelectListItem> FinishList { get; set; }
+        public string StrFinish { get; set; }
+        public int NextProcVou { get; set; }
+        public List<SelectListItem> NextProcList { get; set; }
+        public string StrNextProc { get; set; }
         public string StrInTime { get; set; }
         public string StrInTimeStr { get; set; }
         public string StrOutTime { get; set; }
