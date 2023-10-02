@@ -300,7 +300,7 @@ namespace SUNMark.Controllers
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
             {
-                long userId = GetIntSession("UserId");
+                int userId = Convert.ToInt32(GetIntSession("UserId"));
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
@@ -370,7 +370,7 @@ namespace SUNMark.Controllers
                     }
                     if (!string.IsNullOrWhiteSpace(companyid))
                     {
-                        whereConditionQuery += " AND LotMst.LotCmpVou='" + companyId + "'";
+                        whereConditionQuery += " AND LotMst.LotCmpVou='" + companyid + "'";
                     }
                     if (!string.IsNullOrWhiteSpace(accountid))
                     {
@@ -456,7 +456,7 @@ namespace SUNMark.Controllers
                     }
                     if (!string.IsNullOrWhiteSpace(companyid))
                     {
-                        whereConditionQuery += " AND CoilMst.CmpVou='" + companyId + "'";
+                        whereConditionQuery += " AND CoilMst.CmpVou='" + companyid + "'";
                     }
                     if (!string.IsNullOrWhiteSpace(accountid))
                     {
@@ -474,7 +474,7 @@ namespace SUNMark.Controllers
                 }
 
 
-                getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, 0, "", 0, 1, whereConditionQuery);
+                getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, userId, 0, "", 0, 1, whereConditionQuery);
                 if (type == 1)
                 {
                     var bytes = Excel(getReportDataModel, "Coil Register Report", companyDetails.CmpName);

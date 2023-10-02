@@ -105,9 +105,11 @@ namespace SUNMark.Controllers
                     startRecord = (pageIndex - 1) * pageSize;
                 }
 
-                SqlParameter[] sqlParameters = new SqlParameter[2];
+                SqlParameter[] sqlParameters = new SqlParameter[4];
                 sqlParameters[0] = new SqlParameter("@SESSID", userId);
                 sqlParameters[1] = new SqlParameter("@StockYN", stockYN);
+                sqlParameters[2] = new SqlParameter("@FromDt", frRecDt);
+                sqlParameters[3] = new SqlParameter("@ToDt", toRecDt);
                 DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("RPT_PIPEMASTER_NEW", sqlParameters);
 
                 string whereConditionQuery = string.Empty;
@@ -184,14 +186,6 @@ namespace SUNMark.Controllers
                 {
                     whereConditionQuery += " AND PipeMst.GrdVou='" + gradeid + "'";
                 }
-                if (!string.IsNullOrWhiteSpace(frRecDt))
-                {
-                    whereConditionQuery += " AND PipeMst.RecDt>='" + frRecDt + "'";
-                }
-                if (!string.IsNullOrWhiteSpace(toRecDt))
-                {
-                    whereConditionQuery += " AND PipeMst.RecDt<='" + toRecDt + "'";
-                }
                 if (!string.IsNullOrWhiteSpace(DoneProc))
                 {
                     whereConditionQuery += " AND PipeMst.DoneProc<='" + DoneProc + "'";
@@ -225,7 +219,7 @@ namespace SUNMark.Controllers
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
             {
-                long userId = GetIntSession("UserId");
+                int userId = Convert.ToInt32(GetIntSession("UserId"));
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
@@ -303,7 +297,7 @@ namespace SUNMark.Controllers
                 }
 
 
-                getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, 0, "", 0, 1, whereConditionQuery);
+                getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, userId, 0, "", 0, 1, whereConditionQuery);
                 if (type == 1)
                 {
                     var bytes = Excel(getReportDataModel, "Pipe Register Report", companyDetails.CmpName);
@@ -314,7 +308,7 @@ namespace SUNMark.Controllers
                 }
                 else
                 {
-                    var bytes = PDF(getReportDataModel, "Pipe Register Report", companyDetails.CmpName, "");
+                    var bytes = PDF(getReportDataModel, "Pipe Register Report", companyDetails.CmpName, Convert.ToInt32(companyId).ToString());
                     return File(
                             bytes,
                             "application/pdf",

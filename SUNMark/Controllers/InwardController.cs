@@ -58,7 +58,7 @@ namespace SUNMark.Controllers
                 inwardModel.ProductTypeList = ObjAccountMasterHelpers.GetPrdTypeDropdown(companyId);
                 inwardModel.PurchaseOrderList = ObjAccountMasterHelpers.GetPurchaseOrderDropdown(companyId);
                 inwardModel.MainProductList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "Select");
-                inwardModel.CoilTypeList = objProductHelper.GetInwardCoilType();
+
                 inwardModel.Inward = new InwardGridModel();
                 inwardModel.Inward.GradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
                 inwardModel.Inward.GradeListPipe = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
@@ -70,7 +70,7 @@ namespace SUNMark.Controllers
                 inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
                 inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
                 inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
-
+                inwardModel.Inward.IntCoilTypeList = objProductHelper.GetInwardCoilType();
                 SqlParameter[] sqlParam = new SqlParameter[3];
                 sqlParam[0] = new SqlParameter("@InwVou", id);
                 sqlParam[1] = new SqlParameter("@Flg", 3);
@@ -122,8 +122,8 @@ namespace SUNMark.Controllers
                         inwardModel.InwFrightRt = Convert.ToDecimal(DtInwMst.Rows[0]["InwFrtRt"].ToString());
                         inwardModel.InwBillNo = DtInwMst.Rows[0]["InwBillNo"].ToString();
                         inwardModel.InwPrdVou = Convert.ToInt32(DtInwMst.Rows[0]["InwPrdVou"].ToString());
-                        inwardModel.InwCoilTypeVou = Convert.ToInt32(DtInwMst.Rows[0]["InwCoilTypeVou"].ToString());
-                        inwardModel.CoilType = DtInwMst.Rows[0]["InwCoilType"].ToString();
+                        //inwardModel.InwCoilTypeVou = Convert.ToInt32(DtInwMst.Rows[0]["InwCoilTypeVou"].ToString());
+                        //inwardModel.CoilType = DtInwMst.Rows[0]["InwCoilType"].ToString();
 
                         var ptynm = DtInwMst.Rows[0]["PrdType"].ToString();
                         if (ptynm == "COIL" || ptynm == "Coil")
@@ -133,6 +133,7 @@ namespace SUNMark.Controllers
                             inwardModel.Inward.HeatNo = new string[DtInwMst.Rows.Count];
                             inwardModel.Inward.IntGrdCoil = new string[DtInwMst.Rows.Count];
                             inwardModel.Inward.IntGdnCoil = new string[DtInwMst.Rows.Count];
+                            inwardModel.Inward.IntCoilType = new string[DtInwMst.Rows.Count];
                             inwardModel.Inward.CoilNo = new string[DtInwMst.Rows.Count];
                             inwardModel.Inward.IntThickCoil = new decimal[DtInwMst.Rows.Count];
                             inwardModel.Inward.IntWidth = new decimal[DtInwMst.Rows.Count];
@@ -172,6 +173,7 @@ namespace SUNMark.Controllers
                                 inwardModel.Inward.SupCoilNo[i] = DtInwMst.Rows[i]["IntSupCoilNo"].ToString();
                                 inwardModel.Inward.HeatNo[i] = DtInwMst.Rows[i]["IntHeatNo"].ToString();
                                 inwardModel.Inward.IntGrdCoil[i] = DtInwMst.Rows[i]["IntGrade"].ToString();
+                                inwardModel.Inward.IntCoilType[i] = DtInwMst.Rows[i]["IntCoilType"].ToString();
                                 inwardModel.Inward.IntGdnCoil[i] = DtInwMst.Rows[i]["IntGdnVou"].ToString();
                                 inwardModel.Inward.CoilNo[i] = DtInwMst.Rows[i]["CoilNo"].ToString();
                                 inwardModel.Inward.IntThickCoil[i] = Convert.ToDecimal(DtInwMst.Rows[i]["IntThick"].ToString());
@@ -271,7 +273,6 @@ namespace SUNMark.Controllers
                 inwardModel.ProductTypeList = ObjAccountMasterHelpers.GetPrdTypeDropdown(companyId);
                 inwardModel.PurchaseOrderList = ObjAccountMasterHelpers.GetPurchaseOrderDropdown(companyId);
                 inwardModel.MainProductList = objProductHelper.GetProductMasterDropdown(companyId);
-                inwardModel.CoilTypeList = objProductHelper.GetInwardCoilType();
 
                 if (inwardModel.Inward == null)
                     inwardModel.Inward = new InwardGridModel();
@@ -286,143 +287,13 @@ namespace SUNMark.Controllers
                 inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
                 inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
                 inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
+                inwardModel.Inward.IntCoilTypeList = objProductHelper.GetInwardCoilType();
 
                 var prdtype = inwardModel.InwPrdTyp;
                 if (prdtype == "COIL" || prdtype == "Coil")
                 {
-                    if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwVNo).ToString()) && !string.IsNullOrWhiteSpace(inwardModel.InwDt) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwAccVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwPtyVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwCoilTypeVou).ToString()) && inwardModel.Inward.IntGrdCoil.Length > 0 && inwardModel.Inward.IntGdnCoil.Length > 0 && inwardModel.Inward.IntThickCoil.Length > 0 && inwardModel.Inward.IntWidth.Length > 0 && inwardModel.Inward.IntQtyCoil.Length > 0)
+                    if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwVNo).ToString()) && !string.IsNullOrWhiteSpace(inwardModel.InwDt) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwAccVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwPtyVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwCoilTypeVou).ToString()) && inwardModel.Inward.IntGrdCoil.Length > 0 && inwardModel.Inward.IntGdnCoil.Length > 0 && inwardModel.Inward.IntQtyCoil.Length > 0)
                     {
-                        //int count = inwardModel.Inward.SupCoilNo.ToList().Distinct().Count();
-                        //int UniqueCoilNocount = inwardModel.Inward.CoilNo.ToList().Distinct().Count();
-                        //if (id == 0)
-                        //{
-                        //    int qty1 = inwardModel.Inward.IntQtyCoil.Length;
-                        //    int supcoil = inwardModel.Inward.SupCoilNo.Length;
-                        //    if (qty1 != supcoil)
-                        //    {
-                        //        if (count != inwardModel.Inward.SupCoilNo.Length - 1)
-                        //        {
-                        //            SetSuccessMessage("Supplier Coil No is Already Exists");
-                        //            ViewBag.FocusType = "1";
-                        //            return View(inwardModel);
-                        //        }
-                        //        else
-                        //        {
-                        //            //Database check
-                        //            for (int p = 0; p < inwardModel.Inward.SupCoilNo.Length; p++)
-                        //            {
-                        //                if (inwardModel.Inward.SupCoilNo[p] != null)
-                        //                {
-                        //                    SqlParameter[] sqlParam = new SqlParameter[6];
-                        //                    sqlParam[0] = new SqlParameter("@SupCoil", inwardModel.Inward.SupCoilNo[p]);
-                        //                    sqlParam[1] = new SqlParameter("@cmpvou", companyId);
-                        //                    sqlParam[2] = new SqlParameter("@Type", "");
-                        //                    sqlParam[3] = new SqlParameter("@Vou", "0");
-                        //                    sqlParam[4] = new SqlParameter("@Flg", "1");
-                        //                    sqlParam[5] = new SqlParameter("@MainVou", id);
-                        //                    DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotMstDetails1", sqlParam);
-                        //                    if (DtInw != null && DtInw.Columns.Count > 1)
-                        //                    {
-                        //                        SetSuccessMessage("Supplier Coil No is Already Exists");
-                        //                        ViewBag.FocusType = "1";
-                        //                        return View(inwardModel);
-                        //                    }
-                        //                }
-                        //            }
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        if (count != inwardModel.Inward.SupCoilNo.Length)
-                        //        {
-                        //            SetSuccessMessage("Supplier Coil No is Already Exists");
-                        //            ViewBag.FocusType = "1";
-                        //            return View(inwardModel);
-                        //        }
-                        //        else
-                        //        {
-                        //            //Database check
-                        //            for (int p = 0; p < inwardModel.Inward.SupCoilNo.Length; p++)
-                        //            {
-                        //                if (inwardModel.Inward.SupCoilNo[p] != null)
-                        //                {
-                        //                    SqlParameter[] sqlParam = new SqlParameter[6];
-                        //                    sqlParam[0] = new SqlParameter("@SupCoil", inwardModel.Inward.SupCoilNo[p]);
-                        //                    sqlParam[1] = new SqlParameter("@cmpvou", companyId);
-                        //                    sqlParam[2] = new SqlParameter("@Type", "");
-                        //                    sqlParam[3] = new SqlParameter("@Vou", "0");
-                        //                    sqlParam[4] = new SqlParameter("@Flg", "1");
-                        //                    sqlParam[5] = new SqlParameter("@MainVou", id);
-                        //                    DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotMstDetails1", sqlParam);
-                        //                    if (DtInw != null && DtInw.Columns.Count > 1)
-                        //                    {
-                        //                        SetSuccessMessage("Supplier Coil No is Already Exists");
-                        //                        ViewBag.FocusType = "1";
-                        //                        return View(inwardModel);
-                        //                    }
-                        //                }
-                        //            }
-                        //        }
-
-                        //    }
-                        //    //for (int p = 0; p < inwardModel.Inward.CoilNo.Length; p++)
-                        //    //{
-                        //    //    if (inwardModel.Inward.CoilNo[p] != null && inwardModel.Inward.IntWidth.Length > 0)
-                        //    //    {
-                        //    //        SqlParameter[] sqlParam = new SqlParameter[6];
-                        //    //        sqlParam[0] = new SqlParameter("@SupCoil", inwardModel.Inward.CoilNo[p]);
-                        //    //        sqlParam[5] = new SqlParameter("@MainVou", "0");
-                        //    //        DataTable DtInw = ObjDBConnection.CallStoreProcedure("sp_CheckDuplicateCoilNoInward", sqlParam);
-                        //    //        if (DtInw != null && DtInw.Rows.Count > 1)
-                        //    //        {
-                        //    //            SetSuccessMessage("Coil No is Already Exists");
-                        //    //            ViewBag.FocusType = "1";
-                        //    //            return View(inwardModel);
-                        //    //        }
-                        //    //    }
-                        //    //}
-                        //}
-                        //else
-                        //{
-                        //    //Database check
-                        //    for (int p = 0; p < inwardModel.Inward.SupCoilNo.Length; p++)
-                        //    {
-                        //        if (inwardModel.Inward.SupCoilNo[p] != null && inwardModel.Inward.IntWidth.Length > 0)
-                        //        {
-                        //            SqlParameter[] sqlParam = new SqlParameter[6];
-                        //            sqlParam[0] = new SqlParameter("@SupCoil", inwardModel.Inward.SupCoilNo[p]);
-                        //            sqlParam[1] = new SqlParameter("@cmpvou", companyId);
-                        //            sqlParam[2] = new SqlParameter("@Type", "");
-                        //            sqlParam[3] = new SqlParameter("@Vou", "0");
-                        //            sqlParam[4] = new SqlParameter("@Flg", "1");
-                        //            sqlParam[5] = new SqlParameter("@MainVou", id);
-                        //            DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotMstDetails1", sqlParam);
-                        //            if (DtInw != null && DtInw.Columns.Count > 1)
-                        //            {
-                        //                SetSuccessMessage("Supplier Coil No is Already Exists");
-                        //                ViewBag.FocusType = "1";
-                        //                return View(inwardModel);
-                        //            }
-                        //        }
-                        //    }
-                        //    for (int p = 0; p < inwardModel.Inward.CoilNo.Length; p++)
-                        //    {
-                        //        if (inwardModel.Inward.CoilNo[p] != null && inwardModel.Inward.IntWidth.Length > 0)
-                        //        {
-                        //            SqlParameter[] sqlParam = new SqlParameter[2];
-                        //            sqlParam[0] = new SqlParameter("@SupCoil", inwardModel.Inward.CoilNo[p]);
-                        //            sqlParam[1] = new SqlParameter("@MainVou", id);
-                        //            DataTable DtInw = ObjDBConnection.CallStoreProcedure("sp_CheckDuplicateCoilNoInward", sqlParam);
-                        //            if (DtInw != null && DtInw.Rows.Count > 1)
-                        //            {
-                        //                SetSuccessMessage("Coil No is Already Exists");
-                        //                ViewBag.FocusType = "1";
-                        //                return View(inwardModel);
-                        //            }
-                        //        }
-                        //    }
-                        //}
-
                         SqlParameter[] sqlParameters = new SqlParameter[22];
                         sqlParameters[0] = new SqlParameter("@InwVNo", inwardModel.InwVNo);
                         sqlParameters[1] = new SqlParameter("@InwDt", inwardModel.InwDt);
@@ -442,7 +313,7 @@ namespace SUNMark.Controllers
                         else
                         {
                             sqlParameters[11] = new SqlParameter("@InwTransNm", inwardModel.InwTransNm);
-                        }                        
+                        }
                         sqlParameters[12] = new SqlParameter("@InwBillNo", inwardModel.InwBillNo);
                         sqlParameters[13] = new SqlParameter("@UsrVou", userId);
                         sqlParameters[14] = new SqlParameter("@FLG", 1);
@@ -459,10 +330,10 @@ namespace SUNMark.Controllers
                             int masterId = DbConnection.ParseInt32(DtInwMst.Rows[0][0].ToString());
                             if (masterId > 0)
                             {
-                                for (int i = 0; i < inwardModel.Inward.IntThickCoil.Length; i++)
+                                for (int i = 0; i < inwardModel.Inward.IntQtyCoil.Length; i++)
                                 {
 
-                                    if (inwardModel.Inward.IntThickCoil[i] != null && inwardModel.Inward.IntThickCoil[i] != 0 && inwardModel.Inward.IntThickCoil[i] > 0)
+                                    if (inwardModel.Inward.IntQtyCoil[i] != null && inwardModel.Inward.IntQtyCoil[i] != 0 && inwardModel.Inward.IntQtyCoil[i] > 0)
                                     {
                                         SqlParameter[] parameter = new SqlParameter[25];
                                         parameter[0] = new SqlParameter("@IntInwVou", masterId);
@@ -494,7 +365,7 @@ namespace SUNMark.Controllers
                                         parameter[19] = new SqlParameter("@IntFinish", "");
                                         parameter[20] = new SqlParameter("@IntProcess", "");
                                         parameter[21] = new SqlParameter("@IntBillNo", inwardModel.Inward.BillNoCoil[i]);
-                                        parameter[22] = new SqlParameter("@IntCoilPrefix", inwardModel.Inward.IntCoilPrefix[i+1]);
+                                        parameter[22] = new SqlParameter("@IntCoilPrefix", inwardModel.Inward.IntCoilPrefix[i + 1]);
                                         parameter[23] = new SqlParameter("@IntCoilNo", inwardModel.Inward.CoilNo[i]);
                                         parameter[24] = new SqlParameter("@IntSufix", inwardModel.Inward.IntSufix[i]);
                                         DataTable DtInwTrn = ObjDBConnection.CallStoreProcedure("InwardTrn_Insert", parameter);
@@ -712,7 +583,7 @@ namespace SUNMark.Controllers
                                         parameter[21] = new SqlParameter("@IntBillNo", inwardModel.Inward.BillNoPipe[i]);
                                         parameter[22] = new SqlParameter("@IntCoilPrefix", "");
                                         parameter[23] = new SqlParameter("@IntCoilNo", "");
-                                        parameter[24] = new SqlParameter("@IntSufix", ""); 
+                                        parameter[24] = new SqlParameter("@IntSufix", "");
                                         DataTable DtInwTrn = ObjDBConnection.CallStoreProcedure("InwardTrn_Insert", parameter);
                                     }
                                 }
@@ -1408,7 +1279,7 @@ namespace SUNMark.Controllers
                 SqlParameter[] sqlParameters = new SqlParameter[6];
                 sqlParameters[0] = new SqlParameter("@SupCoil", supcoil);
                 sqlParameters[1] = new SqlParameter("@cmpvou", companyId);
-                sqlParameters[2] = new SqlParameter("@Type", "");
+                sqlParameters[2] = new SqlParameter("@Type", "INW");
                 sqlParameters[3] = new SqlParameter("@Vou", srno1);
                 sqlParameters[4] = new SqlParameter("@Flg", "0");
                 sqlParameters[5] = new SqlParameter("@MainVou", inwvou);
@@ -1616,9 +1487,9 @@ namespace SUNMark.Controllers
                 {
                     CoilNo = DtInwMst.Rows[0]["NewLotNo"].ToString();
                 }
-                    return Json(new { data = CoilNo });
+                return Json(new { data = CoilNo });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }

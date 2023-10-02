@@ -16,7 +16,7 @@
     string gridList = "";
     bool headerAddTrue = false;
     bool headerListTrue = false;
-    
+
 
     if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
     {
@@ -96,7 +96,7 @@
                                                     <label class="form-check-label" for="radio2">WhatApp</label>
                                                 </div>
                                                 <div class="col-md-10 form-group">
-                                                    <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "              />
+                                                    <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "                />
                                                 </div>
                                             </div>
                                         </div>
@@ -245,6 +245,13 @@
                                                 }
 
                                             </div>
+                                            <div class="d-none" id="dropdownCoilType">
+                                                @if (Model != null && Model.Inward != null && Model.Inward.IntCoilTypeList != null && Model.Inward.IntCoilTypeList.Count > 0)
+                                                {
+                                                    @Html.DropDownListFor(x => x.Inward.IntCoilTypeVou, Model.Inward.IntCoilTypeList, "Select", new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                }
+
+                                            </div>
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -284,34 +291,34 @@
                                                 </div>
                                             </div>
                                             @*<div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                                                Order No <span class="required"></span>
-                                            </label>
-                                            <input type="hidden" name="PtyName" />
-                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
-                                                @Html.DropDownListFor(x => x.InwPOMVou, Model.PurchaseOrderList, "Select", new { @class = "form-control select2 InwPOMVou", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px; width:100px", @id = "txtInwPOMVou", onchange = "GetOrderList()" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                                                Bill No. <span class="required"></span>
-                                            </label>
-                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
-                                                @Html.TextBoxFor(x => x.InwBillNo, new { @class = "form-control form-control-lg", @placeholder = "Bill No", @tabindex = "5", @style = "font-family: Verdana;font-size:small; height:30px; width: 170px", @name = "InwBillNo" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>*@
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                    Order No <span class="required"></span>
+                                                                </label>
+                                                                <input type="hidden" name="PtyName" />
+                                                                <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                    @Html.DropDownListFor(x => x.InwPOMVou, Model.PurchaseOrderList, "Select", new { @class = "form-control select2 InwPOMVou", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px; width:100px", @id = "txtInwPOMVou", onchange = "GetOrderList()" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                    Bill No. <span class="required"></span>
+                                                                </label>
+                                                                <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                    @Html.TextBoxFor(x => x.InwBillNo, new { @class = "form-control form-control-lg", @placeholder = "Bill No", @tabindex = "5", @style = "font-family: Verdana;font-size:small; height:30px; width: 170px", @name = "InwBillNo" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>*@
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -440,17 +447,17 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                                                                Coil Type <span class="required">*</span>
-                                                            </label>
-                                                            <input type="hidden" name="CoilType" />
-                                                            <div class="col-md-9 d-flex form-outline form-white mb-2">
-                                                                @Html.DropDownListFor(x => x.InwCoilTypeVou, Model.CoilTypeList, "Select", new { @class = "form-control select2 InwCoilTypeVou", @tabindex = "16", @style = "font-family: Verdana;font-size:small; height:30px; width:300px", @id = "txtInwCoilTypeVou" })
+                                                    @*<div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                    Coil Type <span class="required">*</span>
+                                                                </label>
+                                                                <input type="hidden" name="CoilType" value="@Model.CoilType" />
+                                                                <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                                    @Html.DropDownListFor(x => x.InwCoilTypeVou, Model.CoilTypeList, "Select", new { @class = "form-control select2 InwCoilTypeVou", @tabindex = "16", @style = "font-family: Verdana;font-size:small; height:30px; width:300px", @id = "txtInwCoilTypeVou" })
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
+                                                        </div>*@
                                                     <div class="col-md-6">
                                                         <div class="row">
                                                             <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
@@ -500,6 +507,9 @@
                                                                 Remarks
                                                             </th>
                                                             <th style="width:12% !important">
+                                                                Coil Type <span class="text-danger">*</span>
+                                                            </th>
+                                                            <th style="width:12% !important">
                                                                 Coil Prefix <span class="text-danger"></span>
                                                             </th>
                                                             <th style="width:12% !important">
@@ -532,7 +542,7 @@
                                                                         }
                                                                     </td>
                                                                     <td>
-                                                                        @Html.TextBoxFor(x => x.Inward.SupCoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtSupCoilNo"@*, @onblur = "SuplierCoilCheck(this,true)"*@ })
+                                                                        @Html.TextBoxFor(x => x.Inward.SupCoilNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtSupCoilNo", @onblur = "SuplierCoilCheck(this,true)" })
                                                                     </td>
                                                                     <td>
                                                                         @Html.TextBoxFor(x => x.Inward.HeatNo[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtHeatNo" })
@@ -555,6 +565,12 @@
                                                                     </td>
                                                                     <td>
                                                                         @Html.TextBoxFor(x => x.Inward.IntRemksCoil[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:200px !important", @name = "txtRemarks" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.IntCoilTypeList != null && Model.Inward.IntCoilTypeList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.IntCoilType[y], Model.Inward.IntCoilTypeList, "Select", new { @class = "form-control select2 IntCoilType", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                        }
                                                                     </td>
                                                                     <td>
                                                                         @if (Model != null && Model.Inward != null && Model.Inward.CoilPrefixList != null && Model.Inward.CoilPrefixList.Count > 0)
@@ -593,7 +609,7 @@
                                                                     }
                                                                 </td>
                                                                 <td>
-                                                                    @Html.TextBoxFor(x => x.Inward.SupCoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtSupCoilNo"@*, @onblur = "SuplierCoilCheck(this)"*@ })
+                                                                    @Html.TextBoxFor(x => x.Inward.SupCoilNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtSupCoilNo", @onblur = "SuplierCoilCheck(this)" })
                                                                 </td>
                                                                 <td>
                                                                     @Html.TextBoxFor(x => x.Inward.HeatNo, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:150px !important", @onfocus = "this.select()", @name = "txtHeatNo" })
@@ -615,6 +631,12 @@
                                                                 </td>
                                                                 <td>
                                                                     @Html.TextBoxFor(x => x.Inward.IntRemksCoil, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;width:200px !important", @name = "txtRemarks" })
+                                                                </td>
+                                                                <td>
+                                                                    @if (Model != null && Model.Inward != null && Model.Inward.IntCoilTypeList != null && Model.Inward.IntCoilTypeList.Count > 0)
+                                                                    {
+                                                                        @Html.DropDownListFor(x => x.Inward.IntCoilType, Model.Inward.IntCoilTypeList, "Select", new { @class = "form-control select2 IntCoilType", @style = "font-family: Verdana;font-size:small; height:30px;width:150px !important" })
+                                                                    }
                                                                 </td>
                                                                 <td>
                                                                     @if (Model != null && Model.Inward != null && Model.Inward.CoilPrefixList != null && Model.Inward.CoilPrefixList.Count > 0)
@@ -837,8 +859,8 @@
                                                                 Godown <span class="text-danger">*</span>
                                                             </th>
                                                             @*<th style="width:15% !important">
-                                                Location
-                                            </th>*@
+                                                                    Location
+                                                                </th>*@
                                                             <th style="width:15% !important">
                                                                 Quantity <span class="text-danger">*</span>
                                                             </th>
@@ -875,11 +897,11 @@
                                                                         }
                                                                     </td>
                                                                     @*<td>
-                                                        @if (Model != null && Model.Inward != null && Model.Inward.LocationOtherList != null && Model.Inward.LocationOtherList.Count > 0)
-                                                        {
-                                                            @Html.DropDownListFor(x => x.Inward.IntLocOther[y], Model.Inward.LocationOtherList, "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;" })
-                                                        }
-                                                    </td>*@
+                                                                            @if (Model != null && Model.Inward != null && Model.Inward.LocationOtherList != null && Model.Inward.LocationOtherList.Count > 0)
+                                                                            {
+                                                                                @Html.DropDownListFor(x => x.Inward.IntLocOther[y], Model.Inward.LocationOtherList, "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                                            }
+                                                                        </td>*@
                                                                     <td>
                                                                         @Html.TextBoxFor(x => x.Inward.IntQtyOther[y], new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtWeigth", @onKeyUp = "numericFilter(this);" })
                                                                     </td>
@@ -919,11 +941,11 @@
                                                                     }
                                                                 </td>
                                                                 @*<td>
-                                                    @if (Model != null && Model.Inward != null && Model.Inward.LocationOtherList != null && Model.Inward.LocationOtherList.Count > 0)
-                                                    {
-                                                        @Html.DropDownListFor(x => x.Inward.IntLocOther, Model.Inward.LocationOtherList, "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;" })
-                                                    }
-                                                </td>*@
+                                                                        @if (Model != null && Model.Inward != null && Model.Inward.LocationOtherList != null && Model.Inward.LocationOtherList.Count > 0)
+                                                                        {
+                                                                            @Html.DropDownListFor(x => x.Inward.IntLocOther, Model.Inward.LocationOtherList, "Select", new { @class = "form-control select2", @style = "font-family: Verdana;font-size:small; height:30px;" })
+                                                                        }
+                                                                    </td>*@
                                                                 <td>
                                                                     @Html.TextBoxFor(x => x.Inward.IntQtyOther, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:150px !important", @onfocus = "this.select()", @name = "txtWeigth", @onKeyUp = "numericFilter(this);" })
                                                                 </td>
@@ -1000,7 +1022,7 @@
                 GoToAddTab();
             }
 
-            CalculateCoil()
+            CalculateCoil();
             CalculatePipe();
             CalculateOther();
 
@@ -1124,9 +1146,9 @@
     $(function () {
 
         loadData();
-        SetNameCoil(true)
-        SetNamePipe()
-        SetNameOther()
+        SetNameCoil(true);
+        SetNamePipe();
+        SetNameOther();
         var pageIndex = '';
         var pageSize = '';
         var totalRecord = '';
@@ -1374,7 +1396,7 @@
                 if (i !== j) {
                     // check if elements' values are equal
                     if (arry[i] === arry[j]) {
-                        // duplicate element present 
+                        // duplicate element present
                         showErrorMessage("Duplicate Coil No");
                         return false;
                         // terminate inner loop
@@ -1382,14 +1404,14 @@
                     }
                 }
             }
-            // terminate outer loop                                                                      
-            
+            // terminate outer loop
+
         }
         return true;
     }
     function AddRowsCoil() {
+        //var coiltyp = $('#txtInwCoilTypeVou').children('option:selected').text()
         if (!isRecentCall) {
-            ;
             var previousRow = $('#tblCoil').children('tbody').children('tr:last');
             if (previousRow != null) {
                 var billNoCoil = $(previousRow).children('td').eq(1).children('input').val();
@@ -1400,53 +1422,118 @@
                 var width = $(previousRow).children('td').eq(6).children('input').val();
                 var thick = $(previousRow).children('td').eq(7).children('input').val();
                 var qty = $(previousRow).children('td').eq(8).children('input').val();
-                var Coil = $(previousRow).children('td').eq(11).children('input').val();
-                if (grade != null && thick != null && godown != null && width != null && qty != null && grade != "" && thick != "" && godown != "" && width != "" && qty != "" && Coil != "") {
-                    var html = $('#tblCoil').children().find('tr.AddRows:first').html();
+                var coiltype = $(previousRow).children('td').eq(10).children('select').children('option:selected').text();
+                var Coil = $(previousRow).children('td').eq(12).children('input').val();
+                if (coiltype != "SCRAP" && coiltype != "Scrap") {
+                    if (grade != null && thick != null && godown != null && width != null && qty != null && grade != "" && thick != "" && godown != "" && width != "" && qty != "" && Coil != "") {
+                        var html = $('#tblCoil').children().find('tr.AddRows:first').html();
 
-                    $('#tblCoil').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
-                    $('#tblCoil').children('tbody').children('tr:last').addClass('AddRows');
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('input').val('');
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('select').remove();
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('span').remove();
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).html($('#dropdownGodownCoil').html());
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('select').addClass('select2');
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('select').val(godown);
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(3).children('input').val(supcoilno);
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(4).children('input').val(heatno);
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('select').remove();
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('span').remove();
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).html($('#dropdownGrade').html());
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('select').addClass('select2');
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('select').val(grade);
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(6).children('input').val('');
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(7).children('input').val('');
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(8).children('input').val('');
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(9).children('input').val('');
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('select').remove();
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('span').remove();
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).html($('#dropdownCoilPrefix').html());
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('select').addClass('select2');
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('select').val('');
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('input').val('');
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(12).children('input').val('');
-                    
-                    SetSerialNumberCoil();
-                    SetNameCoil();
-                    SetSelect2()
-                    isRecentCall = true
-                    setTimeout(function () {
-                        isRecentCall = false;
-                    }, 500)
-                    CalculateCoil();
-                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
-                    GetNewCoilNo(($('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('input').attr('id')).replace('Inward.CoilNo', ''));
-                    $('.InwardCoilNo').on('blur', function () {
-                        checkArrayCoilNo();
-                    });
+                        $('#tblCoil').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
+                        $('#tblCoil').children('tbody').children('tr:last').addClass('AddRows');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('input').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('select').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('span').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).html($('#dropdownGodownCoil').html());
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('select').addClass('select2');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('select').val(godown);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(3).children('input').val(supcoilno);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(4).children('input').val(heatno);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('select').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('span').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).html($('#dropdownGrade').html());
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('select').addClass('select2');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('select').val(grade);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(6).children('input').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(7).children('input').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(8).children('input').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(9).children('input').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('select').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('span').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).html($('#dropdownCoilType').html());
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('select').addClass('select2');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('select').val(coiltype);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('select').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('span').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).html($('#dropdownCoilPrefix').html());
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('select').addClass('select2');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('select').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(12).children('input').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(13).children('input').val('');
+
+                        SetSerialNumberCoil();
+                        SetNameCoil();
+                        SetSelect2()
+                        isRecentCall = true
+                        setTimeout(function () {
+                            isRecentCall = false;
+                            isRecentCalledAddRows = false;
+                        }, 500)
+                        CalculateCoil();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                        GetNewCoilNo(($('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('input').attr('id')).replace('Inward.CoilNo', ''));
+                        $('.InwardCoilNo').on('blur', function () {
+                            checkArrayCoilNo();
+                        });
+                    }
+                    else {
+                        showErrorMessage("Please enter all required fields");
+                    }
                 }
                 else {
-                    showErrorMessage("Please enter all required fields");
+                    if (grade != null && godown != null && qty != null && grade != "" && godown != "" && qty != "") {
+                        var html = $('#tblCoil').children().find('tr.AddRows:first').html();
+
+                        $('#tblCoil').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
+                        $('#tblCoil').children('tbody').children('tr:last').addClass('AddRows');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('input').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('select').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('span').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).html($('#dropdownGodownCoil').html());
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('select').addClass('select2');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('select').val(godown);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(3).children('input').val(supcoilno);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(4).children('input').val(heatno);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('select').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('span').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).html($('#dropdownGrade').html());
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('select').addClass('select2');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('select').val(grade);
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(6).children('input').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(7).children('input').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(8).children('input').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(9).children('input').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('select').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('span').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).html($('#dropdownCoilType').html());
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('select').addClass('select2');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(10).children('select').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('select').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('span').remove();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).html($('#dropdownCoilPrefix').html());
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('select').addClass('select2');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('select').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(12).children('input').val('');
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(13).children('input').val('');
+
+                        SetSerialNumberCoil();
+                        SetNameCoil();
+                        SetSelect2()
+                        isRecentCall = true
+                        setTimeout(function () {
+                            isRecentCall = false;
+                            isRecentCalledAddRows = false;
+                        }, 500)
+                        CalculateCoil();
+                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('input').focus();
+                        GetNewCoilNo(($('#tblCoil').children('tbody').children('tr:last').children('td').eq(11).children('input').attr('id')).replace('Inward.CoilNo', ''));
+                        $('.InwardCoilNo').on('blur', function () {
+                            checkArrayCoilNo();
+                        });
+                    }
+                    else {
+                        showErrorMessage("Please enter all required fields");
+                    }
+
                 }
             }
         }
@@ -1536,8 +1623,8 @@
             $(this).children("td").eq(2).children("select").attr("Id", "Inward.IntGdnCoil" + i + "");
             $(this).children("td").eq(3).children("input").attr("name", "Inward.SupCoilNo");
             $(this).children("td").eq(3).children("input").attr("Id", "Inward.SupCoilNo" + i + "");
-            //if (!isRemove)
-            //    $(this).children("td").eq(3).children("input").attr("onblur", 'SuplierCoilCheck(this)');
+            if (!isRemove)
+                $(this).children("td").eq(3).children("input").attr("onblur", 'SuplierCoilCheck(this)');
             $(this).children("td").eq(4).children("input").attr("name", "Inward.HeatNo");
             $(this).children("td").eq(4).children("input").attr("Id", "Inward.HeatNo" + i + "");
             $(this).children("td").eq(5).children("select").attr("name", "Inward.IntGrdCoil");
@@ -1550,12 +1637,14 @@
             $(this).children("td").eq(8).children("input").attr("Id", "Inward.IntQtyCoil" + i + "");
             $(this).children("td").eq(9).children("input").attr("name", "Inward.IntRemksCoil");
             $(this).children("td").eq(9).children("input").attr("Id", "Inward.IntRemksCoil" + i + "");
-            $(this).children("td").eq(10).children("select").attr("name", "Inward.IntCoilPrefix");
-            $(this).children("td").eq(10).children("select").attr("Id", "Inward.IntCoilPrefix" + i + "");
-            $(this).children("td").eq(11).children("input").attr("name", "Inward.CoilNo");
-            $(this).children("td").eq(11).children("input").attr("Id", "Inward.CoilNo" + i + "");
-            $(this).children("td").eq(12).children("input").attr("name", "Inward.IntSufix");
-            $(this).children("td").eq(12).children("input").attr("Id", "Inward.IntSufix" + i + "");
+            $(this).children("td").eq(10).children("select").attr("name", "Inward.IntCoilType");
+            $(this).children("td").eq(10).children("select").attr("Id", "Inward.IntCoilType" + i + "");
+            $(this).children("td").eq(11).children("select").attr("name", "Inward.IntCoilPrefix");
+            $(this).children("td").eq(11).children("select").attr("Id", "Inward.IntCoilPrefix" + i + "");
+            $(this).children("td").eq(12).children("input").attr("name", "Inward.CoilNo");
+            $(this).children("td").eq(12).children("input").attr("Id", "Inward.CoilNo" + i + "");
+            $(this).children("td").eq(13).children("input").attr("name", "Inward.IntSufix");
+            $(this).children("td").eq(13).children("input").attr("Id", "Inward.IntSufix" + i + "");
         });
     }
 
@@ -1790,7 +1879,6 @@
     function AddRows() {
         var value = $('#txtInwPtyVou').children('option:selected').html();
         if (value == 'COIL' || value == 'coil') {
-            ;
             AddRowsCoil();
         }
         if (value == 'PIPE' || value == 'pipe' || value == 'SEAMLESS PIPE' || value == 'seamless pipe') {
@@ -1846,7 +1934,7 @@
             event.stopPropagation();
             return false;
         }
-        
+
         if (value) {
             localStorage.setItem("Inward", "1");
             if (value == 'COIL' || value == 'coil') {
@@ -2314,10 +2402,10 @@
                 else {
                     $('#Inward\\.CoilNo' + i + '').val(parseInt(data.data) + parseInt(i));
                 }
-                
-                    //alert(data.data)
-                
-                
+
+                //alert(data.data)
+
+
             },
             failure: function (response) {
                 errorMessage(response);
@@ -2344,7 +2432,7 @@
                 '_blank' // <- This is what makes it open in a new window.
             );
         }
-        
+
     })*@
 
     $('#frmInward').submit(function (event) {
@@ -2407,8 +2495,8 @@
         $('#txtIsPrint').val('1');
         //$('#frmInward').submit();
         //window.open('/Inward/RawInwardPrintDetials/'+ @Html.Raw(Model.InwVou),'_blank')
-      
-    
+
+
     })
 
     $("#btnSave").click(function () {

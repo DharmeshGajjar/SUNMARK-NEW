@@ -357,11 +357,11 @@
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="control-label col-md-3 col-sm-3 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                                                            NB <span class="required clsrequied">*</span>
+                                                            NB <span class="required clsrequied"></span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2" style="width: 29% !important;">
                                                             @*<input type="text" id="LotNB" name="LotNB" class="form-control form-control-lg" placeholder="NB" tabindex="13" value="@Model.LotNB" style="font-family: Verdana;font-size:small; height:30px;width:150px" required />*@
-                                                            @Html.DropDownListFor(x => x.LotNB, nbList, "Select", new { @class = "form-control select2", @style = "width:100% ", @required = "required", @tabindex = "15", })
+                                                            @Html.DropDownListFor(x => x.LotNB, nbList, "Select", new { @class = "form-control select2", @style = "width:100% ", @tabindex = "15", })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -369,11 +369,11 @@
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="control-label col-md-3 col-sm-3 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                                                            SCH <span class="required clsrequied">*</span>
+                                                            SCH <span class="required clsrequied"></span>
                                                         </label>
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2" style="width: 29% !important;">
                                                             @*<input type="text" id="LotSCH" name="LotSCH" class="form-control form-control-lg" placeholder="SCH" tabindex="14" value="@Model.LotSCH" style="font-family: Verdana;font-size:small; height:30px;width:150px" required />*@
-                                                            @Html.DropDownListFor(x => x.LotSCH, schList, "Select", new { @class = "form-control select2", @style = "width:100% ", @required = "required", @tabindex = "16" })
+                                                            @Html.DropDownListFor(x => x.LotSCH, schList, "Select", new { @class = "form-control select2", @style = "width:100% ", @tabindex = "16" })
                                                         </div>
                                                     </div>
                                                 </div>

@@ -163,9 +163,9 @@ namespace SUNMark.Controllers
                 int administrator = 0;
                 ViewBag.nbList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
                 ViewBag.schList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
-                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblGdnVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblLocVou).ToString()) && !string.IsNullOrWhiteSpace(obj.LotNB.ToString()) && !string.IsNullOrWhiteSpace(obj.LotSCH.ToString()))
+                if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblGdnVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(obj.OblLocVou).ToString()))
                 {
-                    SqlParameter[] sqlParameters = new SqlParameter[34];
+                    SqlParameter[] sqlParameters = new SqlParameter[33];
                     sqlParameters[0] = new SqlParameter("@OblNVno", obj.OblNVno);
                     sqlParameters[1] = new SqlParameter("@OblDt", DateTime.Parse(obj.OblDt));
                     sqlParameters[2] = new SqlParameter("@OblCmpVou", obj.OblCmpVou);
@@ -204,7 +204,6 @@ namespace SUNMark.Controllers
                     sqlParameters[30] = new SqlParameter("@NB", obj.LotNB);
                     sqlParameters[31] = new SqlParameter("@SCH", obj.LotSCH);
                     sqlParameters[32] = new SqlParameter("@NextProc", obj.LotNextPrcVou);
-                    sqlParameters[33] = new SqlParameter("@LotPrdCd", obj.ProductCode.ToUpper());
                     DataTable DtState = ObjDBConnection.CallStoreProcedure("OBLMST_Insert", sqlParameters);
                     if (DtState != null && DtState.Rows.Count > 0)
                     {

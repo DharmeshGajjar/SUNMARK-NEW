@@ -889,7 +889,7 @@ namespace SUNMark.Controllers
                             newbody = newbody.Replace("#*#*grade*#*#", DtBilty.Rows[0]["Grade"].ToString());
                             newbody = newbody.Replace("#*#*partywt*#*#", (Math.Round(decimal.Parse((DtBilty.Rows[0]["JobQty"].ToString())))).ToString("0"));
                             newbody = newbody.Replace("#*#*width*#*#", (Math.Round(decimal.Parse((DtBilty.Rows[0]["JobWidth"].ToString())))).ToString("0.0"));
-                            newbody = newbody.Replace("#*#*thk*#*#", (Math.Round(decimal.Parse((DtBilty.Rows[0]["Thick"].ToString())))).ToString("0.00"));
+                            newbody = newbody.Replace("#*#*thk*#*#", ((decimal.Parse((DtBilty.Rows[0]["Thick"].ToString())))).ToString());
                             newbody = newbody.Replace("#*#*actwt*#*#", (Math.Round(decimal.Parse((DtBilty.Rows[0]["JobActQty"].ToString())))).ToString("0"));
                             newbody = newbody.Replace("#*#*diff*#*#", (Math.Round(decimal.Parse((DtBilty.Rows[0]["Diff"].ToString())))).ToString("0"));
 

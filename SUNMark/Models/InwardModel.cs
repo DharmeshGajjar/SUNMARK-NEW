@@ -204,6 +204,12 @@ namespace SUNMark.Models
 
         public string[] IntSufix { get; set; }
         public string IntSufixStr { get; set; }
+        public int[] IntCoilTypeVou { get; set; }
+        public string[] IntCoilType { get; set; }
+
+        public string IntCoilTypeVouStr { get; set; }
+        public List<SelectListItem> IntCoilTypeList { get; set; }
+
     }
 
     public class InwardPrintDetails

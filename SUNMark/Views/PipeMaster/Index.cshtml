@@ -336,8 +336,12 @@
         var toRecDt = $('#ToRecDt').val();
         var stockYN = $('#StockYN').val();
         var company = $('#Company').val();
-        var finishid = $('#FinishVou').val();
-        window.location.href = "/PipeMaster/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&od=" + od + "&feetper=" + feetper + "&nb=" + nb + "&sch=" + sch + "&gradeId=" + grade + "&frRecDt=" + frRecDt + "&toRecDt=" + toRecDt + "&companyId=" + company + "&stockYNId=" + stockYN + "&finishId=" + finishid;
+        var finishid = '0';
+        if ($('#FinishVou').val() != undefined) {
+            var finishid = $('#FinishVou').val();
+        }
+        
+        window.location.href = "/PipeMaster/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=" + "1" + "&od=" + od + "&feetper=" + feetper + "&nb=" + nb + "&sch=" + sch + "&gradeId=" + grade + "&frRecDt=" + frRecDt + "&toRecDt=" + toRecDt + "&companyId=" + company + "&stockYNId=" + stockYN + "&finishId=" + finishid;
     })
 
     $('#btnExportToPDF').click(function () {
@@ -350,8 +354,12 @@
         var toRecDt = $('#ToRecDt').val();
         var stockYN = $('#StockYN').val();
         var company = $('#Company').val();
-        var finishid = $('#FinishVou').val();
-        window.location.href = "/PipeMaster/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&od=" + od + "&feetper=" + feetper + "&nb=" + nb + "&sch=" + sch + "&gradeId=" + grade + "&frRecDt=" + frRecDt + "&toRecDt=" + toRecDt + "&companyId=" + company + "&stockYNId=" + stockYN + "&finishId=" + finishid;
+        var finishid = '0';
+        if ($('#FinishVou').val() != undefined) {
+            var finishid = $('#FinishVou').val();
+        }
+
+        window.location.href = "/PipeMaster/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=" + "0" + "&od=" + od + "&feetper=" + feetper + "&nb=" + nb + "&sch=" + sch + "&gradeId=" + grade + "&frRecDt=" + frRecDt + "&toRecDt=" + toRecDt + "&companyId=" + company + "&stockYNId=" + stockYN + "&finishId=" + finishid;
     })
 </script>
 <script>

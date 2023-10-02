@@ -175,7 +175,7 @@ namespace SUNMark.Controllers
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
             {
-                long userId = GetIntSession("UserId");
+                int userId = Convert.ToInt32(GetIntSession("UserId"));
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
@@ -269,7 +269,7 @@ namespace SUNMark.Controllers
                 }
 
 
-                getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, 0, "", 0, 1, whereConditionQuery);
+                getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, userId, 0, "", 0, 1, whereConditionQuery);
                 if (type == 1)
                 {
                     var bytes = Excel(getReportDataModel, "Pipe Register Report", companyDetails.CmpName);
@@ -280,7 +280,7 @@ namespace SUNMark.Controllers
                 }
                 else
                 {
-                    var bytes = PDF(getReportDataModel, "Pipe Register Report", companyDetails.CmpName, "");
+                    var bytes = PDF(getReportDataModel, "Pipe Register Report", companyDetails.CmpName, companyid);
                     return File(
                             bytes,
                             "application/pdf",

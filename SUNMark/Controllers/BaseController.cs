@@ -695,7 +695,7 @@ namespace SUNMark.Controllers
             DepartmentMasterModel departmentMaster = new DepartmentMasterModel();
             try
             {
-                int companyId = string.IsNullOrEmpty(companyID) ? 0 : Convert.ToInt32(companyID);
+                int companyId = string.IsNullOrEmpty(Convert.ToInt32(companyID).ToString()) ? 0 : Convert.ToInt32(companyID);
                 departmentMaster = DbConnection.GetDepartmentMasterByCompanyId(companyId);
                 if (getReportDataModel.ColumnsData != null)
                 {
