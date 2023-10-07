@@ -555,6 +555,7 @@ namespace SUNMark.Controllers
 
                         newbody = body.Replace("//Address//", DtInward.Rows[0]["DepAdd"].ToString());
                         newbody = newbody.Replace("//Email//", DtInward.Rows[0]["DepEmail"].ToString());
+                        newbody = newbody.Replace("//MachineNm//", DtInward.Rows[0]["MachinNo"].ToString());
                         newbody = newbody.Replace("//Web//", CmpWeb);
                         string BilDate = DateTime.Parse(DtInward.Rows[0]["StrDt"].ToString()).ToString("dd-MM-yyyy");
                         newbody = newbody.Replace("//Date//", BilDate);

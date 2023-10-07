@@ -452,7 +452,7 @@ namespace SUNMark.Controllers
                 }
                 else
                 {
-                    var bytes = PDF(getReportDataModel, "Job Work Entry", companyDetails.CmpName);
+                    var bytes = PDF(getReportDataModel, "Milling", companyDetails.CmpName, companyId.ToString());
                     return File(
                           bytes,
                           "application/pdf",
