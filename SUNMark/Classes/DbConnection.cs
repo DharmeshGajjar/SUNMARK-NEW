@@ -45,7 +45,9 @@ namespace SUNMark.Classes
                 Command.Connection.Open();
                 Command.CommandType = CommandType.StoredProcedure;
                 Command.CommandText = procedurename;
+                Command.CommandTimeout = 1000;
                 SqlDataAdapter Sdb = new SqlDataAdapter(Command);
+                
                 if (parameters != null && parameters.Length > 0)
                 {
                     Sdb.SelectCommand.Parameters.AddRange(parameters);

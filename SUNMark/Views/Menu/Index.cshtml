@@ -129,7 +129,7 @@
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <label class="control-label col-md-2 col-sm-2  font-weight-bold customLabel" style="font-family:Verdana">
-                                                        Name <span class="required">*</span>
+                                                        Name <span style="color:red;">*</span>
                                                     </label>
                                                     <input type="hidden" name="State" />
                                                     <div class="col-md-auto col-12 form-outline form-white mb-2">
@@ -140,7 +140,7 @@
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <label class="control-label col-md-2 col-sm-2  font-weight-bold customLabel" style="font-family:Verdana">
-                                                        Link <span class="required">*</span>
+                                                        Link <span style="color:red;">*</span>
                                                     </label>
                                                     <input type="hidden" name="State" />
                                                     <div class="col-md-auto col-12 form-outline form-white mb-2">
@@ -151,7 +151,7 @@
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <label class="control-label col-md-2 col-sm-2 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana">
-                                                        Under Menu <span class="required"></span>
+                                                        Under Menu <span style="color:red;"></span>
                                                     </label>
                                                     <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
                                                         @Html.DropDownListFor(x => x.ParentFK, Model.MenuList, "Select", new { @class = "form-control select2", @tabindex = "3", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:200px", @onclick = "SetIconVal()", @onchange = "SetIconVal()" })
@@ -161,18 +161,19 @@
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <label class="control-label col-md-2 col-sm-2  font-weight-bold customLabel" style="font-family:Verdana">
-                                                        Icon <span class="required">*</span>
+                                                        Icon <span style="color:red;">*</span>
                                                     </label>
                                                     <input type="hidden" name="State" />
                                                     <div class="col-md-auto col-12 form-outline form-white mb-2">
                                                         <input type="text" id="txtIcon" name="Icon" onfocus="this.select()" class="form-control form-control-lg" placeholder="Icon" tabindex="4" value="@Model.Icon" style="font-family: Verdana;font-size:small; height:30px;width:200px" required />
                                                     </div>
+                                                    <a href="https://www.w3schools.com/icons/fontawesome_icons_webapp.asp" target="_blank">Get Icon</a>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <label class="control-label col-md-2 col-sm-2 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana">
-                                                        Position <span class="required"></span>
+                                                        Position <span style="color:red;"></span>
                                                     </label>
                                                     <div class="col-md-auto col-12 form-outline form-white mb-2">
                                                         <input type="text" id="txtPosition" name="Position" onfocus="this.select()" class="form-control form-control-lg" placeholder="Position" tabindex="5" value="@Model.Position" style="font-family: Verdana;font-size:small; height:30px;width:70px" required />
@@ -182,7 +183,7 @@
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <label class="control-label col-md-2 col-sm-2 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana">
-                                                        Dashboard <span class="required"></span>
+                                                        Dashboard <span style="color:red;"></span>
                                                     </label>
                                                     <div class="col-md-auto col-12 form-outline form-white mb-2">
                                                         <input type="text" id="txtDeshboardpos" name="Deshboardpos" onfocus="this.select()" class="form-control form-control-lg" placeholder="Deshboard" tabindex="6" value="@Model.Deshboardpos" style="font-family: Verdana;font-size:small; height:30px;width:70px" required />
