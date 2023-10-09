@@ -1218,7 +1218,7 @@ namespace SUNMark.Controllers
                 }
                 else
                 {
-                    var bytes = PDF(getReportDataModel, "Inward Report", companyDetails.CmpName);
+                    var bytes = PDF(getReportDataModel, "Inward Report", companyDetails.CmpName, companyId.ToString());
                     return File(
                           bytes,
                           "application/pdf",

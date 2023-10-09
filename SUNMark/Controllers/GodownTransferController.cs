@@ -637,6 +637,7 @@ namespace SUNMark.Controllers
                         StringBuilder sb = new StringBuilder();
 
                         sb.Append("<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\" width=\"100%\" style=\"margin-top:10px;\" > <thead><tr>");//datatable
+                        sb.Append("<th align=\"center\" style=\"font-family:Verdana;font-size:15px;color:black;width:3%;\">SrNo</th>");
                         sb.Append("<th align=\"center\" style=\"font-family:Verdana;font-size:15px;color:black;width:10%;\">Grade</th>");
                         sb.Append("<th align=\"center\" style=\"font-family:Verdana;font-size:15px;color:black;width:20%;\">Coil No./No of Pcs.</th>");
                         sb.Append("<th align=\"center\" style=\"font-family:Verdana;font-size:15px;color:black;width:10%;\">Width/Size</th>");
@@ -651,7 +652,7 @@ namespace SUNMark.Controllers
                             string sRem = DtInward.Rows[i]["GdtRem"].ToString();
                             sRem = sRem == null ? "" : sRem;
                             sb.Append("<tr>");
-
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + (i + 1).ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["GdtGrade"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["GdtCoilNo"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\">" + DtInward.Rows[i]["GdtWidth"].ToString() + "</td>");
@@ -672,11 +673,12 @@ namespace SUNMark.Controllers
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\"></td>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\"></td>");
                             sb.Append("<td align=\"center\" style=\"font-size:14px;\"></td>");
+                            sb.Append("<td align=\"center\" style=\"font-size:14px;\"></td>");
                             sb.Append("</tr>");
                         }
 
                         sb.Append("<tr style=\"font-weight:bold; \">");
-                        sb.Append("<td></td> <td></td> <td></td> <td></td>");
+                        sb.Append("<td></td> <td></td> <td></td> <td></td> <td></td>");
                         sb.Append("<td style=\"text-align:center;font-size:15px;\">" + dTotWT.ToString("") + "</td>");
                         sb.Append("<td></td>");
                         sb.Append("</tr>");

@@ -577,7 +577,8 @@ namespace SUNMark.Controllers
 
                         StringBuilder sb = new StringBuilder();
 
-                        sb.Append("<tr align=\"center\"style=\"font-weight: bold;\"><td>Coil NO</td><td>WO NO</td><td>ASTM</td><td>GRADE</td><td>HEAT NO.</td><td>OD</td><td>THK</td><td>LNG</td><td>NOS</td><td>TOTAL WEIGHT</td>");//datatable
+                        sb.Append("<tr align=\"center\"style=\"font-weight: bold;\"><td>Coil NO</td><td>WO NO</td><td>ASTM</td><td>GRADE</td><td>OD</td><td>THK</td><td>LNG</td><td>NOS</td><td>TOTAL WEIGHT</td>");//datatable
+                        //< td > HEAT NO.</ td > // removed by chirag on 7-10-2023
 
 
                         for (int i = 0; i < DtInward.Rows.Count; i++)
@@ -589,10 +590,10 @@ namespace SUNMark.Controllers
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">Stock</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\"></td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["Grade"].ToString() + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">-</td>");
+                            //sb.Append("<td align=\"center\" style=\"font-size:16px;\">-</td>"); // removed by chirag on 7-10-23
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["AnnAOD"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["AnnAThick"].ToString() + "</td>");
-                            var length = (Convert.ToDouble(DtInward.Rows[i]["AnnALength"]) * 0.3048);
+                            var length = (Convert.ToDouble(DtInward.Rows[i]["AnnALength"]) * 0.3048).ToString("0.00");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + length + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["AnnANoOfPipe"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["AnnAWeight"].ToString() + "</td>");
@@ -605,7 +606,7 @@ namespace SUNMark.Controllers
                             sb.Append("<td>&nbsp;</td>");
                             sb.Append("<td>&nbsp;</td>");
                             sb.Append("<td>&nbsp;</td>");
-                            sb.Append("<td>&nbsp;</td>");
+                            //sb.Append("<td>&nbsp;</td>"); // removed by chirag on 7-10-23
                             sb.Append("<td>&nbsp;</td>");
                             sb.Append("<td>&nbsp;</td>");
                             sb.Append("<td>&nbsp;</td>");
@@ -622,7 +623,8 @@ namespace SUNMark.Controllers
                         st.Append("<td rowspan=\"2\">ROLLER RPM</td>");
                         st.Append("<td rowspan=\"2\">NOS PER BATCH</td>");
                         st.Append("<td rowspan=\"2\">FINAL/INTER</td>");
-                        st.Append("<td rowspan=\"2\" colspan=\"2\">REMARKS</td></tr>");
+                        st.Append("<td rowspan=\"2\" colspan=\"2\">REMARKS</td></tr>"); // removed by chirag on 7-10-23
+                        //st.Append("<td rowspan=\"2\" >REMARKS</td></tr>");
                         st.Append("<tr align=\"center\">");
                         st.Append("<td>I</td>");
                         st.Append("<td>II</td>");
@@ -640,7 +642,7 @@ namespace SUNMark.Controllers
                             st.Append("<td>" + DtInward.Rows[i]["AnnANoPBatch"].ToString() + "</td>");
                             st.Append("<td>-</td>");
                             st.Append("<td></td>");
-                            st.Append("<td></td>");
+                            //st.Append("<td></td>");
                             st.Append("</tr>");
                         }
                         newbody = newbody.Replace("//Second-Table//", st.ToString());

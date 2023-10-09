@@ -558,10 +558,10 @@ namespace SUNMark.Controllers
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">E+ Stock</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikACoilNo"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["Grade"].ToString() + "</td>");
-                            sb.Append("<td align=\"center\" style=\"font-size:16px;\">-</td>");
+                            //sb.Append("<td align=\"center\" style=\"font-size:16px;\">-</td>"); // removed by chirag on 7-10-23
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikAOD"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikAThick"].ToString() + "</td>");
-                            var length = (Convert.ToDouble(DtInward.Rows[i]["PikALength"]) * 0.3048);
+                            var length = (Convert.ToDouble(DtInward.Rows[i]["PikALength"]) * 0.3048).ToString("0.00");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + length + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikANoOfPipe"].ToString() + "</td>");
                             sb.Append("<td align=\"center\" style=\"font-size:16px;\">" + DtInward.Rows[i]["PikAWeight"].ToString() + "</td>");
@@ -575,7 +575,7 @@ namespace SUNMark.Controllers
                             sb.Append("<td>&nbsp;</td>");
                             sb.Append("<td>&nbsp;</td>");
                             sb.Append("<td>&nbsp;</td>");
-                            sb.Append("<td>&nbsp;</td>");
+                            //sb.Append("<td>&nbsp;</td>"); // removed by chirag on 7-10-23
                             sb.Append("<td>&nbsp;</td>");
                             sb.Append("<td>&nbsp;</td>");
                             sb.Append("<td>&nbsp;</td>");
