@@ -176,111 +176,26 @@ namespace SUNMark.Controllers
                 //}
                 if (!string.IsNullOrWhiteSpace(godownid))
                 {
-                    whereConditionQuery += " AND LotMst.LotGdnVou='" + godownid + "'";
+                    whereConditionQuery += " AND InwTrn.IntGdnVou='" + godownid + "'";
                 }
                 if (!string.IsNullOrWhiteSpace(companyid))
                 {
-                    whereConditionQuery += " AND LotMst.LotCmpVou='" + companyId + "'";
+                    //whereConditionQuery += " AND InwMst.InwCmpVou='" + companyId + "'";
+                    whereConditionQuery += " AND InwMst.InwCmpVou= (select top 1 DepVou from DepartmentMst where DepCmpCdN=" + companyId + ")";
                 }
                 if (!string.IsNullOrWhiteSpace(accountid))
                 {
-                    whereConditionQuery += " AND LotMst.LotAccVou='" + accountid + "'";
+                    whereConditionQuery += " AND InwMst.InwAccVou='" + accountid + "'";
                 }
                 if (!string.IsNullOrWhiteSpace(coiltype))
                 {
-                    whereConditionQuery += " AND LotMst.LotCoilType='" + coiltype + "'";
+                    whereConditionQuery += " AND InwTrn.IntCoilType='" + coiltype + "'";
                 }
                 if (!string.IsNullOrWhiteSpace(supcoilno))
                 {
-                    whereConditionQuery += " AND LotMst.LotSupCoilNo='" + supcoilno + "'";
+                    whereConditionQuery += " AND InwTrn.IntSupCoilNo='" + supcoilno + "'";
                 }
-                //}
-                //else
-                //{
-                //    if (!string.IsNullOrWhiteSpace(coilNo))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.CoilNo='" + coilNo + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(frWidth))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.Width>='" + frWidth + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(toWidth))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.Width<='" + toWidth + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(frthick))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.Thick>='" + frthick + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(tothick))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.Thick<='" + tothick + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(frWeigth))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.Qty >='" + frWeigth + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(toWeigth))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.Qty <='" + toWeigth + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(gradeid))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.GrdVou='" + gradeid + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(frRecDt))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.RecDt>='" + frRecDt + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(toRecDt))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.RecDt<='" + toRecDt + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(frIssDt))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.IssDt>='" + frIssDt + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(toIssDt))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.IssDt<='" + toIssDt + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(stockYNid))
-                //    {
-                //        if (stockYNid == "1")
-                //        {
-                //            whereConditionQuery += " AND CoilMst.Process = 'YES'";
-                //        }
-                //        else if (stockYNid == "2")
-                //        {
-                //            whereConditionQuery += " AND CoilMst.Process = 'NO'";
-                //        }
-                //        else if (stockYNid == "3")
-                //        {
-                //            whereConditionQuery += " AND CoilMst.Process = 'INP'";
-                //        }
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(godownid))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.GdnVou='" + godownid + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(companyid))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.CmpVou='" + companyid + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(accountid))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.AccVou='" + accountid + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(coiltype))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.CoilType='" + coiltype + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(supcoilno))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.SupCoilNo='" + supcoilno + "'";
-                //    }
-                //}
+
                 getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                 if (getReportDataModel.IsError)
                 {
@@ -368,112 +283,25 @@ namespace SUNMark.Controllers
                 //}
                 if (!string.IsNullOrWhiteSpace(godownid))
                 {
-                    whereConditionQuery += " AND LotMst.LotGdnVou='" + godownid + "'";
+                    whereConditionQuery += " AND InwTrn.IntGdnVou='" + godownid + "'";
                 }
                 if (!string.IsNullOrWhiteSpace(companyid))
                 {
-                    whereConditionQuery += " AND LotMst.LotCmpVou='" + companyid + "'";
+                    //whereConditionQuery += " AND InwMst.InwCmpVou='" + companyid + "'";
+                    whereConditionQuery += " AND InwMst.InwCmpVou= (select top 1 DepVou from DepartmentMst where DepCmpCdN=" + companyId + ")";
                 }
                 if (!string.IsNullOrWhiteSpace(accountid))
                 {
-                    whereConditionQuery += " AND LotMst.LotAccVou='" + accountid + "'";
+                    whereConditionQuery += " AND InwMst.InwAccVou='" + accountid + "'";
                 }
                 if (!string.IsNullOrWhiteSpace(coiltype))
                 {
-                    whereConditionQuery += " AND LotMst.LotCoilType='" + coiltype + "'";
+                    whereConditionQuery += " AND InwTrn.IntCoilType='" + coiltype + "'";
                 }
                 if (!string.IsNullOrWhiteSpace(supcoilno))
                 {
-                    whereConditionQuery += " AND LotMst.LotSupCoilNo='" + supcoilno + "'";
+                    whereConditionQuery += " AND InwTrn.IntSupCoilNo='" + supcoilno + "'";
                 }
-                //}
-                //else
-                //{
-                //    if (!string.IsNullOrWhiteSpace(coilNo))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.CoilNo='" + coilNo + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(frWidth))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.Width>='" + frWidth + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(toWidth))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.Width<='" + toWidth + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(frthick))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.Thick>='" + frthick + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(tothick))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.Thick<='" + tothick + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(frWeigth) && frWeigth != "0")
-                //    {
-                //        whereConditionQuery += " AND CoilMst.Qty >='" + frWeigth + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(toWeigth) && toWeigth != "0")
-                //    {
-                //        whereConditionQuery += " AND CoilMst.Qty <='" + toWeigth + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(gradeid))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.GrdVou='" + gradeid + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(frRecDt))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.RecDt>='" + frRecDt + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(toRecDt))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.RecDt<='" + toRecDt + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(frIssDt))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.IssDt>='" + frIssDt + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(toIssDt))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.IssDt<='" + toIssDt + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(stockYNid))
-                //    {
-                //        if (stockYNid == "1")
-                //        {
-                //            whereConditionQuery += " AND CoilMst.Process = 'YES'";
-                //        }
-                //        else if (stockYNid == "2")
-                //        {
-                //            whereConditionQuery += " AND CoilMst.Process = 'NO'";
-                //        }
-                //        else if (stockYNid == "3")
-                //        {
-                //            whereConditionQuery += " AND CoilMst.Process = 'INP'";
-                //        }
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(godownid))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.GdnVou='" + godownid + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(companyid))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.CmpVou='" + companyid + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(accountid))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.AccVou='" + accountid + "'";
-                //    }
-                //    if (!string.IsNullOrWhiteSpace(coiltype))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.CoilType='" + coiltype + "'";
-                //    }
-
-                //    if (!string.IsNullOrWhiteSpace(supcoilno))
-                //    {
-                //        whereConditionQuery += " AND CoilMst.SupCoilNo='" + supcoilno + "'";
-                //    }
-                //}
 
                 getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, userId, 0, "", 0, 1, whereConditionQuery);
                 if (type == 1)
