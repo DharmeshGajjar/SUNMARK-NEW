@@ -15,7 +15,7 @@ namespace SUNMark.Controllers
         DbConnection ObjDBConnection = new DbConnection();
         ProductHelpers objProductHelper = new ProductHelpers();
         TaxMasterHelpers ObjTaxMasterHelpers = new TaxMasterHelpers();
-
+        //Chirag Changes
 
         public IActionResult Index(long id)
         {
@@ -109,8 +109,68 @@ namespace SUNMark.Controllers
                 //DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("RPT_INWARDREGISTER", sqlParameters);
 
                 string whereConditionQuery = string.Empty;
-                //if (gridMstId != 35)
+                if (!string.IsNullOrWhiteSpace(coilNo))
+                {
+                    whereConditionQuery += " AND LotMst.LotCoilNo='" + coilNo + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(gradeid))
+                {
+                    whereConditionQuery += " AND LotMst.LotGrdMscVou='" + gradeid + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(frRecDt))
+                {
+                    whereConditionQuery += " AND LotMst.LotDt>='" + frRecDt + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(toRecDt))
+                {
+                    whereConditionQuery += " AND LotMst.LotDt<='" + toRecDt + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(companyid))
+                {
+                    whereConditionQuery += " AND LotMst.LotCmpVou='" + companyId + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(accountid))
+                {
+                    whereConditionQuery += " AND LotMst.LotAccVou='" + accountid + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(supcoilno))
+                {
+                    whereConditionQuery += " AND LotMst.LotSupCoilNo='" + supcoilno + "'";
+                }
+
+                //if (!string.IsNullOrWhiteSpace(frWidth))
                 //{
+<<<<<<< HEAD
+                //    whereConditionQuery += " AND LotMst.LotWidth>='" + frWidth + "'";
+                //}
+                //if (!string.IsNullOrWhiteSpace(toWidth))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotWidth<='" + toWidth + "'";
+                //}
+                //if (!string.IsNullOrWhiteSpace(frthick))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotThick>='" + frthick + "'";
+                //}
+                //if (!string.IsNullOrWhiteSpace(tothick))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotThick<='" + tothick + "'";
+                //}
+                //if (!string.IsNullOrWhiteSpace(frWeigth))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotQty >='" + frWeigth + "'";
+                //}
+                //if (!string.IsNullOrWhiteSpace(toWeigth))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotQty <='" + toWeigth + "'";
+                //}
+
+                //if (!string.IsNullOrWhiteSpace(frIssDt))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotIssDt>='" + frIssDt + "'";
+                //}
+                //if (!string.IsNullOrWhiteSpace(toIssDt))
+                //{
+=======
                 if (!string.IsNullOrWhiteSpace(coilNo))
                 {
                     whereConditionQuery += " AND LotMst.LotCoilNo='" + coilNo + "'";
@@ -157,6 +217,7 @@ namespace SUNMark.Controllers
                 //}
                 //if (!string.IsNullOrWhiteSpace(toIssDt))
                 //{
+>>>>>>> c31807c39946ca2285c55f1fe8b2a01f4fe4137c
                 //    whereConditionQuery += " AND LotMst.LotIssDt<='" + toIssDt + "'";
                 //}
                 //if (!string.IsNullOrWhiteSpace(stockYNid))
@@ -174,6 +235,17 @@ namespace SUNMark.Controllers
                 //        whereConditionQuery += " AND LotMst.LotComYN = '1'";
                 //    }
                 //}
+<<<<<<< HEAD
+                //if (!string.IsNullOrWhiteSpace(godownid))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotGdnVou='" + godownid + "'";
+                //}
+
+                //if (!string.IsNullOrWhiteSpace(coiltype))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotCoilType='" + coiltype + "'";
+                //}
+=======
                 if (!string.IsNullOrWhiteSpace(godownid))
                 {
                     whereConditionQuery += " AND InwTrn.IntGdnVou='" + godownid + "'";
@@ -195,6 +267,7 @@ namespace SUNMark.Controllers
                 {
                     whereConditionQuery += " AND InwTrn.IntSupCoilNo='" + supcoilno + "'";
                 }
+>>>>>>> c31807c39946ca2285c55f1fe8b2a01f4fe4137c
 
                 getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                 if (getReportDataModel.IsError)
@@ -224,15 +297,26 @@ namespace SUNMark.Controllers
 
                 //SqlParameter[] sqlParameters = new SqlParameter[1];
                 //sqlParameters[0] = new SqlParameter("@SESSID", userId);
+<<<<<<< HEAD
+                //DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("RPT_INWARDREGISTER", sqlParameters);
+
+                string whereConditionQuery = string.Empty;
+=======
                 //DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("RPT_COILMASTER", sqlParameters);
 
                 string whereConditionQuery = string.Empty;
                 //if (gridMstId != 35)
                 //{
+>>>>>>> c31807c39946ca2285c55f1fe8b2a01f4fe4137c
                 if (!string.IsNullOrWhiteSpace(coilNo))
                 {
                     whereConditionQuery += " AND LotMst.LotCoilNo='" + coilNo + "'";
                 }
+<<<<<<< HEAD
+                if (!string.IsNullOrWhiteSpace(gradeid))
+                {
+                    whereConditionQuery += " AND LotMst.LotGrdMscVou='" + gradeid + "'";
+=======
                 if (!string.IsNullOrWhiteSpace(frWidth))
                 {
                     whereConditionQuery += " AND LotMst.LotWidth>='" + frWidth + "'";
@@ -301,7 +385,86 @@ namespace SUNMark.Controllers
                 if (!string.IsNullOrWhiteSpace(supcoilno))
                 {
                     whereConditionQuery += " AND InwTrn.IntSupCoilNo='" + supcoilno + "'";
+>>>>>>> c31807c39946ca2285c55f1fe8b2a01f4fe4137c
                 }
+                if (!string.IsNullOrWhiteSpace(frRecDt))
+                {
+                    whereConditionQuery += " AND LotMst.LotDt>='" + frRecDt + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(toRecDt))
+                {
+                    whereConditionQuery += " AND LotMst.LotDt<='" + toRecDt + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(companyid))
+                {
+                    whereConditionQuery += " AND LotMst.LotCmpVou='" + companyId + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(accountid))
+                {
+                    whereConditionQuery += " AND LotMst.LotAccVou='" + accountid + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(supcoilno))
+                {
+                    whereConditionQuery += " AND LotMst.LotSupCoilNo='" + supcoilno + "'";
+                }
+
+                //if (!string.IsNullOrWhiteSpace(frWidth))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotWidth>='" + frWidth + "'";
+                //}
+                //if (!string.IsNullOrWhiteSpace(toWidth))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotWidth<='" + toWidth + "'";
+                //}
+                //if (!string.IsNullOrWhiteSpace(frthick))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotThick>='" + frthick + "'";
+                //}
+                //if (!string.IsNullOrWhiteSpace(tothick))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotThick<='" + tothick + "'";
+                //}
+                //if (!string.IsNullOrWhiteSpace(frWeigth))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotQty >='" + frWeigth + "'";
+                //}
+                //if (!string.IsNullOrWhiteSpace(toWeigth))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotQty <='" + toWeigth + "'";
+                //}
+
+                //if (!string.IsNullOrWhiteSpace(frIssDt))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotIssDt>='" + frIssDt + "'";
+                //}
+                //if (!string.IsNullOrWhiteSpace(toIssDt))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotIssDt<='" + toIssDt + "'";
+                //}
+                //if (!string.IsNullOrWhiteSpace(stockYNid))
+                //{
+                //    if (stockYNid == "1")
+                //    {
+                //        whereConditionQuery += " AND isnull(LotMst.LotIssDt,'') = ''";
+                //    }
+                //    else if (stockYNid == "2")
+                //    {
+                //        whereConditionQuery += " AND isnull(LotMst.LotIssDt,'') <> ''";
+                //    }
+                //    else if (stockYNid == "3")
+                //    {
+                //        whereConditionQuery += " AND LotMst.LotComYN = '1'";
+                //    }
+                //}
+                //if (!string.IsNullOrWhiteSpace(godownid))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotGdnVou='" + godownid + "'";
+                //}
+
+                //if (!string.IsNullOrWhiteSpace(coiltype))
+                //{
+                //    whereConditionQuery += " AND LotMst.LotCoilType='" + coiltype + "'";
+                //}
 
                 getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, userId, 0, "", 0, 1, whereConditionQuery);
                 if (type == 1)

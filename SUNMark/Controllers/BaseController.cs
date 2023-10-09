@@ -264,6 +264,8 @@ namespace SUNMark.Controllers
                             Query += " )";
                         }
 
+                        
+                        
                         if (dtGridShortTrn != null && dtGridShortTrn.Rows.Count > 0)
                         {
                             Query += " Order by ";
@@ -279,6 +281,7 @@ namespace SUNMark.Controllers
                         {
                             Query += " " + dtGridMst.Rows[0]["GrdQryOrderBy"].ToString();
                         }
+
                         parameters = new SqlParameter[1];
                         Query = Query.Replace("@#CMPVOU#@", companyId.ToString());
                         Query = Query.Replace("@#CLIVOU#@", clientId.ToString());
