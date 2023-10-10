@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@model SUNMark.Models.JobWorkEntryModel
+@using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{ Layout = "~/Views/Shared/_Layout.cshtml";
     int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
@@ -129,7 +130,7 @@
                                                 <label class="form-check-label" for="radio2">WhatApp</label>
                                             </div>
                                             <div class="col-md-10 form-group">
-                                                <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "             />
+                                                <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "              />
                                             </div>
                                         </div>
                                     </div>
@@ -147,6 +148,32 @@
                         {
                             <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
                                 <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
+                                    <div class="row mt-3">
+                                        <div class="col-md-2">
+                                            <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                From Fin.Dt. <span class="required"></span>
+                                            </label>
+                                            <div class="form-outline form-white mb-2">
+                                                @Html.TextBoxFor(x => x.FrFinDt, new { @class = "form-control form-control-lg", @placeholder = "From Comp.Dt", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                To Fin.Dt <span class="required"></span>
+                                            </label>
+                                            <div class="form-outline form-white mb-2">
+                                                @Html.TextBoxFor(x => x.ToFinDt, new { @class = "form-control form-control-lg", @placeholder = "To Comp.Dt", @tabindex = "2", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5 mt-1 text-right">
+                                            <button class="btn btn-primary px-4 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick=" loadData();">
+                                                View (Alt+V)
+                                            </button>
+                                            <a href="/JobWorkEntry/index" class="btn btn-warning px-4 text-dark" style="font-family:Verdana;font-size:medium">
+                                                Cancel (Esc)
+                                            </a>
+                                        </div>
+                                    </div>
                                     <div class="col-md-12 col-12 mb-2 mt-2">
                                         <div class="row">
 
@@ -915,7 +942,7 @@
                         $("#btn_ViewMailWhatapp").click();
                     }
                     else {
-                      var result =   AddJobkWorkEntry(event);
+                        var result = AddJobkWorkEntry(event);
                         $("#btnPrint").click();
                     }
                 }).on('F10', function () {
@@ -1034,11 +1061,13 @@
         if (!sortBy) {
             sortBy = '';
         }
+        var frFinDt = $('#FrFinDt').val();
+        var toFinDt = $('#ToFinDt').val();
         $('.dataTable').html();
         $.ajax({
             url: '/JobWorkEntry/GetReportView',
             type: 'GET',
-            data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+            data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy, frFinDt: frFinDt, toFinDt: toFinDt },
             dataType: 'HTML',
             traditional: true, // add this
             success: function (data) {
@@ -1054,10 +1083,14 @@
     }
 
     $('#btnExportToExcel').click(function () {
-        window.location.href = "/JobWorkEntry/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+        var frFinDt = $('#FrFinDt').val();
+        var toFinDt = $('#ToFinDt').val();
+        window.location.href = "/JobWorkEntry/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1" + "&frFinDt=" + frFinDt + "&toFinDt=" + toFinDt;
     })
     $('#btnExportToPDF').click(function () {
-        window.location.href = "/JobWorkEntry/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+        var frFinDt = $('#FrFinDt').val();
+        var toFinDt = $('#ToFinDt').val();
+        window.location.href = "/JobWorkEntry/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2" + "&frFinDt=" + frFinDt + "&toFinDt=" + toFinDt;
     })
 
     //$('#btnPrint').click(function () {
