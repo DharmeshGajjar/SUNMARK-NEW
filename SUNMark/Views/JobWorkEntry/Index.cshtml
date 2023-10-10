@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@model SUNMark.Models.JobWorkEntryModel
+@using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{ Layout = "~/Views/Shared/_Layout.cshtml";
     int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
@@ -129,7 +130,7 @@
                                                 <label class="form-check-label" for="radio2">WhatApp</label>
                                             </div>
                                             <div class="col-md-10 form-group">
-                                                <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "             />
+                                                <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "              />
                                             </div>
                                         </div>
                                     </div>
@@ -915,7 +916,7 @@
                         $("#btn_ViewMailWhatapp").click();
                     }
                     else {
-                      var result =   AddJobkWorkEntry(event);
+                        var result = AddJobkWorkEntry(event);
                         $("#btnPrint").click();
                     }
                 }).on('F10', function () {

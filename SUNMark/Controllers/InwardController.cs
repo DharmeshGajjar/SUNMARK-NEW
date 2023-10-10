@@ -141,6 +141,7 @@ namespace SUNMark.Controllers
                             inwardModel.Inward.IntRemksCoil = new string[DtInwMst.Rows.Count];
                             inwardModel.Inward.IntCoilPrefix = new string[DtInwMst.Rows.Count];
                             inwardModel.Inward.IntSufix = new string[DtInwMst.Rows.Count];
+                            inwardModel.Inward.IntCoilType = new string[DtInwMst.Rows.Count];
                         }
                         else if (ptynm == "PIPE" || ptynm == "Pipe" || ptynm == "SEAMLESS PIPE" || ptynm == "seamless pipe")
                         {
@@ -183,6 +184,7 @@ namespace SUNMark.Controllers
                                 inwardModel.Inward.CoilNo[i] = DtInwMst.Rows[i]["IntCoilNo"].ToString();
                                 inwardModel.Inward.IntCoilPrefix[i] = DtInwMst.Rows[i]["IntPrefix"].ToString().Trim();
                                 inwardModel.Inward.IntSufix[i] = Convert.ToString(DtInwMst.Rows[i]["IntSufix"].ToString());
+                                inwardModel.Inward.IntCoilType[i] = DtInwMst.Rows[i]["IntCoilTypeVou"].ToString();
                             }
                             else if (ptynm == "PIPE" || ptynm == "Pipe" || ptynm == "SEAMLESS PIPE" || ptynm == "seamless pipe")
                             {
@@ -335,7 +337,7 @@ namespace SUNMark.Controllers
 
                                     if (inwardModel.Inward.IntQtyCoil[i] != null && inwardModel.Inward.IntQtyCoil[i] != 0 && inwardModel.Inward.IntQtyCoil[i] > 0)
                                     {
-                                        SqlParameter[] parameter = new SqlParameter[25];
+                                        SqlParameter[] parameter = new SqlParameter[26];
                                         parameter[0] = new SqlParameter("@IntInwVou", masterId);
                                         parameter[1] = new SqlParameter("@IntSrNo", (i + 1));
                                         parameter[2] = new SqlParameter("@IntPrdVou", "0");
@@ -368,6 +370,7 @@ namespace SUNMark.Controllers
                                         parameter[22] = new SqlParameter("@IntCoilPrefix", inwardModel.Inward.IntCoilPrefix[i + 1]);
                                         parameter[23] = new SqlParameter("@IntCoilNo", inwardModel.Inward.CoilNo[i]);
                                         parameter[24] = new SqlParameter("@IntSufix", inwardModel.Inward.IntSufix[i]);
+                                        parameter[25] = new SqlParameter("@IntCoilTypeVou", inwardModel.Inward.IntCoilType[i]);
                                         DataTable DtInwTrn = ObjDBConnection.CallStoreProcedure("InwardTrn_Insert", parameter);
                                     }
                                 }
@@ -550,7 +553,7 @@ namespace SUNMark.Controllers
                                 {
                                     if (inwardModel.Inward.IntThickPipe[i] != null && inwardModel.Inward.IntThickPipe[i] != 0 && inwardModel.Inward.IntThickPipe[i] > 0)
                                     {
-                                        SqlParameter[] parameter = new SqlParameter[25];
+                                        SqlParameter[] parameter = new SqlParameter[26];
                                         parameter[0] = new SqlParameter("@IntInwVou", masterId);
                                         parameter[1] = new SqlParameter("@IntSrNo", (i + 1));
                                         parameter[2] = new SqlParameter("@IntPrdVou", 0);
@@ -584,6 +587,7 @@ namespace SUNMark.Controllers
                                         parameter[22] = new SqlParameter("@IntCoilPrefix", "");
                                         parameter[23] = new SqlParameter("@IntCoilNo", "");
                                         parameter[24] = new SqlParameter("@IntSufix", "");
+                                        parameter[25] = new SqlParameter("@IntCoilTypeVou", 0);
                                         DataTable DtInwTrn = ObjDBConnection.CallStoreProcedure("InwardTrn_Insert", parameter);
                                     }
                                 }
@@ -767,7 +771,7 @@ namespace SUNMark.Controllers
                                 {
                                     if (inwardModel.Inward.IntQtyOther[i] != null && inwardModel.Inward.IntQtyOther[i] != 0 && inwardModel.Inward.IntQtyOther[i] > 0)
                                     {
-                                        SqlParameter[] parameter = new SqlParameter[25];
+                                        SqlParameter[] parameter = new SqlParameter[26];
                                         parameter[0] = new SqlParameter("@IntInwVou", masterId);
                                         parameter[1] = new SqlParameter("@IntSrNo", (i + 1));
                                         parameter[2] = new SqlParameter("@IntPrdVou", inwardModel.Inward.IntPrdVou[i]);
@@ -807,6 +811,7 @@ namespace SUNMark.Controllers
                                         parameter[22] = new SqlParameter("@IntCoilPrefix", "");
                                         parameter[23] = new SqlParameter("@IntCoilNo", "");
                                         parameter[24] = new SqlParameter("@IntSufix", "");
+                                        parameter[25] = new SqlParameter("@IntCoilTypeVou", 0);
                                         DataTable DtInwTrn = ObjDBConnection.CallStoreProcedure("InwardTrn_Insert", parameter);
                                     }
                                 }
