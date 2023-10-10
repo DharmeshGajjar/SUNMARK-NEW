@@ -509,7 +509,7 @@ namespace SUNMark.Controllers
             }
         }
 
-        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby)
+        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string frFinDt, string toFinDt)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -535,7 +535,16 @@ namespace SUNMark.Controllers
                     {
                         startRecord = (pageIndex - 1) * pageSize;
                     }
-                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId);
+                    string whereConditionQuery = string.Empty;
+                    if (!string.IsNullOrWhiteSpace(frFinDt))
+                    {
+                        whereConditionQuery += " WHERE JobMst.JobComDt>='" + frFinDt + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(toFinDt))
+                    {
+                        whereConditionQuery += " AND JobMst.JobComDt<='" + toFinDt + "'";
+                    }
+                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                     if (getReportDataModel.IsError)
                     {
                         ViewBag.Query = getReportDataModel.Query;
@@ -552,7 +561,7 @@ namespace SUNMark.Controllers
             return PartialView("_reportView", getReportDataModel);
         }
 
-        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type)
+        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string frFinDt, string toFinDt)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -562,7 +571,16 @@ namespace SUNMark.Controllers
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
                 //getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, 0, "", 0, 1);
-                getReportDataModel = getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, YearId, "", 0, 1);
+                string whereConditionQuery = string.Empty;
+                if (!string.IsNullOrWhiteSpace(frFinDt))
+                {
+                    whereConditionQuery += " WHERE JobMst.JobComDt>='" + frFinDt + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(toFinDt))
+                {
+                    whereConditionQuery += " AND JobMst.JobComDt<='" + toFinDt + "'";
+                }
+                getReportDataModel = getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, YearId, "", 0, 1, whereConditionQuery);
                 if (type == 1)
                 {
                     var bytes = Excel(getReportDataModel, "Job Work Entry", companyDetails.CmpName);

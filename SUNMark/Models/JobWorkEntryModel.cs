@@ -64,6 +64,8 @@ namespace SUNMark.Models
         public List<JobWorkEntrySplit> JobWorkEntrySplitsList { get; set; }
 
         public List<JobWorkEntrySlit> JobWorkEntrySlitsList { get; set; }
+        public string FrFinDt { get; set; }
+        public string ToFinDt { get; set; }
     }
 
     public class JobWorkEntrySplit
