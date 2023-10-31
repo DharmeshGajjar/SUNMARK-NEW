@@ -1070,5 +1070,38 @@ namespace SUNMark.Classes
             }
             return productList;
         }
+
+        public List<SelectListItem> GetPrTypeMasterDropdown(int companyId, int isAdministrator)
+        {
+            List<SelectListItem> GradeList = new List<SelectListItem>();
+            try
+            {
+                SqlParameter[] sqlParameters = new SqlParameter[6];
+                sqlParameters[0] = new SqlParameter("@VOU", 0);
+                sqlParameters[1] = new SqlParameter("@Type", "GRD");
+                sqlParameters[2] = new SqlParameter("@Flg", 2);
+                sqlParameters[3] = new SqlParameter("@skiprecord", 0);
+                sqlParameters[4] = new SqlParameter("@pagesize", 0);
+                //if (isAdministrator == 1)
+                //    companyId = 0;
+                sqlParameters[5] = new SqlParameter("@CmpVou", companyId);
+                DataTable DtGradeList = ObjDBConnection.CallStoreProcedure("GetMscMstDetails", sqlParameters);
+                if (DtGradeList != null && DtGradeList.Rows.Count > 0)
+                {
+                    for (int i = 0; i < DtGradeList.Rows.Count; i++)
+                    {
+                        SelectListItem GradeItem = new SelectListItem();
+                        GradeItem.Text = DtGradeList.Rows[i]["MscNm"].ToString();
+                        GradeItem.Value = DtGradeList.Rows[i]["MscVou"].ToString();
+                        GradeList.Add(GradeItem);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return GradeList;
+        }
     }
 }

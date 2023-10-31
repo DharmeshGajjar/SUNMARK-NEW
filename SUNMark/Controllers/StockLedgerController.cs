@@ -15,6 +15,7 @@ namespace SUNMark.Controllers
         DbConnection ObjDBConnection = new DbConnection();
         ProductHelpers objProductHelper = new ProductHelpers();
         TaxMasterHelpers ObjTaxMasterHelpers = new TaxMasterHelpers();
+        AccountMasterHelpers ObjAccountMasterHelpers = new AccountMasterHelpers();
 
         public IActionResult Index(long id)
         {
@@ -45,6 +46,9 @@ namespace SUNMark.Controllers
                 stockLedgerModel.RecIssList = objProductHelper.GetRecIss();
                 stockLedgerModel.ProductList = objProductHelper.GetProductMasterDropdown(companyId);
                 stockLedgerModel.StockYNList = objProductHelper.GetStockYN();
+                stockLedgerModel.GradeList = objProductHelper.GetGradeMasterDropdown(companyId, 0);
+                stockLedgerModel.FinishList = objProductHelper.GetFinishMasterDropdown(companyId, 0);
+                stockLedgerModel.NBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
             }
             catch (Exception ex)
             {
@@ -81,7 +85,7 @@ namespace SUNMark.Controllers
             #endregion
         }
 
-        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string companyid, string trnType, string recIssID, string productid, string vNo, string frDt, string toDt, string stockid, string thick, string width, string qty, string od, string nb, string sch)
+        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string companyid, string trnType, string recIssID, string productid, string vNo, string frDt, string toDt, string stockid, string thick, string width, string qty, string od, string nb, string sch, string grade, string finish)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -100,13 +104,19 @@ namespace SUNMark.Controllers
                 ViewBag.userRight = userFormRights;
                 #endregion
 
+                //if (productid == "" || productid == "0" || productid == null)
+                //{
+                //    SetErrorMessage("Please select Product Type!!!");
+                //    return PartialView("_reportView");
+                //}
+
                 double startRecord = 0;
                 if (pageIndex > 0)
                 {
                     startRecord = (pageIndex - 1) * pageSize;
                 }
 
-                SqlParameter[] sqlParameters = new SqlParameter[16];
+                SqlParameter[] sqlParameters = new SqlParameter[18];
                 sqlParameters[0] = new SqlParameter("@CmpVou", companyid);
                 if (trnType == "Select")
                 {
@@ -130,6 +140,8 @@ namespace SUNMark.Controllers
                 sqlParameters[13] = new SqlParameter("@NB", nb);
                 sqlParameters[14] = new SqlParameter("@Sch", sch);
                 sqlParameters[15] = new SqlParameter("@GUID", guid);
+                sqlParameters[16] = new SqlParameter("@Grade", grade);
+                sqlParameters[17] = new SqlParameter("@Finish", finish);
                 DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("GetStockLedgerDetails", sqlParameters);
 
 
@@ -138,38 +150,14 @@ namespace SUNMark.Controllers
                 {
                     whereConditionQuery += " AND StkLedger.StkCmpVou='" + companyId + "'";
                 }
-                //if (!string.IsNullOrWhiteSpace(trnType))
-                //{
-                //    whereConditionQuery += " AND StkLedger.StkTrnType='" + trnType + "'";
-                //}
-                //if (!string.IsNullOrWhiteSpace(recIssID))
-                //{
-                //    if (recIssID = 2)
-                //    {
-                //        whereConditionQuery += " AND LotMst.LotIR='R'";
-                //    }
-                //    else if (recIssID = 3)
-                //    {
-                //        whereConditionQuery += " AND LotMst.LotIR='I'";
-                //    }
-                //}
                 if (!string.IsNullOrWhiteSpace(vNo))
                 {
                     whereConditionQuery += " AND StkLedger.StkVNo='" + vNo + "'";
                 }
-                if (!string.IsNullOrWhiteSpace(frDt))
+                if (!string.IsNullOrWhiteSpace(guid))
                 {
-                    whereConditionQuery += " AND StkLedger.StkDt>='" + frDt + "'";
+                    whereConditionQuery += " AND StkLedger.StkGUID='" + guid + "'";
                 }
-                if (!string.IsNullOrWhiteSpace(toDt))
-                {
-                    whereConditionQuery += " AND StkLedger.StkDt<='" + toDt + "'";
-                }
-                //if (!string.IsNullOrWhiteSpace(stockid))
-                //{
-                //    whereConditionQuery += " AND LotMst.LotWeight='" + stockYNid + "'";
-                //}
-
                 getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                 if (getReportDataModel.IsError)
                 {
@@ -186,7 +174,7 @@ namespace SUNMark.Controllers
             return PartialView("_reportView", getReportDataModel);
         }
 
-        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string companyid, string trnType, string recIssID, string productid, string vNo, string frDt, string toDt, string stockid, string thick, string width, string qty, string od, string nb, string sch)
+        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string companyid, string trnType, string recIssID, string productid, string vNo, string frDt, string toDt, string stockid, string thick, string width, string qty, string od, string nb, string sch, string grade, string finish)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -197,9 +185,16 @@ namespace SUNMark.Controllers
                 string guid = GetStringSession("LoginGUID");
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
 
-                SqlParameter[] sqlParameters = new SqlParameter[16];
+                SqlParameter[] sqlParameters = new SqlParameter[18];
                 sqlParameters[0] = new SqlParameter("@CmpVou", companyid);
-                sqlParameters[1] = new SqlParameter("@TrnType", trnType);
+                if (trnType == "Select")
+                {
+                    sqlParameters[1] = new SqlParameter("@TrnType", "");
+                }
+                else
+                {
+                    sqlParameters[1] = new SqlParameter("@TrnType", trnType);
+                }
                 sqlParameters[2] = new SqlParameter("@RecIss", '0');
                 sqlParameters[3] = new SqlParameter("@PrdVou", productid);
                 sqlParameters[4] = new SqlParameter("@VNo", vNo);
@@ -207,13 +202,15 @@ namespace SUNMark.Controllers
                 sqlParameters[6] = new SqlParameter("@ToDt", toDt);
                 sqlParameters[7] = new SqlParameter("@Stock", 0);
                 sqlParameters[8] = new SqlParameter("@UserID", userId);
-                sqlParameters[9] = new SqlParameter("@Thick", thick == null ? 0: Convert.ToDecimal(thick));
-                sqlParameters[10] = new SqlParameter("@Width", width== null ? 0 : Convert.ToDecimal(width));
+                sqlParameters[9] = new SqlParameter("@Thick", thick == null ? 0 : Convert.ToDecimal(thick));
+                sqlParameters[10] = new SqlParameter("@Width", width == null ? 0 : Convert.ToDecimal(width));
                 sqlParameters[11] = new SqlParameter("@Qty", qty == null ? 0 : Convert.ToDecimal(qty));
                 sqlParameters[12] = new SqlParameter("@OD", od == null ? 0 : Convert.ToDecimal(od));
                 sqlParameters[13] = new SqlParameter("@NB", nb == null ? 0 : Convert.ToDecimal(nb));
                 sqlParameters[14] = new SqlParameter("@Sch", sch == null ? 0 : Convert.ToDecimal(sch));
                 sqlParameters[15] = new SqlParameter("@GUID", guid);
+                sqlParameters[16] = new SqlParameter("@Grade", grade);
+                sqlParameters[17] = new SqlParameter("@Finish", finish);
                 DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("GetStockLedgerDetails", sqlParameters);
 
                 string whereConditionQuery = string.Empty;
@@ -221,37 +218,14 @@ namespace SUNMark.Controllers
                 {
                     whereConditionQuery += " AND StkLedger.StkCmpVou='" + companyId + "'";
                 }
-                //if (!string.IsNullOrWhiteSpace(trnType))
-                //{
-                //    whereConditionQuery += " AND StkLedger.StkTrnType='" + trnType + "'";
-                //}
-                //if (!string.IsNullOrWhiteSpace(recIssID))
-                //{
-                //    if (recIssID = 2)
-                //    {
-                //        whereConditionQuery += " AND LotMst.LotIR='R'";
-                //    }
-                //    else if (recIssID = 3)
-                //    {
-                //        whereConditionQuery += " AND LotMst.LotIR='I'";
-                //    }
-                //}
                 if (!string.IsNullOrWhiteSpace(vNo))
                 {
                     whereConditionQuery += " AND StkLedger.StkVNo='" + vNo + "'";
                 }
-                if (!string.IsNullOrWhiteSpace(frDt))
+                if (!string.IsNullOrWhiteSpace(guid))
                 {
-                    whereConditionQuery += " AND StkLedger.StkDt>='" + frDt + "'";
+                    whereConditionQuery += " AND StkLedger.StkGUID='" + guid + "'";
                 }
-                if (!string.IsNullOrWhiteSpace(toDt))
-                {
-                    whereConditionQuery += " AND StkLedger.StkDt<='" + toDt + "'";
-                }
-                //if (!string.IsNullOrWhiteSpace(stockid))
-                //{
-                //    whereConditionQuery += " AND LotMst.LotWeight='" + stockYNid + "'";
-                //}
                 getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, 0, "", 0, 1, whereConditionQuery);
                 if (type == 1)
                 {
@@ -267,7 +241,7 @@ namespace SUNMark.Controllers
                     //address += companyDetails.CmpAdd == null ? "" :(companyDetails.CmpAdd + "," ) ;
                     //address +=  frDt != null ?"From Date : " + frDt  + "," : "";
                     //address += address + toDt != null ?"To Date : " + toDt  : "";
-                    
+
                     var bytes = PDF(getReportDataModel, "Stock Ledger Report", companyDetails.CmpName, companyid);
                     return File(
                             bytes,

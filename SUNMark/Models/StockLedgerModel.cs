@@ -30,6 +30,7 @@ namespace SUNMark.Models
         public string Width { get; set; }
         public string Qty { get; set; }
         public string OD { get; set; }
+        public List<SelectListItem> NBList { get; set; }
         public string NB { get; set; }
         public string Sch { get; set; }
         public string FrDt { get; set; }
@@ -44,6 +45,10 @@ namespace SUNMark.Models
         public string Shift { get; set; }
         public int MachineVou { get; set; }
         public List<SelectListItem> MachineList { get; set; }
+        public int GradeVou { get; set; }
+        public List<SelectListItem> GradeList { get; set; }
+        public int FinishVou { get; set; }
+        public List<SelectListItem> FinishList { get; set; }
         public string Machine { get; set; }
     }
     public class MillingPrintDetails
