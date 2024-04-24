@@ -469,12 +469,13 @@ namespace SUNMark.Classes
                 DataTable DtGradeList = ObjDBConnection.CallStoreProcedure("GetMscMstDetails", sqlParameters);
                 if (DtGradeList != null && DtGradeList.Rows.Count > 0)
                 {
+                    SelectListItem GradeItem = new SelectListItem();
                     for (int i = 0; i < DtGradeList.Rows.Count; i++)
                     {
-                        SelectListItem GradeItem = new SelectListItem();
-                        GradeItem.Text = DtGradeList.Rows[i]["MscNm"].ToString();
-                        GradeItem.Value = DtGradeList.Rows[i]["MscVou"].ToString();
-                        GradeList.Add(GradeItem);
+                        SelectListItem GradeItem1 = new SelectListItem();
+                        GradeItem1.Text = DtGradeList.Rows[i]["MscNm"].ToString();
+                        GradeItem1.Value = DtGradeList.Rows[i]["MscVou"].ToString();
+                        GradeList.Add(GradeItem1);
                     }
                 }
             }
@@ -549,20 +550,21 @@ namespace SUNMark.Classes
             return FinishList;
         }
 
-        public List<SelectListItem> GetLotPrcTypMasterDropdown(int companyId, int isAdministrator)
+        public List<SelectListItem> GetLotPrcTypMasterDropdown(int companyId, int isAdministrator, string condi)
         {
             List<SelectListItem> FinishList = new List<SelectListItem>();
             try
             {
-                SqlParameter[] sqlParameters = new SqlParameter[6];
+                SqlParameter[] sqlParameters = new SqlParameter[7];
                 sqlParameters[0] = new SqlParameter("@VOU", 0);
                 sqlParameters[1] = new SqlParameter("@Type", "PRC");
-                sqlParameters[2] = new SqlParameter("@Flg", 2);
+                sqlParameters[2] = new SqlParameter("@Flg", 3);
                 sqlParameters[3] = new SqlParameter("@skiprecord", 0);
                 sqlParameters[4] = new SqlParameter("@pagesize", 0);
                 //if (isAdministrator == 1)
                 //    companyId = 0;
                 sqlParameters[5] = new SqlParameter("@CmpVou", companyId);
+                sqlParameters[6] = new SqlParameter("@Condi", condi);
                 DataTable DtFinishList = ObjDBConnection.CallStoreProcedure("GetMscMstDetails", sqlParameters);
                 if (DtFinishList != null && DtFinishList.Rows.Count > 0)
                 {
@@ -1039,6 +1041,34 @@ namespace SUNMark.Classes
             }
             return RecIssList;
         }
+        public List<SelectListItem> GetType()
+        {
+            List<SelectListItem> RecIssList = new List<SelectListItem>();
+            try
+            {
+                RecIssList.Add(new SelectListItem
+                {
+                    Text = "Split",
+                    Value = "1"
+                });
+
+                RecIssList.Add(new SelectListItem
+                {
+                    Text = "Slit",
+                    Value = "2"
+                });
+                RecIssList.Add(new SelectListItem
+                {
+                    Text = "Thickness",
+                    Value = "3"
+                });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return RecIssList;
+        }
 
         public List<CustomDropDown> GetProductMasterWithCodeDropdown(int companyId)
         {
@@ -1102,6 +1132,44 @@ namespace SUNMark.Classes
                 throw ex;
             }
             return GradeList;
+        }
+        public List<SelectListItem> GetTypeList()
+        {
+            List<SelectListItem> AlignList = new List<SelectListItem>();
+            try
+            {
+                AlignList.Add(new SelectListItem
+                {
+                    Text = "Textbox",
+                    Value = "1"
+                });
+
+                AlignList.Add(new SelectListItem
+                {
+                    Text = "Dropdown",
+                    Value = "2"
+                });
+                AlignList.Add(new SelectListItem
+                {
+                    Text = "Radio",
+                    Value = "3"
+                });
+                AlignList.Add(new SelectListItem
+                {
+                    Text = "Checkbox",
+                    Value = "4"
+                });
+                AlignList.Add(new SelectListItem
+                {
+                    Text = "Textarea",
+                    Value = "5"
+                });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return AlignList;
         }
     }
 }

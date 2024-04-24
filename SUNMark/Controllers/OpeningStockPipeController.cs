@@ -108,8 +108,8 @@ namespace SUNMark.Controllers
                 objOpeningStock.OblLocVouList = objProductHelper.GetLocationMasterDropdown(companyId, administrator);
                 objOpeningStock.OblAccVouList = objProductHelper.GetSupplierMasterDropdown(companyId, administrator);
                 objOpeningStock.LotGradeList = objProductHelper.GetGradeMasterDropdown(companyId, administrator);
-                objOpeningStock.LotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
-                objOpeningStock.LotNextPrcVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                objOpeningStock.LotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator,"");
+                objOpeningStock.LotNextPrcVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator,"");
                 return View(objOpeningStock);
             }
             catch (Exception ex)
@@ -228,8 +228,8 @@ namespace SUNMark.Controllers
                         objOpeningStock.OblLocVouList = objProductHelper.GetLocationMasterDropdown(companyId, administrator);
                         objOpeningStock.OblAccVouList = objProductHelper.GetSupplierMasterDropdown(companyId, administrator);
                         objOpeningStock.LotGradeList = objProductHelper.GetGradeMasterDropdown(companyId, administrator);
-                        objOpeningStock.LotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
-                        objOpeningStock.LotNextPrcVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                        objOpeningStock.LotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
+                        objOpeningStock.LotNextPrcVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                     }
                 }
                 else
@@ -243,8 +243,8 @@ namespace SUNMark.Controllers
                     objOpeningStock.OblLocVouList = objProductHelper.GetLocationMasterDropdown(companyId, administrator);
                     objOpeningStock.OblAccVouList = objProductHelper.GetSupplierMasterDropdown(companyId, administrator);
                     objOpeningStock.LotGradeList = objProductHelper.GetGradeMasterDropdown(companyId, administrator);
-                    objOpeningStock.LotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
-                    objOpeningStock.LotNextPrcVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                    objOpeningStock.LotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
+                    objOpeningStock.LotNextPrcVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                 }
             }
             catch (Exception ex)
@@ -374,7 +374,7 @@ namespace SUNMark.Controllers
             {
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int administrator = 0;
-                var lotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                var lotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator,"");
                 return Json(new { result = true, data = lotPrcTypVouList });
             }
             catch (Exception ex)

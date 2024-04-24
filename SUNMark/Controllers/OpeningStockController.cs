@@ -295,7 +295,7 @@ namespace SUNMark.Controllers
             }
         }
 
-        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby)
+        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string FltVno)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -321,7 +321,12 @@ namespace SUNMark.Controllers
                     {
                         startRecord = (pageIndex - 1) * pageSize;
                     }
-                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId);
+                    string whereConditionQuery = string.Empty;
+                    if (!string.IsNullOrWhiteSpace(FltVno) && FltVno != "0")
+                    {
+                        whereConditionQuery += " AND OblVNo='" + FltVno + "'";
+                    }
+                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                     if (getReportDataModel.IsError)
                     {
                         ViewBag.Query = getReportDataModel.Query;

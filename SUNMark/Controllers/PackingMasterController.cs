@@ -201,6 +201,9 @@ namespace SUNMark.Controllers
             ViewBag.gradeList = objProductHelper.GetGradeMasterDropdown(companyId, 0);
             ViewBag.finishList = objProductHelper.GetFinishMasterDropdown(companyId, 0);
             ViewBag.employeeList = ObjAccountMasterHelpers.GetOperatorCustomDropdown(companyId, 0);
+            ViewBag.NBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+            ViewBag.SchList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
+
             {
                 List<SelectListItem> typeList = new List<SelectListItem>();
                 typeList.Add(new SelectListItem

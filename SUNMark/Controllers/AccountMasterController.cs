@@ -413,5 +413,6 @@ namespace SUNMark.Controllers
             return Json(new { items = CommonHelpers.BindSelect2Model(CityList) });
         }
 
+
     }
 }

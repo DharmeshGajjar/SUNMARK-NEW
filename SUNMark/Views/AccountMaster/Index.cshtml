@@ -161,6 +161,7 @@
                                                         </label>
                                                         <input type="hidden" name="TypeNm" id="txtTypeNm" value="@Model.TypeNm" />
                                                         <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                            @*@Html.DropDownListFor(x => x.AccType, new SelectList(Model.TypeList, "Value", "Text"), "Select", new { @class = "form-control select2", @tabindex = "3", style = "font-family: Verdana;font-size:small; height:30px; width:180px", @required = "required", @id = "txtAccType", })*@
                                                             @Html.DropDownListFor(x => x.AccType, Model.TypeList, "Select", new { @class = "form-control select2 AccType", @tabindex = "3", style = "font-family: Verdana;font-size:small; height:30px; width:180px", @id = "txtAccType", @required = "required" })
                                                         </div>
                                                     </div>
@@ -194,6 +195,7 @@
                     </select>*@
                                                     @Html.DropDownListFor(x => x.AccCtyVou, new SelectList(Model.CityList, "Value", "Text"), "Select", new { @class = "form-control select2 AccCtyVou", @tabindex = "5", style = "font-family: Verdana;font-size:small; height:30px; width:200px ", @onchange = "GetCityState(this)" })
                                                     <a class="btn btn-outline-info ml-2" href="/City/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                                @*<a class="btn btn-outline-info ml-2" id="ahrefCityRefresh" onclick="BindCityData_New();"><i class="fa fa-sync"></i></a>*@
                                                     @*<a class="btn btn-outline-info ml-2" onclick="OpenCityModal()"><i class="fa fa-plus"></i></a>*@
                                                 </div>
                                             </div>
@@ -883,6 +885,7 @@
     $(document).ready(function () {
         $(".AccCtyVou").select2({
             placeholder: "---Select---",
+
             ajax: {
                 url: '/accountmaster/city-list',
                 data: function (params) {
@@ -906,6 +909,17 @@
         $('.drpReportLayout').select2({
             placeholder: "---Select---",
         });
-    });
 
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Select---'
+            },
+            allowClear: true
+        });
+    });
 </script>

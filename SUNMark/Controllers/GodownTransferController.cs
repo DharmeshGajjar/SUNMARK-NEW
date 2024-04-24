@@ -16,6 +16,7 @@ namespace SUNMark.Controllers
 {
     public class GodownTransferController : BaseController
     {
+        static string GdmVou = string.Empty;
         DbConnection ObjDBConnection = new DbConnection();
         AccountMasterHelpers ObjAccountMasterHelpers = new AccountMasterHelpers();
         ProductHelpers objProductHelper = new ProductHelpers();
@@ -37,8 +38,12 @@ namespace SUNMark.Controllers
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 ViewBag.id = id;
+                GdmVou = "0";
                 if (id > 0)
+                {
+                    GdmVou = Convert.ToString(id);
                     TempData["ReturnId"] = Convert.ToString(id);
+                }
                 return View();
             }
             catch (Exception ex)
@@ -75,7 +80,7 @@ namespace SUNMark.Controllers
             int administrator = 0;
             ViewBag.gradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
             ViewBag.productList = objProductHelper.GetProductMasterDropdown(companyId);
-            ViewBag.processDoneList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+            ViewBag.processDoneList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator,"");
             ViewBag.productTypeList = ObjAccountMasterHelpers.GetPrdTypeDropdown(companyId);
             ViewBag.companyList = objProductHelper.GetCompanyMasterDropdown(companyId, administrator);
             ViewBag.godownList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
@@ -107,7 +112,7 @@ namespace SUNMark.Controllers
             {
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 var productTypeList = ObjAccountMasterHelpers.GetPrdTypeDropdown(companyId);
-                var processDoneList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, 0);
+                var processDoneList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, 0,"");
                 string productType = string.Empty;
                 if (productTypeList != null && productTypeList.Count > 0)
                 {
@@ -284,7 +289,7 @@ namespace SUNMark.Controllers
                     int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                     SqlParameter[] parameter = new SqlParameter[1];
                     parameter[0] = new SqlParameter("@GdmVou", id);
-
+                    GdmVou = id;
                     DataSet ds = ObjDBConnection.GetDataSet("GetGodownTransferDataById", parameter);
                     if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables.Count == 2)
                     {
@@ -428,8 +433,17 @@ namespace SUNMark.Controllers
         {
             try
             {
-                SqlParameter[] parameter = new SqlParameter[1];
+                SqlParameter[] parameter = new SqlParameter[2];
+
                 parameter[0] = new SqlParameter("@COILNO", coilNo);
+                if (GdmVou == "0")
+                {
+                    parameter[1] = new SqlParameter("@FLG", 0);
+                }
+                else
+                {
+                    parameter[1] = new SqlParameter("@FLG", 1);
+                }
                 DataSet ds = ObjDBConnection.GetDataSet("GetDataByCoilNo", parameter);
                 if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables.Count == 5)
                 {
@@ -463,7 +477,7 @@ namespace SUNMark.Controllers
             }
         }
 
-        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby)
+        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string gdnVNo)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -480,32 +494,37 @@ namespace SUNMark.Controllers
                         SetErrorMessage("You do not have right to access requested page. Please contact admin for more detail.");
                     }
                     ViewBag.userRight = userFormRights;
-                    #endregion
+					#endregion
 
-                    int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+					int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
 
                     double startRecord = 0;
                     if (pageIndex > 0)
                     {
                         startRecord = (pageIndex - 1) * pageSize;
                     }
-                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId);
+                    string whereConditionQuery = string.Empty;
+                    if (!string.IsNullOrWhiteSpace(gdnVNo))
+                    {
+                        whereConditionQuery += " AND GdnTrnMst.GdmVNo='" + gdnVNo + "'";
+                    }
+                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId,0,0,"",0,0, whereConditionQuery);
                     if (getReportDataModel.IsError)
                     {
                         ViewBag.Query = getReportDataModel.Query;
                         return PartialView("_reportView");
                     }
                     getReportDataModel.pageIndex = pageIndex;
-                    getReportDataModel.ControllerName = "GodownTransfer";
-                }
-            }
+					getReportDataModel.ControllerName = "GodownTransfer";
+				}
+			}
             catch (Exception ex)
             {
                 throw;
             }
             return PartialView("_reportView", getReportDataModel);
         }
-        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type)
+        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string gdnVNo)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -515,7 +534,13 @@ namespace SUNMark.Controllers
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
                 //getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, 0, "", 0, 1);
-                getReportDataModel = getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, YearId, "", 0, 1);
+                string whereConditionQuery = string.Empty;
+                if (!string.IsNullOrWhiteSpace(gdnVNo))
+                {
+                    whereConditionQuery += " AND GdnTrnMst.GdmVNo='" + gdnVNo + "'";
+                }
+
+                getReportDataModel = getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, YearId, "", 0, 1,whereConditionQuery);
                 if (type == 1)
                 {
                     var bytes = Excel(getReportDataModel, "Godown Transfer Report", companyDetails.CmpName);

@@ -38,6 +38,11 @@ namespace SUNMark.Controllers
                 int administrator = 0;
                 long userId = GetIntSession("UserId");
                 PicklingMasterModel picklingMasterModel = new PicklingMasterModel();
+
+                picklingMasterModel.FltNBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                picklingMasterModel.FltSCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
+                picklingMasterModel.FltGradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
+
                 picklingMasterModel.Pikling = new PikGridModel();
                 picklingMasterModel.Pikling.RecProductList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "PIPE");
                 picklingMasterModel.Pikling.GradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
@@ -45,7 +50,7 @@ namespace SUNMark.Controllers
                 picklingMasterModel.Pikling.NBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
                 picklingMasterModel.Pikling.SCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
                 picklingMasterModel.Pikling.FinishList = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                picklingMasterModel.Pikling.NextProcList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                picklingMasterModel.Pikling.NextProcList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "Piking");
                 picklingMasterModel.Vno = GetVoucherNo();
                 if (id > 0)
                 {
@@ -118,6 +123,15 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
+                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                int administrator = 0;
+
+
+                picklingMaster.FltNBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                picklingMaster.FltSCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
+                picklingMaster.FltGradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
+
+
                 if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.Vno).ToString()) && !string.IsNullOrWhiteSpace(picklingMaster.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.PikCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(picklingMaster.MachineNo).ToString()) && picklingMaster.LstPikling.Count > 0)
                 {
                     SqlParameter[] sqlParameter = new SqlParameter[18];
@@ -213,7 +227,7 @@ namespace SUNMark.Controllers
             {
                 throw;
             }
-            return RedirectToAction("Index", new { id = "0" });
+            return View(picklingMaster);
         }
 
         private void INIT(ref bool isReturn)
@@ -271,7 +285,7 @@ namespace SUNMark.Controllers
             return RedirectToAction("Index", "Pickling", new { id = 0 });
         }
 
-        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby)
+        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string fltod, string fltfeetper, string fltnb, string fltsch, string fltgrade, string fltfrDt, string flttoDt, string FltVno)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -297,7 +311,46 @@ namespace SUNMark.Controllers
                     {
                         startRecord = (pageIndex - 1) * pageSize;
                     }
-                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId);
+
+                    string whereConditionQuery = string.Empty;
+                    if (!string.IsNullOrWhiteSpace(fltod) && fltod != "0")
+                    {
+                        whereConditionQuery += " AND PikTrn.PikAOD='" + fltod + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltfeetper) && fltfeetper != "0")
+                    {
+                        whereConditionQuery += " AND PikTrn.PikALength='" + fltfeetper + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltnb) && fltnb != "0")
+                    {
+                        whereConditionQuery += " AND PikTrn.PikANB='" + fltnb + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltsch) && fltsch != "0")
+                    {
+                        whereConditionQuery += " AND PikTrn.PikASCH='" + fltsch + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltgrade))
+                    {
+                        if (fltgrade != "Select")
+                        {
+                            whereConditionQuery += " AND PikTrn.PikAGrdVou ='" + fltgrade + "'";
+                        }
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltfrDt))
+                    {
+                        whereConditionQuery += " AND PikMst.PikDt >='" + fltfrDt + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(flttoDt))
+                    {
+                        whereConditionQuery += " AND PikMst.PikDt <='" + flttoDt + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(FltVno) && FltVno != "0")
+                    {
+                        whereConditionQuery += " AND PIKVNO='" + FltVno + "'";
+                    }
+
+
+                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                     if (getReportDataModel.IsError)
                     {
                         ViewBag.Query = getReportDataModel.Query;
@@ -314,7 +367,7 @@ namespace SUNMark.Controllers
             return PartialView("_reportView", getReportDataModel);
         }
 
-        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type)
+        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string fltod, string fltfeetper, string fltnb, string fltsch, string fltgrade, string fltfrDt, string flttoDt)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -324,7 +377,41 @@ namespace SUNMark.Controllers
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
                 //getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, 0, "", 0, 1);
-                getReportDataModel = getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, YearId, "", 0, 1);
+
+                string whereConditionQuery = string.Empty;
+                if (!string.IsNullOrWhiteSpace(fltod) && fltod != "0")
+                {
+                    whereConditionQuery += " AND PikTrn.PikAOD='" + fltod + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltfeetper) && fltfeetper != "0")
+                {
+                    whereConditionQuery += " AND PikTrn.PikALength='" + fltfeetper + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltnb) && fltnb != "0")
+                {
+                    whereConditionQuery += " AND PikTrn.PikANB='" + fltnb + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltsch) && fltsch != "0")
+                {
+                    whereConditionQuery += " AND PikTrn.PikASCH='" + fltsch + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltgrade))
+                {
+                    if (fltgrade != "Select")
+                    {
+                        whereConditionQuery += " AND PikTrn.PikAGrdVou ='" + fltgrade + "'";
+                    }
+                }
+                if (!string.IsNullOrWhiteSpace(fltfrDt))
+                {
+                    whereConditionQuery += " AND PikMst.PikDt >='" + fltfrDt + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(flttoDt))
+                {
+                    whereConditionQuery += " AND PikMst.PikDt <='" + flttoDt + "'";
+                }
+
+                getReportDataModel = getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, YearId, "", 0, 1, whereConditionQuery);
                 if (type == 1)
                 {
                     var bytes = Excel(getReportDataModel, "Pickling", companyDetails.CmpName);
@@ -405,15 +492,15 @@ namespace SUNMark.Controllers
                     if (DtInw != null)
                     {
                         int Status = DbConnection.ParseInt32(DtInw.Rows[0][0].ToString());
-                        if (Status == 1)
+                        if (Status == 1 && DtInw.Columns.Count == 1)
                         {
                             return Json(new { result = true, data = "1" });
                         }
-                        else if (Status == 2)
+                        else if (Status == 2 && DtInw.Columns.Count == 1)
                         {
                             return Json(new { result = true, data = "2" });
                         }
-                        else if (Status == 3)
+                        else if (Status == 3 && DtInw.Columns.Count == 1)
                         {
                             return Json(new { result = true, data = "3" });
                         }

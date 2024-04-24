@@ -37,7 +37,7 @@ namespace SUNMark.Controllers
                     return RedirectToAction("index", "dashboard");
                 }
                 coilJob.GradeList = objProductHelper.GetGradeMasterDropdown(companyId, administrator);
-                coilJob.PrTypeList = objProductHelper.GetPrTypeMasterDropdown(companyId, administrator);
+                //coilJob.PrTypeList = objProductHelper.GetPrTypeMasterDropdown(companyId, administrator);
 
                 //INIT(ref isreturn);
             }
@@ -85,9 +85,9 @@ namespace SUNMark.Controllers
                 #region User Rights
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
-
+                string guid = GetStringSession("LoginGUID");
                 UserFormRightModel userFormRights = new UserFormRightModel();
-                string currentURL = "/InwRegi/Index";
+                string currentURL = "/CoilJobRegi/Index";
                 userFormRights = GetUserRights(userId, currentURL);
                 if (userFormRights == null)
                 {
@@ -101,16 +101,33 @@ namespace SUNMark.Controllers
                 {
                     startRecord = (pageIndex - 1) * pageSize;
                 }
-
                 string whereConditionQuery = string.Empty;
-                if (!string.IsNullOrWhiteSpace(frDt))
-                    whereConditionQuery += " AND JobMst.JobComDt>='" + frDt + "'";
-                if (!string.IsNullOrWhiteSpace(toDt))
-                    whereConditionQuery += " AND JobMst.JobComDt<='" + toDt + "'";
-                if (!string.IsNullOrWhiteSpace(gradeid))
-                    whereConditionQuery += " AND JotLotVou = (select LotVou from LotMst where LotMst.LotGrdMscVou='" + gradeid + "' AND LotVou=JotLotVou) ";
-                if (!string.IsNullOrWhiteSpace(prType))
-                    whereConditionQuery += " AND JobTrn.JotType='" + prType + "'";
+                if (gridMstId == 57)
+                {
+                    SqlParameter[] sqlParameters = new SqlParameter[6];
+                    sqlParameters[0] = new SqlParameter("@FRDT", frDt);
+                    sqlParameters[1] = new SqlParameter("@TODT", toDt);
+                    sqlParameters[2] = new SqlParameter("@GRADE", gradeid);
+                    sqlParameters[3] = new SqlParameter("@PRTYPE", prType);
+                    sqlParameters[4] = new SqlParameter("@CMPVOU", companyId);
+                    sqlParameters[5] = new SqlParameter("@GUID", guid);
+                    DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("GET_COILJOBWORK_SUMMARY", sqlParameters);
+                    if (!string.IsNullOrWhiteSpace(guid))
+                    {
+                        whereConditionQuery += " AND CoilJobSumm.CJSQUID='" + guid + "'";
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(frDt))
+                        whereConditionQuery += " AND JobMst.JobComDt>='" + frDt + "'";
+                    if (!string.IsNullOrWhiteSpace(toDt))
+                        whereConditionQuery += " AND JobMst.JobComDt<='" + toDt + "'";
+                    if (!string.IsNullOrWhiteSpace(gradeid))
+                        whereConditionQuery += " AND JotLotVou = (select LotVou from LotMst where LotMst.LotGrdMscVou='" + gradeid + "' AND LotVou=JotLotVou) ";
+                    if (!string.IsNullOrWhiteSpace(prType))
+                        whereConditionQuery += " AND JobTrn.JotType='" + prType + "'";
+                }
 
                 getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                 if (getReportDataModel.IsError)
@@ -128,7 +145,7 @@ namespace SUNMark.Controllers
             return PartialView("_reportView", getReportDataModel);
         }
 
-        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string companyid)
+        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string frDt, string toDt, string gradeid, string prType)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -136,9 +153,28 @@ namespace SUNMark.Controllers
                 int userId = Convert.ToInt32(GetIntSession("UserId"));
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
+                string guid = GetStringSession("LoginGUID");
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
-
-                getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, userId, 0, "", 0, 1, "");
+                string whereConditionQuery = string.Empty;
+                if (gridMstId == 57)
+                {
+                    if (!string.IsNullOrWhiteSpace(guid))
+                    {
+                        whereConditionQuery += " AND CoilJobSumm.CJSQUID='" + guid + "'";
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(frDt))
+                        whereConditionQuery += " AND JobMst.JobComDt>='" + frDt + "'";
+                    if (!string.IsNullOrWhiteSpace(toDt))
+                        whereConditionQuery += " AND JobMst.JobComDt<='" + toDt + "'";
+                    if (!string.IsNullOrWhiteSpace(gradeid))
+                        whereConditionQuery += " AND JotLotVou = (select LotVou from LotMst where LotMst.LotGrdMscVou='" + gradeid + "' AND LotVou=JotLotVou) ";
+                    if (!string.IsNullOrWhiteSpace(prType))
+                        whereConditionQuery += " AND JobTrn.JotType='" + prType + "'";
+                }
+                getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, userId, 0, "", 0, 1, whereConditionQuery);
                 if (type == 1)
                 {
                     var bytes = Excel(getReportDataModel, "Coil Job Register Report", companyDetails.CmpName);

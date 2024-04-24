@@ -126,6 +126,78 @@
                                 <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
                                     <div class="col-md-12 col-12 mb-2 mt-2">
                                         <div class="row">
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    OD <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.TextBoxFor(x => x.FltOD, new { @class = "form-control form-control-lg", @placeholder = "OD", @tabindex = "2", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    Langth <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.TextBoxFor(x => x.FltFeetPer, new { @class = "form-control form-control-lg", @placeholder = "Langth", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    NB <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.DropDownListFor(x => x.FltNB, Model.FltNBList, "Select", new { @class = "form-control select2 FltNB ", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    SCH <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.DropDownListFor(x => x.FltSCH, Model.FltSCHList, "Select", new { @class = "form-control select2 FltSCH ", @tabindex = "5", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    Grade <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.DropDownListFor(x => x.FltGrade, Model.FltGradeList, "Select", new { @class = "form-control select2 FltGrade ", @tabindex = "6", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    From Dt. <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.TextBoxFor(x => x.FrDt, new { @class = "form-control form-control-lg", @placeholder = "From Date", @tabindex = "7", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    To Dt. <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.TextBoxFor(x => x.ToDt, new { @class = "form-control form-control-lg", @placeholder = "To Date", @tabindex = "8", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    V. No. <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.TextBoxFor(x => x.FltVno, new { @class = "form-control form-control-lg", @placeholder = "Langth", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @*<button class="btn btn-primary px-4 text-white" style="font-family:Verdana;font-size:medium" id="btnView" onclick=" loadData();">
+                                                    View (Alt+V)
+                                                </button>
+                                                <a href="/JobWorkEntry/index" class="btn btn-warning px-4 text-dark" style="font-family:Verdana;font-size:medium">
+                                                    Cancel (Esc)
+                                                </a>*@
+                                            </div>
                                             <div class="col-md-1 mb-2 float-left">
 
                                                 <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
@@ -139,9 +211,9 @@
                                                 </select>
 
                                             </div>
-                                            <div class="col-md-5 col-12">
+                                            <div class="col-md-8 col-12">
                                                 <div class="row">
-                                                    <div class="col-md-6 col">
+                                                    <div class="col-md-4 col">
                                                         <select class="form-control select2 drpReportLayout" onchange="loadData()">
                                                             <option value="" ; style="width:200px">--Select Layout--</option>
                                                             @if (layoutList != null && layoutList.Count > 0)
@@ -161,14 +233,17 @@
                                                             </button>
                                                         }
                                                     </div>
-                                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                                    <div class="col-md-6 mb-2 custommt-2-3">
                                                         <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
-                                                        <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                        <button class="btn btn-primary btn-sm" id="btnExportToPDF">PDF</button>
+                                                        <button class="btn btn-primary btn-sm" id="btnView" onclick=" loadData();"> View (Alt+V) </button>
+                                                        <a href="/JobWorkEntry/index" class="btn btn-warning btn-sm">Cancel (Esc)</a>
+                                                        
                                                     </div>
 
                                                 </div>
                                             </div>
-                                            <div class="col-md-3"></div>
+                                            <div class="col-md-1"></div>
                                             <div class="col-md-3 col-12 float-right">
                                                 <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
                                             </div>
@@ -879,7 +954,8 @@
         $('#custom-tabs-three-list').addClass('show');
         $('#custom-tabs-three-add').removeClass('active');
         $('#custom-tabs-three-add').removeClass('show');
-        $('#txtReportSearchDataTable').focus();
+        //$('#txtReportSearchDataTable').focus();
+        $('#FltOD').focus();
     }
 </script>
 <script>
@@ -951,7 +1027,7 @@
     var isRecentCalled = false;
 
     $(function () {
-        loadData();
+        //loadData();
         var pageIndex = '';
         var pageSize = '';
         var totalRecord = '';
@@ -990,11 +1066,21 @@
         if (!sortBy) {
             sortBy = '';
         }
+
+        var fltod = $('#FltOD').val();
+        var fltfeetper = $('#FltFeetPer').val();
+        var fltnb = $('#FltNB').val();
+        var fltsch = $('#FltSCH').val();
+        var fltgrade = $('#FltGrade').children('option:selected').val()
+        var fltfrDt = $('#FrDt').val();
+        var flttoDt = $('#ToDt').val();
+        var FltVno = $('#FltVno').val();
+
         $('.dataTable').html();
         $.ajax({
             url: '/Pickling/GetReportView',
             type: 'GET',
-            data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+            data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy, fltod: fltod, fltfeetper: fltfeetper, fltnb: fltnb, fltsch: fltsch, fltgrade: fltgrade, fltfrDt: fltfrDt, flttoDt: flttoDt, FltVno: FltVno },
             dataType: 'HTML',
             traditional: true, // add this
             success: function (data) {
@@ -1010,11 +1096,27 @@
     }
 
     $('#btnExportToExcel').click(function () {
-        window.location.href = "/Pickling/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+        var fltod = $('#FltOD').val();
+        var fltfeetper = $('#FltFeetPer').val();
+        var fltnb = $('#FltNB').val();
+        var fltsch = $('#FltSCH').val();
+        var fltgrade = $('#FltGrade').children('option:selected').val()
+        var fltfrDt = $('#FrDt').val();
+        var flttoDt = $('#ToDt').val();
+
+        window.location.href = "/Pickling/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1" + "&fltod=" + fltod + "&fltfeetper=" + fltfeetper + "&fltnb=" + fltnb + "&fltsch=" + fltsch + "&fltgrade=" + fltgrade + "&fltfrDt=" + fltfrDt + "&flttoDt=" + flttoDt;
     })
 
     $('#btnExportToPDF').click(function () {
-        window.location.href = "/Pickling/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+        var fltod = $('#FltOD').val();
+        var fltfeetper = $('#FltFeetPer').val();
+        var fltnb = $('#FltNB').val();
+        var fltsch = $('#FltSCH').val();
+        var fltgrade = $('#FltGrade').children('option:selected').val()
+        var fltfrDt = $('#FrDt').val();
+        var flttoDt = $('#ToDt').val();
+
+        window.location.href = "/Pickling/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2" + "&fltod=" + fltod + "&fltfeetper=" + fltfeetper + "&fltnb=" + fltnb + "&fltsch=" + fltsch + "&fltgrade=" + fltgrade + "&fltfrDt=" + fltfrDt + "&flttoDt=" + flttoDt;
     })
 
     function GetVoucherNumber() {
@@ -1093,12 +1195,6 @@
     })
 </script>
 <script>
-
-    function SetSelect2() {
-        $(".select2").select2({
-            placeholder: "---Select---",
-        });
-    }
 
     function GetSupervisor() {
 
@@ -1943,4 +2039,22 @@
             });
         })
 
+</script>
+<script>
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Select---'
+            },
+            allowClear: true
+        });
+    });
 </script>

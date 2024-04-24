@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace SUNMark.Models
 
         public string CompanyVou { get; set; }
 
+        public string SizeFromTo { get; set; }
         public string Date { get; set; }
 
         public string ShiftVou { get; set; }
@@ -56,6 +58,7 @@ namespace SUNMark.Models
         public string ScrapWeight { get; set; }
 
         public string ScrapPipeProductVou { get; set; }
+        public string RLPrdVou { get; set; }
         public string RLPCS { get; set; }
         public string RLWeight { get; set; }
         public string ProcessVou { get; set; }
@@ -93,6 +96,22 @@ namespace SUNMark.Models
         public string StopReason2 { get; set; }
         public string MilMaxOD { get; set; }
         public string MilMinOD { get; set; }
+
+        //Filter Option Field
+        public string CoilNo { get; set; }
+        public decimal FltOD { get; set; }
+        public decimal FltFeetPer { get; set; }
+        public string FltNB { get; set; }
+        public List<SelectListItem> NBList { get; set; }
+        public string FltSCH { get; set; }
+        public List<SelectListItem> SCHList { get; set; }
+        public long FltGrade { get; set; }
+        public List<SelectListItem> GradeList { get; set; }
+        public string FrDt { get; set; }
+        public string ToDt { get; set; }
+        public string BearingLoss { get; set; }
+
+        public string FltVno { get; set; }
 
     }
 }

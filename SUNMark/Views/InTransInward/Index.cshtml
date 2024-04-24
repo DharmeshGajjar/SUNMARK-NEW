@@ -80,57 +80,69 @@
                                 <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
                                     <div class="col-md-12 col-12 mb-2 mt-2">
                                         <div class="row">
-                                            <div class="col-md-1 mb-2 float-left">
-                                                <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
-                                                    @for (int i = 0; i < pageNoList.Count; i++)
-                                                    {
-                                                        string checkedd = "checked";
-                                                        <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
-                                                        checkedd = string.Empty;
-                                                    }
-
-                                                </select>
-                                            </div>
-                                            <div class="col-md-5 col-12">
-                                                <div class="row">
-                                                    <div class="col-md-6 col">
-                                                        <select class="form-control select2 drpReportLayout" onchange="loadData()">
-                                                            <option value="" ; style="width:200px">--Select Layout--</option>
-                                                            @if (layoutList != null && layoutList.Count > 0)
-                                                            {
-                                                                foreach (var item in layoutList)
-                                                                {
-                                                                    <option value="@item.Value">@item.Text </option>
-                                                                }
-                                                            }
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-2 col-auto mb-2 custommt-2-3">
-                                                        @if (isAdministrator == 1)
-                                                        {
-                                                            <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
-                                                                Edit
-                                                            </button>
-                                                        }
-                                                    </div>
-                                                    <div class="col-md-4 mb-2 custommt-2-3">
-                                                        <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
-                                                        <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
-                                                    </div>
-
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    V. No. <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.TextBoxFor(x => x.FltVno, new { @class = "form-control form-control-lg", @placeholder = "Langth", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
                                                 </div>
                                             </div>
-                                            <div class="col-md-3"></div>
-                                            <div class="col-md-3 col-12 float-right">
-                                                <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                        </div>
+                                            <div class="row">
+                                                <div class="col-md-1 mb-2 float-left">
+                                                    <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                                        @for (int i = 0; i < pageNoList.Count; i++)
+                                                        {
+                                                            string checkedd = "checked";
+                                                            <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                                            checkedd = string.Empty;
+                                                        }
+
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-7 col-12">
+                                                    <div class="row">
+                                                        <div class="col-md-3 col">
+                                                            <select class="form-control select2 drpReportLayout" onchange="loadData()">
+                                                                <option value="" ; style="width:200px">--Select Layout--</option>
+                                                                @if (layoutList != null && layoutList.Count > 0)
+                                                                {
+                                                                    foreach (var item in layoutList)
+                                                                    {
+                                                                        <option value="@item.Value">@item.Text </option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                                            @if (isAdministrator == 1)
+                                                            {
+                                                                <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                                    Edit
+                                                                </button>
+                                                            }
+                                                        </div>
+                                                        <div class="col-md-7 mb-2 custommt-2-3">
+                                                            <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                                            <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                            <button class="btn btn-primary btn-sm" id="btnView" onclick=" loadData();"> View (Alt+V) </button>
+                                                            <a href="/JobWorkEntry/index" class="btn btn-warning btn-sm">Cancel (Esc)</a>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-3 col-12 float-right">
+                                                    <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="dataTable">
+                                        <div class="dataTable">
 
+                                        </div>
+                                        <div class="pager float-right"></div>
                                     </div>
-                                    <div class="pager float-right"></div>
-                                </div>
                             </div>
                         }
                         @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
@@ -713,7 +725,7 @@
 
     $(function () {
 
-        loadData();
+        //loadData();
         SetNameCoil(true);
         var pageIndex = '';
         var pageSize = '';
@@ -787,12 +799,13 @@
             }
             if (!sortBy) {
                 sortBy = '';
-            }
+        }
+        var FltVno = $('#FltVno').val();
             $('.dataTable').html();
             $.ajax({
                 url: '/InTransInward/GetReportView',
                 type: 'GET',
-                data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+                data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy, FltVno: FltVno },
                 dataType: 'HTML',
                 traditional: true, // add this
                 success: function (data) {
@@ -1670,4 +1683,15 @@
         $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(13).children('input').val('');
         $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
     })
+</script>
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Select---'
+            },
+            allowClear: true
+        });
+    });
 </script>

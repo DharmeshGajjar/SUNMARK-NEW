@@ -66,7 +66,8 @@
                         </label>
 
                         <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.CoilNo, new { @class = "form-control form-control-lg", @placeholder = "Coil No", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                            <input type="text" name="CoilNo" onfocus="this.select()" class="form-control form-control-lg" placeholder="Coil No" tabindex="1" value="@Model.CoilNo" style = "font-family: Verdana;font-size:small; height:30px; width:180px" />
+                            @*@Html.TextBoxFor(x => x.CoilNo, new { @class = "form-control form-control-lg", @placeholder = "Coil No", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })*@
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -75,7 +76,8 @@
                         </label>
                         <input type="hidden" name="CoilType" id="txtCoilType" value="@Model.CoilType" />
                         <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.SupCoilNo, new { @class = "form-control form-control-lg", @placeholder = "Sup.Coil No", @tabindex = "16", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                            <input type="text" name="SupCoilNo" onfocus="this.select()" class="form-control form-control-lg" placeholder="Sup.Coil No" tabindex="2" value="@Model.SupCoilNo" style = "font-family: Verdana;font-size:small; height:30px; width:180px" />
+                            @*@Html.TextBoxFor(x => x.SupCoilNo, new { @class = "form-control form-control-lg", @placeholder = "Sup.Coil No", @tabindex = "2", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })*@
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -83,7 +85,8 @@
                             From Width <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.FrWidth, new { @class = "form-control form-control-lg", @placeholder = "From Width", @tabindex = "2", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                            <input type="text" name="FrWidth" onfocus="this.select()" class="form-control form-control-lg" placeholder="From Width" tabindex="3" value="@Model.FrWidth" style = "font-family: Verdana;font-size:small; height:30px; width:180px" />
+                            @*@Html.TextBoxFor(x => x.FrWidth, new { @class = "form-control form-control-lg", @placeholder = "From Width", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })*@
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -91,7 +94,8 @@
                             To Width <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.ToWidth, new { @class = "form-control form-control-lg", @placeholder = "To Width", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                            <input type="text" name="ToWidth" onfocus="this.select()" class="form-control form-control-lg" placeholder="To Width" tabindex="4" value="@Model.ToWidth" style = "font-family: Verdana;font-size:small; height:30px; width:180px" />
+                            @*@Html.TextBoxFor(x => x.ToWidth, new { @class = "form-control form-control-lg", @placeholder = "To Width", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })*@
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -99,7 +103,8 @@
                             From Thick <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.FrThick, new { @class = "form-control form-control-lg", @placeholder = "From Thick", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                             <input type="text" name="FrThick" onfocus="this.select()" class="form-control form-control-lg" placeholder="From Thick" tabindex="5" value="@Model.FrThick" style = "font-family: Verdana;font-size:small; height:30px; width:180px" />
+                            @*@Html.TextBoxFor(x => x.FrThick, new { @class = "form-control form-control-lg", @placeholder = "From Thick", @tabindex = "5", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })*@
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -107,7 +112,8 @@
                             To Thick <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.ToThick, new { @class = "form-control form-control-lg", @placeholder = "To Thick", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                            <input type="text" name="ToThick" onfocus="this.select()" class="form-control form-control-lg" placeholder="To Thick" tabindex="6" value="@Model.ToThick" style = "font-family: Verdana;font-size:small; height:30px; width:180px" />
+                            @*@Html.TextBoxFor(x => x.ToThick, new { @class = "form-control form-control-lg", @placeholder = "To Thick", @tabindex = "6", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })*@
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -115,7 +121,8 @@
                             From Weight <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.FrWeight, new { @class = "form-control form-control-lg", @placeholder = "From Weight", @tabindex = "5", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                            <input type="text" name="FrWeight" onfocus="this.select()" class="form-control form-control-lg" placeholder="From Weight" tabindex="7" value="@Model.FrWeight" style = "font-family: Verdana;font-size:small; height:30px; width:180px" />
+                            @*@Html.TextBoxFor(x => x.FrWeight, new { @class = "form-control form-control-lg", @placeholder = "From Weight", @tabindex = "7", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })*@
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -123,7 +130,8 @@
                             To Weight <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.ToWidth, new { @class = "form-control form-control-lg", @placeholder = "To Weigth", @tabindex = "6", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                            <input type="text" name="ToWeight" onfocus="this.select()" class="form-control form-control-lg" placeholder="To Weight" tabindex="8" value="@Model.ToWeight" style = "font-family: Verdana;font-size:small; height:30px; width:180px" />
+                            @*@Html.TextBoxFor(x => x.ToWeight, new { @class = "form-control form-control-lg", @placeholder = "To Weigth", @tabindex = "8", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })*@
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -131,7 +139,7 @@
                             Grade <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.DropDownListFor(x => x.Grade, Model.GradeList, "Select", new { @class = "form-control select2 Grade ", @tabindex = "7", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                            @Html.DropDownListFor(x => x.Grade, Model.GradeList, "Select", new { @class = "form-control select2 Grade ", @tabindex = "9", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -139,7 +147,7 @@
                             From Rec.Dt. <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.FrRecDt, new { @class = "form-control form-control-lg", @placeholder = "From Rec.Dt", @tabindex = "8", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
+                            @Html.TextBoxFor(x => x.FrRecDt, new { @class = "form-control form-control-lg", @placeholder = "From Rec.Dt", @tabindex = "10", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -147,7 +155,7 @@
                             To Rec.Dt. <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.ToRecDt, new { @class = "form-control form-control-lg", @placeholder = "To Rec.Dt", @tabindex = "9", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
+                            @Html.TextBoxFor(x => x.ToRecDt, new { @class = "form-control form-control-lg", @placeholder = "To Rec.Dt", @tabindex = "11", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -155,7 +163,7 @@
                             From Iss.Dt. <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.FrIssDt, new { @class = "form-control form-control-lg", @placeholder = "From Iss.Dt", @tabindex = "10", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
+                            @Html.TextBoxFor(x => x.FrIssDt, new { @class = "form-control form-control-lg", @placeholder = "From Iss.Dt", @tabindex = "12", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -163,7 +171,7 @@
                             To Iss.Dt <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.ToIssDt, new { @class = "form-control form-control-lg", @placeholder = "To Iss.Dt", @tabindex = "11", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
+                            @Html.TextBoxFor(x => x.ToIssDt, new { @class = "form-control form-control-lg", @placeholder = "To Iss.Dt", @tabindex = "13", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -171,7 +179,7 @@
                             Stock Y/N <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.DropDownListFor(x => x.StockYN, Model.StockYNList, "Select", new { @class = "form-control StockYN select2", @tabindex = "12", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                            @Html.DropDownListFor(x => x.StockYN, Model.StockYNList, "Select", new { @class = "form-control StockYN select2", @tabindex = "14", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -179,7 +187,7 @@
                             Godown <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.DropDownListFor(x => x.Godown, Model.GodownList, "Select", new { @class = "form-control Godown select2", @tabindex = "13", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                            @Html.DropDownListFor(x => x.Godown, Model.GodownList, "Select", new { @class = "form-control Godown select2", @tabindex = "15", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -187,7 +195,7 @@
                             Company <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.DropDownListFor(x => x.Company, Model.CompanyList, "Select", new { @class = "form-control Company select2", @tabindex = "14", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                            @Html.DropDownListFor(x => x.Company, Model.CompanyList, "Select", new { @class = "form-control Company select2", @tabindex = "16", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -195,7 +203,7 @@
                             Supplier <span class="required"></span>
                         </label>
                         <div class="form-outline form-white mb-2">
-                            @Html.DropDownListFor(x => x.Account, new SelectList(Model.AccountList, "Value", "Text"), "Select", new { @class = "form-control Account select2", @tabindex = "5", style = "font-family: Verdana;font-size:small; height:30px; width:180px " })
+                            @Html.DropDownListFor(x => x.Account, new SelectList(Model.AccountList, "Value", "Text"), "Select", new { @class = "form-control Account select2", @tabindex = "17", style = "font-family: Verdana;font-size:small; height:30px; width:180px " })
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -204,7 +212,7 @@
                         </label>
                         <input type="hidden" name="CoilType" id="txtCoilType" value="@Model.CoilType" />
                         <div class="form-outline form-white mb-2">
-                            @Html.DropDownListFor(x => x.CoilTypeVou, Model.CoilTypeList, "Select", new { @class = "form-control CoilTypeVou select2", @tabindex = "15", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                            @Html.DropDownListFor(x => x.CoilTypeVou, Model.CoilTypeList, "Select", new { @class = "form-control CoilTypeVou select2", @tabindex = "18", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
                         </div>
                     </div>
                     <div class="col-md-5 mt-1 text-right">
@@ -326,13 +334,13 @@
             if (!sortBy) {
                 sortBy = '';
             }
-            var coilNo = $('#CoilNo').val();
-            var frWidth = $('#FrWidth').val();
-            var toWidth = $('#ToWidth').val();
-            var frthick = $('#FrThick').val();
-            var tothick = $('#ToThick').val();
-            var frWeigth = $('#FrWeigth').val();
-            var toWeigth = $('#ToWeigth').val();
+            var coilNo = $('input[name="CoilNo"]').val();            
+            var frWidth = $('input[name="FrWidth"]').val();
+            var toWidth = $('input[name="ToWidth"]').val();
+            var frthick = $('input[name="FrThick"]').val();
+            var tothick = $('input[name="ToThick"]').val();
+            var frWeigth = $('input[name="FrWeight"]').val();
+            var toWeigth = $('input[name="ToWeight"]').val();
             var grade = $('#Grade').val();
             var frRecDt = $('#FrRecDt').val();
             var toRecDt = $('#ToRecDt').val();
@@ -388,16 +396,16 @@
     }));
 
     $('#btnExportToExcel').click(function () {
-        var coilNo = $('#CoilNo').val();
-        var frWidth = $('#FrWidth').val();
-        var toWidth = $('#ToWidth').val();
-        var frthick = $('#FrThick').val();
-        var tothick = $('#ToThick').val();
-        var frWeigth = $('#FrWeigth').val();
+        var coilNo = $('input[name=CoilNo]').val();
+        var frWidth = $('input[name="FrWidth"]').val();
+        var toWidth = $('input[name="ToWidth"]').val();
+        var frthick = $('input[name="FrThick"]').val();
+        var tothick = $('input[name="ToThick"]').val();
+        var frWeigth = $('input[name="FrWeight"]').val();
+        var toWeigth = $('input[name="ToWeight"]').val();
         if (frWeigth == null) {
             var frWeigth = "0";
         }
-        var toWeigth = $('#ToWeigth').val();
         if (toWeigth == null) {
             var toWeigth = "0";
         }
@@ -422,16 +430,16 @@
     })
 
     $('#btnExportToPDF').click(function () {
-        var coilNo = $('#CoilNo').val();
-        var frWidth = $('#FrWidth').val();
-        var toWidth = $('#ToWidth').val();
-        var frthick = $('#FrThick').val();
-        var tothick = $('#ToThick').val();
-        var frWeigth = $('#FrWeigth').val();
+        var coilNo = $('input[name="CoilNo"]').val();            
+        var frWidth = $('input[name="FrWidth"]').val();
+        var toWidth = $('input[name="ToWidth"]').val();
+        var frthick = $('input[name="FrThick"]').val();
+        var tothick = $('input[name="ToThick"]').val();
+        var frWeigth = $('input[name="FrWeight"]').val();
+        var toWeigth = $('input[name="ToWeight"]').val();
         if (frWeigth == null) {
             var frWeigth = "0";
         }
-        var toWeigth = $('#ToWeigth').val();
         if (toWeigth == null) {
             var toWeigth = "0";
         }
@@ -476,4 +484,15 @@
         });
     }
 
+</script>
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Selecte---'
+            },
+            allowClear: true
+        });
+    });
 </script>

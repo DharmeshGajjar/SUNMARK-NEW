@@ -85,7 +85,7 @@ namespace SUNMark.Controllers
                 #region User Rights
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
-
+                string guid = GetStringSession("LoginGUID");
                 UserFormRightModel userFormRights = new UserFormRightModel();
                 string currentURL = "/CoilMaster/Index";
                 userFormRights = GetUserRights(userId, currentURL);
@@ -103,7 +103,7 @@ namespace SUNMark.Controllers
                 }
 
                 SqlParameter[] sqlParameters = new SqlParameter[14];
-                sqlParameters[0] = new SqlParameter("@SESSID", userId);
+                sqlParameters[0] = new SqlParameter("@SESSID", guid);
                 sqlParameters[1] = new SqlParameter("@coilNumber", coilNo);
                 sqlParameters[2] = new SqlParameter("@frWidth", frWidth);
                 sqlParameters[3] = new SqlParameter("@toWidth", toWidth);
@@ -213,13 +213,25 @@ namespace SUNMark.Controllers
                     {
                         whereConditionQuery += " AND CoilMst.CmpVou='" + companyid + "'";
                     }
+                    if (!string.IsNullOrWhiteSpace(godownid))
+                    {
+                        whereConditionQuery += " AND CoilMst.Godown In (Select GdnNm From GdnMst Where GdnVou ='" + godownid + "')";
+                    }
+                    if (!string.IsNullOrWhiteSpace(coiltype))
+                    {
+                        whereConditionQuery += " AND CoilMst.CoilType ='" + coiltype + "'";
+                    }
                     if (!string.IsNullOrWhiteSpace(accountid))
                     {
                         whereConditionQuery += " AND CoilMst.AccVou='" + accountid + "'";
                     }
-                    if (!string.IsNullOrWhiteSpace(coiltype))
+                    if (!string.IsNullOrWhiteSpace(coilNo))
                     {
-                        whereConditionQuery += " AND CoilMst.CoilType='" + coiltype + "'";
+                        whereConditionQuery += " AND CoilMst.CoilNo='" + coilNo + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(guid))
+                    {
+                        whereConditionQuery += " AND CoilMst.SessID='" + guid + "'";
                     }
                 }
                 getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
@@ -247,7 +259,7 @@ namespace SUNMark.Controllers
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
-
+                string guid = GetStringSession("LoginGUID");
                 //SqlParameter[] sqlParameters = new SqlParameter[1];
                 //sqlParameters[0] = new SqlParameter("@SESSID", userId);
                 //DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("RPT_COILMASTER", sqlParameters);
@@ -357,18 +369,30 @@ namespace SUNMark.Controllers
                     {
                         whereConditionQuery += " AND CoilMst.CmpVou='" + companyid + "'";
                     }
+                    if (!string.IsNullOrWhiteSpace(godownid))
+                    {
+                        whereConditionQuery += " AND CoilMst.Godown In (Select GdnNm From GdnMst Where GdnVou ='" + godownid + "')";
+                    }
+                    if (!string.IsNullOrWhiteSpace(coiltype))
+                    {
+                        whereConditionQuery += " AND CoilMst.CoilType ='" + coiltype + "'";
+                    }
                     if (!string.IsNullOrWhiteSpace(accountid))
                     {
                         whereConditionQuery += " AND CoilMst.AccVou='" + accountid + "'";
                     }
-                    if (!string.IsNullOrWhiteSpace(coiltype))
+                    //if (!string.IsNullOrWhiteSpace(coiltype))
+                    //{
+                    //    whereConditionQuery += " AND CoilMst.CoilType='" + coiltype + "'";
+                    //}
+                    if (!string.IsNullOrWhiteSpace(guid))
                     {
-                        whereConditionQuery += " AND CoilMst.CoilType='" + coiltype + "'";
+                        whereConditionQuery += " AND CoilMst.SessID='" + guid + "'";
                     }
                 }
 
 
-                getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, userId, 0, "", 0, 1, "");
+                getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, userId, 0, "", 0, 1,whereConditionQuery);
                 if (type == 1)
                 {
                     var bytes = Excel(getReportDataModel, "Coil Register Report", companyDetails.CmpName);

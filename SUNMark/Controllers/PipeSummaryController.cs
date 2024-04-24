@@ -38,7 +38,7 @@ namespace SUNMark.Controllers
                 }
                 coilMasterModel.GradeList = objProductHelper.GetGradeMasterDropdown(companyId, administrator);
                 coilMasterModel.CompanyList = objProductHelper.GetCompanyMasterDropdown(companyId, administrator);
-                ViewBag.processList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                ViewBag.processList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator,"");
                 //coilMasterModel.StockYNList = objProductHelper.GetStockYN();
             }
             catch (Exception ex)

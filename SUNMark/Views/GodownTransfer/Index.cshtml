@@ -16,6 +16,7 @@
     bool headerAddTrue = false;
     bool headerListTrue = false;
     int vNo = ViewBag.voucherNo != null ? Convert.ToInt32(ViewBag.voucherNo) : 0;
+    var gdnvNo = ViewBag.gdnvoucherNo != null ? Convert.ToInt32(ViewBag.gdnvoucherNo) : "";
     int id = ViewBag.id != null ? (int)ViewBag.id : 0;
     var companyList = ViewBag.companyList != null ? ViewBag.companyList as List<SelectListItem> : new List<SelectListItem>();
     var godownList = ViewBag.godownList != null ? ViewBag.godownList as List<SelectListItem> : new List<SelectListItem>();
@@ -156,6 +157,19 @@
                                 <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
                                     <div class="col-md-12 col-12 mb-2 mt-2">
                                         <div class="row">
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    V.No <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    <input type="text" id="gdnvno" name="gdnvno" class="form-control" value="@gdnvNo" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+
+                                            
+
                                             <div class="col-md-1 mb-2 float-left">
                                                 <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
                                                     @for (int i = 0; i < pageNoList.Count; i++)
@@ -167,10 +181,10 @@
 
                                                 </select>
                                             </div>
-                                            <div class="col-md-5 col-12">
+                                            <div class="col-md-7 col-12">
                                                 <div class="row">
-                                                    <div class="col-md-6 col">
-                                                        <select class="form-control select2 drpReportLayout" onchange="loadData()">
+                                                    <div class="col-md-3 col">
+                                                        <select class="form-control select2 drpReportLayout">
                                                             <option value="" ; style="width:200px">--Select Layout--</option>
                                                             @if (layoutList != null && layoutList.Count > 0)
                                                             {
@@ -189,21 +203,24 @@
                                                             </button>
                                                         }
                                                     </div>
-                                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                                    <div class="col-md-7 mb-2 custommt-2-3">
                                                         <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
                                                         <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                        <button class="btn btn-primary btn-sm" id="btnView" onclick=" loadData();">View (Alt+V)</button>                                                        
+                                                        <a href="/GodownTransfer/index" class="btn btn-warning btn-sm ml-6">
+                                                            Cancel (Esc)
+                                                        </a>
                                                     </div>
 
                                                 </div>
                                             </div>
-                                            <div class="col-md-3"></div>
+                                            <div class="col-md-1"></div>
                                             <div class="col-md-3 col-12 float-right">
                                                 <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="dataTable">
-
                                     </div>
                                     <div class="pager float-right"></div>
                                 </div>
@@ -800,6 +817,9 @@
                 .on('Alt+L', function () {
                     GoToListTab();
                 })
+                .on('Alt+V', function () {
+                    loadData();
+                })
                 .on('+', function () {
                     if (!isRecentCalledAddRows) {
                         CheckRecordAddRows();
@@ -860,7 +880,7 @@
     var isRecentCalled = false;
 
     $(function () {
-        loadData();
+        //loadData();
         var pageIndex = '';
         var pageSize = '';
         var totalRecord = '';
@@ -892,7 +912,7 @@
 
         if (!layoutId) {
             $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
-            SetSelect2()
+            //SetSelect2()
 
         }
         if (!columnName) {
@@ -902,10 +922,12 @@
             sortBy = '';
         }
         $('.dataTable').html();
+        gdnVNo = $('input[name="gdnvno"]').val()
+
         $.ajax({
             url: '/GodownTransfer/GetReportView',
             type: 'GET',
-            data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+            data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy, gdnVNo: gdnVNo },
             dataType: 'HTML',
             traditional: true, // add this
             success: function (data) {
@@ -925,11 +947,13 @@
     //})
 
     $('#btnExportToExcel').click(function () {
-        window.location.href = "/GodownTransfer/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+        gdnVNo = $('input[name="gdnvno"]').val()
+        window.location.href = "/GodownTransfer/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1&gdnVNo=" + gdnVNo;
     })
 
     $('#btnExportToPDF').click(function () {
-        window.location.href = "/GodownTransfer/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+        gdnVNo = $('input[name="gdnvno"]').val()
+        window.location.href = "/GodownTransfer/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2&gdnVNo=" + gdnVNo;
     })
 </script>
 <script>
@@ -994,132 +1018,132 @@
     }
 
     function AddRowsCoil() {
-            var previousRow = $('#tblCoil').children('tbody').children('tr:last').prev();
-            if (previousRow != null) {
-                var coilNo = $(previousRow).children('td').eq(1).children('input').val();
-                var grade = $(previousRow).children('td').eq(2).children('select').val();
-                var gradeHTML = $(previousRow).children('td').eq(2).children('select').children('option:selected').html();
-                var thick = $(previousRow).children('td').eq(3).children('input').val();
-                var width = $(previousRow).children('td').eq(4).children('input').val();
-                var qty = $(previousRow).children('td').eq(5).children('input').val();
-                var remarks = $(previousRow).children('td').eq(6).children('input').val();
-                var srNo = $(previousRow).children('td').eq(0).children('input').val();
-                if (grade != null && thick != null && width != null && qty != null && grade != "" && thick != "" && width != "" && qty != "") {
+        var previousRow = $('#tblCoil').children('tbody').children('tr:last').prev();
+        if (previousRow != null) {
+            var coilNo = $(previousRow).children('td').eq(1).children('input').val();
+            var grade = $(previousRow).children('td').eq(2).children('select').val();
+            var gradeHTML = $(previousRow).children('td').eq(2).children('select').children('option:selected').html();
+            var thick = $(previousRow).children('td').eq(3).children('input').val();
+            var width = $(previousRow).children('td').eq(4).children('input').val();
+            var qty = $(previousRow).children('td').eq(5).children('input').val();
+            var remarks = $(previousRow).children('td').eq(6).children('input').val();
+            var srNo = $(previousRow).children('td').eq(0).children('input').val();
+            if (grade != null && thick != null && width != null && qty != null && grade != "" && thick != "" && width != "" && qty != "") {
 
-                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
-                        var html = $('#tblCoil').children().find('tr.AddRows:first').html();
+                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                    var html = $('#tblCoil').children().find('tr.AddRows:first').html();
 
-                        if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
-                            $('#tblDisplay').append(`<thead>` + $('#tblCoil').children('thead').html() + `</thead><tbody></tbody>`);
-                            $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
-                        }
-                        else {
-                            $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
-                        }
-                    }
-                    $('#tblCoil').children('tbody').children('tr:last').removeClass('d-none')
-
-                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
-                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('label').html(coilNo);
-                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('label').html(gradeHTML);
-                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(3).children('label').html(thick);
-                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(4).children('label').html(width);
-                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('label').html(qty);
-                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(6).children('label').html(remarks);
-                        $('#tblCoil').children('tbody').children('tr:last').children('td').eq(0).children('label').html(srNo);
+                    if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                        $('#tblDisplay').append(`<thead>` + $('#tblCoil').children('thead').html() + `</thead><tbody></tbody>`);
+                        $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
                     }
                     else {
-                        var lastGrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val();
-                        var thickNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
-                        var widthNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val();
-                        var coilNoNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').val();
-
-                        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').val(lastGrade);
-                        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val(thickNew);
-                        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val(widthNew);
-                        $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').val(coilNoNew);
+                        $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
                     }
+                }
+                $('#tblCoil').children('tbody').children('tr:last').removeClass('d-none')
 
-
-                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val('');
-                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val('');
-                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
-
-
-                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').remove();
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('span').remove();
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).html($('#hiddenGrade').html());
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').addClass('select2');
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val(grade);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').removeClass('select2')
-
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').val(coilNo);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val(thick);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val(width);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val(qty);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val(remarks);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).addClass('text-center')
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).html(`<i class="fa fa-edit text-primary" onclick="EditRowsCoil(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsCoil(this)" style="font-size:18px"></i>`)
-
-
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true)
-
-                        $('#tblDisplay').children('tbody').children().find('input').each(function () {
-                            $(this).removeAttr('onfocusin')
-                            $(this).removeAttr('onfocus')
-                            $(this).removeAttr('onfocusout')
-                            $(this).removeClass('focusIn')
-                        })
-                    }
-                    else {
-                        $('#tblDisplay').children('tbody').children('tr').each(function () {
-                            if ($(this).children('td').eq(0).children('input').val() == srNo) {
-                                $(this).children('td').eq(2).children('select').remove();
-                                $(this).children('td').eq(2).children('span').remove();
-                                $(this).children('td').eq(2).html($('#hiddenGrade').html());
-                                $(this).children('td').eq(2).children('select').addClass('select2');
-                                $(this).children('td').eq(2).children('select').val(grade);
-                                $(this).children('td').eq(2).children('select').removeClass('select2')
-                                $(this).children('td').eq(2).children('select').attr('disabled', true)
-                                $(this).children('td').eq(3).children('input').val(thick);
-                                $(this).children('td').eq(1).children('input').val(coilNo);
-                                $(this).children('td').eq(4).children('input').val(width);
-                                $(this).children('td').eq(5).children('input').val(qty);
-                                $(this).children('td').eq(6).children('input').val(remarks);
-                                $(this).children('td').eq(7).addClass('text-center')
-                                $(this).children('td').eq(7).html(`<i class="fa fa-edit text-primary" onclick="EditRowsCoil(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsCoil(this)" style="font-size:18px"></i>`)
-                            }
-                        })
-                    }
-
-
-
-                    SetSerialNumberCoil();
-                    SetNameCoil();
-                    SetSelect2();
-                    isRecentCall = true
-                    setTimeout(function () {
-                        isRecentCall = false;
-
-                    }, 500)
-                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').focus();
-                    setTimeout(function () {
-                        window.scrollTo(0, 0);
-                    }, 100)
-
-
+                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(1).children('label').html(coilNo);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(2).children('label').html(gradeHTML);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(3).children('label').html(thick);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(4).children('label').html(width);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(5).children('label').html(qty);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(6).children('label').html(remarks);
+                    $('#tblCoil').children('tbody').children('tr:last').children('td').eq(0).children('label').html(srNo);
                 }
                 else {
-                    showErrorMessage("Please enter all required fields");
+                    var lastGrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val();
+                    var thickNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
+                    var widthNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val();
+                    var coilNoNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').val();
+
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').val(lastGrade);
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val(thickNew);
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val(widthNew);
+                    $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').val(coilNoNew);
                 }
+
+
+                $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val('');
+                $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val('');
+                $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+
+
+                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').remove();
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('span').remove();
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).html($('#hiddenGrade').html());
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').addClass('select2');
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val(grade);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').removeClass('select2')
+
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').val(coilNo);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val(thick);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val(width);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val(qty);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val(remarks);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).addClass('text-center')
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).html(`<i class="fa fa-edit text-primary" onclick="EditRowsCoil(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsCoil(this)" style="font-size:18px"></i>`)
+
+
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('input').attr('disabled', true)
+
+                    $('#tblDisplay').children('tbody').children().find('input').each(function () {
+                        $(this).removeAttr('onfocusin')
+                        $(this).removeAttr('onfocus')
+                        $(this).removeAttr('onfocusout')
+                        $(this).removeClass('focusIn')
+                    })
+                }
+                else {
+                    $('#tblDisplay').children('tbody').children('tr').each(function () {
+                        if ($(this).children('td').eq(0).children('input').val() == srNo) {
+                            $(this).children('td').eq(2).children('select').remove();
+                            $(this).children('td').eq(2).children('span').remove();
+                            $(this).children('td').eq(2).html($('#hiddenGrade').html());
+                            $(this).children('td').eq(2).children('select').addClass('select2');
+                            $(this).children('td').eq(2).children('select').val(grade);
+                            $(this).children('td').eq(2).children('select').removeClass('select2')
+                            $(this).children('td').eq(2).children('select').attr('disabled', true)
+                            $(this).children('td').eq(3).children('input').val(thick);
+                            $(this).children('td').eq(1).children('input').val(coilNo);
+                            $(this).children('td').eq(4).children('input').val(width);
+                            $(this).children('td').eq(5).children('input').val(qty);
+                            $(this).children('td').eq(6).children('input').val(remarks);
+                            $(this).children('td').eq(7).addClass('text-center')
+                            $(this).children('td').eq(7).html(`<i class="fa fa-edit text-primary" onclick="EditRowsCoil(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsCoil(this)" style="font-size:18px"></i>`)
+                        }
+                    })
+                }
+
+
+
+                SetSerialNumberCoil();
+                SetNameCoil();
+                SetSelect2();
+                isRecentCall = true
+                setTimeout(function () {
+                    isRecentCall = false;
+
+                }, 500)
+                $('#tblCoil').children('tbody').children('tr:last').prev().children('td').eq(1).children('input').focus();
+                setTimeout(function () {
+                    window.scrollTo(0, 0);
+                }, 100)
+
+
             }
+            else {
+                showErrorMessage("Please enter all required fields");
+            }
+        }
     }
 
     function DeleteRowsCoil(obj) {
@@ -1153,16 +1177,16 @@
     function SetNameCoil() {
         $('#tblDisplay').children('tbody').children('tr:last').children("td").eq(1).children("select").attr("Id", "PurchaseOrder.OrdGrdCoil999999");
         $('#tblDisplay').children('tbody').children('tr:not(tr.lastRow)').each(function (i) {
-            $(this).children("td").eq(1).children("select").attr("name", "gradeGridVou");
-            $(this).children("td").eq(1).children("select").attr("Id", "gradeGridVou" + i + "");
-            $(this).children("td").eq(2).children("input").attr("name", "thickGrid");
-            $(this).children("td").eq(2).children("input").attr("Id", "thickGrid" + i + "");
-            $(this).children("td").eq(3).children("input").attr("name", "widthGrid");
-            $(this).children("td").eq(3).children("input").attr("Id", "widthGrid" + i + "");
-            $(this).children("td").eq(4).children("input").attr("name", "qtyGrid");
-            $(this).children("td").eq(4).children("input").attr("Id", "qtyGrid" + i + "");
-            $(this).children("td").eq(5).children("input").attr("name", "remarksGrid");
-            $(this).children("td").eq(5).children("input").attr("Id", "remarksGrid" + i + "");
+            $(this).children("td").eq(2).children("select").attr("name", "gradeGridVou");
+            $(this).children("td").eq(2).children("select").attr("Id", "gradeGridVou" + i + "");
+            $(this).children("td").eq(3).children("input").attr("name", "thickGrid");
+            $(this).children("td").eq(3).children("input").attr("Id", "thickGrid" + i + "");
+            $(this).children("td").eq(4).children("input").attr("name", "widthGrid");
+            $(this).children("td").eq(4).children("input").attr("Id", "widthGrid" + i + "");
+            $(this).children("td").eq(5).children("input").attr("name", "qtyGrid");
+            $(this).children("td").eq(5).children("input").attr("Id", "qtyGrid" + i + "");
+            $(this).children("td").eq(6).children("input").attr("name", "remarksGrid");
+            $(this).children("td").eq(6).children("input").attr("Id", "remarksGrid" + i + "");
         });
     }
 
@@ -1200,165 +1224,165 @@
 
 
     function AddRowsPipe() {
-            var previousRow = $('#tblPipe').children('tbody').children('tr:last').prev();
-            if (previousRow != null) {
-                var grade = $(previousRow).children('td').eq(1).children('select').val();
-                var thick = $(previousRow).children('td').eq(2).children('input').val();
-                var od = $(previousRow).children('td').eq(3).children('input').val();
-                var feetper = $(previousRow).children('td').eq(4).children('input').val();
-                var pcs = $(previousRow).children('td').eq(5).children('input').val();
-                var nb = $(previousRow).children('td').eq(6).children('input').val();
-                var sch = $(previousRow).children('td').eq(7).children('input').val();
-                var processDone = $(previousRow).children('td').eq(8).children('select').val();
-                var processDoneHTML = $(previousRow).children('td').eq(8).children('select').children('option:selected').html();
-                var remarks = $(previousRow).children('td').eq(9).children('input').val();
-                var srNo = $(previousRow).children('td').eq(0).children('input').val();
-                if (grade != null && thick != null && od != null && feetper != null && pcs != null && processDone != null && grade != "" && thick != "" && od != "" && feetper != "" && pcs != "" && processDone != "") {
+        var previousRow = $('#tblPipe').children('tbody').children('tr:last').prev();
+        if (previousRow != null) {
+            var grade = $(previousRow).children('td').eq(1).children('select').val();
+            var thick = $(previousRow).children('td').eq(2).children('input').val();
+            var od = $(previousRow).children('td').eq(3).children('input').val();
+            var feetper = $(previousRow).children('td').eq(4).children('input').val();
+            var pcs = $(previousRow).children('td').eq(5).children('input').val();
+            var nb = $(previousRow).children('td').eq(6).children('input').val();
+            var sch = $(previousRow).children('td').eq(7).children('input').val();
+            var processDone = $(previousRow).children('td').eq(8).children('select').val();
+            var processDoneHTML = $(previousRow).children('td').eq(8).children('select').children('option:selected').html();
+            var remarks = $(previousRow).children('td').eq(9).children('input').val();
+            var srNo = $(previousRow).children('td').eq(0).children('input').val();
+            if (grade != null && thick != null && od != null && feetper != null && pcs != null && processDone != null && grade != "" && thick != "" && od != "" && feetper != "" && pcs != "" && processDone != "") {
 
 
-                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
-                        var html = $('#tblPipe').children().find('tr.AddRows:first').html();
+                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                    var html = $('#tblPipe').children().find('tr.AddRows:first').html();
 
-                        if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
-                            $('#tblDisplay').append(`<thead>` + $('#tblPipe').children('thead').html() + `</thead><tbody></tbody>`);
-                            $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
-                        }
-                        else {
-                            $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
-                        }
-                    }
-
-                    $('#tblPipe').children('tbody').children('tr:last').removeClass('d-none')
-                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
-                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(1).children('label').html(grade);
-                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(2).children('label').html(thick);
-                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(3).children('label').html(od);
-                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(4).children('label').html(feetper);
-                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(5).children('label').html(pcs);
-                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(6).children('label').html(nb);
-                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(7).children('label').html(sch);
-                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(8).children('label').html(processDoneHTML);
-                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(9).children('label').html(remarks);
-                        $('#tblPipe').children('tbody').children('tr:last').children('td').eq(0).children('label').html(srNo);
+                    if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                        $('#tblDisplay').append(`<thead>` + $('#tblPipe').children('thead').html() + `</thead><tbody></tbody>`);
+                        $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
                     }
                     else {
-                        var lastGrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val();
-                        var thickNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').val();
-                        var odNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
-                        var feetperNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val();
-                        var pcsNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val();
-                        var nbNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val();
-                        var schNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val();
-                        var processDoneNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').children('option:selected').val();
-
-                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val(lastGrade);
-                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(2).children('input').val(thickNew);
-                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val(odNew);
-                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val(feetperNew);
-                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val(pcsNew);
-                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val(nbNew);
-                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val(schNew);
-                        $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(8).children('input').val(processDoneNew);
+                        $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
                     }
+                }
 
-                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
-                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
-                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(8).children('select').val('');
-                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(9).children('input').val('');
-                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
-
-
-                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').remove();
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('span').remove();
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).html($('#hiddenGrade').html());
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').addClass('select2');
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val(grade);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').removeClass('select2')
-
-
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').remove();
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('span').remove();
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).html($('#hiddenProcessDone').html());
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').addClass('select2');
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').val(processDone);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').removeClass('select2')
-
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').val(thick);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val(od);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val(feetper);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val(pcs);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val(nb);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val(sch);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val(remarks);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).addClass('text-center')
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).html(`<i class="fa fa-edit text-primary" onclick="EditRowsPipe(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsPipe(this)" style="font-size:18px"></i>`)
-
-
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('select').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').attr('disabled', true)
-
-                        $('#tblDisplay').children('tbody').children().find('input').each(function () {
-                            $(this).removeAttr('onfocusin')
-                            $(this).removeAttr('onfocus')
-                            $(this).removeAttr('onfocusout')
-                            $(this).removeClass('focusIn')
-                        })
-                    }
-                    else {
-                        $('#tblDisplay').children('tbody').children('tr').each(function () {
-                            if ($(this).children('td').eq(0).children('input').val() == srNo) {
-                                $(this).children('td').eq(1).children('select').remove();
-                                $(this).children('td').eq(1).children('span').remove();
-                                $(this).children('td').eq(1).html($('#hiddenGrade').html());
-                                $(this).children('td').eq(1).children('select').addClass('select2');
-                                $(this).children('td').eq(1).children('select').val(grade);
-                                $(this).children('td').eq(1).children('select').removeClass('select2')
-                                $(this).children('td').eq(1).children('select').attr('disabled', true)
-
-                                $(this).children('td').eq(8).children('select').remove();
-                                $(this).children('td').eq(8).children('span').remove();
-                                $(this).children('td').eq(8).html($('#hiddenProcessDone').html());
-                                $(this).children('td').eq(8).children('select').addClass('select2');
-                                $(this).children('td').eq(8).children('select').val(processDone);
-                                $(this).children('td').eq(8).children('select').removeClass('select2')
-                                $(this).children('td').eq(8).children('select').attr('disabled', true)
-
-                                $(this).children('td').eq(2).children('input').val(thick);
-                                $(this).children('td').eq(3).children('input').val(od);
-                                $(this).children('td').eq(4).children('input').val(feetper);
-                                $(this).children('td').eq(5).children('input').val(pcs);
-                                $(this).children('td').eq(6).children('input').val(nb);
-                                $(this).children('td').eq(7).children('input').val(sch);
-                                $(this).children('td').eq(9).children('input').val(remarks);
-                                $(this).children('td').eq(10).addClass('text-center')
-                                $(this).children('td').eq(10).html(`<i class="fa fa-edit text-primary" onclick="EditRowsPipe(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsPipe(this)" style="font-size:18px"></i>`)
-                            }
-                        })
-                    }
-
-                    SetSerialNumberPipe();
-                    SetNamePipe();
-                    SetSelect2();
-                    isRecentCall = true
-                    setTimeout(function () {
-                        isRecentCall = false;
-                    }, 500)
-                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
+                $('#tblPipe').children('tbody').children('tr:last').removeClass('d-none')
+                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(1).children('label').html(grade);
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(2).children('label').html(thick);
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(3).children('label').html(od);
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(4).children('label').html(feetper);
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(5).children('label').html(pcs);
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(6).children('label').html(nb);
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(7).children('label').html(sch);
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(8).children('label').html(processDoneHTML);
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(9).children('label').html(remarks);
+                    $('#tblPipe').children('tbody').children('tr:last').children('td').eq(0).children('label').html(srNo);
                 }
                 else {
-                    showErrorMessage("Please enter all required fields");
+                    var lastGrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val();
+                    var thickNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').val();
+                    var odNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
+                    var feetperNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val();
+                    var pcsNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val();
+                    var nbNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val();
+                    var schNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val();
+                    var processDoneNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').children('option:selected').val();
+
+                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val(lastGrade);
+                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(2).children('input').val(thickNew);
+                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val(odNew);
+                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(4).children('input').val(feetperNew);
+                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val(pcsNew);
+                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val(nbNew);
+                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val(schNew);
+                    $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(8).children('input').val(processDoneNew);
                 }
+
+                $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
+                $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
+                $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(8).children('select').val('');
+                $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(9).children('input').val('');
+                $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+
+
+                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').remove();
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('span').remove();
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).html($('#hiddenGrade').html());
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').addClass('select2');
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val(grade);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').removeClass('select2')
+
+
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').remove();
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('span').remove();
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).html($('#hiddenProcessDone').html());
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').addClass('select2');
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').val(processDone);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').removeClass('select2')
+
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').val(thick);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val(od);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').val(feetper);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val(pcs);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val(nb);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val(sch);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val(remarks);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).addClass('text-center')
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).html(`<i class="fa fa-edit text-primary" onclick="EditRowsPipe(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsPipe(this)" style="font-size:18px"></i>`)
+
+
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('select').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('select').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').attr('disabled', true)
+
+                    $('#tblDisplay').children('tbody').children().find('input').each(function () {
+                        $(this).removeAttr('onfocusin')
+                        $(this).removeAttr('onfocus')
+                        $(this).removeAttr('onfocusout')
+                        $(this).removeClass('focusIn')
+                    })
+                }
+                else {
+                    $('#tblDisplay').children('tbody').children('tr').each(function () {
+                        if ($(this).children('td').eq(0).children('input').val() == srNo) {
+                            $(this).children('td').eq(1).children('select').remove();
+                            $(this).children('td').eq(1).children('span').remove();
+                            $(this).children('td').eq(1).html($('#hiddenGrade').html());
+                            $(this).children('td').eq(1).children('select').addClass('select2');
+                            $(this).children('td').eq(1).children('select').val(grade);
+                            $(this).children('td').eq(1).children('select').removeClass('select2')
+                            $(this).children('td').eq(1).children('select').attr('disabled', true)
+
+                            $(this).children('td').eq(8).children('select').remove();
+                            $(this).children('td').eq(8).children('span').remove();
+                            $(this).children('td').eq(8).html($('#hiddenProcessDone').html());
+                            $(this).children('td').eq(8).children('select').addClass('select2');
+                            $(this).children('td').eq(8).children('select').val(processDone);
+                            $(this).children('td').eq(8).children('select').removeClass('select2')
+                            $(this).children('td').eq(8).children('select').attr('disabled', true)
+
+                            $(this).children('td').eq(2).children('input').val(thick);
+                            $(this).children('td').eq(3).children('input').val(od);
+                            $(this).children('td').eq(4).children('input').val(feetper);
+                            $(this).children('td').eq(5).children('input').val(pcs);
+                            $(this).children('td').eq(6).children('input').val(nb);
+                            $(this).children('td').eq(7).children('input').val(sch);
+                            $(this).children('td').eq(9).children('input').val(remarks);
+                            $(this).children('td').eq(10).addClass('text-center')
+                            $(this).children('td').eq(10).html(`<i class="fa fa-edit text-primary" onclick="EditRowsPipe(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsPipe(this)" style="font-size:18px"></i>`)
+                        }
+                    })
+                }
+
+                SetSerialNumberPipe();
+                SetNamePipe();
+                SetSelect2();
+                isRecentCall = true
+                setTimeout(function () {
+                    isRecentCall = false;
+                }, 500)
+                $('#tblPipe').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
             }
+            else {
+                showErrorMessage("Please enter all required fields");
+            }
+        }
     }
 
     function DeleteRowsPipe(obj) {
@@ -1427,7 +1451,7 @@
             var pcs = $(obj).closest('tr').children('td').eq(5).children('input').val();
             var nb = $(obj).closest('tr').children('td').eq(6).children('input').val();
             var sch = $(obj).closest('tr').children('td').eq(7).children('input').val();
-            var processDone= $(obj).closest('tr').children('td').eq(8).children('select').val();
+            var processDone = $(obj).closest('tr').children('td').eq(8).children('select').val();
             var remarks = $(obj).closest('tr').children('td').eq(8).children('input').val();
 
 
@@ -1456,108 +1480,108 @@
     }
 
     function AddRowsOther() {
-            var previousRow = $('#tblOther').children('tbody').children('tr:last').prev();
-            if (previousRow != null) {
-                var product = $(previousRow).children('td').eq(1).children('select').val();
-                var producthtml = $(previousRow).children('td').eq(1).children('select').children('option:selected').html();
-                var quantity = $(previousRow).children('td').eq(2).children('input').val();
-                var remarks = $(previousRow).children('td').eq(3).children('input').val();
-                var srNo = $(previousRow).children('td').eq(0).children('input').val();
-                if (product != null && quantity != null && product != "" && quantity != "") {
-                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
-                        var html = $('#tblOther').children().find('tr.AddRows:first').html();
+        var previousRow = $('#tblOther').children('tbody').children('tr:last').prev();
+        if (previousRow != null) {
+            var product = $(previousRow).children('td').eq(1).children('select').val();
+            var producthtml = $(previousRow).children('td').eq(1).children('select').children('option:selected').html();
+            var quantity = $(previousRow).children('td').eq(2).children('input').val();
+            var remarks = $(previousRow).children('td').eq(3).children('input').val();
+            var srNo = $(previousRow).children('td').eq(0).children('input').val();
+            if (product != null && quantity != null && product != "" && quantity != "") {
+                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                    var html = $('#tblOther').children().find('tr.AddRows:first').html();
 
-                        if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
-                            $('#tblDisplay').append(`<thead>` + $('#tblOther').children('thead').html() + `</thead><tbody></tbody>`);
-                            $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
-                        }
-                        else {
-                            $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
-                        }
-                    }
-
-                    $('#tblOther').children('tbody').children('tr:last').removeClass('d-none')
-                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
-                        $('#tblOther').children('tbody').children('tr:last').children('td').eq(1).children('label').html(producthtml);
-                        $('#tblOther').children('tbody').children('tr:last').children('td').eq(2).children('label').html(quantity);
-                        $('#tblOther').children('tbody').children('tr:last').children('td').eq(3).children('label').html(remarks);
-                        $('#tblOther').children('tbody').children('tr:last').children('td').eq(0).children('label').html(srNo);
+                    if ($('#tblDisplay').children('tbody').children('tr').length <= 0) {
+                        $('#tblDisplay').append(`<thead>` + $('#tblOther').children('thead').html() + `</thead><tbody></tbody>`);
+                        $('#tblDisplay').children('tbody').append("<tr>" + html + "</tr>");
                     }
                     else {
-                        var productNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val();
-                        var qtynew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').val();
-                        var remarksnew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
-
-                        $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val(productNew);
-                        $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(2).children('input').val(qtynew);
-                        $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val(remarksnew);
+                        $('#tblDisplay').children('tbody').children('tr:last').after("<tr>" + html + "</tr>");
                     }
+                }
 
-                    $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val('');
-                    $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(2).children('input').val('');
-                    $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val('');
-                    $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
-
-
-                    if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').remove();
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('span').remove();
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).html($('#hiddenProduct').html());
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').addClass('select2');
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val(product);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').removeClass('select2')
-
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').val(quantity);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val(remarks);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).addClass('text-center')
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).html(`<i class="fa fa-edit text-primary" onclick="EditRowsOther(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsOther(this)" style="font-size:18px"></i>`)
-
-
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').attr('disabled', true)
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').attr('disabled', true)
-
-
-                        $('#tblDisplay').children('tbody').children().find('input').each(function () {
-                            $(this).removeAttr('onfocusin')
-                            $(this).removeAttr('onfocus')
-                            $(this).removeAttr('onfocusout')
-                            $(this).removeClass('focusIn')
-                        })
-                    }
-                    else {
-                        $('#tblDisplay').children('tbody').children('tr').each(function () {
-                            if ($(this).children('td').eq(0).children('input').val() == srNo) {
-                                $(this).children('td').eq(1).children('select').remove();
-                                $(this).children('td').eq(1).children('span').remove();
-                                $(this).children('td').eq(1).html($('#hiddenProduct').html());
-                                $(this).children('td').eq(1).children('select').addClass('select2');
-                                $(this).children('td').eq(1).children('select').val(product);
-                                $(this).children('td').eq(1).children('select').removeClass('select2')
-                                $(this).children('td').eq(1).children('select').attr('disabled', true)
-
-                                $(this).children('td').eq(2).children('input').val(quantity);
-                                $(this).children('td').eq(3).children('input').val(remarks);
-                                $(this).children('td').eq(4).addClass('text-center')
-                                $(this).children('td').eq(4).html(`<i class="fa fa-edit text-primary" onclick="EditRowsOther(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsOther(this)" style="font-size:18px"></i>`)
-                            }
-                        })
-                    }
-
-                    SetSerialNumberOther();
-                    SetNameOther();
-                    SetSelect2();
-                    isRecentCall = true
-                    setTimeout(function () {
-                        isRecentCall = false;
-                    }, 500)
-                    $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
+                $('#tblOther').children('tbody').children('tr:last').removeClass('d-none')
+                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(1).children('label').html(producthtml);
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(2).children('label').html(quantity);
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(3).children('label').html(remarks);
+                    $('#tblOther').children('tbody').children('tr:last').children('td').eq(0).children('label').html(srNo);
                 }
                 else {
-                    showErrorMessage("Please enter all required fields");
+                    var productNew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val();
+                    var qtynew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').val();
+                    var remarksnew = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val();
+
+                    $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val(productNew);
+                    $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(2).children('input').val(qtynew);
+                    $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val(remarksnew);
                 }
+
+                $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val('');
+                $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(2).children('input').val('');
+                $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(3).children('input').val('');
+                $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(0).children('input').val('0');
+
+
+                if (srNo == null || srNo == '' || srNo == undefined || srNo == "0") {
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').remove();
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('span').remove();
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).html($('#hiddenProduct').html());
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').addClass('select2');
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').val(product);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').removeClass('select2')
+
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').val(quantity);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').val(remarks);
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).addClass('text-center')
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).html(`<i class="fa fa-edit text-primary" onclick="EditRowsOther(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsOther(this)" style="font-size:18px"></i>`)
+
+
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(0).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(1).children('select').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('input').attr('disabled', true)
+                    $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('input').attr('disabled', true)
+
+
+                    $('#tblDisplay').children('tbody').children().find('input').each(function () {
+                        $(this).removeAttr('onfocusin')
+                        $(this).removeAttr('onfocus')
+                        $(this).removeAttr('onfocusout')
+                        $(this).removeClass('focusIn')
+                    })
+                }
+                else {
+                    $('#tblDisplay').children('tbody').children('tr').each(function () {
+                        if ($(this).children('td').eq(0).children('input').val() == srNo) {
+                            $(this).children('td').eq(1).children('select').remove();
+                            $(this).children('td').eq(1).children('span').remove();
+                            $(this).children('td').eq(1).html($('#hiddenProduct').html());
+                            $(this).children('td').eq(1).children('select').addClass('select2');
+                            $(this).children('td').eq(1).children('select').val(product);
+                            $(this).children('td').eq(1).children('select').removeClass('select2')
+                            $(this).children('td').eq(1).children('select').attr('disabled', true)
+
+                            $(this).children('td').eq(2).children('input').val(quantity);
+                            $(this).children('td').eq(3).children('input').val(remarks);
+                            $(this).children('td').eq(4).addClass('text-center')
+                            $(this).children('td').eq(4).html(`<i class="fa fa-edit text-primary" onclick="EditRowsOther(this)" style="font-size:18px"></i><i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsOther(this)" style="font-size:18px"></i>`)
+                        }
+                    })
+                }
+
+                SetSerialNumberOther();
+                SetNameOther();
+                SetSelect2();
+                isRecentCall = true
+                setTimeout(function () {
+                    isRecentCall = false;
+                }, 500)
+                $('#tblOther').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').focus();
             }
+            else {
+                showErrorMessage("Please enter all required fields");
+            }
+        }
     }
 
     function DeleteRowsOther(obj) {
@@ -1886,7 +1910,7 @@
         }
         else {
             $('#tblDisplay').children('tbody').children('tr').each(function () {
-                if (!$(this).children('td').eq(1).children('select').val() || !$(this).children('td').eq(2).children('input').val() ) {
+                if (!$(this).children('td').eq(1).children('select').val() || !$(this).children('td').eq(2).children('input').val()) {
                     isAllow = false;
                 }
             })
@@ -1918,7 +1942,7 @@
                             //$('input[name="challanNo"]').attr('disabled', true);
                             $('input[name="date"]').val(response.date);
                             $('select[name="fromGodownVou"]').val(response.fromGodown);
-                            $('select[name="fromGodownVou"]').attr('disabled',true);
+                            $('select[name="fromGodownVou"]').attr('disabled', true);
                             $('select[name="toGodownVou"]').val(response.toGodown);
                             $('select[name="toGodownVou"]').attr('disabled', true);
                             $('select[name="productTypeVou"]').val(response.productType);
@@ -1981,7 +2005,7 @@
         }
     })
 
-    function GetDataByCoilNo(coilNo,obj) {
+    function GetDataByCoilNo(coilNo, obj) {
         if (coilNo) {
             $.ajax({
                 type: "POST",
@@ -2050,115 +2074,115 @@
             //);
         }
         $("#btn_ViewMailWhatapp").click(function () {
-                let optionVal = $('input:radio[name=printOption]:checked').val();
-                if (optionVal == "Print") {
-                    $('#exampleModal').modal('hide');
+            let optionVal = $('input:radio[name=printOption]:checked').val();
+            if (optionVal == "Print") {
+                $('#exampleModal').modal('hide');
 
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GdnTrnPrintDetials", "GodownTransfer")',
+                    data: { "id": ReturnId },
+                    dataType: "JSON",
+                    success: function (data) {
+                        var host = window.location.origin + data;
+                        $('#exampleModal').modal('hide');
+                        //$("[name=" + activeEle + "]").focus();
+                        var win = window.open(host, '_blank');
+                        if (win) {
+                            win.focus();
+                        } else {
+                            alert('Please allow popups for this website');
+                        }
+                    },
+                    error: function (response) {
+                        $("#EmailAddress").val("");
+                    }
+                });
+            }
+            else if (optionVal == "Email") {
+                if ($("#EmailAddress").val() != "" && $("#EmailAddress").val() != null) {
                     $.ajax({
                         type: "POST",
-                        url: '@Url.Action("GdnTrnPrintDetials", "GodownTransfer")',
-                        data: { "id": ReturnId},
+                        url: '/GodownTransfer/GdnTrnSendMail',
+                        data: { "id": ReturnId, "email": $("#EmailAddress").val() },
                         dataType: "JSON",
                         success: function (data) {
-                            var host = window.location.origin + data;
-                            $('#exampleModal').modal('hide');
                             //$("[name=" + activeEle + "]").focus();
-                            var win = window.open(host, '_blank');
-                            if (win) {
-                                win.focus();
-                            } else {
-                                alert('Please allow popups for this website');
+                            if (data.result) {
+                                showSuccessMessage(data.message);
                             }
+                            else {
+                                showErrorMessage(data.message);
+                            }
+                            $('#radio1').prop('checked', true);
+                            $("#EmailAddress").val("");
+                            $('#exampleModal').modal('toggle');
                         },
                         error: function (response) {
                             $("#EmailAddress").val("");
                         }
                     });
                 }
-                else if (optionVal == "Email") {
-                    if ($("#EmailAddress").val() != "" && $("#EmailAddress").val() != null) {
+                else {
+                    alert("Please Enter Email Address")
+                }
+
+
+                //window.location.href = "/JobWorkEntry/JobWorkSendMail?id=" + ReturnId + "&email=" + $("#EmailAddress").val();
+
+            }
+            else if (optionVal == "WhatApp") {
+                let whNO = $("#WhatappNo").val();
+                if (whNO != "" && whNO != null) {
+                    if (whNO.length == 10) {
                         $.ajax({
                             type: "POST",
-                            url: '/GodownTransfer/GdnTrnSendMail',
-                            data: { "id": ReturnId, "email": $("#EmailAddress").val() },
+                            url: '/GodownTransfer/GdnTrWhatApp',
+                            data: { "id": ReturnId, "whatappNo": whNO },
                             dataType: "JSON",
                             success: function (data) {
-                                //$("[name=" + activeEle + "]").focus();
-                                if (data.result) {
-                                     showSuccessMessage(data.message);
+                                if (data.result == "error") {
+                                    showErrorMessage(data.message)
                                 }
                                 else {
-                                    showErrorMessage(data.message);
+                                    showSuccessMessage(data.message);
                                 }
                                 $('#radio1').prop('checked', true);
-                                $("#EmailAddress").val("");
+                                $("#WhatappNo").val("");
+                                $("#WhatappNo").hide();
                                 $('#exampleModal').modal('toggle');
                             },
-                            error: function (response) {
-                                 $("#EmailAddress").val("");
+                            error: function (data) {
+                                $("#WhatappNo").val("");
                             }
                         });
                     }
                     else {
-                        alert("Please Enter Email Address")
+                        alert("Please enter 10 digit number")
                     }
-
-
-                    //window.location.href = "/JobWorkEntry/JobWorkSendMail?id=" + ReturnId + "&email=" + $("#EmailAddress").val();
-
-                }
-                else if (optionVal == "WhatApp") {
-                    let whNO = $("#WhatappNo").val();
-                    if (whNO != "" && whNO != null) {
-                        if (whNO.length == 10) {
-                            $.ajax({
-                                type: "POST",
-                                url: '/GodownTransfer/GdnTrWhatApp',
-                                data: { "id": ReturnId, "whatappNo": whNO },
-                                dataType: "JSON",
-                                success: function (data) {
-                                    if (data.result == "error") {
-                                        showErrorMessage(data.message)
-                                    }
-                                    else {
-                                        showSuccessMessage(data.message);
-                                    }
-                                    $('#radio1').prop('checked', true);
-                                    $("#WhatappNo").val("");
-                                    $("#WhatappNo").hide();
-                                    $('#exampleModal').modal('toggle');
-                                },
-                                error: function (data) {
-                                    $("#WhatappNo").val("");
-                                }
-                            });
-                        }
-                        else {
-                            alert("Please enter 10 digit number")
-                        }
-                    }
-                    else {
-                        alert("Please enter what app number")
-                    }
-
-                }
-
-            });
-
-            $(".form-check input[name='printOption']").click(function () {
-                $("#EmailAddress").hide();
-                $("#WhatappNo").hide();
-                let optionVal = $('input:radio[name=printOption]:checked').val();
-                if (optionVal == "Print") {
-
-                }
-                else if (optionVal == "WhatApp") {
-                    $("#WhatappNo").show();
                 }
                 else {
-                    $("#EmailAddress").show();
+                    alert("Please enter what app number")
                 }
-            });
+
+            }
+
+        });
+
+        $(".form-check input[name='printOption']").click(function () {
+            $("#EmailAddress").hide();
+            $("#WhatappNo").hide();
+            let optionVal = $('input:radio[name=printOption]:checked').val();
+            if (optionVal == "Print") {
+
+            }
+            else if (optionVal == "WhatApp") {
+                $("#WhatappNo").show();
+            }
+            else {
+                $("#EmailAddress").show();
+            }
+        });
     })
 
     $('#frmGdnTrans').submit(function (event) {
@@ -2233,4 +2257,15 @@
         $('#txtIsPrint').val('0');
         $('#frmGdnTrans').submit();
     })
+</script>
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Select---'
+            },
+            allowClear: true
+        });
+    });
 </script>

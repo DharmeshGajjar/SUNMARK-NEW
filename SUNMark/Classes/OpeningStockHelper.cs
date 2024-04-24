@@ -419,8 +419,8 @@ namespace SUNMark.Classes
                     var godownList = objProductHelper.GetGoDownMasterDropdown(sessionCompanyId, 0);
                     var gradeList = objProductHelper.GetGradeMasterDropdown(sessionCompanyId, 0);
                     var partyList = objProductHelper.GetSupplierMasterDropdown(sessionCompanyId, 0);
-                    var processList = objProductHelper.GetLotPrcTypMasterDropdown(sessionCompanyId, 0);
-                    var nextprocessList = objProductHelper.GetLotPrcTypMasterDropdown(sessionCompanyId, 0);
+                    var processList = objProductHelper.GetLotPrcTypMasterDropdown(sessionCompanyId, 0,"");
+                    var nextprocessList = objProductHelper.GetLotPrcTypMasterDropdown(sessionCompanyId, 0,"");
 
                     for (int i = 0; i < dt.Rows.Count; i++)
                     {

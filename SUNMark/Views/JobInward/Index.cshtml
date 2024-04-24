@@ -1,0 +1,1443 @@
+﻿@model SUNMark.Models.JobInwardModel
+@using Microsoft.AspNetCore.Http
+@using SUNMark.Models
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
+    List<SUNMark.Models.JobInwardModel> jobinwardList = ViewBag.jobinwardList as List<SUNMark.Models.JobInwardModel>;
+    List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
+    List<SelectListItem> layoutListNew = ViewBag.layoutListNew as List<SelectListItem>;
+    List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
+    ViewData["Title"] = userRight.ModuleNm;
+    string headerAdd = "";
+    string headerList = "";
+    string gridAdd = "";
+    string gridList = "";
+    bool headerAddTrue = false;
+    bool headerListTrue = false;
+
+
+    if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+    {
+        headerAdd = "active";
+        gridAdd = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+}
+
+<div class="card card-primary">
+    <div class="card-header" style="font-family:Verdana">
+        <h6> @ViewData["Title"] </h6>
+    </div>
+    <div class="card-body">
+        <div class="card card-primary card-tabs">
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                    @if (userRight != null && userRight.IsList)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerList" id="custom-tabs-three-list-tab" data-toggle="pill" href="#custom-tabs-three-list" role="tab" aria-controls="custom-tabs-three-list" aria-selected="@headerListTrue" style="font-family:Verdana;font-size:small" onclick="GoToListTab()">List (Alt+L)</a>
+                        </li>
+                    }
+                    @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerAdd" id="custom-tabs-three-add-tab" data-toggle="pill" href="#custom-tabs-three-add" role="tab" aria-controls="custom-tabs-three-add" aria-selected="@headerAddTrue" style="font-family:Verdana;font-size:small" onclick="GoToAddTab()">Add/Update (F2)</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="tab-content" id="custom-tabs-three-tabContent">
+
+                        <button type="button" id="modelPopup" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="Display:none">
+                            Launch demo modal
+                        </button>
+
+                        <div class="modal fade" id="exampleModal" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Print Option</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-check">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <input type="radio" class="form-check-input" id="radio1" name="printOption" value="Print" checked>
+                                                    <label class="form-check-label" for="radio1">Print/View </label>
+                                                </div>
+                                                <div class="col-md-2 ">
+                                                    <input type="radio" class="form-check-input" id="radio2" name="printOption" value="Email">
+                                                    <label class="form-check-label" for="radio2">Email</label>
+                                                </div>
+                                                <div class="col-md-10 form-group">
+                                                    <input type="email" name="EmailAddress" Id="EmailAddress" class="from-control" style="display:none" required />
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="radio" class="form-check-input" id="radio3" name="printOption" value="WhatApp">
+                                                    <label class="form-check-label" for="radio2">WhatApp</label>
+                                                </div>
+                                                <div class="col-md-10 form-group">
+                                                    <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "                             />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Esc - Cancle</button>
+                                        <button type="button" class="btn btn-primary" id="btn_ViewMailWhatapp">Submit (F9)</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (userRight != null && userRight.IsList)
+                        {
+                            <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
+                                <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
+                                    <div class="col-md-12 mt-0">
+                                        <div class="row">
+                                            <div class="col-md-1 mb-2 float-left">
+                                                <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                                    @for (int i = 0; i < pageNoList.Count; i++)
+                                                    {
+                                                        string checkedd = "checked";
+                                                        <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                                        checkedd = string.Empty;
+                                                    }
+
+                                                </select>
+                                            </div>
+                                            <div class="col-md-5 col-12">
+                                                <div class="row">
+                                                    <div class="col-md-6 col">
+                                                        <select class="form-control select2 drpReportLayout" onchange="loadData()">
+                                                            <option value="" ; style="width:200px">--Select Layout--</option>
+                                                            @if (layoutList != null && layoutList.Count > 0)
+                                                            {
+                                                                foreach (var item in layoutList)
+                                                                {
+                                                                    <option value="@item.Value">@item.Text </option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                                        @if (isAdministrator == 1)
+                                                        {
+                                                            <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                                Edit
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                                        <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                                        <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                            <div class="col-md-3 col-12 float-right">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dataTable">
+
+                                    </div>
+                                    <div class="pager float-right"></div>
+                                </div>
+                            </div>
+                        }
+                        @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                        {
+                            <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
+                                <form method="post" class="mt-0" id="jobinwardForm">
+
+                                    @Html.HiddenFor(x => x.Data)
+
+                                    <input type="hidden" id="txtIsPrint" name="isPrint" value="0" />
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            @*<div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Type <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                                @Html.DropDownListFor(x => x.InwTypeVou, Model.TypeList, "Select", new { @class = "form-control select2 InwTypeVou", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px", @id = "txtInwTypeVou" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Company <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                                @Html.DropDownListFor(x => x.InwCmpVou, Model.CompanyList, "Select", new { @class = "form-control select2 InwCmpVou", @tabindex = "2", @style = "font-family: Verdana;font-size:small; height:30px", @id = "txtInwCmpVou" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                V.No <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                                @Html.TextBoxFor(x => x.InwVNo, new { @class = "form-control form-control-lg", @placeholder = "V.No", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px;width:130px", @required = "required", @name = "InwVNo", @readonly = "readonly" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Date <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-auto col-12 form-outline form-white mb-2">
+                                                                @Html.TextBoxFor(x => x.InwDt, new { @class = "form-control form-control-lg", @placeholder = "Date", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px;width:180px", @required = "required", @type = "date" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Godown <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                                @Html.DropDownListFor(x => x.InwFrGdnVou, Model.FrGodownList, "Select", new { @class = "form-control select2 InwFrGdnVou", @tabindex = "5", @style = "font-family: Verdana;font-size:small; height:30px", @id = "txtInwFrGdnVou", @onchange = "GetParty()" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Party <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                                @Html.DropDownListFor(x => x.InwAccVou, new SelectList(Model.AccountList, "Value", "Text"), "Select", new { @class = "form-control select2 InwAccVou", @tabindex = "6", style = "font-family: Verdana;font-size:small; height:30px", @id = "InwAccVou", @onchange = "GetAccountCity(this)", @required = "required" })
+                                                                <a class="btn btn-outline-info ml-2" href="/AccountMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                City <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                <input type="text" id="txtCtyName" name="CtyName" class="form-control form-control-lg" placeholder="City" tabindex="7" value="@Model.CtyName" style="font-family: Verdana;font-size:small; height:30px;width:170px" disabled="disabled" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Vehicle No <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                                <input type="text" id="txtInwVehNo" name="InwVehNo" class="form-control form-control-lg" placeholder="Vehicle No" tabindex="8" value="@Model.InwVehNo" style="font-family: Verdana;font-size:small; height:30px;width:170px" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Frght.Rate <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                <input type="text" id="txtInwFrightRt" name="InwFrightRt" class="form-control form-control-lg" placeholder="Freight Rate" tabindex="9" value="@Model.InwFrightRt" style="font-family: Verdana;font-size:small; height:30px;width:170px;text-align:right" onchange="numericFilter(this) " />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Transport <span class="required"></span>
+                                                            </label>
+                                                            <input type="hidden" name="InwTransNm" id="txtInwTransNm" value="@Model.InwTransNm" />
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                @Html.DropDownListFor(x => x.InwTrnVou, new SelectList(Model.TransportList, "Value", "Text"), "Select", new { @class = "form-control select2 InwTrnVou", @tabindex = "10", style = "font-family: Verdana;font-size:small; height:30px; width:300px" })
+                                                                <a class="btn btn-outline-info ml-2" href="/AccountMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                LR No. <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                                <input type="text" id="txtInwLRNo" name="InwLRNo" class="form-control form-control-lg" placeholder="LR No" tabindex="11" value="@Model.InwLRNo" style="font-family: Verdana;font-size:small; height:30px;width:170px" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                WB Slip No <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                <input type="text" id="txtInwWPNo" name="InwWPNo" class="form-control form-control-lg" placeholder="WP Slip No" tabindex="12" value="@Model.InwWPNo" style="font-family: Verdana;font-size:small; height:30px;width:170px" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                WB Weight <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
+                                                                <input type="text" id="txtInwWPWeight" name="InwWPWeight" class="form-control form-control-lg" placeholder="WP Weight" tabindex="13" value="@Model.InwWPWeight" style="font-family: Verdana;font-size:small; height:30px;width:170px;text-align:right" onchange="numericFilter(this) " />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-2 col-sm-2 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Iss.Coil No <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-4 d-flex form-outline form-white ">
+                                                                <input type="text" id="txtIssCoilNo" name="IssCoilNo" class="form-control form-control-lg" placeholder="Coil No" tabindex="14" value="@Model.IssCoilNo" style="font-family: Verdana;font-size:small; height:30px;width:300px" onchange="SuplierCoilCheck()" /> &nbsp;
+                                                                <input type="text" id="txtWidth" name="Width" class="form-control form-control-lg" placeholder="Width" value="@Model.Width" style="font-family: Verdana;font-size:small; height:30px;width:100px" disabled="disabled" />&nbsp;
+                                                                <input type="text" id="txtWeight" name="Weight" class="form-control form-control-lg" placeholder="Weight" value="@Model.Qty" style="font-family: Verdana;font-size:small; height:30px;width:100px" disabled="disabled" />
+                                                                <input type="text" id="txtThick" name="Thick" class="form-control form-control-lg" placeholder="Weight" value="@Model.Thick" style="font-family: Verdana;font-size:small; height:30px;width:100px" disabled="disabled" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12 font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                                Remarks <span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-9 d-flex form-outline form-white mb-2">
+                                                                <input type="text" id="txtInwRem" name="InwRem" class="form-control form-control-lg" placeholder="Remarks" tabindex="15" value="@Model.InwRem" style="font-family: Verdana;font-size:small; height:30px;width:300px" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            &nbsp;
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-0">
+                                                        <div class="form-group">
+                                                            <label class="control-label">
+                                                                Sr.No
+                                                            </label>
+                                                            <input type="number" class="form-control" name="transactionGridSrNo" placeholder="Sr.No" onblur="EditRow(this.value)" style="height:35px;width:70px " />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label font-weight-bold customLabel " style="text-align:right;">
+                                                                Godown <span class="required">*</span>
+                                                            </label>
+                                                            <select class="form-control select2 IntGdnVou" style="height:35px;width:150px" tabindex="16" name="IntGdnVou">
+                                                                <option value="">select</option>
+                                                                @if (Model.GodownCoilList != null && Model.GodownCoilList.Count > 0)
+                                                                {
+                                                                    foreach (var item in Model.GodownCoilList)
+                                                                    {
+                                                                        <option value="@item.Value"> @item.Text </option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-1 col-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label font-weight-bold customLabel" style="text-align:right">
+                                                                Prefix 
+                                                            </label>
+                                                            <select class="form-control select2 IntPrefix" style="height:35px;" tabindex="17" name="IntPrefix" onchange="GetCoilNoCheck()">
+                                                                <option value="">select</option>
+                                                                @if (Model.CoilPrefixList != null && Model.CoilPrefixList.Count > 0)
+                                                                {
+                                                                    foreach (var item in Model.CoilPrefixList)
+                                                                    {
+                                                                        <option value="@item.Value"> @item.Text </option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="form-group">
+                                                            <label class="control-label font-weight-bold customLabel" style="text-align:right">
+                                                                Coil No <span class="required">*</span>
+                                                            </label>
+
+                                                            <input type="text" class="form-control form-control-lg" placeholder="Coil No" tabindex="18" style="height:35px;width:150px;text-align:right " name="IntCoilNo" onchange="GetCoilNoCheck()" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label font-weight-bold customLabel" style="text-align:right">
+                                                                Sup.Coil No <span class="required"></span>
+                                                            </label>
+
+                                                            <input type="text" class="form-control form-control-lg" placeholder="Sup.Coil No" tabindex="19" style="height:35px;" name="IntSupCoilNo" disabled="disabled" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 ">
+                                                        <div class="form-group">
+                                                            <label class="control-label font-weight-bold customLabel" style="text-align:left">
+                                                                Heat No <span style="text-align:right">
+                                                                </span>
+                                                            </label>
+
+                                                            <input type="text" class="form-control form-control-lg" placeholder="Heat No" tabindex="20" style="height:35px;" name="IntHeatNo" disabled="disabled" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label font-weight-bold customLabel" style="text-align:right">
+                                                                Coil Type <span class="required">*</span>
+                                                            </label>
+                                                            <select class="form-control select2 IntCoilTypeVou" style="height:35px;" tabindex="21" name="IntCoilTypeVou">
+                                                                <option value="">select</option>
+                                                                @if (Model.IntCoilTypeList != null && Model.IntCoilTypeList.Count > 0)
+                                                                {
+                                                                    foreach (var item in Model.IntCoilTypeList)
+                                                                    {
+                                                                        <option value="@item.Value"> @item.Text </option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label font-weight-bold customLabel" style="text-align:right">
+                                                                Grade <span class="required">*</span>
+                                                            </label>
+                                                            <input type="text" class="form-control form-control-lg" placeholder="Geade" tabindex="22" style="height:35px;" name="IntGrade" disabled="disabled" />
+                                                            @*<select class="form-control select2 IntGrade" style="height:35px;" tabindex="21" name="IntGrade" >
+                                                                    <option value="">select</option>
+                                                                    @if (Model.GradeList != null && Model.GradeList.Count > 0)
+                                                                    {
+                                                                        foreach (var item in Model.GradeList)
+                                                                        {
+                                                                            <option value="@item.Value"> @item.Text </option>
+                                                                        }
+                                                                    }
+                                                                </select>*@
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 ">
+                                                        <div class="form-group">
+                                                            <label class="control-label font-weight-bold customLabel" style="text-align:left">
+                                                                Width <span style="text-align:right">*</span>
+                                                            </label>
+
+                                                            <input type="text" class="form-control form-control-lg" placeholder="Width" tabindex="23" style="height:35px;" name="IntWidth" onkeyup="numeric_only(this)" onchange="GetOD()" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 ">
+                                                        <div class="form-group">
+                                                            <label class="control-label font-weight-bold customLabel" style="text-align:left">
+                                                                Thick <span style="text-align:right">*</span>
+                                                            </label>
+
+                                                            <input type="text" class="form-control form-control-lg" placeholder="Thick" tabindex="24" style="height:35px;" name="IntThick" onkeyup="numeric_only(this)" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 ">
+                                                        <div class="form-group">
+                                                            <label class="control-label font-weight-bold customLabel" style="text-align:left">
+                                                                Weight <span style="text-align:right">*</span>
+                                                            </label>
+
+                                                            <input type="text" class="form-control form-control-lg" placeholder="Weight" tabindex="25" style="height:35px;" name="IntQty" onkeyup="numeric_only(this)" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 col-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label font-weight-bold customLabel" style="text-align:right">
+                                                                NB <span class="required"></span>
+                                                            </label>
+                                                            <select class="form-control select2 IntNB" style="height:35px;" tabindex="26" name="IntNB">
+                                                                <option value="">select</option>
+                                                                @if (Model.NBList != null && Model.NBList.Count > 0)
+                                                                {
+                                                                    foreach (var item in Model.NBList)
+                                                                    {
+                                                                        <option value="@item.Text"> @item.Text </option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 col-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label font-weight-bold customLabel" style="text-align:right">
+                                                                SCH <span class="required"></span>
+                                                            </label>
+                                                            <select class="form-control select2 IntSCH" style="height:35px;" tabindex="27" name="IntSCH">
+                                                                <option value="">select</option>
+                                                                @if (Model.SCHList != null && Model.SCHList.Count > 0)
+                                                                {
+                                                                    foreach (var item in Model.SCHList)
+                                                                    {
+                                                                        <option value="@item.Text"> @item.Text </option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 ">
+                                                        <div class="form-group">
+                                                            <label class="control-label font-weight-bold customLabel" style="text-align:left">
+                                                                OD <span style="text-align:right"></span>
+                                                            </label>
+
+                                                            <input type="text" class="form-control form-control-lg" placeholder="OD" tabindex="28" style="height:35px;" name="IntOD" onkeyup="numeric_only(this)" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 ">
+                                                        <div class="form-group">
+                                                            <label class="control-label font-weight-bold customLabel" style="text-align:left">
+                                                                Remarks <span style="text-align:right"></span>
+                                                            </label>
+
+                                                            <input type="text" class="form-control form-control-lg" placeholder="Remarks" tabindex="29" style="height:35px;" name="IntRem" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="form-group text-right" style="margin-top:35px">
+                                                            <i class="fa fa-plus text-blue" onclick="AddRows()" style="font-size:18px"></i>
+                                                            <i class="fa fa-sync text-blue ml-3" onclick="ClearTextbox()" style="font-size:18px"></i>
+                                                            <i class="fa fa-trash text-red ml-3 deleteButton" onclick="DeleteConfirmationTransaction('transaction-grid-1')"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12">
+                                                <div class="row d-none">
+                                                    <div class="col-2 d-none">
+                                                        <label>Tran. Layout</label>
+                                                    </div>
+                                                    <div class="col-2 d-none">
+                                                        <select class="form-control drpTransactionLayout">
+                                                            @if (layoutListNew != null && layoutListNew.Count > 0)
+                                                            {
+                                                                foreach (var item in layoutListNew)
+                                                                {
+                                                                    <option value="@item.Value">@item.Text</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-11"></div>
+                                                    <div class="col-1">
+
+                                                    </div>
+                                                </div>
+                                                <div class="customDivision">
+                                                    <table class="custom-table gridViewTableResponsiveTransactionGridForm" id="transaction-grid-1">
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-12 text-center">
+                                                        @if (userRight.IsEdit && Model != null && Model.InwVou > 0)
+                                                        {
+                                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" >
+                                                                Save (F10)
+                                                            </button>
+                                                            <a href="/JobInward/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                                Cancel (Esc)
+                                                            </a>
+                                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
+                                                                Print (F9)
+                                                            </button>
+                                                        }
+                                                        else if (userRight.IsAdd && Model.InwVou == 0)
+                                                        {
+                                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave">
+                                                                Save (F10)
+                                                            </button>
+                                                            <a href="/JobInward/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                                Cancel (Esc)
+                                                            </a>
+                                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnPrint" type="button">
+                                                                Print (F9)
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let activeEle;
+        $(document).ready(function () {
+            var inwvou = '@Html.Raw(Model.InwVou)';
+            if (inwvou != null && inwvou != '' && inwvou != 0) {
+                GoToAddTab()
+            }
+            else {
+                GoToListTab()
+            }
+
+            var focusType = '@Html.Raw(ViewBag.FocusType)';
+            if (focusType != null && focusType != '' && focusType == 1) {
+                GoToAddTab();
+            }
+
+        });
+
+    function GoToAddTab() {
+        $('#custom-tabs-three-list-tab').removeClass('active');
+        $('#custom-tabs-three-add-tab').addClass('active');
+
+        $('#custom-tabs-three-list').removeClass('active');
+        $('#custom-tabs-three-add').addClass('active');
+        $('#custom-tabs-three-add').addClass('show');
+        document.getElementById('txtInwCmpVou').focus();
+        var id = '@Html.Raw(Model.InwVou)';
+        if(!id || id == 0)
+            GetVoucherNumber();
+        if ($('#txtInwCmpVou').children('option').length == 2) {
+            $('#txtInwCmpVou').val($('#txtInwCmpVou').children('option').eq(1).attr('value'));
+            SetSelect2()
+            $('#txtInwCmpVou').focus();
+        }
+
+    }
+
+    function GoToListTab() {
+        $('#custom-tabs-three-list-tab').addClass('active');
+        $('#custom-tabs-three-add-tab').removeClass('active');
+
+        $('#custom-tabs-three-list').addClass('active');
+        $('#custom-tabs-three-list').addClass('show');
+        $('#custom-tabs-three-add').removeClass('active');
+        $('#custom-tabs-three-add').removeClass('show');
+        $('#txtReportSearchDataTable').focus();
+    }
+</script>
+<script>
+    var isRecentCalledEsc = false;
+    var isRecentCalledAddRows = false;
+    var isRecentCalledSave = false;
+    var isRecentCalledPrint = false;
+    (function (code) {
+        code(window.jQuery, document, window);
+    }(function ($, document, window) {
+        $(function () {
+            $(window)
+                .initKeyboard({ debug: 1 })
+                .on('F2', function () {
+                    GoToAddTab()
+                    GetVoucherNumber();
+                }).on('F9', function () {
+                    if (!isRecentCalledPrint) {
+                        isRecentCalledPrint = true;
+                        activeEle = document.activeElement.name;
+                        if ($('.modal.show').length != 0) {
+                            $("#btn_ViewMailWhatapp").click();
+                        }
+                        else {
+                            $("#btnPrint").click();
+                            $('#frmJobInward').submit();
+                            setTimeout(function () {
+                                isRecentCalledPrint = false;
+                            }, 500)
+                        }
+                    }
+                }).on('F10', function () {
+                    $('#InwVNo').attr('disabled', false);
+                    $('#IntGrade').attr('disabled', false);
+                    $('#IntHeatNo').attr('disabled', false);
+                    $('#IntSupCoilNo').attr('disabled', false);
+                    $("#btnSave").click();
+                    isRecentCalledSave = true;
+                    setTimeout(function () {
+                        isRecentCalledSave = false;
+                    }, 1000)
+                })
+                .on('Alt+L', function () {
+                    GoToListTab();
+                })
+                .on('Pagedown', function () {
+                    if (!isRecentCalledAddRows) {
+                        isRecentCalledAddRows = true;
+                        var GdnVou = $('select[name="IntGdnVou"]').children('option:selected').val();
+                        var PrefixVou = $('select[name="IntPrefix"]').children('option:selected').val();
+                        var SupNo = $('input[name="IntSupCoilNo"]').val();
+                        var HeatNo = $('input[name="IntHeatNo"]').val();
+                        var Grade = $('input[name="IntGrade"]').val();
+                        var Width = $('input[name="IntWidth"]').val();
+                        var Thick = $('input[name="IntThick"]').val();
+                        var Qty = $('input[name="IntQty"]').val();
+                        if (GdnVou != "" && GdnVou != undefined && GdnVou != "0" && Grade != "" && Grade != undefined && Grade != "0" && Width != "" && Width != undefined && Width != "0" && Thick != "" && Thick != undefined && Thick != "0" && Qty != "" && Qty != undefined && Qty != "0") {
+                            AddDataToGrid()
+
+                            SetSelect2();
+
+                            //Your any function to call after adding rows
+                            $('select[name="IntGdnVou"]').val(GdnVou);
+                            $('select[name="IntPrefix"]').val(PrefixVou);
+                            $('input[name="IntSupCoilNo"]').val(SupNo);
+                            $('input[name="IntHeatNo"]').val(HeatNo);
+                            $('input[name="IntGrade"]').val(Grade);
+                            $('input[name="IntWidth"]').val(Width);
+                            $('input[name="IntThick"]').val(Thick);
+                            $('select[name="IntPrefix"]').focus();
+                            SetSelect2();
+                            setTimeout(function () {
+                                isRecentCalledAddRows = false;
+                            }, 500)
+                        }
+                        else {
+                            showErrorMessage("Please Entry Complsory Field!");
+                            isRecentCalledAddRows = false;
+                            return false;
+                        }
+
+                        //Compulsory to keep to remove selected value from dropdown
+                    }
+                })
+                .on('Alt+C', function () {
+                    if (confirm("Do you want to exit without save?")) {
+                        isAdd == 2;
+                        location.href = '/JobInward/Index'
+                    }
+                    else {
+                        $('#txtInwCmpVou').focus();
+                    }
+
+                }).on('Escape', function () {
+                    if (!isRecentCalledEsc) {
+                        isRecentCalledEsc = true;
+                        if (confirm("Do you want to exit without save?")) {
+                            localStorage.setItem("Inward", "2");
+                            location.href = '/JobInward/Index'
+
+                        }
+                        setTimeout(function () {
+                            isRecentCalledEsc = false;
+                        }, 500)
+                    }
+
+                })
+        });
+    }));
+
+    function AddRows() {
+        if (!isRecentCalledAddRows) {
+            isRecentCalledAddRows = true;
+            var GdnVou = $('select[name="IntGdnVou"]').children('option:selected').val();
+            var PrefixVou = $('select[name="IntPrefix"]').children('option:selected').val();
+            var SupNo = $('input[name="IntSupCoilNo"]').val();
+            var HeatNo = $('input[name="IntHeatNo"]').val();
+            var Grade = $('input[name="IntGrade"]').val();
+            var Width = $('input[name="IntWidth"]').val();
+            var Thick = $('input[name="IntThick"]').val();
+            var Qty = $('input[name="IntQty"]').val();
+            if (GdnVou != "" && GdnVou != undefined && GdnVou != "0" && Grade != "" && Grade != undefined && Grade != "0" && Width != "" && Width != undefined && Width != "0" && Thick != "" && Thick != undefined && Thick != "0" && Qty != "" && Qty != undefined && Qty != "0") {
+                AddDataToGrid()
+
+                SetSelect2();
+
+                //Your any function to call after adding rows
+                $('select[name="IntGdnVou"]').val(GdnVou);
+                $('select[name="IntPrefix"]').val(PrefixVou);
+                $('input[name="IntSupCoilNo"]').val(SupNo);
+                $('input[name="IntHeatNo"]').val(HeatNo);
+                $('input[name="IntGrade"]').val(Grade);
+                $('input[name="IntWidth"]').val(Width);
+                $('input[name="IntThick"]').val(Thick);
+                $('select[name="IntPrefix"]').focus();
+                SetSelect2();
+                setTimeout(function () {
+                    isRecentCalledAddRows = false;
+                }, 500)
+            }
+            else {
+                showErrorMessage("Please Entry Complsory Field!");
+                isRecentCalledAddRows = false;
+                return false;
+            }
+
+            //Compulsory to keep to remove selected value from dropdown
+        }
+    }
+
+</script>
+
+<script>
+
+    var isRecentCalled = false;
+
+
+    $(function () {
+
+        loadData();
+        var pageIndex = '';
+        var pageSize = '';
+        var totalRecord = '';
+        var isDelete = '@Html.Raw(userRight.IsDelete)';
+        var isEdit = '@Html.Raw(userRight.IsEdit)';
+    })
+
+    var timer = null;
+    $('#txtReportSearchDataTable').keyup(function (e) {
+        if (e.keyCode >= 112 && e.keyCode <= 123) {
+            e.preventDefault();
+            return false;
+        }
+        else {
+            clearTimeout(timer);
+
+            timer = setTimeout(loadData, 1000)
+        }
+
+    });
+
+    function GetVoucherNumber() {
+        var InwVou = "0";
+        if (InwVou == "0") {
+            $.ajax({
+                type: "POST",
+                url: '/JobInward/GetLastVoucherNo',
+                data: "",
+                dataType: "JSON",
+                success: function (response) {
+                    $('input[name="InwVNo"]').val(response.inwVNo);
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+    }
+
+    function numeric_only(event, input) {
+        if ((event.which < 32) || (event.which > 126)) return true;
+        return jQuery.isNumeric($(input).val() + String.fromCharCode(event.which));
+    }
+
+    function GetAccountCity(obj) {
+        var accountList = JSON.parse('@Html.Raw(Json.Serialize(Model.AccountList))');
+        var statevalue = $(obj).val();
+        if (statevalue) {
+            if (accountList != null && accountList.length > 0) {
+                for (var x = 0; x < accountList.length; x++) {
+                    if (accountList[x].value == statevalue) {
+                        var cityname = accountList[x].value1;
+                        $('#txtCtyName').val(accountList[x].value1)
+                    }
+                }
+            }
+        }
+    }
+
+
+    function loadData(pageIndex, columnName, sortBy) {
+            isRecentCalled = true;
+            if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
+                pageIndex = 1;
+            }
+            var layoutId = $('.drpReportLayout').val();
+
+            if (!layoutId) {
+                $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
+                SetSelect2()
+
+            }
+            if (!columnName) {
+                columnName = '';
+            }
+            if (!sortBy) {
+                sortBy = '';
+            }
+            $('.dataTable').html();
+            $.ajax({
+                url: '/JobInward/GetReportView',
+                type: 'GET',
+                data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+                dataType: 'HTML',
+                traditional: true, // add this
+                success: function (data) {
+                    $('.dataTable').html(data);
+                    setTimeout(function () {
+                        isRecentCalled = false;
+                    }, 2000)
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+    }
+
+    $('#btnExportToExcel').click(function () {
+        window.location.href = "/JobInward/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+    })
+    $('#btnExportToPDF').click(function () {
+        window.location.href = "/JobInward/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+    })
+</script>
+
+<script>
+    var isRecentCall = false;
+    var isExcelUpload = false;
+    var isPasteDone = false;
+
+    $("#btnSave").click(function () {
+        $('#InwVNo').attr('disabled', false);
+        $('#IntGrade').attr('disabled', false);
+        $('#IntHeatNo').attr('disabled', false);
+        $('#IntSupCoilNo').attr('disabled', false);
+        $('#txtWidth').attr('disabled', false);
+        $('#txtWeight').attr('disabled', false);
+        $('#txtThick').attr('disabled', false);
+        var type = $('#txtInwTypeVou').children('option:selected').val();
+        var intweight = "0";
+        var weigth = $('#txtWeight').val();
+        var intwidth = "0";
+        var width = $('#txtWidth').val();
+        var intthick = "0";
+        var thick = $('#txtThick').val();
+        $('#transaction-grid-1').children('tbody').children('tr:not(.totalRow)').each(function () {
+            intweight = parseFloat(intweight) + parseFloat($(this).children('td').eq(11).html());
+            intwidth = parseFloat(intwidth) + parseFloat($(this).children('td').eq(9).html());
+            intthick = parseFloat(intthick) + parseFloat($(this).children('td').eq(10).html());
+        });
+        if ((parseFloat(weigth).toFixed(2) - parseFloat(intweight).toFixed(2)) < 0 && (parseFloat(width).toFixed(2) - parseFloat(intwidth).toFixed(2)) < 0 && (parseFloat(thick).toFixed(2) - parseFloat(intthick).toFixed(2)) < 0) {
+            showErrorMessage("Received Width & Thickness & Weight must be Less then = Iss.Coil Width & Thickness & Weight!");
+            return false;
+        }
+        else if ((parseFloat(weigth).toFixed(2) - parseFloat(intweight).toFixed(2)) > 0 && (parseFloat(width).toFixed(2) - parseFloat(intwidth).toFixed(2)) > 0 && (parseFloat(thick).toFixed(2) - parseFloat(intthick).toFixed(2)) > 0) {
+            showErrorMessage("Received Width & Thickness & Weight must be grater then = Iss.Coil Width & Thickness & Weight!");
+            return false;
+        }
+        //if (type == 1) {
+        //    var intweight = "0";
+        //    var weigth = $('#txtWeight').val();
+        //    $('#transaction-grid-1').children('tbody').children('tr:not(.totalRow)').each(function () {
+        //        intweight = parseFloat(intweight) + parseFloat($(this).children('td').eq(11).html());
+        //    });
+        //    if ((parseFloat(weigth).toFixed(2) - parseFloat(intweight).toFixed(2)) < 0) {
+        //        showErrorMessage("Remaining cannot be less than 0!");
+        //        return false;
+        //    }
+        //    else if ((parseFloat(weigth).toFixed(2) - parseFloat(intweight).toFixed(2)) > 0) {
+        //        showErrorMessage("Remaining cannot be grater than 0!");
+        //        return false;
+        //    }
+        //    else {
+        //        $('#txtIsPrint').val('0');
+        //        $('#frmJobInward').submit();
+        //    }
+        //}
+        //else if (type == 2) {
+        //    var intwidth = "0";
+        //    var width = $('#txtWidth').val();
+        //    $('#transaction-grid-1').children('tbody').children('tr:not(.totalRow)').each(function () {
+        //        intwidth = parseFloat(intwidth) + parseFloat($(this).children('td').eq(9).html());
+        //    });
+        //    if ((parseFloat(width).toFixed(2) - parseFloat(intwidth).toFixed(2)) < 0) {
+        //        showErrorMessage("Remaining cannot be less than 0!");
+        //        return false;
+        //    }
+        //    else if ((parseFloat(width).toFixed(2) - parseFloat(intwidth).toFixed(2)) > 0) {
+        //        showErrorMessage("Remaining cannot be grater than 0!");
+        //        return false;
+        //    }
+        //    else {
+        //        $('#txtIsPrint').val('0');
+        //        $('#frmJobInward').submit();
+        //    }
+        //}
+        //else if (type == 3) {
+        //    var intthick = "0";
+        //    var thick = $('#txtThick').val();
+        //    $('#transaction-grid-1').children('tbody').children('tr:not(.totalRow)').each(function () {
+        //        intthick = parseFloat(intthick) + parseFloat($(this).children('td').eq(10).html());
+        //    });
+        //    if ((parseFloat(thick).toFixed(2) - parseFloat(intthick).toFixed(2)) < 0) {
+        //        showErrorMessage("Remaining cannot be less than 0!");
+        //        return false;
+        //    }
+        //    else if ((parseFloat(thick).toFixed(2) - parseFloat(intthick).toFixed(2)) > 0) {
+        //        showErrorMessage("Remaining cannot be grater than 0!");
+        //        return false;
+        //    }
+        //    else {
+        //        $('#txtIsPrint').val('0');
+        //        $('#frmJobInward').submit();
+        //    }
+        //}
+    })
+
+    function numericFilter(txb) {
+        txb.value = txb.value.replace(/[^\0-9]/ig, "");
+    }
+
+</script>
+<script>
+    function GetOD() {
+        var width = $('input[name="IntWidth"]').val();
+        if (width != "" && width != "0" && width != undefined) {
+            $('input[name="IntOD"]').val((parseFloat(width) / 3.14).toFixed(2));
+        }
+    }
+
+    function GetCoilNoCheck() {
+        var inwvou = '@Html.Raw(Model.InwVou)';
+        var srno1 = $('input[name="transactionGridSrNo"]').val();
+        var coilno = $('input[name="IntCoilNo"]').val();
+        var inputId = $('input[name="IntCoilNo"]').val();
+        var prefix = $('select[name="IntPrefix"]').val();
+        if (prefix != "" && prefix != undefined && prefix)
+        var thick = $('input[name="IntThick"]').val();
+        if (thick != 0 && coilno != "" && coilno != undefined) {
+            $.ajax({
+                url: '/JobInward/GetCoilNoCheck',
+                type: 'POST',
+                data: { 'coilno': coilno, 'inwvou': inwvou, 'srno1': srno1, 'prefix': prefix },
+                dataType: 'JSON',
+                traditional: true, // add this
+                success: function (data) {
+
+                    if (data.result) {
+                        if (data.data == "1") {
+                            showErrorMessage("Coil No Already Exsits!");
+                            $('input[name="IntCoilNo"]').val('');
+                            $('input[name="IntCoilNo"]').focus();
+                        }
+                        else if (data.gdnVou != "0") {
+                            //if (data.data != "-1") {
+                                var isMatch = false;
+                                $('#transaction-grid-1').children('tbody').children('tr:not(.totalRow)').each(function () {
+                                    if ($(this).children('td').eq(4).html() == inputId && $(this).children('td').eq(3).html() == prefix) {
+                                        isMatch = true;
+                                    }
+                                })
+                                if (isMatch) {
+                                    showErrorMessage("Coil No Already Exsits!");
+                                    $('input[name="IntCoilNo"]').val('');
+                                    $('input[name="IntCoilNo"]').focus();
+                                }
+                                else {
+                                    if (data.data != "-1" && data.data != "1") {
+                                        $('input[name="IntCoilTypeVou"]').focus();
+                                    }
+                                    else if (data.data == "1") {
+                                        showErrorMessage("Supplier Coil No Already Exsits!");
+                                        $('input[name="IntCoilNo"]').val('');
+                                        $('input[name="IntCoilNo"]').focus();
+                                    }
+                                    else {
+                                        $('input[name="IntCoilTypeVou"]').focus();
+                                    }
+                                }
+                            //}
+                        }
+                        else {
+                            if (!isExists) {
+                                var isMatch = false;
+                                $('#transaction-grid-1').children('tbody').children('tr:not(.totalRow)').each(function () {
+                                    if ($(this).children('td').eq(4).html() == inputId && $(this).children('td').eq(3).html().children.text() == prefix) {
+                                        isMatch = true;
+                                    }
+                                })
+                                if (isMatch) {
+                                    showErrorMessage("Coil No Already Exsits!");
+                                    $('input[name="IntCoilNo"]').val('');
+                                    $('input[name="IntCoilNo"]').focus();
+                                }
+                            }
+                        }
+                        SetSelect2()
+                    }
+                    else {
+                        errorMessage(response);
+                    }
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+        }
+    }
+
+    function GetParty() {
+        var frgdnvou = $('#txtInwFrGdnVou').children('option:selected').val();
+        if (frgdnvou != 0 && frgdnvou != undefined && frgdnvou != "") {
+            $.ajax({
+                url: '/JobInward/GetGodownParty',
+                type: 'POST',
+                data: { 'frgdnvou': frgdnvou },
+                dataType: 'JSON',
+                traditional: true, // add this
+                success: function (data) {
+                    if (data.result) {
+                        $('#InwAccVou').val(data.accVou);
+                        $('#txtCtyName').val(data.ctyNm);
+                        SetSelect2()
+                    }
+                    else {
+                        errorMessage(response);
+                        $('#txtInwFrGdnVou').focus();
+                    }
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                    $('#txtInwFrGdnVou').focus();
+                }
+            });
+        }
+    }
+
+    function SuplierCoilCheck() {
+        var maincoil = $('#txtIssCoilNo').val();
+        var dt = $('#InwDt').val();
+        var frgdnvou = $('#txtInwFrGdnVou').children('option:selected').val();
+        if (frgdnvou != 0 && frgdnvou != undefined && frgdnvou != "" && maincoil != "" && maincoil != 0 && maincoil != undefined) {
+            $.ajax({
+                url: '/JobInward/GetSupCoilCheck',
+                type: 'POST',
+                data: { 'maincoil': maincoil, 'frgdnvou': frgdnvou, 'dt': dt },
+                dataType: 'JSON',
+                traditional: true, // add this
+                success: function (data) {
+                    if (data.result) {
+                        if (data.data == "1") {
+                            showErrorMessage("Iss Coil No Not Found In Godown!");
+                            $('#txtIssCoilNo').focus();
+                        }
+                        else {
+                            $('input[name="IntSupCoilNo"]').val(data.supCoilNo);
+                            $('input[name="IntHeatNo"]').val(data.heatNo);
+                            $('input[name="IntGrade').val(data.grade);
+                            //$('#tblCoil').children('tbody').children('tr:last').children('td').eq(6).children('select').html(data.grade);
+                            $('input[name="IntWidth"]').val(data.width);
+                            $('input[name="IntThick"]').val(data.thick);
+                            $('input[name="Weight"]').val(data.weight);
+                            $('input[name="Width"]').val(data.width);
+                            $('input[name="Thick"]').val(data.thick);
+                            $('input[name="IntPrefix"]').focus();
+
+                        }
+                    }
+                    else {
+                        errorMessage(response);
+                    }
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+        }
+    }
+
+    $(function () {
+        var trnasport = $('#InwTrnVou').children('option:selected').text()
+        if (trnasport)
+            $('input[name="InwTransNm"]').val(trnasport);
+    })
+
+    $('#InwTrnVou').change(function () {
+        var trnasport = $('#InwTrnVou').children('option:selected').text()
+        if (trnasport)
+            $('input[name="InwTransNm"]').val(trnasport);
+    })
+
+
+</script>
+
+<script>
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+
+    $(document).ready(function () {
+        $(".InwAccVou").select2({
+            placeholder: "---Select---",
+            // added by anand on 25-01-2023 point no 19 from anand point
+            ajax: {
+                url: '/JobInward/GetAccount-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+
+        $(".InwTrnVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/JobInward/GetTransport-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
+
+            }
+        });
+    });
+
+</script>
+<script>
+    $('#frmJobInward').submit(function (event) {
+        if (!isSaveCalled) {
+            isSaveCalled = true;
+            setTimeout(function () {
+                isSaveCalled = false;
+            }, 1000)
+            if (ValidateTextbox()) {
+                localStorage.setItem("JobInward", "1");
+                if (!isRecentCall) {
+                    var ecoilno = $('input[name="IntCoilNo"]').val();
+                    var egrade = $('select[name="IntGrade"]').val();
+                    var egdn = $('select[name="IntGdnVou"]').val();
+                    var ewidth = $('select[name="IntWidth"]').val();
+                    var eqty = $('select[name="IntQty"]').val();
+                    if (ecoilno != 0 && ecoilno != '' && ecoilno != undefined && egrade != 0 && egrade != '' && egrade != undefined && egdn != 0 && egdn != '' && egdn != undefined && ewidth != 0 && ewidth != '' && ewidth != undefined && eqty != 0 && eqty != '' && eqty != undefined) {
+                        AddDataToGrid()
+                    }
+                    else {
+                        if ($('#transaction-grid-1').children('tbody').children('tr:not(.totalRow)').length <= 0) {
+                            alert("Please add data to grid.")
+                            e.preventDefault();
+                            return false;
+                        }
+                    }
+                }
+                $('#InwVNo').attr('disabled', false);
+                $('#IntGrade').attr('disabled', false);
+                $('#IntHeatNo').attr('disabled', false);
+                $('#IntSupCoilNo').attr('disabled', false);
+                $('form').unbind('submit').submit();
+            }
+            else {
+                showErrorMessage("Please enter all compulsory fields!");
+                return false;
+            }
+        }
+    });
+
+    $("#btnPrint").click(function () {
+        $('#txtIsPrint').val('1');
+    })
+
+</script>
+<script>
+    var ReturnId = 0;
+    function PrintJobWorkReport(returnID) {
+
+        ReturnId = returnID;
+        $('#exampleModal').modal('toggle');
+    }
+
+      $(document).ready(function () {
+            ReturnId = '@Html.Raw(TempData["ReturnId"])';
+          var Savedone = '@Html.Raw(TempData["Savedone"])';
+          if (Savedone != null && Savedone != undefined && Savedone != "" && Savedone != '' && ReturnId != null && ReturnId != undefined && ReturnId != "" && ReturnId != '') {
+              $("#modelPopup").click();
+              $("#EmailAddress").show();
+              $("#WhatappNo").show();
+            }
+
+            $("#btn_ViewMailWhatapp").click(function () {
+                let optionVal = $('input:radio[name=printOption]:checked').val();
+                if (optionVal == "Print") {
+                    $('#exampleModal').modal('hide');
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("InwardPrintDetials", "Inward")',
+                        data: { "id": ReturnId},
+                        dataType: "JSON",
+                        success: function (data) {
+                            var host = window.location.origin + data;
+                            $('#exampleModal').modal('hide');
+                            $("[name=" + activeEle + "]").focus();
+                            var win = window.open(host, '_blank');
+                            if (win) {
+                                win.focus();
+                            } else {
+                                alert('Please allow popups for this website');
+                            }
+                        },
+                        error: function (response) {
+                            $("#EmailAddress").val("");
+                        }
+                    });
+                }
+                else if (optionVal == "Email") {
+                    if ($("#EmailAddress").val() != "" && $("#EmailAddress").val() != null) {
+                        $.ajax({
+                            type: "POST",
+                            url: '/JobInward/InwardSendMail',
+                            data: { "id": ReturnId, "email": $("#EmailAddress").val() },
+                            dataType: "JSON",
+                            success: function (data) {
+                                $("[name=" + activeEle + "]").focus();
+                                if (data.result) {
+                                     showSuccessMessage(data.message);
+                                }
+                                else {
+                                    showErrorMessage(data.message);
+                                }
+                                $('#radio1').prop('checked', true);
+                                $("#EmailAddress").val("");
+                                $('#exampleModal').modal('toggle');
+                            },
+                            error: function (response) {
+                                 $("#EmailAddress").val("");
+                            }
+                        });
+                    }
+                    else {
+                        alert("Please Enter Email Address")
+                    }
+                }
+                else if (optionVal == "WhatApp") {
+                    let whNO = $("#WhatappNo").val();
+                    if (whNO != "" && whNO != null) {
+                        if (whNO.length == 10) {
+                            $.ajax({
+                                type: "POST",
+                                url:  '/JobInward/InwardWhatApp',
+                                data: { "id": ReturnId, "whatappNo": whNO },
+                                dataType: "JSON",
+                                success: function (data) {
+                                    $("[name=" + activeEle + "]").focus();
+                                    if (data.result == "error") {
+                                        showErrorMessage(data.message)
+                                    }
+                                    else {
+                                        showSuccessMessage(data.message);
+                                    }
+                                    $('#radio1').prop('checked', true);
+                                    $("#WhatappNo").val("");
+                                    $("#WhatappNo").hide();
+                                    $('#exampleModal').modal('toggle');
+                                },
+                                error: function (data) {
+                                    $("#WhatappNo").val("");
+                                }
+                            });
+                        }
+                        else {
+                            alert("Please enter 10 digit number")
+                        }
+                    }
+                    else {
+                        alert("Please enter what app number")
+                    }
+
+                }
+
+            });
+
+        })
+</script>
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Select---'
+            },
+            allowClear: true
+        });
+    });
+</script>
+@section Scripts{
+    <script src="~/js/transaction-grid.js"></script>
+
+    <script>
+        $('input[name="transactionGridSrNo"]').blur(function () {
+            setTimeout(function () {
+                SetSelect2();
+
+                $('select[name="IntPrefix"]').focus();
+            }, 200)
+        })
+
+        $('.deleteButton').click(function () {
+            setTimeout(function () {
+            }, 1000)
+        })
+    </script>
+}

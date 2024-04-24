@@ -345,6 +345,37 @@ namespace SUNMark.Classes
             }
             return PrdType;
         }
+        public List<SelectListItem> GetPrdTypeCoilDropdown(int CompanyId)
+        {
+            List<SelectListItem> PrdType = new List<SelectListItem>();
+            try
+            {
+                SqlParameter[] sqlParameters = new SqlParameter[6];
+                sqlParameters[0] = new SqlParameter("@VOU", 0);
+                sqlParameters[1] = new SqlParameter("@Type", "PTY");
+                sqlParameters[2] = new SqlParameter("@Flg", 4);
+                sqlParameters[3] = new SqlParameter("@skiprecord", 0);
+                sqlParameters[4] = new SqlParameter("@pagesize", 0);
+                sqlParameters[5] = new SqlParameter("@CmpVou", CompanyId);
+                DataTable DtCity = ObjDBConnection.CallStoreProcedure("GetMscMstDetails", sqlParameters);
+                if (DtCity != null && DtCity.Rows.Count > 0)
+                {
+                    for (int i = 0; i < DtCity.Rows.Count; i++)
+                    {
+                        SelectListItem PrdTypeItem = new SelectListItem();
+                        PrdTypeItem.Text = DtCity.Rows[i]["MScNm"].ToString();
+                        PrdTypeItem.Value = DtCity.Rows[i]["MscVou"].ToString();
+                        PrdType.Add(PrdTypeItem);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return PrdType;
+        }
+
         public List<CustomDropDown> GetEmployeeCustomDropdown(int CompanyId, int isAdministrator)
         {
             List<CustomDropDown> EmployeeList = new List<CustomDropDown>();

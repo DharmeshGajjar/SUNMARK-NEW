@@ -38,21 +38,84 @@
     <link rel="stylesheet" href="/Template/plugins/summernote/summernote-bs4.min.css">
     <link rel="stylesheet" href="/Template/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="/Template/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-    @*<link href="~/Template/plugins/select2-bootstrap4-theme/select2-bootstrap4.css" rel="stylesheet" />*@
+    <link href="~/Template/plugins/select2-bootstrap4-theme/select2-bootstrap4.css" rel="stylesheet" />
 
 
     <link href="~/css/simplePagination.css" rel="stylesheet" />
     <link href="/css/loader.css" rel="stylesheet" media="screen, print">
     <link href="/css/custom.css" rel="stylesheet" media="screen, print">
+
+
     <style>
+        label {
+            font-size: 13px !important;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;            
+        }
+
+        input.form-control,
+        .select2-selection--single {
+            font-size: 13px !important;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            height: 40px !important
+        }
+
+        .select2-selection__rendered {
+            font-size: 13px !important;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        .customDivision table tbody tr:hover {
+            background-color: #dcdada;
+            font-size: 13px !important;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        .customDivision {
+            width: 100%;
+            margin-top: 10px !important;
+            font-size: 13px !important;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
         .fontCustom {
-            font-size: 18px
+            font-size: 13px !important;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
         }
 
         .dynamicDataTable tr td,
         .dynamicDataTable tr th {
+            padding: .20rem !important;
+            font-size: 13px !important;
+            /*font-family: "Roboto", Helvetica Neue, Helvetica, Arial, sans-serif;*/
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        .dynamicDataTableTransactionGridForm tr td,
+        .dynamicDataTableTransactionGridForm tr th {
             padding: .20rem !important
         }
+
+        .dynamicDataTableTransactionGridForm tr td,
+        .dynamicDataTableTransactionGridForm tr th {
+            padding: .20rem !important
+        }
+
+        .custom-table tr td,
+        .custom-table tr th {
+            padding: .20rem !important;
+            border: 1px solid #dee2e6
+        }
+
+        .custom-table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+            .custom-table tbody {
+                display: table;
+                /*width: 100%;*/
+            }
 
         /*.focusIn,*/
         /* .select2-container--focus .select2-selection--single {
@@ -86,6 +149,7 @@
     </style>
     <title>@ViewBag.Title</title>
     <script src="/Template/plugins/jquery/jquery.min.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
     @*<script src="~/Template/plugins/select2/js/select2.full.min.js"></script>*@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -129,6 +193,15 @@
 
         })
 
+        //function SetSelect2() {
+        //    $(".select2").select2({
+        //        id: "-1",
+        //        placeholder: "---Select---",
+        //        theme: "bootstrap4",
+        //        allowClear: true
+        //    });
+
+        //}
 
         function SetFocus(obj) {
             $(obj).addClass('focusIn')
@@ -600,6 +673,7 @@
     <script src="/Template/plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="/Template/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="/Template/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    @RenderSection("Scripts", false);
     <script type="text/javascript">
         (function (code) {
             code(window.jQuery, document, window);
@@ -684,9 +758,9 @@
                                 var masterPath = $(sidebar[x][y]).parent().prev('a').children('p').text().trim();
 
                                 html += `<a href="` + $(sidebar[x][y]).children('a').attr('href') + `" class="list-group-item">
-                                                                                            <div class="search-title">`+ $(sidebar[x][y]).children().find('p').html() + `</div>
-                                                                                            <div class="search-path">` + masterPath + `</div>
-                                                                                        </a>`;
+                                                                                                <div class="search-title">`+ $(sidebar[x][y]).children().find('p').html() + `</div>
+                                                                                                <div class="search-path">` + masterPath + `</div>
+                                                                                            </a>`;
                             }
                         }
                     }
@@ -805,8 +879,8 @@
                     if (data.data != null && data.data.length > 0) {
                         for (var x = 0; x < data.data.length; x++) {
                             html += ` <li class="nav-item m-1">
-                                            <a class="btn btn-warning" href="`+ data.data[x].value + `" role="button">` + data.data[x].text + `</a>
-                                        </li>`;
+                                                <a class="btn btn-warning" href="`+ data.data[x].value + `" role="button">` + data.data[x].text + `</a>
+                                            </li>`;
                         }
 
                     }
@@ -842,10 +916,10 @@
 
         })
 
-            //$('textarea').keypress(function (e) {
-            //    if (e.keyCode == 13) {
-            //        $(this).val($(this).val() + "\n");
-            //    }
-            //})
+                //$('textarea').keypress(function (e) {
+                //    if (e.keyCode == 13) {
+                //        $(this).val($(this).val() + "\n");
+                //    }
+                //})
     </script>
 </body>

@@ -38,6 +38,8 @@ namespace SUNMark.Models
         public int InstExl { get; set; } = 1;
         public List<InTransInwardGridModel> InwardList { get; set; }
         public InTransInwardGridModel Inward { get; set; }
+        
+        public string FltVno { get; set; }
 
     }
 

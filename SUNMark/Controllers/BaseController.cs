@@ -180,7 +180,7 @@ namespace SUNMark.Controllers
             return null;
         }
 
-        public GetReportDataModel GetReportData(int gridMasterId, int startRecord, int pageSize, string columnName, string sortby, string searchText, int companyId = 0, int clientId = 0, int yearId = 0, string pageName = "", int isAdministrator = 0, int isExcelPDF = 0, string whereCondition = "")
+        public GetReportDataModel GetReportData(int gridMasterId, int startRecord, int pageSize, string columnName, string sortby, string searchText, int companyId = 0, int clientId = 0, int yearId = 0, string pageName = "", int isAdministrator = 0, int isExcelPDF = 0, string whereConditionQuery = "")
         {
             GetReportDataModel returnModel = new GetReportDataModel();
             try
@@ -208,17 +208,17 @@ namespace SUNMark.Controllers
                             Query = "SELECT * FROM (" + dtGridMst.Rows[0]["GrdQryFields"].ToString() + " " + dtGridMst.Rows[0]["GrdQryJoin"].ToString();
                         }
 
-                        if (!string.IsNullOrWhiteSpace(whereCondition))
+                        if (!string.IsNullOrWhiteSpace(whereConditionQuery))
                         {
                             string[] groupbySplitter = Query.ToUpper().Split("GROUP BY");
                             if (groupbySplitter != null && groupbySplitter.Length == 2)
                             {
-                                WQuery = groupbySplitter[0] + whereCondition + " GROUP BY " + groupbySplitter[1];
+                                WQuery = groupbySplitter[0] + whereConditionQuery + " GROUP BY " + groupbySplitter[1];
                                 Query = WQuery + ") MyTable ";
                             }
                             else
                             {
-                                WQuery = whereCondition;
+                                WQuery = whereConditionQuery;
                                 Query = Query + WQuery + ") MyTable ";
                             }
 
@@ -286,6 +286,8 @@ namespace SUNMark.Controllers
                         Query = Query.Replace("@#CMPVOU#@", companyId.ToString());
                         Query = Query.Replace("@#CLIVOU#@", clientId.ToString());
                         Query = Query.Replace("@#YEARVOU#@", yearId.ToString());
+                        
+
                         returnModel.Query = Query;
                         parameters[0] = new SqlParameter("@dynamicQuery", Query);
                         DataTable dtWholeData = ObjDBConnection.CallStoreProcedure("ExecuteDynamicQuery", parameters);
@@ -639,12 +641,13 @@ namespace SUNMark.Controllers
                                     {
                                         if (getReportDataModel.ColumnsData[i].GrdAHideYN == "0")
                                         {
-
+                                            string ttt = string.Empty;
                                             columnRowIndex++;
                                             columnColumnIndex++;
                                             worksheet.Row(currentRow).Style.Alignment.SetWrapText();
                                             if (getReportDataModel.ColumnsData[i].GrdADataType == "2")
                                             {
+                                                ttt = DbConnection.DynamicDecimalPoints(dataRow[i].ToString(), Convert.ToInt32(getReportDataModel.ColumnsData[i].GrdADecUpTo));
                                                 worksheet.Cell(currentRow, columnColumnIndex).SetValue(DbConnection.DynamicDecimalPoints(dataRow[i].ToString(), Convert.ToInt32(getReportDataModel.ColumnsData[i].GrdADecUpTo)));
                                             }
                                             else
@@ -658,6 +661,14 @@ namespace SUNMark.Controllers
                                             else if (getReportDataModel.ColumnsData[i].GrdAAlign == "2")
                                             {
                                                 worksheet.Cell(currentRow, columnColumnIndex).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                                                if (getReportDataModel.ColumnsData[i].GrdADataType == "2")
+                                                {
+                                                    if (ttt != "Total : ")
+                                                    {
+                                                        ((decimal)worksheet.Cell(currentRow, columnColumnIndex).DataType).ToString();
+                                                        worksheet.Cell(currentRow, columnColumnIndex).SetDataType(XLDataType.Number);
+                                                    }
+                                                }
                                             }
                                             else if (getReportDataModel.ColumnsData[i].GrdAAlign == "3")
                                             {

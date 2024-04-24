@@ -80,7 +80,7 @@ namespace SUNMark.Controllers
 
 
                     objOpeningStock.LotPrcTypVou = 0;
-                    objOpeningStock.LotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                    objOpeningStock.LotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
 
                     objOpeningStock.OblRem = DtOBLDetail.Rows[0]["OblRem"].ToString();
                     return View(objOpeningStock);
@@ -132,7 +132,7 @@ namespace SUNMark.Controllers
                 objOpeningStock.OblPrdVouList = objProductHelper.GetProductMasterDropdown(companyId, administrator, "");
 
                 objOpeningStock.LotPrcTypVou = 0;
-                objOpeningStock.LotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                objOpeningStock.LotPrcTypVouList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator,"");
 
 
                 objOpeningStock.LotTypVou = 0;
