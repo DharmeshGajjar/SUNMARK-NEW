@@ -86,21 +86,6 @@ namespace SUNMark.Models
         public string ToDt { get; set; }
         public string FltVno { get; set; }
 
-        //Filter Option Field
-        public string CoilNo { get; set; }
-        public decimal FltOD { get; set; }
-        public decimal FltFeetPer { get; set; }
-        public string FltNB { get; set; }
-        public List<SelectListItem> NBList { get; set; }
-        public string FltSCH { get; set; }
-        public List<SelectListItem> SCHList { get; set; }
-        public long FltGrade { get; set; }
-        public List<SelectListItem> GradeList { get; set; }
-        public string FrDt { get; set; }
-        public string ToDt { get; set; }
-        public string BearingLoss { get; set; }
-
-        public string FltVno { get; set; }
 
     }
 }
