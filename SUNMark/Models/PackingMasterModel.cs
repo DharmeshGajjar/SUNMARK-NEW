@@ -44,6 +44,7 @@ namespace SUNMark.Models
         public string Thick { get; set; }
 
         public string OD { get; set; }
+        public string Length { get; set; }
 
         public string HeatNumber { get; set; }
 

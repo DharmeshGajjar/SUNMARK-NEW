@@ -1,0 +1,840 @@
+﻿@model SUNMark.Models.ProcessTransferModel
+@using Microsoft.AspNetCore.Http
+@using SUNMark.Models;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
+    List<SUNMark.Models.JobWorkEntryModel> jobworkentryList = ViewBag.jobworkentryList as List<SUNMark.Models.JobWorkEntryModel>;
+    List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
+    List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
+    ViewData["Title"] = userRight.ModuleNm;
+    string headerAdd = "";
+    string headerList = "";
+    string gridAdd = "";
+    string gridList = "";
+    bool headerAddTrue = false;
+    bool headerListTrue = false;
+    int id = ViewBag.id != null ? (int)ViewBag.id : 0;
+    int vNo = ViewBag.voucherNo != null ? Convert.ToInt32(ViewBag.voucherNo) : 0;
+
+    List<SelectListItem> companyList = ViewBag.companyList != null ? ViewBag.companyList as List<SelectListItem> : null;
+    List<SelectListItem> productList = ViewBag.productList != null ? ViewBag.productList as List<SelectListItem> : null;
+    List<SelectListItem> shiftList = ViewBag.shiftList != null ? ViewBag.shiftList as List<SelectListItem> : null;
+    List<CustomDropDown> employeeList = ViewBag.employeeList != null ? ViewBag.employeeList as List<CustomDropDown> : null;
+    List<CustomDropDown> supervisorList = ViewBag.supervisorList != null ? ViewBag.supervisorList as List<CustomDropDown> : null;
+    List<SelectListItem> processList = ViewBag.processList != null ? ViewBag.processList as List<SelectListItem> : null;
+    List<SelectListItem> finishList = ViewBag.finishList != null ? ViewBag.finishList as List<SelectListItem> : null;
+    List<SelectListItem> userList = ViewBag.userList != null ? ViewBag.userList as List<SelectListItem> : null;
+    List<SUNMark.Models.CoilMasterModel> coilList = ViewBag.coilList as List<SUNMark.Models.CoilMasterModel>;
+    List<SelectListItem> milprocessList = ViewBag.milprocessList != null ? ViewBag.milprocessList as List<SelectListItem> : null;
+    List<SelectListItem> nbList = ViewBag.nbList != null ? ViewBag.nbList as List<SelectListItem> : null;
+    List<SelectListItem> schList = ViewBag.schList != null ? ViewBag.schList as List<SelectListItem> : null;
+
+
+    if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+    {
+        headerAdd = "active";
+        gridAdd = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+}
+
+<style>
+    .bootstrap-datetimepicker-widget.dropdown-menu {
+        display: none;
+        width: auto !important;
+    }
+</style>
+
+<div class="card card-primary">
+    <div class="card-header" style="font-family:Verdana">
+        <h6> @ViewData["Title"]</h6>
+    </div>
+    <div class="card-body">
+        <div class="card card-primary card-tabs">
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                    @if (userRight != null && userRight.IsList)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerList" id="custom-tabs-three-list-tab" data-toggle="pill" href="#custom-tabs-three-list" role="tab" aria-controls="custom-tabs-three-list" aria-selected="@headerListTrue" style="font-family:Verdana;font-size:small" onclick="GoToListTab()">List (Alt+L)</a>
+                        </li>
+                    }
+                    @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerAdd" id="custom-tabs-three-add-tab" data-toggle="pill" href="#custom-tabs-three-add" role="tab" aria-controls="custom-tabs-three-add" aria-selected="@headerAddTrue" style="font-family:Verdana;font-size:small" onclick="GoToAddTab()">Add/Update (F2)</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="tab-content" id="custom-tabs-three-tabContent">
+                        @if (userRight != null && userRight.IsList)
+                        {
+                            <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
+                                <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
+                                    <div class="col-md-12 col-12 mb-2 mt-2">
+                                        <div class="row">
+                                            <div class="col-md-1 mb-2 float-left">
+
+                                                <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                                    @for (int i = 0; i < pageNoList.Count; i++)
+                                                    {
+                                                        string checkedd = "checked";
+                                                        <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                                        checkedd = string.Empty;
+                                                    }
+
+                                                </select>
+
+                                            </div>
+                                            <div class="col-md-7 col-12">
+                                                <div class="row">
+                                                    <div class="col-md-3 col">
+                                                        <select class="form-control select2 drpReportLayout" onchange="loadData()">
+                                                            <option value="" ; style="width:200px">--Select Layout--</option>
+                                                            @if (layoutList != null && layoutList.Count > 0)
+                                                            {
+                                                                foreach (var item in layoutList)
+                                                                {
+                                                                    <option value="@item.Value">@item.Text </option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                                        @if (isAdministrator == 1)
+                                                        {
+                                                            <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                                Edit
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    <div class="col-md-7 mb-2 custommt-2-3">
+                                                        <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                                        <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                        <button class="btn btn-primary btn-sm" id="btnSave" onclick=" loadData();">View (Alt+V)</button>
+                                                        <a href="/JobWorkEntry/index" class="btn btn-warning btn-sm">Cancel (Esc)</a>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-3 col-12 float-right">
+                                                <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dataTable">
+
+                                    </div>
+                                    <div class="pager float-right"></div>
+                                </div>
+                            </div>
+                        }
+                        @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                        {
+                            <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
+                                <form method="post" class="mt-1" autocomplete="off" id="processTransferForm">
+                                    <div class="row">
+                                        <div class="col-md-1 col-12">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.PrcVou, new { @class = "form-control ", @placeholder = "id", @type = "hidden", @disabled = "disabled" })
+                                                <div class="form-group">
+                                                    <label>VNo.<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                    @Html.TextBoxFor(x => x.PrcVNo, new { @class = "form-control ", @placeholder = "Voucher No", @type = "text", @disabled = "disabled" })
+                                                    @*@Html.TextBoxFor(x => x.PrcVNo, new { @class = "form-control ", @placeholder = "Voucher No", @type = "hidden", @disabled = "disabled" })*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-12">
+                                            <div class="form-group">
+                                                <label>Date<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                @Html.TextBoxFor(x => x.Date, new { @class = "form-control ", @placeholder = "Date", @type = "date", @onblur = "return FDate()" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-12">
+                                            <div class="form-group">
+                                                <label>Company<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                @Html.DropDownListFor(x => x.PrcCmpCdn, companyList, "Select", new { @class = "form-control select2 w-100", @style = "width:100% !important" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-12">
+                                            <div class="form-group">
+                                                <label>Process Pending<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                @Html.DropDownListFor(x => x.PrcCurPrcVou, processList, "Select", new { @class = "form-control select2 PrcCurPrcVou", @style = "width:100% " })
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6">
+                                            <div class="form-group">
+                                                <label>Received Product</label>
+                                                @Html.DropDownListFor(x => x.PrcPrdVou, new SelectList(productList, "Value", "Text"), "Select", new { @class = "form-control select2 w-100 PrcPrdVou", @style = "width:100% !important" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-12">
+                                            <div class="form-group">
+                                                <label>
+                                                    Grade <span class="required"></span>
+                                                </label>
+                                                @Html.DropDownListFor(x => x.PrcGrdMscVou, Model.GradeList, "Select", new { @class = "form-control select2 Grade ", @*@tabindex = "7"*@@style = "width:100% !important" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-12">
+                                            <div class="form-group">
+                                                <label>NB<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                <input type="hidden" readonly placeholder="NB" id="NB" name="NB" class="form-control" value="" />
+                                                @Html.DropDownListFor(x => x.PrcNB, nbList, "Select", new { @class = "form-control select2 PrcNB", @style = "width:100% " })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-12">
+                                            <div class="form-group">
+                                                <label>SCH<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                <input type="hidden" readonly placeholder="SCH" id="SCH" name="SCH" class="form-control" value="" />
+                                                @Html.DropDownListFor(x => x.PrcSCH, schList, "Select", new { @class = "form-control select2 PrcSCH", @style = "width:100% " })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-6">
+                                            <div class="form-group">
+                                                <label>Finish</label>
+                                                @Html.DropDownListFor(x => x.PrcFinMscVou, finishList, "Select", new { @class = "form-control select2 w-100 PrcFinMscVou", @style = "width:100% !important" })
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 col-12">
+                                            <div class="form-group">
+                                                <label>Length@*<span class="text-danger" style="font-family: Verdana">*</span>*@</label>
+                                                @Html.TextBoxFor(x => x.PrcLangth, new { @class = "form-control col-md-12", @placeholder = "Length(Feet)", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <div class="form-group">
+                                                <label>OD<span class="text-danger" style="font-family: Verdana"></span></label>
+                                                @Html.TextBoxFor(x => x.PrcOD, new { @class = "form-control ", @placeholder = "OD", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right", @onchange = "GetQtyPCSDetails(this)" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 col-6">
+                                            <div class="form-group">
+                                                <label>Thick<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                @Html.TextBoxFor(x => x.PrcThick, new { @class = "form-control ", @placeholder = "Thick", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right", @onchange = "GetQtyPCSDetails(this)" })
+                                            </div>
+                                        </div>
+                                        <input type="hidden" value="1" id="ODValidCheck" />
+                                        <input type="hidden" value="0" id="MilMaxODMilMaxOD" />
+                                        <input type="hidden" value="0" id="MilMinODMilMinOD" />
+                                        <div class="col-md-1 col-12">
+                                            <div class="form-group">
+                                                <label class="col-md-10">PCS<span class="text-danger" style="font-family: Verdana">*</span></label>
+
+                                                @Html.TextBoxFor(x => x.PrcPCS, new { @class = "form-control ", @placeholder = "No Of Pipe", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right", @onblur = "GetCalWeigth()" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 col-12">
+                                            <div class="form-group">
+                                                <label>Qty<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                @*<label class="control-label pl-1" style="font-family: Verdana;width:70px;text-align:right" id="Qty">-</label>*@
+                                                @Html.TextBoxFor(x => x.PrcQty, new { @class = "form-control ", @placeholder = "Qty", @type = "text", @onkeyup = "numericFilter(this)", @style = "text-align:right" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                Next Process <span class="required"></span>
+                                            </label>
+                                            <div class="form-outline form-white mb-2">
+                                                @Html.DropDownListFor(x => x.PrcNtxPrcVou, processList, "Select", new { @class = "form-control select2 PrcNtxPrcVou", @style ="width:210px" })
+                                            </div>
+                                        </div>
+
+
+                                        @Html.TextBoxFor(x => x.PrcUsr, new { @class = "form-control ", @placeholder = "User", @type = "hidden", @style = "text-align:right" })
+
+                                        @Html.TextBoxFor(x => x.PrcUsrDt, new { @class = "form-control ", @placeholder = "User Date", @type = "hidden", @style = "text-align:right", @onblur = "return FDate()" })
+
+                                        <div class="col-md-12 text-center">
+                                            @if (userRight.IsEdit && id > 0)
+                                            {
+                                                <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="return AddMilling()">
+                                                    Save (F10)
+                                                </button>
+                                                <a href="/ProcessTransfer/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                    Cancel (Esc)
+                                                </a>
+                                                <button class="btn btn-primary px-md-4 mb-2 text-white" id="btnPrint" style="font-family:Verdana;font-size:medium" type="button" onclick="AddPickling()">
+                                                    Print (F9)
+                                                </button>
+                                            }
+                                            else if (userRight.IsAdd && id == 0)
+                                            {
+                                                <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="return AddProcess()">
+                                                    Save (F10)
+                                                </button>
+                                                <a href="/ProcessTransfer/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                    Cancel (Esc)
+                                                </a>
+                                                <button class="btn btn-primary px-md-4 mb-2 text-white" id="btnPrint" style="font-family:Verdana;font-size:medium" type="button" onclick="AddPickling()">
+                                                    Print (F9)
+                                                </button>
+                                            }
+                                        </div>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<script src="~/js/bootstrap-datetimepicker.min.js"></script>*@
+
+<script>
+    $(document).ready(function () {
+      //  debugger;
+        var Vou = '@Html.Raw(Model.PrcVou)';
+        console.log(Vou);
+       if (Vou != null && Vou != '' && Vou != 0) {
+            GoToAddTab()
+            $('input[name="PrcVNo"]').attr('disabled', true)
+          //  GetAllPercentageCalculation();
+        }
+        else {
+            GoToListTab()
+
+        }
+
+        //TimeDiffHours(1);
+        //TimeDiffHours(2);
+
+    });
+
+    //function GetAllPercentageCalculation() {
+    //    var Weight = 20;
+    //    var txtPCSWeight =10;
+    //    var RLWeight = 10;
+    //    var ScrapWeight = 10;
+    //    if (Weight == '' || Weight == undefined) {
+    //        Weight = 0;
+    //    }
+    //    if (txtPCSWeight == '' || txtPCSWeight == undefined) {
+    //        txtPCSWeight = 0;
+    //    }
+    //    if (RLWeight == '' || RLWeight == undefined) {
+    //        RLWeight = 0;
+    //    }
+    //    if (ScrapWeight == '' || ScrapWeight == undefined) {
+    //        ScrapWeight = 0;
+    //    }
+    //    var E = parseFloat(txtPCSWeight) + parseFloat(RLWeight) + parseFloat(ScrapWeight);
+    //    var F = parseFloat(Weight) - E;
+    ////    $('.FL').val(((parseFloat(txtPCSWeight) * 100) / parseFloat(Weight)).toFixed(2));
+    ////    $('.SL').val(((parseFloat(RLWeight) * 100) / parseFloat(Weight)).toFixed(2));
+    ////    $('.SC').val(((parseFloat(ScrapWeight) * 100) / parseFloat(Weight)).toFixed(2));
+    ////    $('.LOSS').val((F / parseFloat(Weight)).toFixed(2));
+    ////    $('.YIELD').val((100*(parseFloat(txtPCSWeight) / parseFloat(Weight))).toFixed(2));
+    ////}
+
+    function GoToAddTab() {
+        $('#custom-tabs-three-list-tab').removeClass('active');
+        $('#custom-tabs-three-add-tab').addClass('active');
+
+        $('#custom-tabs-three-list').removeClass('active');
+        $('#custom-tabs-three-add').addClass('active');
+        $('#custom-tabs-three-add').addClass('show');
+        $('#Date').focus();
+    }
+
+    function GoToListTab() {
+        $('#custom-tabs-three-list-tab').addClass('active');
+        $('#custom-tabs-three-add-tab').removeClass('active');
+
+        $('#custom-tabs-three-list').addClass('active');
+        $('#custom-tabs-three-list').addClass('show');
+        $('#custom-tabs-three-add').removeClass('active');
+        $('#custom-tabs-three-add').removeClass('show');
+        $('#txtReportSearchDataTable').focus();
+    }
+</script>
+<script>
+    var isRecentCalledEsc = false;
+    var isRecentCalledAddRows = false;
+    var isRecentCalledSave = false;
+    (function (code) {
+        code(window.jQuery, document, window);
+    }(function ($, document, window) {
+        $(function () {
+            $(window)
+                .initKeyboard({ debug: 1 })
+                .on('F2', function () {
+                    GoToAddTab()
+                }).on('F10', function () {
+                    if (!isRecentCalledSave) {
+                        $('input[name="PrcVNo"]').attr('disabled', false)
+
+                        $("#btnSave").click();
+                        isRecentCalledSave = true;
+                        setTimeout(function () {
+                            isRecentCalledSave = false;
+                        }, 1000)
+                    }
+                }).on('F9', function () {
+                    $("#btnPrint").click();
+                })
+                .on('Alt+L', function () {
+                    GoToListTab();
+                })
+                .on('Pagedown', function () {
+                    if (!isRecentCalledAddRows) {
+                        isRecentCalledAddRows = true;
+                        AddRows();
+                        setTimeout(function () {
+                            isRecentCalledAddRows = false;
+                        }, 500)
+                    }
+                })
+                .on('Alt+C', function () {
+                    if (confirm("Do you want to exit without save?")) {
+                        location.href = '/ProcessTransfer/Index'
+                    }
+                    else {
+                        // $('#CompanyVou').focus();
+                    }
+
+                }).on('Escape', function () {
+                    if (!isRecentCalledEsc) {
+                        isRecentCalledEsc = true;
+                        if (confirm("Do you want to exit without save?")) {
+                            location.href = '/ProcessTransfer/Index'
+                        }
+                        //else {
+                        //    $('#CompanyVou').focus();
+                        //}
+                        setTimeout(function () {
+                            isRecentCalledEsc = false;
+                        }, 500)
+                    }
+
+                })
+        });
+    }));
+</script>
+
+<script>
+
+    var isRecentCalled = false;
+
+    $(function () {
+        //loadData();
+        var pageIndex = '';
+        var pageSize = '';
+        var totalRecord = '';
+        var isDelete = '@Html.Raw(userRight.IsDelete)';
+        var isEdit = '@Html.Raw(userRight.IsEdit)';
+    })
+
+    var timer = null;
+    $('#txtReportSearchDataTable').keyup(function (e) {
+        if (e.keyCode >= 112 && e.keyCode <= 123) {
+            e.preventDefault();
+            return false;
+        }
+        else {
+            clearTimeout(timer);
+
+            timer = setTimeout(loadData, 1000)
+        }
+
+    });
+    function loadData(pageIndex, columnName, sortBy) {
+        //debugger;
+        isRecentCalled = true;
+        if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
+            pageIndex = 1;
+        }
+        var layoutId = $('.drpReportLayout').val();
+
+        if (!layoutId) {
+            $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
+                SetSelect2()
+
+        }
+        if (!columnName) {
+            columnName = '';
+        }
+        if (!sortBy) {
+            sortBy = '';
+        }
+        //debugger;
+        $('.dataTable').html();
+        $.ajax({
+            url: '/ProcessTransfer/GetReportView',
+            type: 'GET',
+            data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+            dataType: 'HTML',
+            traditional: true, // add this
+            success: function (data) {
+                $('.dataTable').html(data);
+
+                setTimeout(function () {
+                    isRecentCalled = false;
+                }, 2000)
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    }
+
+    $('#btnExportToExcel').click(function () {
+        window.location.href = "/ProcessTransfer/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+    })
+
+    $('#btnExportToPDF').click(function () {
+        window.location.href = "/Milling/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+    })
+
+    function GetCalWeigth() {
+        var od = $('input[name="PrcOD"]').val();
+        var thick = $('input[name="PrcThick"]').val();
+        var length = $('input[name="PrcLangth"]').val();
+        var pcs = $('input[name="PrcPCS"]').val();
+        var qty = $('input[name="PrcQty"]').val();
+        var lengthmtr = (length * 0.3048).toFixed(4);
+        var weight = (((od) - thick) * thick * 0.02503 * lengthmtr).toFixed(2);
+        var weight2 = (((od) - thick) * thick * 0.02503 * lengthmtr).toFixed(8);
+        var qty1 = parseFloat(weight2 * pcs).toFixed(2);
+        $('input[name="PrcQty"]').val(qty1).toFixed(2);
+    }
+
+</script>
+<script>
+    var isSaveCalled = false;
+
+    function ValidateTextbox() {
+        var isAllow = true;
+        $('#PrcQty').attr("disabled", false);
+        $('#PrcPCS').attr("disabled", false);
+        $('#PrcVNO').attr("disabled", false);
+        //debugger;
+        console.log($('input[name="PrcQty"]').val());
+        if (!$('select[name="PrcCurPrcVou"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="PrcVNo"]').val()) {
+            isAllow = false;
+        }
+
+        if (!$('input[name="Date"]').val()) {
+            isAllow = false;
+        }
+        //if (!$('select[name="PrcPrdVou"]').val()) {
+        //    isAllow = false;
+        //}
+        //if (!$('select[name="PrcGrdMscVou"]').val()) {
+        //    isAllow = false;
+        //}
+        //if (!$('selet[name="PrcFinMscVou"]').val()) {
+        //    isAllow = false;
+        //}
+        //if (!$('input[name="PrcPCS"]').val()) {
+        //    isAllow = false;
+        //}
+        //if (!$('select[name="PrcNB"]').val()) {
+        //    isAllow = false;
+        //}
+        //if (!$('select[name="PrcSCH"]').val()) {
+        //    isAllow = false;
+        //}
+        //if (!$('input[name="PrcOD"]').val()) {
+        //    isAllow = false;
+        //}
+        if (!$('input[name="PrcThick"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="PrcLangth"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="PrcQty"]').val()) {
+            isAllow = false;
+        }
+        if (!$('input[name="PrcPCS"]').val()) {
+            isAllow = false;
+        }
+        //if (!$('select[name="PrcNtxPrcVou"]').val()) {
+        //    isAllow = false;
+        //}
+
+        return isAllow;
+    }
+
+    function EnableTextbox() {
+        $('input[name="PrcVno"]').attr('disabled', false)
+        $('input[name="PrcVou"]').attr('disabled', false)
+        $('input[name="PrcOD"]').attr('disabled', false)
+        $('input[name="PrcLangth"]').attr('disabled', false)
+        $('input[name="PrcPCS"]').attr('disabled', false)
+        $('input[name="PrcQty"]').attr('disabled', false)
+        $('input[name="PrcNB"]').attr('disabled', false)
+        $('input[name="PrcSCH"]').attr('disabled', false)
+    }
+
+    function AddProcess() {
+        var IsSubmit = 0;
+
+        if (ValidateTextbox()) {
+            IsSubmit = 1;
+
+        }
+        else {
+            showErrorMessage("Please enter all compulsory fields.");
+        }
+        if (TDate()) {
+
+        }
+        else {
+            //$('#FinishDate').focus();
+            IsSubmit = 0;
+            return false;
+        }
+
+        if (IsSubmit == 1) {
+            @*if ($('.Hours1').val() == '0' && ('@Model.PrcVou' == '' || '@Model.PrcVou' == '0')) {
+                $('.StopFromTime1').val('');
+                $('.StopToTime1').val('');
+                }*@
+            $('input[name="PrcVNo"]').attr('disabled', false)
+            EnableTextbox();
+            $('#processTransferForm').submit();
+        }
+    }
+
+    function GetQtyPCSDetails() {
+        var PrcId = $('#PrcCurPrcVou').val();
+        var prdId = $('#PrcPrdVou').val();
+        var gradeId = $('#PrcGrdMscVou').val();
+        var finishId = $('#PrcFinMscVou').val();
+        var nb = $('#PrcNB').val();
+        var sch = $('#PrcSCH').val();
+        var od = $('#PrcOD').val();
+        var langth = $('#PrcLangth').val();
+        var PrcThick = $('#PrcThick').val();
+        console.log(PrcId);
+        if (PrcId != null && PrcId != "") {
+            $.ajax({
+                type: "POST",
+                url: '/ProcessTransfer/GetQtyPCS',
+                data: { "PrcId": PrcId, "PrcThick": PrcThick, "prdId": prdId, "gradeId": gradeId, "finishId": finishId, "nb": nb, "sch": sch, "od": od, "langth": langth},
+                dataType: "JSON",
+                success: function (response) {
+                    if (response) {
+
+                        if (response.result) {
+
+                            $('input[name="PrcQty"]').val(response.lotQTY);
+                            $('input[name="PrcPCS"]').val(response.lotPCS);
+
+                        }
+                        else {
+                            $('input[name="PrcQty"]').val(0);
+                            $('input[name="PrcPCS"]').val(0);
+                        }
+
+                    }
+                }, error: function (response) {
+                    $('input[name="PrcQty"]').val(0);
+                    $('input[name="PrcPCS"]').val(0);
+                    console.log(response.result);
+                }
+
+            });
+
+
+        }
+    }
+
+    function GetODThickPCS() {
+        var weight = 30;
+        var thick = $('#PrcThick').val();
+        var od = $('#PrcOD').val();
+        var pcs = $('#PrcPCS').val();
+        var length = $('input[name="PrcLangth"]').val();
+        var lengthmtr = (length * 0.3048).toFixed(4);
+        var weight1 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
+        var weight2 = (((od - thick) * thick * 0.02503 * lengthmtr).toFixed(2));
+
+        if (thick != null && thick != "" && od != null && od != "" && pcs != null && pcs != "") {
+
+            //$('input[name="PCSWeight"]').val((((od - thick) * thick * 0.02503) * lengthmtr * pcs).toFixed(1));
+            changeRemainingval();
+        }
+    }
+    function changeRemainingval() {
+        var txtPCSWeight = $('#txtPCSWeight').val();
+        if (txtPCSWeight == '' || txtPCSWeight == '0') {
+            txtPCSWeight = '0';
+        }
+        var ScrapWeight = $('#ScrapWeight').val();
+        if (ScrapWeight == '' || ScrapWeight == '0') {
+            ScrapWeight = '0';
+        }
+        var RemainWeight = $('label#PCSWeight').text();
+        if (parseFloat(RemainWeight) - parseFloat(txtPCSWeight) - parseFloat(ScrapWeight) < 0) {
+            //showErrorMessage("Total weight can not be exceeded remaining weight");
+            //$('#RemainWeight').val((parseFloat(RemainWeight) - parseFloat(txtPCSWeight) - parseFloat(ScrapWeight)).toFixed(1))
+            //$('#PCS').focus();
+            $('#RemainWeight').val((parseFloat(RemainWeight) - parseFloat(txtPCSWeight) - parseFloat(ScrapWeight)).toFixed(1))
+        }
+        else {
+            $('#RemainWeight').val((parseFloat(RemainWeight) - parseFloat(txtPCSWeight) - parseFloat(ScrapWeight)).toFixed(1))
+
+        }
+        //if (RemainWeight != '' && RemainWeight != '0') {
+        //}
+        GetAllPercentageCalculation();
+    }
+
+</script>
+<script>
+    $(function () {
+        var nb = $('#NBVou').children('option:selected').text()
+        if (nb)
+            $('input[name="NB"]').val(nb);
+    })
+
+    $('#NBVou').change(function () {
+        var nb = $('#NBVou').children('option:selected').text()
+        if (nb)
+            $('input[name="NB"]').val(nb);
+    })
+
+    $(function () {
+        var sch = $('#SCHVou').children('option:selected').text()
+        if (sch)
+            $('input[name="SCH"]').val(sch);
+        if ('@Model.PrcVou' != '' && '@Model.PrcVou' != '0') {
+            $('#NBVou').val('@Model.PrcNB').trigger('change');
+            $('#SCHVou').val('@Model.PrcSCH').trigger('change');
+
+            var length = $('input[name="FeetPer"]').val();
+            var lengthmtr = (length * 0.3048).toFixed(4);
+            var weight = (((parseFloat(20) / 3.14).toFixed(2) - parseFloat('@Model.PrcThick')) * parseFloat('@Model.PrcThick') * 0.02503 * lengthmtr).toFixed(2);
+            var weight2 = (((parseFloat(20) / 3.14).toFixed(3) - parseFloat('@Model.PrcThick')) * parseFloat('@Model.PrcThick') * 0.02503 * lengthmtr).toFixed(3);
+            var pcs = parseInt(parseFloat(20) / weight);
+            var pcsWeightt = ((weight2 * pcs).toFixed(1));
+
+        }
+        //else {
+        //    var time = new Date();
+        //    var dt = new Date($('#Date').val() + ' ' + time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds());
+        //    var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+        //    var localISOTime = (new Date(dt - tzoffset)).toISOString().slice(0, -8);
+        //    $('#StopFromTime1').val(localISOTime);
+        //    $('#StopToTime1').val(localISOTime);
+        //}
+
+    })
+
+    $('#SCHVou').change(function () {
+        var sch = $('#SCHVou').children('option:selected').text()
+        if (sch)
+            $('input[name="SCH"]').val(sch);
+    })
+    @*$('#Date').change(function () {
+        var Vou = '@Html.Raw(Model.PrcVou)';
+        if (Vou != null && Vou != '' && Vou != 0) {
+
+        }
+        else {
+            var time = new Date();
+            var dt = new Date($('#Date').val() + ' ' + time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds());
+            var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+            var localISOTime = (new Date(dt - tzoffset)).toISOString().slice(0, -8);
+            $('#StopFromTime1').val(localISOTime);
+            $('#StopToTime1').val(localISOTime);
+        }
+    });*@
+
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+
+    function numericFilter(txb) {
+        txb.value = txb.value.replace(/[^\0-9]/ig, "");
+    }
+
+    $(function () {
+        $('.decimal').keypress(function (e) {
+            var character = String.fromCharCode(e.keyCode)
+            var newValue = this.value + character;
+            if (isNaN(newValue) || hasDecimalPlace(newValue, 2)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        function hasDecimalPlace(value, x) {
+            var pointIndex = value.indexOf('.');
+            return pointIndex >= 0 && pointIndex < value.length - x;
+        }
+    });
+
+    function TDate() {
+        var Todate = $('#FinishDate').val();
+        var FromDate = $('#Date').val();
+        if (FromDate != '' && FromDate != null && FromDate != undefined) {
+            if (new Date(Todate) < new Date(FromDate)) {
+                showErrorMessage("Finish date must be bigger or equal to date.");
+                //$('#FinishDate').val('');
+                return false;
+            }
+        }
+        return true;
+    }
+    function FDate() {
+        var Todate = $('#FinishDate').val();
+        var FromDate = $('#Date').val();
+        if (Todate != '' && Todate != null && Todate != undefined) {
+            if (new Date(Todate) < new Date(FromDate)) {
+                showErrorMessage("Date must be smaller or equal to finish date.");
+                //$('#Date').val('');
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Select---'
+            },
+            allowClear: true
+        });
+    });
+</script>

@@ -61,6 +61,8 @@ namespace SUNMark.Models
         public string[] GridRemarks { get; set; }
 
         public string[] Product { get; set; }
+
+        public string GdnVno { get; set; }
     }
 
     public class GdnTrnPrintDetails

@@ -39,12 +39,14 @@ namespace SUNMark.Controllers
                 }
                 coilMasterModel.GradeList = objProductHelper.GetGradeMasterDropdown(companyId, administrator);
                 coilMasterModel.CompanyList = objProductHelper.GetCompanyMasterDropdown(companyId, administrator);
-                ViewBag.processList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                ViewBag.processList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator,"");
                 coilMasterModel.StockYNList = objProductHelper.GetStockYNNew();
+                coilMasterModel.NBSCHYesList = objProductHelper.GetStockYNNew();
                 coilMasterModel.NBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
                 coilMasterModel.SCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
                 coilMasterModel.FinishList = objProductHelper.GetFinishMasterDropdown(companyId,0);
                 coilMasterModel.StockYNVou = 1;
+                coilMasterModel.NbSchYN = 2;
             }
             catch (Exception ex)
             {
@@ -80,7 +82,7 @@ namespace SUNMark.Controllers
             #endregion
         }
 
-        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string od, string feetper, string nb, string sch, string gradeid, string frRecDt, string toRecDt, string companyid, string DoneProc, string NextProc, string stockYN, string finishId)
+        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string od, string feetper, string nb, string sch, string gradeid, string frRecDt, string toRecDt, string companyid, string DoneProc, string NextProc, string stockYN, string finishId, string nbschYN)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -88,7 +90,7 @@ namespace SUNMark.Controllers
                 #region User Rights
                 long userId = GetIntSession("UserId");
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
-
+                string guid = GetStringSession("LoginGUID");
                 UserFormRightModel userFormRights = new UserFormRightModel();
                 string currentURL = "/PipeMaster/Index";
                 userFormRights = GetUserRights(userId, currentURL);
@@ -105,11 +107,13 @@ namespace SUNMark.Controllers
                     startRecord = (pageIndex - 1) * pageSize;
                 }
 
-                SqlParameter[] sqlParameters = new SqlParameter[4];
-                sqlParameters[0] = new SqlParameter("@SESSID", userId);
+                SqlParameter[] sqlParameters = new SqlParameter[6];
+                sqlParameters[0] = new SqlParameter("@SESSID", guid);
                 sqlParameters[1] = new SqlParameter("@StockYN", stockYN);
                 sqlParameters[2] = new SqlParameter("@FromDt", frRecDt);
                 sqlParameters[3] = new SqlParameter("@ToDt", toRecDt);
+                sqlParameters[4] = new SqlParameter("@DoneProc", DoneProc);
+                sqlParameters[5] = new SqlParameter("@NBSCHYN", nbschYN);
                 DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("RPT_PIPEMASTER_NEW", sqlParameters);
 
                 string whereConditionQuery = string.Empty;
@@ -184,11 +188,10 @@ namespace SUNMark.Controllers
                 }
                 if (!string.IsNullOrWhiteSpace(gradeid))
                 {
-                    whereConditionQuery += " AND PipeMst.GrdVou='" + gradeid + "'";
-                }
-                if (!string.IsNullOrWhiteSpace(DoneProc))
-                {
-                    whereConditionQuery += " AND PipeMst.DoneProc<='" + DoneProc + "'";
+                    if (gradeid != "Select")
+                    {
+                        whereConditionQuery += " AND PipeMst.Grade='" + gradeid + "'";
+                    }                    
                 }
                 if (!string.IsNullOrWhiteSpace(NextProc))
                 {
@@ -198,6 +201,18 @@ namespace SUNMark.Controllers
                 {
                     whereConditionQuery += " AND PipeMst.NextProc='" + NextProc + "'";
                 }
+                if (!string.IsNullOrWhiteSpace(finishId))
+                {
+                    if (finishId != "0")
+                    {
+                        whereConditionQuery += " AND PipeMst.FinishVou='" + finishId + "'";
+                    }                    
+                }
+                if (!string.IsNullOrWhiteSpace(guid))
+                {
+                    whereConditionQuery += " AND PipeMst.SessId='" + guid + "'";
+                }
+
                 getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                 if (getReportDataModel.IsError)
                 {
@@ -214,7 +229,7 @@ namespace SUNMark.Controllers
             return PartialView("_reportView", getReportDataModel);
         }
 
-        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string od, string feetper, string nb, string sch, string gradeid, string frRecDt, string toRecDt, string companyid, string finishId)
+        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string od, string feetper, string nb, string sch, string gradeid, string frRecDt, string toRecDt, string companyid, string DoneProc, string NextProc, string stockYN, string finishId, string nbschYN)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -223,6 +238,7 @@ namespace SUNMark.Controllers
                 int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
+                string guid = GetStringSession("LoginGUID");
 
                 string whereConditionQuery = string.Empty;
                 if (gridMstId != 48)
@@ -280,22 +296,23 @@ namespace SUNMark.Controllers
                     }
                     if (!string.IsNullOrWhiteSpace(gradeid))
                     {
-                        whereConditionQuery += " AND PipeMst.GrdVou='" + gradeid + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(frRecDt))
-                    {
-                        whereConditionQuery += " AND PipeMst.RecDt>='" + frRecDt + "'";
-                    }
-                    if (!string.IsNullOrWhiteSpace(toRecDt))
-                    {
-                        whereConditionQuery += " AND PipeMst.RecDt<='" + toRecDt + "'";
+                        if (gradeid != "Select")
+                        {
+                            whereConditionQuery += " AND PipeMst.Grade='" + gradeid + "'";
+                        }
                     }
                     if (!string.IsNullOrWhiteSpace(finishId))
                     {
-                        whereConditionQuery += " AND PipeMst.FinishVou='" + finishId + "'";
+                        if (finishId != "0" && finishId != "undefined")
+                        {
+                            whereConditionQuery += " AND PipeMst.FinishVou='" + finishId + "'";
+                        }
+                    }
+                    if (!string.IsNullOrWhiteSpace(guid))
+                    {
+                        whereConditionQuery += " AND PipeMst.SessId='" + guid + "'";
                     }
                 }
-
 
                 getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, userId, 0, "", 0, 1, whereConditionQuery);
                 if (type == 1)

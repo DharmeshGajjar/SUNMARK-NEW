@@ -27,6 +27,13 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
+                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                int administrator = 0;
+
+                millingMasterModel.NBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                millingMasterModel.SCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
+                millingMasterModel.GradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
+
                 SqlParameter[] sqlpara = new SqlParameter[2];
                 sqlpara[0] = new SqlParameter("@MilVou", id);
                 sqlpara[1] = new SqlParameter("@Flg", 1);
@@ -45,6 +52,7 @@ namespace SUNMark.Controllers
                     millingMasterModel.ScrapPipeProductVou = dtMill.Rows[0]["MilScrPrdVou"].ToString();
                     millingMasterModel.ProcessVou = dtMill.Rows[0]["MilNextPrcVou"].ToString();
                     millingMasterModel.PrcVou = dtMill.Rows[0]["MilPrcVou"].ToString();
+                    millingMasterModel.RLPrdVou = dtMill.Rows[0]["MilRlPrdVou"].ToString();
                     //millingMasterModel.ProductCode = dtMill.Rows[0]["ProductCode"].ToString();
                 }
 
@@ -59,6 +67,9 @@ namespace SUNMark.Controllers
                     {
                         millingMasterModel.Vou = id;
                         millingMasterModel.CompanyVou = dt.Rows[0]["MilCmpVou"].ToString();
+                        millingMasterModel.SizeFromTo = dt.Rows[0]["MacSizeRngFr"].ToString() + "-" + dt.Rows[0]["MacSizeRngTo"].ToString(); ;
+                        millingMasterModel.MilMaxOD = dt.Rows[0]["MacSizeRngTo"].ToString();
+                        millingMasterModel.MilMinOD = dt.Rows[0]["MacSizeRngFr"].ToString();
                         millingMasterModel.Vno = dt.Rows[0]["MilVno"].ToString();
                         millingMasterModel.Date = Convert.ToDateTime(dt.Rows[0]["MilDt"].ToString()).ToString("yyyy-MM-dd");
                         millingMasterModel.ShiftVou = dt.Rows[0]["MilShift"].ToString();
@@ -97,11 +108,17 @@ namespace SUNMark.Controllers
                         millingMasterModel.PCSWeight = dt.Rows[0]["MilRecQty"].ToString();
                         millingMasterModel.Supervisor = dt.Rows[0]["MilSupEmpVou"].ToString();
                         millingMasterModel.RLPCS = dt.Rows[0]["MilRLPcs"].ToString();
+                        millingMasterModel.RLPrdVou = dt.Rows[0]["MilRLPrdVou"].ToString();
                         millingMasterModel.RLWeight = dt.Rows[0]["MilRLWeight"].ToString();
+                        millingMasterModel.BearingLoss = dt.Rows[0]["MilBearingLoss"].ToString();
                         millingMasterModel.PrcVou = dt.Rows[0]["MilPrcVou"].ToString();
                         millingMasterModel.FinishDate = !string.IsNullOrWhiteSpace(dt.Rows[0]["MilFinishDt"].ToString()) ? Convert.ToDateTime(dt.Rows[0]["MilFinishDt"].ToString()).ToString("yyyy-MM-dd") : null;
                         millingMasterModel.Reason = dt.Rows[0]["MilReason"].ToString();
-                        millingMasterModel.RemainingWeight = (Convert.ToDecimal(dt.Rows[0]["RemainingWeight"].ToString()) + Convert.ToDecimal(dt.Rows[0]["MilRecQty"].ToString()) + Convert.ToDecimal(dt.Rows[0]["MilScrQty"].ToString())).ToString();
+                        decimal remainwt = Convert.ToDecimal(dt.Rows[0]["RemainingWeight"].ToString());
+                        decimal bloss = Convert.ToDecimal(dt.Rows[0]["MilBearingLoss"].ToString());
+                        var remainweight = (remainwt - bloss);
+                        millingMasterModel.RemainingWeight = (Convert.ToDecimal(dt.Rows[0]["RemainingWeight"].ToString())).ToString();
+                        millingMasterModel.RemainingWeight = Convert.ToDecimal(remainweight).ToString();
                         millingMasterModel.StopFromTime1 = dt.Rows[0]["MilStopFrTm1"].ToString();
                         millingMasterModel.StopToTime1 = dt.Rows[0]["MilStopToTm1"].ToString();
                         millingMasterModel.StopReason1 = dt.Rows[0]["MilStopReson1"].ToString();
@@ -112,6 +129,8 @@ namespace SUNMark.Controllers
                         millingMasterModel.AMP2 = dt.Rows[0]["MilWeldAMP2"].ToString();
                         millingMasterModel.Voltage2 = dt.Rows[0]["MilWeldVolt2"].ToString();
                         millingMasterModel.ProductCode = dt.Rows[0]["MilPrdCd"].ToString();
+                        millingMasterModel.MilMaxOD = dt.Rows[0]["MacSizeRngTO"].ToString();
+                        millingMasterModel.MilMinOD = dt.Rows[0]["MacSizeRngFr"].ToString();
                     }
                 }
             }
@@ -135,82 +154,109 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
+                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                int administrator = 0;
+
+                millingMasterModel.NBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                millingMasterModel.SCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
+                millingMasterModel.GradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
+
                 //if (ModelState.IsValid)
                 //{
-                    SqlParameter[] parameter = new SqlParameter[52];
-                    parameter[0] = new SqlParameter("@MilVou", millingMasterModel.Vou);
-                    parameter[1] = new SqlParameter("@MilCmpVou", millingMasterModel.CompanyVou);
-                    parameter[2] = new SqlParameter("@MilVno", millingMasterModel.Vno);
-                    parameter[3] = new SqlParameter("@MilDt", millingMasterModel.Date);
-                    parameter[4] = new SqlParameter("@MilShift", millingMasterModel.ShiftVou);
-                    parameter[5] = new SqlParameter("@MilMacNo", millingMasterModel.MillNo);
-                    parameter[6] = new SqlParameter("@MilOpr1EmpVou", millingMasterModel.Operator1);
-                    parameter[7] = new SqlParameter("@MilOpr2EmpVou", millingMasterModel.Operator2);
-                    parameter[8] = new SqlParameter("@MilLotVou", millingMasterModel.IssueCoilNoVou);
-                    parameter[9] = new SqlParameter("@MilLotNo", millingMasterModel.IssueCoilNo);
-                    parameter[10] = new SqlParameter("@MilOD", millingMasterModel.OD);
-                    parameter[11] = new SqlParameter("@MilLenFeet", millingMasterModel.FeetPer);
-                    parameter[12] = new SqlParameter("@MilInTime", millingMasterModel.InTime);
-                    parameter[13] = new SqlParameter("@MilOutTime", millingMasterModel.OutTime);
-                    parameter[14] = new SqlParameter("@MilPcs", millingMasterModel.PCS);
-                    parameter[15] = new SqlParameter("@MilQty", millingMasterModel.Weight);
-                    parameter[16] = new SqlParameter("@MilRecPrdVou", millingMasterModel.RecPrdVou);
-                    parameter[17] = new SqlParameter("@MilScrLenFeet", millingMasterModel.ScrapLength);
-                    parameter[18] = new SqlParameter("@MilScrQty", millingMasterModel.ScrapWeight);
-                    parameter[19] = new SqlParameter("@MilScrPrdVou", millingMasterModel.ScrapPipeProductVou);
-                    parameter[20] = new SqlParameter("@MilTouNo", millingMasterModel.NoOfTourch);
-                    parameter[21] = new SqlParameter("@MilWeldSpeed", millingMasterModel.WeldingSpeed);
-                    parameter[22] = new SqlParameter("@MilWeldAMP", millingMasterModel.AMP);
-                    parameter[23] = new SqlParameter("@MilWeldVolt", millingMasterModel.Voltage);
-                    parameter[24] = new SqlParameter("@MilRem", millingMasterModel.Remarks);
-                    parameter[25] = new SqlParameter("@MilRead1Thick", millingMasterModel.Read1Thick);
-                    parameter[26] = new SqlParameter("@MilRead1OD", millingMasterModel.Read1OD);
-                    parameter[27] = new SqlParameter("@MilRead2Thick", millingMasterModel.Read2Thick);
-                    parameter[28] = new SqlParameter("@MilRead2OD", millingMasterModel.Read2OD);
-                    parameter[29] = new SqlParameter("@MilSupEmpVou", millingMasterModel.Supervisor);
-                    parameter[30] = new SqlParameter("@MilNextPrcVou", millingMasterModel.ProcessVou);
-                    parameter[31] = new SqlParameter("@MilNB", millingMasterModel.NB);
-                    parameter[32] = new SqlParameter("@MilSCH", millingMasterModel.SCH);
-                    parameter[33] = new SqlParameter("@MilRecQty", millingMasterModel.PCSWeight);
-                    parameter[34] = new SqlParameter("@MilNBVou", millingMasterModel.NBVou);
-                    parameter[35] = new SqlParameter("@MilSCHVou", millingMasterModel.SCHVou);
-                    parameter[36] = new SqlParameter("@MilRLPcs", millingMasterModel.RLPCS);
-                    parameter[37] = new SqlParameter("@MilRLWeight", millingMasterModel.RLWeight);
-                    parameter[38] = new SqlParameter("@MilPrcVou", millingMasterModel.PrcVou);
-                    parameter[39] = new SqlParameter("@MIlFinishDt", millingMasterModel.FinishDate);
-                    parameter[40] = new SqlParameter("@MilReason", millingMasterModel.Reason);
-                    parameter[41] = new SqlParameter("@MilRemainingWeight", millingMasterModel.RemainingWeight);
-                    parameter[42] = new SqlParameter("@MilStopFrTm1", millingMasterModel.StopFromTime1);
-                    parameter[43] = new SqlParameter("@MilStopToTm1", millingMasterModel.StopToTime1);
-                    parameter[44] = new SqlParameter("@MilStopReson1", millingMasterModel.StopReason1);
-                    parameter[45] = new SqlParameter("@MilStopFrTm2", millingMasterModel.StopFromTime2);
-                    parameter[46] = new SqlParameter("@MilStopToTm2", millingMasterModel.StopToTime2);
-                    parameter[47] = new SqlParameter("@MilStopReson2", millingMasterModel.StopReason2);
-                    parameter[48] = new SqlParameter("@MilWeldAMP2", millingMasterModel.AMP2);
-                    parameter[49] = new SqlParameter("@MilWeldVolt2", millingMasterModel.Voltage2);
-                    parameter[50] = new SqlParameter("@MilTouNo2", millingMasterModel.NoOfTourch2);
-                    parameter[51] = new SqlParameter("@MilPrdCd", "");
+                if (!string.IsNullOrWhiteSpace(millingMasterModel.RLWeight) && millingMasterModel.RLWeight != "0")
+                {
+                    if (string.IsNullOrEmpty(millingMasterModel.RLPrdVou))
+                    {
+                        ViewBag.focusType = "1";
+                        SetErrorMessage("Please Entry RL Product!...");
+                        return View(millingMasterModel);
+                    }
+                }
+                if (!string.IsNullOrWhiteSpace(millingMasterModel.ScrapWeight) && millingMasterModel.ScrapWeight != "0")
+                {
+                    if (string.IsNullOrEmpty(millingMasterModel.ScrapPipeProductVou))
+                    {
+                        ViewBag.focusType = "2";
+                        SetErrorMessage("Please Entry Scrap Product!...");
+                        return View(millingMasterModel);
+                    }
+                }
+                SqlParameter[] parameter = new SqlParameter[54];
+                parameter[0] = new SqlParameter("@MilVou", millingMasterModel.Vou);
+                parameter[1] = new SqlParameter("@MilCmpVou", millingMasterModel.CompanyVou);
+                parameter[2] = new SqlParameter("@MilVno", millingMasterModel.Vno);
+                parameter[3] = new SqlParameter("@MilDt", millingMasterModel.Date);
+                parameter[4] = new SqlParameter("@MilShift", millingMasterModel.ShiftVou);
+                parameter[5] = new SqlParameter("@MilMacNo", millingMasterModel.MillNo);
+                parameter[6] = new SqlParameter("@MilOpr1EmpVou", millingMasterModel.Operator1);
+                parameter[7] = new SqlParameter("@MilOpr2EmpVou", millingMasterModel.Operator2);
+                parameter[8] = new SqlParameter("@MilLotVou", millingMasterModel.IssueCoilNoVou);
+                parameter[9] = new SqlParameter("@MilLotNo", millingMasterModel.IssueCoilNo);
+                parameter[10] = new SqlParameter("@MilOD", millingMasterModel.OD);
+                parameter[11] = new SqlParameter("@MilLenFeet", millingMasterModel.FeetPer);
+                parameter[12] = new SqlParameter("@MilInTime", millingMasterModel.InTime);
+                parameter[13] = new SqlParameter("@MilOutTime", millingMasterModel.OutTime);
+                parameter[14] = new SqlParameter("@MilPcs", millingMasterModel.PCS);
+                parameter[15] = new SqlParameter("@MilQty", millingMasterModel.Weight);
+                parameter[16] = new SqlParameter("@MilRecPrdVou", millingMasterModel.RecPrdVou);
+                parameter[17] = new SqlParameter("@MilScrLenFeet", millingMasterModel.ScrapLength);
+                parameter[18] = new SqlParameter("@MilScrQty", millingMasterModel.ScrapWeight);
+                parameter[19] = new SqlParameter("@MilScrPrdVou", millingMasterModel.ScrapPipeProductVou);
+                parameter[20] = new SqlParameter("@MilTouNo", millingMasterModel.NoOfTourch);
+                parameter[21] = new SqlParameter("@MilWeldSpeed", millingMasterModel.WeldingSpeed);
+                parameter[22] = new SqlParameter("@MilWeldAMP", millingMasterModel.AMP);
+                parameter[23] = new SqlParameter("@MilWeldVolt", millingMasterModel.Voltage);
+                parameter[24] = new SqlParameter("@MilRem", millingMasterModel.Remarks);
+                parameter[25] = new SqlParameter("@MilRead1Thick", millingMasterModel.Read1Thick);
+                parameter[26] = new SqlParameter("@MilRead1OD", millingMasterModel.Read1OD);
+                parameter[27] = new SqlParameter("@MilRead2Thick", millingMasterModel.Read2Thick);
+                parameter[28] = new SqlParameter("@MilRead2OD", millingMasterModel.Read2OD);
+                parameter[29] = new SqlParameter("@MilSupEmpVou", millingMasterModel.Supervisor);
+                parameter[30] = new SqlParameter("@MilNextPrcVou", millingMasterModel.ProcessVou);
+                parameter[31] = new SqlParameter("@MilNB", millingMasterModel.NB);
+                parameter[32] = new SqlParameter("@MilSCH", millingMasterModel.SCH);
+                parameter[33] = new SqlParameter("@MilRecQty", millingMasterModel.PCSWeight);
+                parameter[34] = new SqlParameter("@MilNBVou", millingMasterModel.NBVou);
+                parameter[35] = new SqlParameter("@MilSCHVou", millingMasterModel.SCHVou);
+                parameter[36] = new SqlParameter("@MilRLPcs", millingMasterModel.RLPCS);
+                parameter[37] = new SqlParameter("@MilRLWeight", millingMasterModel.RLWeight);
+                parameter[38] = new SqlParameter("@MilPrcVou", millingMasterModel.PrcVou);
+                parameter[39] = new SqlParameter("@MIlFinishDt", millingMasterModel.FinishDate);
+                parameter[40] = new SqlParameter("@MilReason", millingMasterModel.Reason);
+                parameter[41] = new SqlParameter("@MilRemainingWeight", millingMasterModel.RemainingWeight);
+                parameter[42] = new SqlParameter("@MilStopFrTm1", millingMasterModel.StopFromTime1);
+                parameter[43] = new SqlParameter("@MilStopToTm1", millingMasterModel.StopToTime1);
+                parameter[44] = new SqlParameter("@MilStopReson1", millingMasterModel.StopReason1);
+                parameter[45] = new SqlParameter("@MilStopFrTm2", millingMasterModel.StopFromTime2);
+                parameter[46] = new SqlParameter("@MilStopToTm2", millingMasterModel.StopToTime2);
+                parameter[47] = new SqlParameter("@MilStopReson2", millingMasterModel.StopReason2);
+                parameter[48] = new SqlParameter("@MilWeldAMP2", millingMasterModel.AMP2);
+                parameter[49] = new SqlParameter("@MilWeldVolt2", millingMasterModel.Voltage2);
+                parameter[50] = new SqlParameter("@MilTouNo2", millingMasterModel.NoOfTourch2);
+                parameter[51] = new SqlParameter("@MilPrdCd", "");
+                parameter[52] = new SqlParameter("@MilRlPrdVou", millingMasterModel.RLPrdVou);
+                parameter[53] = new SqlParameter("@BearingLoss", millingMasterModel.BearingLoss);
                 DataTable dt = ObjDBConnection.CallStoreProcedure("AddMilling", parameter);
-                        if (dt != null && dt.Rows.Count > 0)
-                        {
-                            int status = Convert.ToInt32(dt.Rows[0][0].ToString());
-                            if (status > 0)
-                            {
-                                SetSuccessMessage("Milling master record inserted successfully");
-                                return RedirectToAction("Index", "Milling", new { id = 0 });
-                            }
-                            else
-                            {
-                                SetErrorMessage("Milling master record not inserted!");
-                                return View(millingMasterModel);
-                            }
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    int status = Convert.ToInt32(dt.Rows[0][0].ToString());
+                    if (status > 0)
+                    {
+                        SetSuccessMessage("Milling master record inserted successfully");
+                        return RedirectToAction("Index", "Milling", new { id = 0 });
+                    }
+                    else
+                    {
+                        SetErrorMessage("Duplicate Voucher No!...");
+                        return View(millingMasterModel);
+                    }
 
-                        }
-                        else
-                        {
-                            SetErrorMessage("Milling master record not inserted!");
-                            return View(millingMasterModel);
-                        }
+                }
+                else
+                {
+                    SetErrorMessage("Milling master record not inserted!");
+                    return View(millingMasterModel);
+                }
 
                 //}
                 //else
@@ -270,19 +316,22 @@ namespace SUNMark.Controllers
 
             int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
             int administrator = 0;
-            ViewBag.companyList = objProductHelper.GetCompanyMasterDropdown(companyId, administrator); 
-            ViewBag.employeeList = ObjAccountMasterHelpers.GetOperatorCustomDropdown(companyId, 0); 
-            ViewBag.supervisorList = ObjAccountMasterHelpers.GetSupervisorCustomDropdown(companyId, 0); 
-            ViewBag.productList = objProductHelper.GetProductMasterDropdown(companyId); 
-            ViewBag.shiftList = objProductHelper.GetShiftNew(); 
-            ViewBag.processList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+            ViewBag.companyList = objProductHelper.GetCompanyMasterDropdown(companyId, administrator);
+            ViewBag.employeeList = ObjAccountMasterHelpers.GetOperatorCustomDropdown(companyId, 0);
+            ViewBag.supervisorList = ObjAccountMasterHelpers.GetSupervisorCustomDropdown(companyId, 0);
+            ViewBag.productList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "PIPE");
+            ViewBag.ScrapPrdList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "SCRAP");
+            ViewBag.RLproductList = objProductHelper.GetPrdTypeWiseProductDropdown(companyId, "RL PIPE");
+            ViewBag.shiftList = objProductHelper.GetShiftNew();
+            ViewBag.processList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "Milling");
+            ViewBag.nextprocessList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "Next Milling");
             ViewBag.milprocessList = ObjAccountMasterHelpers.GetMachineMasterDropdown(companyId, "MILLING");
             ViewBag.nbList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
             ViewBag.schList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
 
         }
 
-        public ActionResult GetDataByCoilNo(string coilNo, string mildt,string MacId)
+        public ActionResult GetDataByCoilNo(string coilNo, string mildt, string MacId)
         {
             try
             {
@@ -308,7 +357,7 @@ namespace SUNMark.Controllers
                         data.Add(dtLotMst.Rows[0]["LotQty"].ToString());
                         data.Add(Convert.ToDateTime(dtLotMst.Rows[0]["LotDt"].ToString()).ToString("yyyy-MM-dd"));
 
-                        if (Convert.ToDateTime(Convert.ToDateTime(dtLotMst.Rows[0]["LotDt"].ToString()).ToString("yyyy-MM-dd"))  > Convert.ToDateTime(mildt))
+                        if (Convert.ToDateTime(Convert.ToDateTime(dtLotMst.Rows[0]["LotDt"].ToString()).ToString("yyyy-MM-dd")) > Convert.ToDateTime(mildt))
                         {
                             return Json(new { result = false, message = "Lot Date Must Be Less Than Milling Date!" });
                         }
@@ -337,14 +386,22 @@ namespace SUNMark.Controllers
 
                     if (dtMacMst != null && dtMacMst.Rows.Count > 0)
                     {
-                        if (!(Convert.ToDecimal(dtLotMst.Rows[0]["LotOD"].ToString()) >= Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGFR"].ToString()) && Convert.ToDecimal(dtLotMst.Rows[0]["LotOD"].ToString()) <= Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGTO"].ToString())))
+                        if (dtLotMst.Rows.Count > 0)
                         {
-                            IsValidOD = 0;
-                            //return Json(new { result = false, message = "Coil OD Size is Not Range to this Machine!" });
-                        }
-                        MilMaxOD = Convert.ToString(Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGTO"].ToString()));
-                        MilMinOD = Convert.ToString(Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGFR"].ToString()));
-                    }
+							if (!(Convert.ToDecimal(dtLotMst.Rows[0]["LotOD"].ToString()) >= Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGFR"].ToString()) && Convert.ToDecimal(dtLotMst.Rows[0]["LotOD"].ToString()) <= Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGTO"].ToString())))
+							{
+								IsValidOD = 0;
+								//return Json(new { result = false, message = "Coil OD Size is Not Range to this Machine!" });
+							}
+							MilMaxOD = Convert.ToString(Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGTO"].ToString()));
+							MilMinOD = Convert.ToString(Convert.ToDecimal(dtMacMst.Rows[0]["MACSIZERNGFR"].ToString()));
+						}
+                        else
+                        {
+							IsValidOD = 0;
+							return Json(new { result = false, message = "Godown Not In Stock!" });
+						}
+					}
                     else
                     {
                         return Json(new { result = false, message = "Invalid Coil No!" });
@@ -355,7 +412,7 @@ namespace SUNMark.Controllers
                     }
                     else
                     {
-                        return Json(new { result = true, data = data, IsValidOD = IsValidOD , MilMaxOD = MilMaxOD , MilMinOD = MilMinOD});
+                        return Json(new { result = true, data = data, IsValidOD = IsValidOD, MilMaxOD = MilMaxOD, MilMinOD = MilMinOD });
                     }
 
                 }
@@ -388,7 +445,7 @@ namespace SUNMark.Controllers
             return returnValue;
         }
 
-        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby)
+        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string fltod, string fltfeetper, string fltnb, string fltsch, string fltgrade, string fltfrDt, string flttoDt, string coilno, string FltVno)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -414,7 +471,49 @@ namespace SUNMark.Controllers
                     {
                         startRecord = (pageIndex - 1) * pageSize;
                     }
-                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId);
+
+                    string whereConditionQuery = string.Empty;
+                    if (!string.IsNullOrWhiteSpace(coilno) && coilno != "")
+                    {
+                        whereConditionQuery += " AND MilMst.MilLotNo='" + coilno + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltod) && fltod != "0")
+                    {
+                        whereConditionQuery += " AND MilMst.MilOD='" + fltod + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltfeetper) && fltfeetper != "0")
+                    {
+                        whereConditionQuery += " AND MilMst.MilLenFeet='" + fltfeetper + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltnb) && fltnb != "0")
+                    {
+                        whereConditionQuery += " AND MilMst.MilNB='" + fltnb + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltsch) && fltsch != "0")
+                    {
+                        whereConditionQuery += " AND MilMst.MilSCH='" + fltsch + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltgrade))
+                    {
+                        if (fltgrade != "Select")
+                        {
+                            whereConditionQuery += " AND MilLotNo In (Select LotCoilNo From LotMst Where LotMst.LotGrdMscVou ='" + fltgrade + "')";
+                        }
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltfrDt))
+                    {
+                        whereConditionQuery += " AND MilMst.MilDt >='" + fltfrDt + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(flttoDt))
+                    {
+                        whereConditionQuery += " AND MilMst.MilDt <='" + flttoDt + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(FltVno) && FltVno != "0")
+                    {
+                        whereConditionQuery += " AND MILVNO='" + FltVno + "'";
+                    }
+
+                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                     if (getReportDataModel.IsError)
                     {
                         ViewBag.Query = getReportDataModel.Query;
@@ -431,7 +530,7 @@ namespace SUNMark.Controllers
             return PartialView("_reportView", getReportDataModel);
         }
 
-        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type)
+        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string fltod, string fltfeetper, string fltnb, string fltsch, string fltgrade, string fltfrDt, string flttoDt, string coilno)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -441,7 +540,45 @@ namespace SUNMark.Controllers
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
                 //getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, 0, "", 0, 1);
-                getReportDataModel = getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, YearId, "", 0, 1);
+
+                string whereConditionQuery = string.Empty;
+                if (!string.IsNullOrWhiteSpace(coilno) && coilno != "")
+                {
+                    whereConditionQuery += " AND MilMst.MilLotNo='" + coilno + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltod) && fltod != "0")
+                {
+                    whereConditionQuery += " AND MilMst.MilOD='" + fltod + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltfeetper) && fltfeetper != "0")
+                {
+                    whereConditionQuery += " AND MilMst.MilLenFeet='" + fltfeetper + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltnb) && fltnb != "0")
+                {
+                    whereConditionQuery += " AND MilMst.MilNB='" + fltnb + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltsch) && fltsch != "0")
+                {
+                    whereConditionQuery += " AND MilMst.MilSCH='" + fltsch + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltgrade))
+                {
+                    if (fltgrade != "Select")
+                    {
+                        whereConditionQuery += " AND MilLotNo In (Select LotCoilNo From LotMst Where LotMst.LotGrdMscVou ='" + fltgrade + "')";
+                    }
+                }
+                if (!string.IsNullOrWhiteSpace(fltfrDt))
+                {
+                    whereConditionQuery += " AND MilMst.MilDt >='" + fltfrDt + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(flttoDt))
+                {
+                    whereConditionQuery += " AND MilMst.MilDt <='" + flttoDt + "'";
+                }
+
+                getReportDataModel = getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, YearId, "", 0, 1, whereConditionQuery);
                 if (type == 1)
                 {
                     var bytes = Excel(getReportDataModel, "Milling", companyDetails.CmpName);
@@ -532,7 +669,7 @@ namespace SUNMark.Controllers
                 return Json(new { result = false });
             }
         }
-        public ActionResult GetODRangeByCoilMacNo(string coilNo,string MacId)
+        public ActionResult GetODRangeByCoilMacNo(string coilNo, string MacId)
         {
             try
             {
@@ -545,7 +682,7 @@ namespace SUNMark.Controllers
                 {
                     List<object> data = new List<object>();
                     DataTable dtMacMst = ds.Tables[4];
-                    
+
                     string MilMaxOD = "";
                     string MilMinOD = "";
 
@@ -559,7 +696,7 @@ namespace SUNMark.Controllers
                     {
                         return Json(new { result = false, message = "Something went wrong!" });
                     }
-                    
+
 
                 }
                 else

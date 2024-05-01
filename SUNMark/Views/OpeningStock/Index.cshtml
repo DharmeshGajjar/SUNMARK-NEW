@@ -80,6 +80,17 @@
                             <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
                                 <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
                                     <div class="col-md-12 col-12 mb-2 mt-2">
+
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    V. No. <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.TextBoxFor(x => x.FltVno, new { @class = "form-control form-control-lg", @placeholder = "V. No.", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="row">
                                             <div class="col-md-1 mb-2 float-left">
                                                 <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
@@ -92,9 +103,9 @@
 
                                                 </select>
                                             </div>
-                                            <div class="col-md-5 col-12">
+                                            <div class="col-md-8 col-12">
                                                 <div class="row">
-                                                    <div class="col-md-6 col">
+                                                    <div class="col-md-3 col">
                                                         <select class="form-control select2 drpReportLayout" onchange="loadData()">
                                                             <option value="" ; style="width:200px">--Select Layout--</option>
                                                             @if (layoutList != null && layoutList.Count > 0)
@@ -114,15 +125,17 @@
                                                             </button>
                                                         }
                                                     </div>
-                                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                                    <div class="col-md-6 mb-7 custommt-2-3">
                                                         <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
                                                         <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                        <button class="btn btn-primary btn-sm" id="btnView" onclick=" loadData();"> View (Alt+V) </button>
+                                                        <a href="/OpeningStock/index" class="btn btn-warning btn-sm">Cancel (Esc)</a>
                                                     </div>
 
                                                 </div>
                                             </div>
-                                            <div class="col-md-3"></div>
-                                            <div class="col-md-3 col-12 float-right">
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-2 col-12 float-right">
                                                 <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
                                             </div>
                                         </div>
@@ -689,7 +702,7 @@
 
     $(function () {
 
-        loadData();
+        //loadData();
         var pageIndex = '';
         var pageSize = '';
         var totalRecord = '';
@@ -744,11 +757,12 @@
             if (!sortBy) {
                 sortBy = '';
             }
+        var FltVno = $('#FltVno').val();
             $('.dataTable').html();
             $.ajax({
                 url: '/OpeningStock/GetReportView',
                 type: 'GET',
-                data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+            data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy, FltVno: FltVno },
                 dataType: 'HTML',
                 traditional: true, // add this
                 success: function (data) {
@@ -1447,3 +1461,14 @@
 
 </script>
 
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Select---'
+            },
+            allowClear: true
+        });
+    });
+</script>

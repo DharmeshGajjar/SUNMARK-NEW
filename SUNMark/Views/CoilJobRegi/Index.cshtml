@@ -69,7 +69,7 @@
                                 Grade <span class="required"></span>
                             </label>
                             <div class="form-outline form-white mb-2">
-                                @Html.DropDownListFor(x => x.Grade, Model.GradeList, "Select", new { @class = "form-control select2 Grade ", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                @Html.DropDownListFor(x => x.Grade, Model.GradeList, "Select", new { @class = "form-control select2 Grade ", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px;width:200px" })
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -78,7 +78,7 @@
                             </label>
                             <div class="form-outline form-white mb-2">
                                 @*@Html.DropDownListFor(x => x.PrType, Model.PrTypeList, "Select", new { @class = "form-control select2 PrType ", @tabindex = "2", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })*@
-                                <select class="form-control" name="PrType" id="PrType"  style="width:130px !important">
+                                <select class="form-control" name="PrType" id="PrType"  style="width:200px !important">
                                     <option value="">---Select---</option>
                                     <option value="COIL">COIL</option>
                                     <option value="BAL. PATTA">BAL. PATTA</option>
@@ -266,18 +266,54 @@
     }));
 
     $('#btnExportToExcel').click(function () {
-        var company = "1";
-        window.location.href = "/CoilJobRegi/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=" + "1" + "&companyId=" + company;
+        var frDt = $('#FrDt').val();
+        var toDt = $('#ToDt').val();
+        var grade = $('#Grade').val();
+        var prType = $('#PrType').val();
+
+        window.location.href = "/CoilJobRegi/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=" + "1" + "&frDt=" + frDt + "&toDt=" + toDt + "&gradeid=" + grade + "&prType=" + prType;
     })
+
+
 
     $('#btnExportToPDF').click(function () {
-        var company = "1";
-        window.location.href = "/CoilJobRegi/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=" + "0" + "&companyId=" + company;
+        var frDt = $('#FrDt').val();
+        var toDt = $('#ToDt').val();
+        var grade = $('#Grade').val();
+        var prType = $('#PrType').val();
+
+        window.location.href = "/CoilJobRegi/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=" + "0" + "&frDt=" + frDt + "&toDt=" + toDt + "&gradeid=" + grade + "&prType=" + prType;
     })
 
+
+</script>
+<script>
     function SetSelect2() {
         $(".select2").select2({
             placeholder: "---Select---",
         });
     }
+
+    $(document).ready(function () {
+        $(".Grade").select2({
+            placeholder: "---Select---",
+        });
+
+        $('.drpReportLayout').select2({
+            placeholder: "---Select---",
+        });
+    });
+
+
+</script>
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Select---'
+            },
+            allowClear: true
+        });
+    });
 </script>

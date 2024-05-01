@@ -1,0 +1,19 @@
+Policy Entry Ma Date FGilter Ma Month Je Chalto Hoy Tenu From Date To Date AThavu Joye.  - DONE
+Policy Entry Ma Supplier Nu Filter Add Karvu  - DONE
+Dasboard Ma Sr.No Wise Nathi Avtu   - DONE
+3 Report Policy Entry Ma Banava Na Che Je Company Wise Summary No Copuy Karva No Che 
+	1. Agent Wise Summary   -   DONE
+	2. Ins.Type Wise Summary   -  DONE
+	3. Sub. Ins.Type Wise Summary   - DONE
+
+
+Coil Job Work Ma From Date And To Date Ma Error Ave Che    -  DONE
+Rec.Coil No Nu Order Proper Nathi Avtu   - DONE
+Rec.Coil No Ma CanGrow Ni Jagya e Soni Samaj Ma Enter Valu Karyu Che Tevuy Karva nu
+
+
+Member Master Voting Right = Yes,No,All   -  DONE
+
+
+
+

@@ -66,6 +66,8 @@ namespace SUNMark.Models
         public List<JobWorkEntrySlit> JobWorkEntrySlitsList { get; set; }
         public string FrFinDt { get; set; }
         public string ToFinDt { get; set; }
+        public string IssCoilNo { get; set; }
+        public string JobVNo { get; set; }
     }
 
     public class JobWorkEntrySplit

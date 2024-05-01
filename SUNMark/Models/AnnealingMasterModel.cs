@@ -27,6 +27,19 @@ namespace SUNMark.Models
         public List<AnnelGridModel> AnnelList { get; set; }
         public int isPrint { get; set; }
 
+        //Filter Option Field
+        public decimal FltOD { get; set; }
+        public decimal FltFeetPer { get; set; }
+        public string FltNB { get; set; }
+        public List<SelectListItem> FltNBList { get; set; }
+        public string FltSCH { get; set; }
+        public List<SelectListItem> FltSCHList { get; set; }
+        public long FltGrade { get; set; }
+        public List<SelectListItem> FltGradeList { get; set; }
+        public string FrDt { get; set; }
+        public string ToDt { get; set; }
+
+        public string FltVno { get; set; }
 
 
     }

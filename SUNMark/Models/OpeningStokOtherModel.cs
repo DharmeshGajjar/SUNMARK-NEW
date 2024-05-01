@@ -39,6 +39,8 @@ namespace SUNMark.Models
         
         public string OblRem { get; set; }
 
+        public string FltVno { get; set; }
+
 
         #region " LOT Table Fields"
         public string LotSupCoilNo { get; set; }

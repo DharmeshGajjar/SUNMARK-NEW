@@ -41,6 +41,7 @@ namespace SUNMark.Controllers
                 SqlParameter[] sqlPara = new SqlParameter[0];
                 DataTable DtTrnTypeMst = ObjDBConnection.CallStoreProcedure("GetTrnTypeDetails", sqlPara);
 
+                ViewBag.processList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator,"");
                 stockLedgerModel.CompanyList = objProductHelper.GetCompanyMasterDropdown(companyId, administrator);
                 stockLedgerModel.TrnTypeList = objProductHelper.GetTrnTypeDropdown();
                 stockLedgerModel.RecIssList = objProductHelper.GetRecIss();
@@ -49,6 +50,7 @@ namespace SUNMark.Controllers
                 stockLedgerModel.GradeList = objProductHelper.GetGradeMasterDropdown(companyId, 0);
                 stockLedgerModel.FinishList = objProductHelper.GetFinishMasterDropdown(companyId, 0);
                 stockLedgerModel.NBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                stockLedgerModel.SCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
             }
             catch (Exception ex)
             {
@@ -85,7 +87,7 @@ namespace SUNMark.Controllers
             #endregion
         }
 
-        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string companyid, string trnType, string recIssID, string productid, string vNo, string frDt, string toDt, string stockid, string thick, string width, string qty, string od, string nb, string sch, string grade, string finish)
+        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string companyid, string trnType, string recIssID, string productid, string vNo, string frDt, string toDt, string stockid, string thick, string width, string qty, string od, string nb, string sch, string grade, string finish, string langth, string proc, string coilno)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -116,7 +118,7 @@ namespace SUNMark.Controllers
                     startRecord = (pageIndex - 1) * pageSize;
                 }
 
-                SqlParameter[] sqlParameters = new SqlParameter[18];
+                SqlParameter[] sqlParameters = new SqlParameter[21];
                 sqlParameters[0] = new SqlParameter("@CmpVou", companyid);
                 if (trnType == "Select")
                 {
@@ -142,6 +144,9 @@ namespace SUNMark.Controllers
                 sqlParameters[15] = new SqlParameter("@GUID", guid);
                 sqlParameters[16] = new SqlParameter("@Grade", grade);
                 sqlParameters[17] = new SqlParameter("@Finish", finish);
+                sqlParameters[18] = new SqlParameter("@Langth", langth);
+                sqlParameters[19] = new SqlParameter("@Proc", proc);
+                sqlParameters[20] = new SqlParameter("@Coilno", coilno);
                 DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("GetStockLedgerDetails", sqlParameters);
 
 
@@ -174,7 +179,7 @@ namespace SUNMark.Controllers
             return PartialView("_reportView", getReportDataModel);
         }
 
-        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string companyid, string trnType, string recIssID, string productid, string vNo, string frDt, string toDt, string stockid, string thick, string width, string qty, string od, string nb, string sch, string grade, string finish)
+        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string companyid, string trnType, string recIssID, string productid, string vNo, string frDt, string toDt, string stockid, string thick, string width, string qty, string od, string nb, string sch, string grade, string finish, string langth, string proc, string coilno)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -185,7 +190,7 @@ namespace SUNMark.Controllers
                 string guid = GetStringSession("LoginGUID");
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
 
-                SqlParameter[] sqlParameters = new SqlParameter[18];
+                SqlParameter[] sqlParameters = new SqlParameter[21];
                 sqlParameters[0] = new SqlParameter("@CmpVou", companyid);
                 if (trnType == "Select")
                 {
@@ -211,6 +216,9 @@ namespace SUNMark.Controllers
                 sqlParameters[15] = new SqlParameter("@GUID", guid);
                 sqlParameters[16] = new SqlParameter("@Grade", grade);
                 sqlParameters[17] = new SqlParameter("@Finish", finish);
+                sqlParameters[18] = new SqlParameter("@Langth", langth);
+                sqlParameters[19] = new SqlParameter("@Proc", proc);
+                sqlParameters[20] = new SqlParameter("@CoilNo", coilno);
                 DataTable DtStkLed = ObjDBConnection.CallStoreProcedure("GetStockLedgerDetails", sqlParameters);
 
                 string whereConditionQuery = string.Empty;

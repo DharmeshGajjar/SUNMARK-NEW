@@ -26,6 +26,8 @@
     List<SelectListItem> finishList = ViewBag.finishList != null ? ViewBag.finishList as List<SelectListItem> : null;
     List<CustomDropDown> employeeList = ViewBag.employeeList != null ? ViewBag.employeeList as List<CustomDropDown> : null;
     List<SelectListItem> noofcopy = ViewBag.noofcopy != null ? ViewBag.noofcopy as List<SelectListItem> : null;
+    List<SelectListItem> NBList = ViewBag.NBList != null ? ViewBag.NBList as List<SelectListItem> : null;
+    List<SelectListItem> SchList = ViewBag.SchList != null ? ViewBag.SchList as List<SelectListItem> : null;
     if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
     {
         headerList = "active";
@@ -66,433 +68,385 @@
     </div>
     <div class="card-body">
         <div class="card card-primary card-tabs">
-            <div style="margin:10px">
-                <div class="row" style="width:800px">
-                    <div class="col-md">
-                        <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                            Type <span class="required"></span>
-                        </label>
-                        <div class="form-outline form-white mb-2">
-                            @Html.DropDownListFor(x => x.SearchType, typeList, "Select", new { @class = "form-control select2", @style = "background-color:yellow; font-weight:bold" })
-                        </div>
-                    </div>
-                    <div class="col-md">
-                        <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                            Bundle No. <span class="required"></span>
-                        </label>
-                        <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.SearcBundleNo, new { @class = "form-control", @tabindex = "3", @type = "text" })
-                        </div>
-                    </div>
-                    <div class="col-md">
-                        <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                            Wo No. <span class="required"></span>
-                        </label>
-                        <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.SearcWONumber, new { @class = "form-control", @tabindex = "4", @type = "text" })
-                        </div>
-                    </div>
-
-                </div>
-              
-                <div class="row" style="width:800px">
-                    <div class="col-md">
-                        <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                            Po No. <span class="required"></span>
-                        </label>
-                        <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.SearcPONumber, new { @class = "form-control",  @tabindex = "4", @type = "text" })
-                        </div>
-                    </div>
-                    <div class="col-md">
-                        <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                            Date From <span class="required"></span>
-                        </label>
-                        <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.FrRecDt, new { @class = "form-control",  @tabindex = "8", @type = "date" })
-                        </div>
-                    </div>
-                    <div class="col-md">
-                        <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                            Date To <span class="required"></span>
-                        </label>
-                        <div class="form-outline form-white mb-2">
-                            @Html.TextBoxFor(x => x.ToRecDt, new { @class = "form-control",  @tabindex = "8", @type = "date" })
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="row" style="width:900px">
-                    <div class="col-md">
-                        <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                            Paging <span class="required"></span>
-                        </label>
-                        <div class="form-outline form-white mb-2">
-                            <select class="form-control" onchange="loadData()" id="drpReportPageNoDatable">
-                                @for (int i = 0; i < pageNoList.Count; i++)
-                                {
-                                    string checkedd = "checked";
-                                    <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
-                                    checkedd = string.Empty;
-                                }
-
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-md">
-                        <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
-                            Layout <span class="required"></span>
-                        </label>
-                        <div class="form-outline form-white mb-2">
-                            <select class="form-control select2 drpReportLayout" onchange="loadData()">
-                                <option value="" ; style="width:200px">--Select Layout--</option>
-                                @if (layoutList != null && layoutList.Count > 0)
-                                {
-                                    foreach (var item in layoutList)
-                                    {
-                                        <option value="@item.Value">@item.Text </option>
-                                    }
-                                }
-                            </select>
-
-                        </div>
-                    </div>
-                    
-                    <div class="col-md" style="margin-top:31px">
-                        <button class="btn btn-primary  text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick=" loadData();">
-                            View (Alt+V)
-                        </button>
-                        <a href="/PackingMaster/index" class="btn btn-warning px-4 text-dark" style="font-family:Verdana;font-size:medium">
-                            Cancel (Esc)
-                        </a>
-                    </div>
-
-                </div>
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                    @if (userRight != null && userRight.IsList)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerList" id="custom-tabs-three-list-tab" data-toggle="pill" href="#custom-tabs-three-list" role="tab" aria-controls="custom-tabs-three-list" aria-selected="@headerListTrue" style="font-family:Verdana;font-size:small" onclick="GoToListTab()">List (Alt+L)</a>
+                        </li>
+                    }
+                    @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @headerAdd" id="custom-tabs-three-add-tab" data-toggle="pill" href="#custom-tabs-three-add" role="tab" aria-controls="custom-tabs-three-add" aria-selected="@headerAddTrue" style="font-family:Verdana;font-size:small" onclick="GoToAddTab()">Add/Update (F2)</a>
+                        </li>
+                    }
+                </ul>
             </div>
-               
+            <div class="card-body">
+                <div class="col-md-12">
+                    <button type="button" id="modelPopup" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="Display:none">
+                        Launch demo modal
+                    </button>
 
-            
-                <div class="card-header p-0 pt-1">
-                    <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
-                        @if (userRight != null && userRight.IsList)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link @headerList" id="custom-tabs-three-list-tab" data-toggle="pill" href="#custom-tabs-three-list" role="tab" aria-controls="custom-tabs-three-list" aria-selected="@headerListTrue" style="font-family:Verdana;font-size:small" onclick="GoToListTab()">List (Alt+L)</a>
-                            </li>
-                        }
-                        @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link @headerAdd" id="custom-tabs-three-add-tab" data-toggle="pill" href="#custom-tabs-three-add" role="tab" aria-controls="custom-tabs-three-add" aria-selected="@headerAddTrue" style="font-family:Verdana;font-size:small" onclick="GoToAddTab()">Add/Update (F2)</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-                <div class="card-body">
-                    <div class="col-md-12">
-                        <div class="tab-content" id="custom-tabs-three-tabContent">
-                            @if (userRight != null && userRight.IsList)
-                            {
-                                <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
-                                    <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
-                                        <div class="col-md-12 col-12 mb-2 mt-2">
-                                            <div class="row">
-                                              
-                                                <div class="col-md-5 col-12">
-                                                    <div class="row">
-                                                       
-                                                        <div class="col-md-2 col-auto mb-2 custommt-2-3">
-                                                            @if (isAdministrator == 1)
-                                                            {
-                                                                <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
-                                                                    Edit
-                                                                </button>
-                                                            }
-                                                        </div>
-                                                        <div class="col-md-4 mb-2 custommt-2-3">
-                                                            <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
-                                                            <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3"></div>
-                                                <div class="col-md-3 col-12 float-right">
-                                                    <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="dataTable">
-
-                                        </div>
-                                        <div class="pager float-right"></div>
-                                    </div>
+                    <!-- Modal -->
+                    @*<div class="modal fade" id="exampleModal" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Print Option</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                                 </div>
-                            }
-                            @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
-                            {
-                                <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
-                                    <form method="post" class="mt-1" autocomplete="off" id="packingForm">
+                                <div class="modal-body">
+                                    <div class="form-check">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div class="row">
-                                                    <div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Company<span class="text-danger" style="font-family: Verdana">*</span></label>
-                                                            @Html.DropDownListFor(x => x.CompanyVou, companyList, "Select", new { @class = "form-control select2" })
-                                                            @Html.TextBoxFor(x => x.Vou, new { @class = "form-control ", @placeholder = "Bundle No", @type = "hidden" })
-                                                            @Html.TextBoxFor(x => x.IsUpdate, new { @class = "form-control ", @placeholder = "Bundle No", @type = "hidden" })
-                                                        </div>
-                                                    </div>
+                                                <input type="radio" class="form-check-input" id="radio1" name="printOption" value="Print" checked>
+                                                <label class="form-check-label" for="radio1">Print/View </label>
+                                            </div>
+                                            <div class="col-md-2 ">
+                                                <input type="radio" class="form-check-input" id="radio2" name="printOption" value="Email">
+                                                <label class="form-check-label" for="radio2">Email</label>
+                                            </div>
+                                            <div class="col-md-10 form-group">
+                                                <input type="email" name="EmailAddress" Id="EmailAddress" class="from-control" style="display:none" required />
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="radio" class="form-check-input" id="radio3" name="printOption" value="WhatApp">
+                                                <label class="form-check-label" for="radio2">WhatApp</label>
+                                            </div>
+                                            <div class="col-md-10 form-group">
+                                                <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required />
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                                    <div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Type<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.DropDownListFor(x => x.Type, typeList, "Select", new { @class = "form-control select2" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Bundle No<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.BundleNo, new { @class = "form-control ", @placeholder = "Bundle No", @type = "number" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>SrNo<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.SrNo, new { @class = "form-control ", @placeholder = "Sr No", @type = "number" })
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"> Esc - Cancle</button>
+                                    <button type="button" class="btn btn-primary" id="btn_ViewMailWhatapp">Submit (F9)</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+                <div class="tab-content" id="custom-tabs-three-tabContent">
+                    @if (userRight != null && userRight.IsList)
+                    {
+                        <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
+                            <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
+                                <div class="col-md-12 col-12 mb-2 mt-2">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                Type <span class="required"></span>
+                                            </label>
+                                            <div class="form-outline form-white mb-2">
+                                                @Html.DropDownListFor(x => x.SearchType, typeList, "Select", new { @class = "form-control select2 SearchType", @style = "background-color:yellow; font-weight:bold;width:150px" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                Bundle No. <span class="required"></span>
+                                            </label>
+                                            <div class="form-outline form-white mb-2">
+                                                @Html.TextBoxFor(x => x.SearcBundleNo, new { @class = "form-control", @tabindex = "3", @type = "text", @style = "width:200px" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                Wo No. <span class="required"></span>
+                                            </label>
+                                            <div class="form-outline form-white mb-2">
+                                                @Html.TextBoxFor(x => x.SearcWONumber, new { @class = "form-control", @tabindex = "4", @type = "text", @style = "width:200px" })
+                                            </div>
+                                        </div>
 
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-6">
-                                                        <div class="form-group">
-                                                            <label>WO No<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.WONumber, new { @class = "form-control ", @placeholder = "WO Number", @type = "text", @onchange = "GetDataByWONumber()", @style = "background-color:yellow" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-6">
-                                                        <div class="form-group">
-                                                            <label>PO No<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.PONumber, new { @class = "form-control ", @placeholder = "PO Number", @type = "text", @readonly = "readonly" })
-                                                        </div>
-                                                    </div>
+                                        <div class="col-md-2">
+                                            <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                Po No. <span class="required"></span>
+                                            </label>
+                                            <div class="form-outline form-white mb-2">
+                                                @Html.TextBoxFor(x => x.SearcPONumber, new { @class = "form-control", @tabindex = "4", @type = "text", @style = "width:200px" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                Date From <span class="required"></span>
+                                            </label>
+                                            <div class="form-outline form-white mb-2">
+                                                @Html.TextBoxFor(x => x.FrRecDt, new { @class = "form-control", @tabindex = "8", @type = "date", @style = "width:180px" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                Date To <span class="required"></span>
+                                            </label>
+                                            <div class="form-outline form-white mb-2">
+                                                @Html.TextBoxFor(x => x.ToRecDt, new { @class = "form-control", @tabindex = "8", @type = "date", @style = "width:180px" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            @*<button class="btn btn-primary px-4 text-white" style="font-family:Verdana;font-size:medium" id="btnView" onclick=" loadData();">
+                                                View (Alt+V)
+                                            </button>
+                                            <a href="/JobWorkEntry/index" class="btn btn-warning px-4 text-dark" style="font-family:Verdana;font-size:medium">
+                                                Cancel (Esc)
+                                            </a>*@
+                                        </div>
+                                        <div class="col-md-1 mb-2 float-left">
+
+                                            <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                                @for (int i = 0; i < pageNoList.Count; i++)
+                                                {
+                                                    string checkedd = "checked";
+                                                    <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                                    checkedd = string.Empty;
+                                                }
+
+                                            </select>
+
+                                        </div>
+                                        <div class="col-md-7 col-12">
+                                            <div class="row">
+                                                <div class="col-md-3 col">
+                                                    <select class="form-control select2 drpReportLayout" onchange="loadData()">
+                                                        <option value="" ; style="width:200px">--Select Layout--</option>
+                                                        @if (layoutList != null && layoutList.Count > 0)
+                                                        {
+                                                            foreach (var item in layoutList)
+                                                            {
+                                                                <option value="@item.Value">@item.Text </option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                                    @if (isAdministrator == 1)
+                                                    {
+                                                        <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                            Edit
+                                                        </button>
+                                                    }
+                                                </div>
+                                                <div class="col-md-7 mb-2 custommt-2-3">
+                                                    <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                                    <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                    <button class="btn btn-primary btn-sm" id="btnView" onclick=" loadData();"> View (Alt+V) </button>
+                                                    <a href="/JobWorkEntry/index" class="btn btn-warning btn-sm">Cancel (Esc)</a>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-3 col-12 float-right">
+                                            <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dataTable">
+
+                                </div>
+                                <div class="pager float-right"></div>
+                            </div>
+                        </div>
+                    }
+                    @if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+                    {
+                        <div class="tab-pane fade @gridAdd" id="custom-tabs-three-add" role="tabpanel" aria-labelledby="custom-tabs-three-add-tab">
+                            <form method="post" class="mt-1" autocomplete="off" id="packingForm">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-2 col-12">
+                                                <div class="form-group">
+                                                    <label>Company<span class="text-danger" style="font-family: Verdana">*</span></label>
+                                                    @Html.DropDownListFor(x => x.CompanyVou, companyList, "Select", new { @class = "form-control select2 w-100" })
+                                                    @Html.TextBoxFor(x => x.Vou, new { @class = "form-control ", @placeholder = "Bundle No", @type = "hidden" })
+                                                    @Html.TextBoxFor(x => x.IsUpdate, new { @class = "form-control ", @placeholder = "Bundle No", @type = "hidden" })
                                                 </div>
                                             </div>
-                                            <div class="col-md-12">
-                                                <div class="row">
 
-
-                                                    <div class="col-md-2 col-6">
-                                                        <div class="form-group">
-                                                            <label>Product Code<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @*@Html.DropDownListFor(x => x.ProductVou, new SelectList(productList, "Value", "Text"), "Select", new { @class = "form-control select2" })*@
-
-
-                                                            @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control ", @maxlength = "15", @placeholder = "Product Code", @onchange = "GetDataByProductCode()" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-6">
-                                                        <div class="form-group">
-                                                            <label>Heat No<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.HeatNumber, new { @class = "form-control ", @placeholder = "Heat Number", @type = "text" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-6">
-                                                        <div class="form-group">
-                                                            <label>Qty(In PCS)<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.Qty, new { @class = "form-control ", @placeholder = "QTY(In PCS)", @type = "number", @onchange = "CalculateFeetAndMeter()" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Qty In KG<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.QtyInKg, new { @class = "form-control custom-text-decorate ", @placeholder = "Qty In KG", @type = "number", @style = "border-color:red; background-color:white" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-6">
-                                                        <div class="form-group">
-                                                            <label>Feet Per PCS<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.FeetInPCS, new { @class = "form-control ", @placeholder = "Feet Per PCS", @type = "number", })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-6">
-                                                        <div class="form-group">
-                                                            <label>Qty In Feet<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.QtyInFeet, new { @class = "form-control ", @placeholder = "Qty In Feet", @type = "number" })
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Qty In Meter<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.QtyInMeter, new { @class = "form-control ", @placeholder = "Qty In Meter", @type = "number" })
-                                                        </div>
-                                                    </div>
-
-
-                                                    <div class="col-md-2 col-6">
-                                                        <div class="form-group">
-                                                            <label>Specification<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.DropDownListFor(x => x.SpecificationVou, specificationList, "Select", new { @class = "form-control select2" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-6">
-                                                        <div class="form-group">
-                                                            <label>Grade<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.DropDownListFor(x => x.GradeVou, gradeList, "Select", new { @class = "form-control select2" })
-                                                            @Html.TextBoxFor(x => x.Grade, new { @class = "form-control ", @placeholder = "Finish", @type = "hidden" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-6">
-                                                        <div class="form-group">
-                                                            <label>Thick<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.Thick, new { @class = "form-control ", @placeholder = "Thick", @type = "number" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-6">
-                                                        <div class="form-group">
-                                                            <label>OD<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.OD, new { @class = "form-control ", @placeholder = "OD", @type = "number" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Size<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.NB, new { @class = "form-control ", @placeholder = "Bundle No", @type = "hidden" })
-
-                                                            @Html.TextBoxFor(x => x.SCH, new { @class = "form-control ", @placeholder = "Bundle No", @type = "hidden" })
-
-
-                                                            @Html.TextBoxFor(x => x.NbSCHBind, new { @class = "form-control ", @placeholder = "NB", @type = "text", @maxlength = 20 })
-
-
-
-
-
-                                                        </div>
-                                                    </div>
-                                                    @*<div class="col-md-2 col-12">
+                                            <div class="col-md-2 col-12">
                                                 <div class="form-group">
-                                                    <label>NB<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                    @Html.TextBoxFor(x => x.NB, new { @class = "form-control ", @placeholder = "NB", @type = "text", @maxlength = 20 })
+                                                    <label>Type<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.DropDownListFor(x => x.Type, typeList, "Select", new { @class = "form-control select2 w-100" })
                                                 </div>
                                             </div>
                                             <div class="col-md-2 col-12">
                                                 <div class="form-group">
-                                                    <label>SCH<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                    @Html.TextBoxFor(x => x.SCH, new { @class = "form-control ", @placeholder = "SCH", @type = "text", @maxlength = 20 })
+                                                    <label>Bundle No<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.TextBoxFor(x => x.BundleNo, new { @class = "form-control ", @placeholder = "Bundle No", @type = "number" })
                                                 </div>
-                                            </div>*@
-                                                    <div class="col-md-2 col-6">
-                                                        <div class="form-group">
-                                                            <label>Finish<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.DropDownListFor(x => x.FinishVou, finishList, "Select", new { @class = "form-control select2" })
-                                                            @Html.TextBoxFor(x => x.Finish, new { @class = "form-control ", @placeholder = "Finish", @type = "hidden" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Sub Bundle<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.SubBundleNumber, new { @class = "form-control ", @placeholder = "Sub Bundle Number", @type = "text" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Packing Date<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.TextBoxFor(x => x.PackingDate, new { @class = "form-control ", @placeholder = "Packing Date", @type = "date" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Packer Name<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.DropDownListFor(x => x.PackerName, new SelectList(employeeList, "Value", "Text"), "Select", new { @class = "form-control select2" })
-                                                        </div>
-                                                    </div><div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Qual. Checker Name<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                            @Html.DropDownListFor(x => x.QualityCheckerName, new SelectList(employeeList, "Value", "Text"), "Select", new { @class = "form-control select2" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-6">
-
-                                                    </div>
-                                                    <div class="col-md-2 col-6">
-                                                        <div class="form-group">
-                                                            <label>No Of Copy</label>
-                                                            @*@Html.TextBoxFor(x => x.NoOfCopy, new { @class = "form-control ", @placeholder = "No Of Copy", @type = "number", @min = "1" })*@
-
-                                                            @Html.DropDownListFor(x => x.NoOfCopy, noofcopy, "Select", new { @class = "form-control select2" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Out Date</label>
-                                                            @Html.TextBoxFor(x => x.OutDate, new { @class = "form-control ", @placeholder = "Out Date", @type = "date" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2 col-12">
-                                                        <div class="form-group">
-                                                            <label>Out By</label>
-                                                            @Html.TextBoxFor(x => x.OutBy, new { @class = "form-control ", @placeholder = "Out By", @type = "text" })
-                                                        </div>
-                                                    </div>
-
-
-
-                                                    @*<div class="col-md-2 col-6">
+                                            </div>
+                                            <div class="col-md-2 col-12">
                                                 <div class="form-group">
-                                                    <label>Width<span class="text-danger" style="font-family: Verdana"> *</span></label>
-                                                    @Html.TextBoxFor(x => x.Width, new { @class = "form-control ", @placeholder = "Width", @type = "number" })
+                                                    <label>SrNo<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.TextBoxFor(x => x.SrNo, new { @class = "form-control ", @placeholder = "Sr No", @type = "number" })
+
                                                 </div>
-                                            </div>*@
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                    <div class="col-md-12 text-center">
-                                                        @if (userRight.IsEdit && id > 0)
-                                                        {
-                                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddPacking()">
-                                                                Save (F10)
-                                                            </button>
-                                                            <a href="/PackingMaster/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
-                                                                Cancel (Esc)
-                                                            </a>
-                                                        }
-                                                        else if (userRight.IsAdd && id == 0)
-                                                        {
-                                                            <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddPacking()">
-                                                                Save (F10)
-                                                            </button>
-                                                            <a href="/PackingMaster/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
-                                                                Cancel (Esc)
-                                                            </a>
-                                                        }
-                                                    </div>
+                                            </div>
+                                            <div class="col-md-2 col-6">
+                                                <div class="form-group">
+                                                    <label>WO No<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.TextBoxFor(x => x.WONumber, new { @class = "form-control ", @placeholder = "WO Number", @type = "text", @onchange = "GetDataByWONumber()", @style = "background-color:yellow" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-6">
+                                                <div class="form-group">
+                                                    <label>PO No<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.TextBoxFor(x => x.PONumber, new { @class = "form-control ", @placeholder = "PO Number", @type = "text" })
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="row">
+
+
+                                            <div class="col-md-2 col-6">
+                                                <div class="form-group">
+                                                    <label>Product Code<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @*@Html.DropDownListFor(x => x.ProductVou, new SelectList(productList, "Value", "Text"), "Select", new { @class = "form-control select2" })*@
+
+
+                                                    @Html.TextBoxFor(x => x.ProductCode, new { @class = "form-control ", @maxlength = "15", @placeholder = "Product Code", @onchange = "GetDataByProductCode()" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-6">
+                                                <div class="form-group">
+                                                    <label>Heat No<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.TextBoxFor(x => x.HeatNumber, new { @class = "form-control ", @placeholder = "Heat Number", @type = "text" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-6">
+                                                <div class="form-group">
+                                                    <label>Grade<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.DropDownListFor(x => x.GradeVou, gradeList, "Select", new { @class = "form-control select2 w-100" })
+                                                    @Html.TextBoxFor(x => x.Grade, new { @class = "form-control ", @placeholder = "Grade", @type = "hidden" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-6">
+                                                <div class="form-group">
+                                                    <label>Finish<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.DropDownListFor(x => x.FinishVou, finishList, "Select", new { @class = "form-control select2 w-100" })
+                                                    @Html.TextBoxFor(x => x.Finish, new { @class = "form-control ", @placeholder = "Finish", @type = "hidden" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-6">
+                                                <div class="form-group">
+                                                    <label>NB<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.DropDownListFor(x => x.NB, NBList, "Select", new { @class = "form-control select2 w-100" })
+                                                    @Html.TextBoxFor(x => x.Finish, new { @class = "form-control ", @placeholder = "NB", @type = "hidden" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-6">
+                                                <div class="form-group">
+                                                    <label>SCH<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.DropDownListFor(x => x.SCH, SchList, "Select", new { @class = "form-control select2 w-100" })
+                                                    @Html.TextBoxFor(x => x.SCH, new { @class = "form-control ", @placeholder = "SCH", @type = "hidden" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-6">
+                                                <div class="form-group">
+                                                    <label>OD<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.TextBoxFor(x => x.OD, new { @class = "form-control ", @placeholder = "OD", @type = "number" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-6">
+                                                <div class="form-group">
+                                                    <label>Langth<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.TextBoxFor(x => x.Length, new { @class = "form-control ", @placeholder = "Length", @type = "number" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-6">
+                                                <div class="form-group">
+                                                    <label>Thick<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.TextBoxFor(x => x.Thick, new { @class = "form-control ", @placeholder = "Thick", @type = "number" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-12">
+                                                <div class="form-group">
+                                                    <label>Sub Bundle<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.TextBoxFor(x => x.SubBundleNumber, new { @class = "form-control ", @placeholder = "Sub Bundle Number", @type = "text" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-12">
+                                                <div class="form-group">
+                                                    <label>Packing Date<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.TextBoxFor(x => x.PackingDate, new { @class = "form-control ", @placeholder = "Packing Date", @type = "date" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-12">
+                                                <div class="form-group">
+                                                    <label>Packer Name<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.DropDownListFor(x => x.PackerName, new SelectList(employeeList, "Value", "Text"), "Select", new { @class = "form-control select2 w-100" })
+                                                </div>
+                                            </div><div class="col-md-2 col-12">
+                                                <div class="form-group">
+                                                    <label>Qual. Checker Name<span class="text-danger" style="font-family: Verdana"> *</span></label>
+                                                    @Html.DropDownListFor(x => x.QualityCheckerName, new SelectList(employeeList, "Value", "Text"), "Select", new { @class = "form-control select2 w-100" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-6">
+
+                                            </div>
+                                            <div class="col-md-2 col-6">
+                                                <div class="form-group">
+                                                    <label>No Of Copy</label>
+                                                    @*@Html.TextBoxFor(x => x.NoOfCopy, new { @class = "form-control ", @placeholder = "No Of Copy", @type = "number", @min = "1" })*@
+
+                                                    @Html.DropDownListFor(x => x.NoOfCopy, noofcopy, "Select", new { @class = "form-control select2 w-100" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-12">
+                                                <div class="form-group">
+                                                    <label>Out Date</label>
+                                                    @Html.TextBoxFor(x => x.OutDate, new { @class = "form-control ", @placeholder = "Out Date", @type = "date" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-12">
+                                                <div class="form-group">
+                                                    <label>Out By</label>
+                                                    @Html.TextBoxFor(x => x.OutBy, new { @class = "form-control ", @placeholder = "Out By", @type = "text" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 text-center">
+                                                @if (userRight.IsEdit && id > 0)
+                                                {
+                                                    <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddPacking()">
+                                                        Save (F10)
+                                                    </button>
+                                                    <a href="/PackingMaster/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                        Cancel (Esc)
+                                                    </a>
+                                                }
+                                                else if (userRight.IsAdd && id == 0)
+                                                {
+                                                    <button class="btn btn-primary px-md-4 mb-2 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" type="button" onclick="AddPacking()">
+                                                        Save (F10)
+                                                    </button>
+                                                    <a href="/PackingMaster/index" class="btn btn-warning px-md-4 mb-2 text-dark" style="font-family:Verdana;font-size:medium">
+                                                        Cancel (Esc)
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            }
+                            </form>
                         </div>
-                    </div>
+
+                    }
+                </div>
                 </div>
             </div>
-        
-</div>
+        </div>
     </div>
+</div>
 @*<script>
     setFocusToTextBox();
     function setFocusToTextBox() {
@@ -635,7 +589,7 @@
 
         if (!layoutId) {
             $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
-            //SetSelect2()
+            //SetSelect2();
 
         }
         if (!columnName) {
@@ -831,16 +785,16 @@
         $('select[name="FinishVou"]').change();
         $('select[name="GradeVou"]').change();
         $('select[name="ProductVou"]').change();
-        $('#GradeVou').attr('disabled', true);
-        $('#Width').attr('readonly', true);
-        $('#Thick').attr('readonly', true);
-        $('#OD').attr('readonly', true);
-       // $('#Qty').attr('readonly', true);
-        $('#FeetInPCS').attr('readonly', true);
-        $('#QtyInFeet').attr('readonly', true);
-        $('#QtyInMeter').attr('readonly', true);
-        $('#NB').attr('readonly', true);
-        $('#SCH').attr('readonly', true);
+       // $('#GradeVou').attr('disabled', true);
+       // $('#Width').attr('readonly', true);
+       // $('#Thick').attr('readonly', true);
+       // $('#OD').attr('readonly', true);
+       //// $('#Qty').attr('readonly', true);
+       // $('#FeetInPCS').attr('readonly', true);
+       // $('#QtyInFeet').attr('readonly', true);
+       // $('#QtyInMeter').attr('readonly', true);
+       // $('#NB').attr('readonly', true);
+       // $('#SCH').attr('readonly', true);
     });
 
     function GetDataByWONumber() {
@@ -989,4 +943,15 @@
         //0.3048
 
     }
+</script>
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Select---'
+            },
+            allowClear: true
+        });
+    });
 </script>

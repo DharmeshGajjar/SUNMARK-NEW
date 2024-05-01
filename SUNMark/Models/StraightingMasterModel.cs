@@ -28,6 +28,21 @@ namespace SUNMark.Models
         public StrGridModel Straighting { get; set; }
         public List<StrGridModel> LstStraighting { get; set; }
         public int isPrint { get; set; }
+
+        //Filter Option Field
+        public decimal FltOD { get; set; }
+        public decimal FltFeetPer { get; set; }
+        public string FltNB { get; set; }
+        public List<SelectListItem> FltNBList { get; set; }
+        public string FltSCH { get; set; }
+        public List<SelectListItem> FltSCHList { get; set; }
+        public long FltGrade { get; set; }
+        public List<SelectListItem> FltGradeList { get; set; }
+        public string FrDt { get; set; }
+        public string ToDt { get; set; }
+
+        public decimal FltVno { get; set; }
+
     }
     public class StrGridModel
     {

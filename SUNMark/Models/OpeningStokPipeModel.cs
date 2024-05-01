@@ -10,7 +10,7 @@ namespace SUNMark.Models
     {
         public int OblVou { get; set; }
         public int OblNVno { get; set; }
-        public string OblDt { get; set; }
+        public string OblDt { get; set; }        
 
         public int OblCmpVou { get; set; }
         public List<SelectListItem> OblCmpVouList { get; set; }
@@ -48,6 +48,8 @@ namespace SUNMark.Models
         public decimal FeetPer { get; set; }
 
         public string ProductCode { get; set; }
+
+        public string FltVno { get; set; }
 
         #region " LOT Table Fields"
         public string LotSupCoilNo { get; set; }

@@ -43,6 +43,8 @@ namespace SUNMark.Models
 
         public int CompanyVou { get; set; }
         public List<SelectListItem> CompanyList { get; set; }
+        public int NbSchYN { get; set; }
+        public List<SelectListItem> NBSCHYesList { get; set; }
         public string Company { get; set; }
         public string DoneProc { get; set; }
         public string NextProc { get; set; }

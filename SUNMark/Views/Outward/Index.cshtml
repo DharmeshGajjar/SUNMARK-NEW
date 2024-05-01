@@ -96,7 +96,7 @@
                                                     <label class="form-check-label" for="radio2">WhatApp</label>
                                                 </div>
                                                 <div class="col-md-10 form-group">
-                                                    <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required " />
+                                                    <input type="number" name="WhatappNo" Id="WhatappNo" class="from-control" style="display:none" required "  />
                                                 </div>
                                             </div>
                                         </div>
@@ -796,7 +796,6 @@
                                                                     </td>
                                                                 </tr>
                                                             }
-
                                                         </tbody>
                                                     }
                                                     else
@@ -1123,7 +1122,7 @@
                 }
             });
 
-            
+
         }
         else {
 
@@ -1239,86 +1238,86 @@
                     debugger
                     readURL(this);
                 });*@
-            </script>
-            <script>
-                    var isRecentCalledEsc = false;
-                                        var isRecentCalledAddRows = false;
-                                        var isRecentCalledSave = false;
-                                        var isRecentCalledPrint = false;
-                                        (function (code) {
-                                            code(window.jQuery, document, window);
-                                        }(function ($, document, window) {
-                                            $(function () {
-                                                $(window)
-                                                    .initKeyboard({ debug: 1 })
-                                                    .on('F2', function () {
-                                                        GoToAddTab()
-                                                        GetVoucherNumber();
-                                                    }).on('F9', function () {
-                                                        //$("#btnPrint").click();
-                                                        if (!isRecentCalledPrint) {
-                                                            isRecentCalledPrint = true;
-                                                            activeEle = document.activeElement.name;
-                                                            if ($('.modal.show').length != 0) {
-                                                                $("#btn_ViewMailWhatapp").click();
-                                                            }
-                                                            else {
-                                                                $("#btnPrint").click();
-                                                                $('#frmOutward').submit();
-                                                                setTimeout(function () {
-                                                                    isRecentCalledPrint = false;
-                                                                }, 500)
-                                                            }
-                                                        }
-                                                    }).on('F10', function () {
-                                                        $("#btnSave").click();
-                                                    })
-                                                    .on('Alt+L', function () {
-                                                        GoToListTab();
-                                                    })
-                                                    .on('Pagedown', function () {
-                                                        if (!isRecentCalledAddRows) {
-                                                            isRecentCalledAddRows = true;
-                                                            AddRows();
-                                                            setTimeout(function () {
-                                                                isRecentCalledAddRows = false;
-                                                            }, 500)
-                                                        }
-                                                    })
-                                                    .on('Alt+I', function () {
-                                                        CheckRecordAddRows();
-                                                    })
-                                                    .on('Alt+C', function () {
-                                                        if (confirm("Do you want to exit without save?")) {
-                                                            isAdd == 2;
-                                                            location.href = '/Outward/Index'
-                                                        }
-                                                        else {
-                                                            $('#txtOutCmpVou').focus();
-                                                        }
+</script>
+<script>
+    var isRecentCalledEsc = false;
+    var isRecentCalledAddRows = false;
+    var isRecentCalledSave = false;
+    var isRecentCalledPrint = false;
+    (function (code) {
+        code(window.jQuery, document, window);
+    }(function ($, document, window) {
+        $(function () {
+            $(window)
+                .initKeyboard({ debug: 1 })
+                .on('F2', function () {
+                    GoToAddTab()
+                    GetVoucherNumber();
+                }).on('F9', function () {
+                    //$("#btnPrint").click();
+                    if (!isRecentCalledPrint) {
+                        isRecentCalledPrint = true;
+                        activeEle = document.activeElement.name;
+                        if ($('.modal.show').length != 0) {
+                            $("#btn_ViewMailWhatapp").click();
+                        }
+                        else {
+                            $("#btnPrint").click();
+                            $('#frmOutward').submit();
+                            setTimeout(function () {
+                                isRecentCalledPrint = false;
+                            }, 500)
+                        }
+                    }
+                }).on('F10', function () {
+                    $("#btnSave").click();
+                })
+                .on('Alt+L', function () {
+                    GoToListTab();
+                })
+                .on('Pagedown', function () {
+                    if (!isRecentCalledAddRows) {
+                        isRecentCalledAddRows = true;
+                        AddRows();
+                        setTimeout(function () {
+                            isRecentCalledAddRows = false;
+                        }, 500)
+                    }
+                })
+                .on('Alt+I', function () {
+                    CheckRecordAddRows();
+                })
+                .on('Alt+C', function () {
+                    if (confirm("Do you want to exit without save?")) {
+                        isAdd == 2;
+                        location.href = '/Outward/Index'
+                    }
+                    else {
+                        $('#txtOutCmpVou').focus();
+                    }
 
-                                                    }).on('Escape', function () {
-                                                        if (!isRecentCalledEsc) {
-                                                            isRecentCalledEsc = true;
-                                                            if (confirm("Do you want to exit without save?")) {
-                                                                localStorage.setItem("Outward", "2");
-                                                                location.href = '/Outward/Index'
+                }).on('Escape', function () {
+                    if (!isRecentCalledEsc) {
+                        isRecentCalledEsc = true;
+                        if (confirm("Do you want to exit without save?")) {
+                            localStorage.setItem("Outward", "2");
+                            location.href = '/Outward/Index'
 
-                                                            }
-                                                            //else {
-                                                            //    $('#txtOutCmpVou').focus();
-                                                            //}
-                                                            setTimeout(function () {
-                                                                isRecentCalledEsc = false;
-                                                            }, 500)
-                                                        }
+                        }
+                        //else {
+                        //    $('#txtOutCmpVou').focus();
+                        //}
+                        setTimeout(function () {
+                            isRecentCalledEsc = false;
+                        }, 500)
+                    }
 
-                                                    })
-                                            });
-                                        }));
-            </script>
+                })
+        });
+    }));
+</script>
 
-            <script>
+<script>
 
     var isRecentCalled = false;
 
@@ -1464,57 +1463,57 @@
     $('#btnExportToPDF').click(function () {
         window.location.href = "/Outward/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
     })
-            </script>
-            @*<script>
-                    $(function () {
-                        var vchtype = $('#txtOrmVchVou').children('option:selected').text()
-                        if (vchtype)
-                            $('input[name="VchType"]').val(vchtype);
-                    })
+</script>
+@*<script>
+        $(function () {
+            var vchtype = $('#txtOrmVchVou').children('option:selected').text()
+            if (vchtype)
+                $('input[name="VchType"]').val(vchtype);
+        })
 
-                    $('#txtOrmVchVou').change(function () {
-                        var vchtype = $('#txtOrmVchVou').children('option:selected').text()
-                        if (vchtype)
-                            $('input[name="VchType"]').val(vchtype);
-                    })
-                </script>*@
+        $('#txtOrmVchVou').change(function () {
+            var vchtype = $('#txtOrmVchVou').children('option:selected').text()
+            if (vchtype)
+                $('input[name="VchType"]').val(vchtype);
+        })
+    </script>*@
 
-            <script>
-                $(function () {
-                    var outPrdTyp = $('#txtOutPtyVou').children('option:selected').text()
-                    if (outPrdTyp)
-                        $('input[name="OutPrdTyp"]').val(outPrdTyp);
-                })
+<script>
+    $(function () {
+        var outPrdTyp = $('#txtOutPtyVou').children('option:selected').text()
+        if (outPrdTyp)
+            $('input[name="OutPrdTyp"]').val(outPrdTyp);
+    })
 
-                $('#txtOutPtyVou').change(function () {
-                    var outPrdTyp = $('#txtOutPtyVou').children('option:selected').text()
-                    if (outPrdTyp)
-                        $('input[name="OutPrdTyp"]').val(outPrdTyp);
-                })
-            </script>
-            <script type="text/javascript">
-                $('#txtOutRem').focusout(function () {
-                    var value = $('#txtOutPtyVou').children('option:selected').html();
-                    if (value) {
-                        if (value == 'COIL' || value == 'coil') {
-                            //$('#tblCoil').children('tbody').children('tr:first').children('td').eq(1).children('input').focus()
-                            $('#tblCoil').children('tbody').children('tr:first').children('td').eq(1).children('input').focus()
-                        }
-                        else if (value == 'PIPE' || value == 'pipe' || value == 'SEAMLESS PIPE' || value == 'seamless pipe') {
-                            //$('#tblPipe').children('tbody').children('tr:first').children('td').eq(1).children('select').focus()
-                            $('#tblPipe').children('tbody').children('tr:first').children('td').eq(1).children('input').focus()
-                        }
-                        else {
-                            //$('#tblOther').children('tbody').children('tr:first').children('td').eq(1).children('select').focus()
-                            $('#tblOther').children('tbody').children('tr:first').children('td').eq(1).children('input').focus()
-                        }
-                    }
-                })
+    $('#txtOutPtyVou').change(function () {
+        var outPrdTyp = $('#txtOutPtyVou').children('option:selected').text()
+        if (outPrdTyp)
+            $('input[name="OutPrdTyp"]').val(outPrdTyp);
+    })
+</script>
+<script type="text/javascript">
+    $('#txtOutRem').focusout(function () {
+        var value = $('#txtOutPtyVou').children('option:selected').html();
+        if (value) {
+            if (value == 'COIL' || value == 'coil') {
+                //$('#tblCoil').children('tbody').children('tr:first').children('td').eq(1).children('input').focus()
+                $('#tblCoil').children('tbody').children('tr:first').children('td').eq(1).children('input').focus()
+            }
+            else if (value == 'PIPE' || value == 'pipe' || value == 'SEAMLESS PIPE' || value == 'seamless pipe') {
+                //$('#tblPipe').children('tbody').children('tr:first').children('td').eq(1).children('select').focus()
+                $('#tblPipe').children('tbody').children('tr:first').children('td').eq(1).children('input').focus()
+            }
+            else {
+                //$('#tblOther').children('tbody').children('tr:first').children('td').eq(1).children('select').focus()
+                $('#tblOther').children('tbody').children('tr:first').children('td').eq(1).children('input').focus()
+            }
+        }
+    })
 
 
-            </script>
+</script>
 
-            <script>
+<script>
     function HideShowGrid(flg) {
         var outCmpvou = '@Html.Raw(Model.OutCmpVou)';
         var value = ''
@@ -2163,8 +2162,8 @@
     function numericFilter(txb) {
         txb.value = txb.value.replace(/[^\0-9]/ig, "");
     }
-            </script>
-            <script>
+</script>
+<script>
     //function AccountFillList() {
     //    $.ajax({
     //        url: '/Outward/GetAccountList',
@@ -2513,87 +2512,87 @@
             $('input[name="CoilType"]').val(coiltype);
     })
 
-            </script>
+</script>
 
-            <script>
-                $(document).ready(function () {
-                    $(".OutAccVou").select2({
-                        placeholder: "---Select---",
-                        // added by anand on 25-01-2023 point no 19 from anand point
-                        ajax: {
-                            url: '/Outward/GetAccount-List',
-                            data: function (params) {
-                                return {
-                                    q: params.term// search term
-                                };
-                            },
-                            processResults: function (data) {
-                                return {
-                                    results: data.items
-                                }
-                            },
-
-                        }
-                    });
-
-                    $(".OutTrnVou").select2({
-                        placeholder: "---Select---",
-                        ajax: {
-                            url: '/Outward/GetTransport-List',
-                            data: function (params) {
-                                return {
-                                    q: params.term// search term
-                                };
-                            },
-                            processResults: function (data) {
-                                return {
-                                    results: data.items
-                                }
-                            },
-
-                        }
-                    });
-                    $('.OutwardCoilNo').on('blur', function () {
-                        checkArrayCoilNo();
-                    });
-                });
-
-                function SetSelect2() {
-                    $(".select2").select2({
-                        placeholder: "---Select---",
-                    });
-                }
-                function GetNewCoilNo(i) {
-                    //var prdtype = $('#txtOutPtyVou').children('option:selected').html();
-                    if (i == '' || i == undefined) {
-                        i = "0";
+<script>
+    $(document).ready(function () {
+        $(".OutAccVou").select2({
+            placeholder: "---Select---",
+            // added by anand on 25-01-2023 point no 19 from anand point
+            ajax: {
+                url: '/Outward/GetAccount-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
                     }
-                    $.ajax({
-                        url: '/Outward/GetNewCoilNo',
-                        type: 'POST',
-                        //data: { "PrdType": prdtype },
-                        dataType: 'JSON',
-                        traditional: true, // add this
-                        success: function (data) {
-                            if (i == '' || i == "0" || i == undefined) {
-                                //$('.OutwardCoilNo0').val(data.data);
-                                $('#Outward\\.CoilNo' + i + '').val(data.data);
-                            }
-                            else {
-                                $('#Outward\\.CoilNo' + i + '').val(parseOutA(data.data) + parseOutA(i));
-                            }
+                },
 
-                            //alert(data.data)
+            }
+        });
 
+        $(".OutTrnVou").select2({
+            placeholder: "---Select---",
+            ajax: {
+                url: '/Outward/GetTransport-List',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.items
+                    }
+                },
 
-                        },
-                        failure: function (response) {
-                            errorMessage(response);
-                        }
-                    });
+            }
+        });
+        $('.OutwardCoilNo').on('blur', function () {
+            checkArrayCoilNo();
+        });
+    });
+
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+    function GetNewCoilNo(i) {
+        //var prdtype = $('#txtOutPtyVou').children('option:selected').html();
+        if (i == '' || i == undefined) {
+            i = "0";
+        }
+        $.ajax({
+            url: '/Outward/GetNewCoilNo',
+            type: 'POST',
+            //data: { "PrdType": prdtype },
+            dataType: 'JSON',
+            traditional: true, // add this
+            success: function (data) {
+                if (i == '' || i == "0" || i == undefined) {
+                    //$('.OutwardCoilNo0').val(data.data);
+                    $('#Outward\\.CoilNo' + i + '').val(data.data);
                 }
-            </script>
-            <script>
+                else {
+                    $('#Outward\\.CoilNo' + i + '').val(parseOutA(data.data) + parseOutA(i));
+                }
+
+                //alert(data.data)
+
+
+            },
+            failure: function (response) {
+                errorMessage(response);
+            }
+        });
+    }
+</script>
+<script>
     @*$(document).ready(function () {
         var ReturnId = '@Html.Raw(TempData["ReturnId"])';
         var Savedone = '@Html.Raw(TempData["Savedone"])';
@@ -2683,8 +2682,8 @@
         $('#txtIsPrint').val('0');
         $('#frmOutward').submit();
     })
-            </script>
-            <script>
+</script>
+<script>
     var ReturnId = 0;
     function PrintJobWorkReport(returnID) {
 
@@ -2814,4 +2813,15 @@
           //      }
           //  });
         })
-            </script>
+</script>
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Select---'
+            },
+            allowClear: true
+        });
+    });
+</script>

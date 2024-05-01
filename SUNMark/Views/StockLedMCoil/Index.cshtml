@@ -1,0 +1,524 @@
+﻿@model SUNMark.Models.StockLedgerModel
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int isAdministrator = HttpContextAccessor.HttpContext.Session.GetInt32("IsAdministrator").Value;
+    List<SUNMark.Models.StockLedgerModel> stockledgerList = ViewBag.stockledgerList as List<SUNMark.Models.StockLedgerModel>;
+    List<SelectListItem> layoutList = ViewBag.layoutList as List<SelectListItem>;
+    List<SelectListItem> pageNoList = ViewBag.pageNoList as List<SelectListItem>;
+    List<SelectListItem> processList = ViewBag.processList != null ? ViewBag.processList as List<SelectListItem> : null;
+    var userRight = ViewBag.userRight as SUNMark.Models.UserFormRightModel;
+    ViewData["Title"] = userRight.ModuleNm;
+    string headerAdd = "";
+    string headerList = "";
+    string gridAdd = "";
+    string gridList = "";
+    bool headerAddTrue = false;
+    bool headerListTrue = false;
+
+    if (userRight != null && (userRight.IsAdd || userRight.IsEdit) && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && (userRight.IsAdd || userRight.IsEdit))
+    {
+        headerAdd = "active";
+        gridAdd = "show active";
+        headerAddTrue = true;
+    }
+    else if (userRight != null && userRight.IsList)
+    {
+        headerList = "active";
+        gridList = "show active";
+        headerAddTrue = true;
+    }
+}
+
+<style>
+    #tblDisplay thead tr th {
+        padding: 5px !important;
+        text-align: center
+    }
+
+    #tblDisplay tbody tr td {
+        padding: 5px !important;
+        text-align: center
+    }
+</style>
+
+
+<div class="card card-primary">
+    <div class="card-header" style="font-family:Verdana">
+        <h6> @ViewData["Title"]</h6>
+    </div>
+    <div class="card-body">
+        <div class="col-md-12">
+            @if (userRight != null && userRight.IsList)
+            {
+                    <div class="table-responsive mt-1" style="font-family:Verdana;font-size:small;font-display:inherit">
+                        <div class="row mt-3">
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    M.Coil No <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.TextBoxFor(x => x.CoilNo, new { @class = "form-control form-control-lg", @placeholder = "Coil No", @tabindex = "1", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    Company <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.DropDownListFor(x => x.Company, Model.CompanyList, "Select", new { @class = "form-control select2 Company", @tabindex = "2", @style = "font-family: Verdana;font-size:small; height:30px; width:180px" })
+                                @*@Html.DropDownListFor(x => x.Company, new SelectList(Model.CompanyList, "Value", "Text"), "Select", new { @class = "form-control select2 Company", @tabindex = "1", style = "font-family: Verdana;font-size:small; height:30px; width:180px" })*@
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    Trn.Type <span class="required"></span>
+                                </label>
+                                <input type="hidden" name="TrnType" id="TrnType" value="@Model.TrnType" />
+                                <div class="form-outline form-white mb-2">
+                                @Html.DropDownListFor(x => x.TrnTypeVou, Model.TrnTypeList, "Select", new { @class = "form-control select2 TrnTypeVou", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    Rec/Issue <span class="required"></span>
+                                </label>
+
+                                <div class="form-outline form-white mb-2">
+                                @Html.DropDownListFor(x => x.RecIss, Model.RecIssList, "Select", new { @class = "form-control select2 RecIss", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    Product <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.DropDownListFor(x => x.Product, Model.ProductList, "Select", new { @class = "form-control select2 Product", @tabindex = "5", @style = "font-family: Verdana;font-size:small; height:30px;width:180px", @required = "required" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    Grade <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.DropDownListFor(x => x.GradeVou, Model.GradeList, "Select", new { @class = "form-control select2 GradeVou", @tabindex = "6", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    Finish <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.DropDownListFor(x => x.FinishVou, Model.FinishList, "Select", new { @class = "form-control select2 FinishVou", @tabindex = "7", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    V.No <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.TextBoxFor(x => x.VNo, new { @class = "form-control form-control-lg", @placeholder = "V.No", @tabindex = "8", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    From Date <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.TextBoxFor(x => x.FrDt, new { @class = "form-control form-control-lg", @placeholder = "From Dt.", @tabindex = "9", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    To Date <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.TextBoxFor(x => x.ToDt, new { @class = "form-control form-control-lg", @placeholder = "To Dt.", @tabindex = "10", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    Thick <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.TextBoxFor(x => x.Thick, new { @class = "form-control form-control-lg", @placeholder = "Thick", @tabindex = "11", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    Width <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.TextBoxFor(x => x.Width, new { @class = "form-control form-control-lg", @placeholder = "Width", @tabindex = "12", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    Weight <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.TextBoxFor(x => x.Qty, new { @class = "form-control form-control-lg", @placeholder = "Weight", @tabindex = "13", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    OD <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.TextBoxFor(x => x.OD, new { @class = "form-control form-control-lg", @placeholder = "OD", @tabindex = "14", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    NB <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @*@Html.TextBoxFor(x => x.NB, new { @class = "form-control form-control-lg", @placeholder = "NB", @tabindex = "14", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })*@
+                                @Html.DropDownListFor(x => x.NB, Model.NBList, "Select", new { @class = "form-control select2 NB", @tabindex = "15", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    SCH <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @*@Html.TextBoxFor(x => x.Sch, new { @class = "form-control form-control-lg", @placeholder = "SCH", @tabindex = "15", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })*@
+                                @Html.DropDownListFor(x => x.Sch, Model.SCHList, "Select", new { @class = "form-control select2 Sch ", @tabindex = "16", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    Length <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.TextBoxFor(x => x.Langth, new { @class = "form-control form-control-lg", @placeholder = "Langth", @tabindex = "17", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    Process <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.DropDownListFor(x => x.Proc, processList, "Select", new { @class = "form-control Company select2", @tabindex = "18", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                    Stock <span class="required"></span>
+                                </label>
+                                <div class="form-outline form-white mb-2">
+                                @Html.DropDownListFor(x => x.StockYN, Model.StockYNList, "Select", new { @class = "form-control select2 StockYN", @tabindex = "19", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                </div>
+                            </div>
+                            <div class="col-md-9 mt-4 text-right">
+                                <button class="btn btn-primary px-4 text-white" style="font-family:Verdana;font-size:medium" id="btnSave" onclick=" loadData();">
+                                    View (Alt+V)
+                                </button>
+                                <a href="/StockLedMCoil/index" class="btn btn-warning px-4 text-dark" style="font-family:Verdana;font-size:medium">
+                                    Cancel (Esc)
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-12 mb-2 mt-2">
+                            <div class="row">
+                                <div class="col-md-1 mb-2 float-left">
+                                    <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
+                                    @for (int i = 0; i < pageNoList.Count; i++)
+                                    {
+                                        string checkedd = "checked";
+                                                <option checked="@checkedd" value="@pageNoList[i].Value">@pageNoList[i].Text</option>
+                                        checkedd = string.Empty;
+                                    }
+
+                                    </select>
+                                </div>
+                                <div class="col-md-5 col-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <select class="form-control select2 drpReportLayout">
+                                                <option value="" ; style="width:200px">--Select Layout--</option>
+                                            @if (layoutList != null && layoutList.Count > 0)
+                                            {
+                                                foreach (var item in layoutList)
+                                                {
+                                                    if (item.Selected)
+                                                    {
+                                                                        <option selected value="@item.Value">@item.Text </option>
+                                                    }
+                                                    else
+                                                    {
+                                                                        <option value="@item.Value">@item.Text </option>
+                                                    }
+                                                }
+                                            }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 col-auto mb-2 custommt-2-3">
+                                        @if (isAdministrator == 1)
+                                        {
+                                                    <button class="btn btn-dark btn-sm text-white" style="font-family:Verdana;font-size:medium" onclick="window.open('/GridMaster/Index/' + $('.drpReportLayout').val(), '_blank');">
+                                                        Edit
+                                                    </button>
+                                        }
+                                        </div>
+                                        <div class="col-md-4 mb-2 custommt-2-3">
+                                            <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
+                                            <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3"></div>
+                                <div class="col-md-3 col-12 float-right">
+                                    <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dataTable mt-3">
+
+                        </div>
+                        <div class="pager float-right"></div>
+                    </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var isRecentCalled = false;
+
+
+    $(function () {
+        $('#txtReportSearchDataTable').hide();
+
+        var pageIndex = '';
+        var pageSize = '';
+        var totalRecord = '';
+        var isDelete = '@Html.Raw(userRight.IsDelete)';
+        var isEdit = '@Html.Raw(userRight.IsEdit)';
+    })
+
+    var timer = null;
+    $('#txtReportSearchDataTable').keyup(function (e) {
+        if (e.keyCode >= 112 && e.keyCode <= 123) {
+            e.preventDefault();
+            return false;
+        }
+        else {
+            clearTimeout(timer);
+
+            timer = setTimeout(loadData, 1000)
+        }
+
+    });
+
+    function loadData(pageIndex, columnName, sortBy) {
+            isRecentCalled = true;
+            if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
+                pageIndex = 1;
+            }
+            var layoutId = $('.drpReportLayout').val();
+
+            if (!layoutId) {
+                $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
+                SetSelect2()
+
+            }
+            if (!columnName) {
+                columnName = '';
+            }
+            if (!sortBy) {
+                sortBy = '';
+            }
+        var company = $('#Company').val();
+        var vno = $('#VNo').val();
+        var trntype = $('#TrnType').val();
+        var reciss = $('#RecIss').val();
+        var product = $('#Product').val();
+        var frDt = $('#FrDt').val();
+        var toDt = $('#ToDt').val();
+        var stock = $('#Stock').val();
+        var thick = $('#Thick').val();
+        var width = $('#WIdth').val();
+        var qty = $('#Qty').val();
+        var od = $('#OD').val();
+        var nb = $('#NB').val();
+        var sch = $('#Sch').val();
+        var grade = $('#GradeVou').val();
+        var finish = $('#FinishVou').val();
+        var langth = $('#Langth').val();
+        var proc = $('#Proc').val();
+        var coilno = $('#CoilNo').val();
+        //if (product != "" && product != undefined) {
+            $('.dataTable').html();
+            $.ajax({
+                url: '/StockLedMCoil/GetReportView',
+                type: 'GET',
+                data: {
+                    pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy, companyId: company, trnType: trntype, recIssId: reciss, productId: product, vno: vno, frDt: frDt, toDt: toDt, stockId: stock, thick: thick, width: width, qty: qty, od: od, nb: nb, sch: sch, grade: grade, finish: finish, langth: langth, proc: proc, coilno: coilno
+                },
+                dataType: 'HTML',
+                traditional: true, // add this
+                success: function (data) {
+                    $('.dataTable').html(data);
+                    $('#txtReportSearchDataTable').show();
+                    setTimeout(function () {
+                        isRecentCalled = false;
+                    }, 2000)
+                },
+                failure: function (response) {
+                    errorMessage(response);
+                }
+            });
+        //}
+        //else {
+        //    isRecentCalled = false;
+        //    showErrorMessage("Please select Product!...");
+        //    $(".Product").focus();
+        //}
+    }
+
+</script>
+<script>
+    var isRecentCalledEsc = false;
+    (function (code) {
+        code(window.jQuery, document, window);
+    }(function ($, document, window) {
+        $(function () {
+            $(window)
+                .initKeyboard({ debug: 1 })
+                .on('Alt+V', function () {
+                    loadData();
+                })
+        });
+    }));
+
+    $('#btnExportToExcel').click(function () {
+        var company = $('#Company').val();
+        var vno = $('#VNo').val();
+        var trntype = $('#TrnType').val();
+        var reciss = $('#RecIss').val();
+        var product = $('#Product').val();
+        var frDt = $('#FrDt').val();
+        var toDt = $('#ToDt').val();
+        var stock = $('#Stock').val();
+        var thick = $('#Thick').val();
+        var width = $('#WIdth').val();
+        var qty = $('#Qty').val();
+        var od = $('#OD').val();
+        var nb = $('#NB').val();
+        var sch = $('#Sch').val();
+        var grade = $('#GradeVou').val();
+        var finish = $('#FinishVou').val();
+        var langth = $('#Langth').val();
+        var proc = $('#Proc').val();
+        var coilno = $('#CoilNo').val();
+        window.location.href = "/StockLedMCoil/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&companyId=" + company + "&trnType=" + trntype + "&recIssId=" + reciss + "&productId=" + product + "&vNo=" + vno + "&frDt=" + frDt + "&toDt=" + toDt + "&stockId=" + stock + "&thick=" + thick + "&width=" + width + "&qty=" + qty + "&od=" + od + "&nb=" + nb + "&sch=" + sch + "&grade=" + grade + "&finish=" + finish + "&langth=" + langth + "&proc=" + proc + "&coilno=" + coilno;
+    })
+
+    $('#btnExportToPDF').click(function () {
+        var company = $('#Company').val();
+        var vno = $('#VNo').val();
+        var trntype = $('#TrnType').val();
+        var reciss = $('#RecIss').val();
+        var product = $('#Product').val();
+        var frDt = $('#FrDt').val();
+        var toDt = $('#ToDt').val();
+        var stock = $('#Stock').val();
+        var thick = $('#Thick').val();
+        var width = $('#Width').val();
+        var qty = $('#Qty').val();
+        var od = $('#OD').val();
+        var nb = $('#NB').val();
+        var sch = $('#Sch').val();
+        var grade = $('#GradeVou').val();
+        var finish = $('#FinishVou').val();
+        var langth = $('#Langth').val();
+        var proc = $('#Proc').val();
+        var coilno = $('#CoilNo').val();
+        window.location.href = "/StockLedMCoil/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&companyId=" + company + "&trnType=" + trntype + "&recIssId=" + reciss + "&productId=" + product + "&vNo=" + vno + "&frDt=" + frDt + "&toDt=" + toDt + "&stockId=" + stock + "&thick=" + thick + "&width=" + width + "&qty=" + qty + "&od=" + od + "&nb=" + nb + "&sch=" + sch + "&grade=" + grade + "&finish=" + finish + "&langth=" + langth + "&proc=" + proc + "&coilno=" + coilno;
+    })
+
+    $(function () {
+        var trantype = $('#TrnTypeVou').children('option:selected').text()
+        if (trantype)
+            $('input[name="TrnType"]').val(trantype);
+    })
+
+    $('#TrnTypeVou').change(function () {
+        var trantype = $('#TrnTypeVou').children('option:selected').text()
+        if (trantype)
+            $('input[name="TrnType"]').val(trantype);
+    })
+
+
+
+
+
+</script>
+<script>
+    function SetSelect2() {
+        $(".select2").select2({
+            placeholder: "---Select---",
+        });
+    }
+
+    $(document).ready(function () {
+        $(".Company").select2({
+            placeholder: "---Select---",
+        });
+
+        $(".TrnTypeVou").select2({
+            placeholder: "---Select---",
+        });
+
+        $(".RecIss").select2({
+            placeholder: "---Select---",
+        });
+        $(".Product").select2({
+            placeholder: "---Select---",
+        });
+        $(".GradeVou").select2({
+            placeholder: "---Select---",
+        });
+        $(".FinishVou").select2({
+            placeholder: "---Select---",
+        });
+        $(".NB").select2({
+            placeholder: "---Select---",
+        });
+        $(".Sch").select2({
+            placeholder: "---Select---",
+        });
+        $(".StockYN").select2({
+            placeholder: "---Select---",
+        });
+        $(".Proc").select2({
+            placeholder: "---Select---",
+        });
+
+        $('.drpReportLayout').select2({
+            placeholder: "---Select---",
+        });
+    });
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Select---'
+            },
+            allowClear: true
+        });
+    });
+</script>

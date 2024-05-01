@@ -49,7 +49,11 @@ namespace SUNMark.Controllers
                 straighMasterModel.Straighting.SCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
                 straighMasterModel.Straighting.StatusList = objProductHelper.GetStraightingStatus();
                 straighMasterModel.Straighting.FinishList = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                straighMasterModel.Straighting.NextProcList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                straighMasterModel.Straighting.NextProcList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator,"Strat");
+
+                straighMasterModel.FltNBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                straighMasterModel.FltSCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
+                straighMasterModel.FltGradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
 
                 straighMasterModel.Vno = GetVoucherNo();
 
@@ -124,6 +128,13 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
+                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                int administrator = 0;
+
+                StraightingMasterModel.FltNBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                StraightingMasterModel.FltSCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
+                StraightingMasterModel.FltGradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
+
                 if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.Vno).ToString()) && !string.IsNullOrWhiteSpace(StraightingMasterModel.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.StrCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(StraightingMasterModel.MachineNo).ToString()) && StraightingMasterModel.LstStraighting.Count > 0)
                 {
                     SqlParameter[] sqlParameter = new SqlParameter[18];
@@ -277,7 +288,7 @@ namespace SUNMark.Controllers
             return RedirectToAction("Index", "Straighting", new { id = 0 });
         }
 
-        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby)
+        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string fltod, string fltfeetper, string fltnb, string fltsch, string fltgrade, string fltfrDt, string flttoDt, string FltVno)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -303,7 +314,45 @@ namespace SUNMark.Controllers
                     {
                         startRecord = (pageIndex - 1) * pageSize;
                     }
-                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId);
+
+                    string whereConditionQuery = string.Empty;
+                    if (!string.IsNullOrWhiteSpace(fltod) && fltod != "0")
+                    {
+                        whereConditionQuery += " AND StrTrn.StrAOD='" + fltod + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltfeetper) && fltfeetper != "0")
+                    {
+                        whereConditionQuery += " AND StrTrn.StrALength='" + fltfeetper + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltnb) && fltnb != "0")
+                    {
+                        whereConditionQuery += " AND StrTrn.StrANB='" + fltnb + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltsch) && fltsch != "0")
+                    {
+                        whereConditionQuery += " AND StrTrn.StrASCH='" + fltsch + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltgrade))
+                    {
+                        if (fltgrade != "Select")
+                        {
+                            whereConditionQuery += " AND StrTrn.StrAGrdVou ='" + fltgrade + "'";
+                        }
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltfrDt))
+                    {
+                        whereConditionQuery += " AND StrMst.StrDt >='" + fltfrDt + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(flttoDt))
+                    {
+                        whereConditionQuery += " AND StrMst.StrDt <='" + flttoDt + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(FltVno) && FltVno != "0")
+                    {
+                        whereConditionQuery += " AND STRVNO='" + FltVno + "'";
+                    }
+
+                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                     if (getReportDataModel.IsError)
                     {
                         ViewBag.Query = getReportDataModel.Query;
@@ -320,7 +369,7 @@ namespace SUNMark.Controllers
             return PartialView("_reportView", getReportDataModel);
         }
 
-        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type)
+        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string fltod, string fltfeetper, string fltnb, string fltsch, string fltgrade, string fltfrDt, string flttoDt)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -330,7 +379,41 @@ namespace SUNMark.Controllers
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
                 //getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, 0, "", 0, 1);
-                getReportDataModel = getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, YearId, "", 0, 1);
+
+                string whereConditionQuery = string.Empty;
+                if (!string.IsNullOrWhiteSpace(fltod) && fltod != "0")
+                {
+                    whereConditionQuery += " AND StrTrn.StrAOD='" + fltod + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltfeetper) && fltfeetper != "0")
+                {
+                    whereConditionQuery += " AND StrTrn.StrALength='" + fltfeetper + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltnb) && fltnb != "0")
+                {
+                    whereConditionQuery += " AND StrTrn.StrANB='" + fltnb + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltsch) && fltsch != "0")
+                {
+                    whereConditionQuery += " AND StrTrn.StrASCH='" + fltsch + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltgrade))
+                {
+                    if (fltgrade != "Select")
+                    {
+                        whereConditionQuery += " AND StrTrn.StrAGrdVou ='" + fltgrade + "'";
+                    }
+                }
+                if (!string.IsNullOrWhiteSpace(fltfrDt))
+                {
+                    whereConditionQuery += " AND StrMst.StrDt >='" + fltfrDt + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(flttoDt))
+                {
+                    whereConditionQuery += " AND StrMst.StrDt <='" + flttoDt + "'";
+                }
+
+                getReportDataModel = getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, YearId, "", 0, 1, whereConditionQuery);
                 if (type == 1)
                 {
                     var bytes = Excel(getReportDataModel, "Straighting", companyDetails.CmpName);
@@ -410,16 +493,20 @@ namespace SUNMark.Controllers
                     DataTable DtInw = ObjDBConnection.CallStoreProcedure("GetLotIssAnnelProduct", sqlParameters);
                     if (DtInw != null)
                     {
-                        int Status = DbConnection.ParseInt32(DtInw.Rows[0][0].ToString());
-                        if (Status == 1)
+                        int Status = DbConnection.ParseInt32(DtInw.Rows[0][0].ToString());                        
+                        if (DtInw.Columns.Count> 1 && (Status == 3 || Status == 2 || Status == 1))
+                        {
+                            Status = 0;
+                        }
+                        if (Status == 1 && DtInw.Columns.Count == 1)
                         {
                             return Json(new { result = true, data = "1" });
                         }
-                        else if (Status == 2)
+                        else if (Status == 2 && DtInw.Columns.Count == 1)
                         {
                             return Json(new { result = true, data = "2" });
                         }
-                        else if (Status == 3)
+                        else if (Status == 3 && DtInw.Columns.Count == 1)
                         {
                             return Json(new { result = true, data = "3" });
                         }

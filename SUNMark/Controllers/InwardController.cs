@@ -68,7 +68,7 @@ namespace SUNMark.Controllers
                 inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                 inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                 inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                 inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
                 inwardModel.Inward.IntCoilTypeList = objProductHelper.GetInwardCoilType();
                 SqlParameter[] sqlParam = new SqlParameter[3];
@@ -287,7 +287,7 @@ namespace SUNMark.Controllers
                 inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                 inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                 inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                 inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
                 inwardModel.Inward.IntCoilTypeList = objProductHelper.GetInwardCoilType();
 
@@ -396,7 +396,7 @@ namespace SUNMark.Controllers
                                     inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                                     inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                                     inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                                    inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                                    inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                                     inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
                                     inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                                     SetErrorMessage("Dulplicate Vou.No Details");
@@ -450,7 +450,7 @@ namespace SUNMark.Controllers
                                 inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                                 inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                                 inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                                 inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
                                 inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                                 SetErrorMessage("Insert error");
@@ -479,7 +479,7 @@ namespace SUNMark.Controllers
                             inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                             inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                             inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                            inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                            inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                             inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
                             inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                             SetErrorMessage("Please Enter the Value");
@@ -508,7 +508,7 @@ namespace SUNMark.Controllers
                         inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                         inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                         inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                        inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                        inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                         inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
                         inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                         SetErrorMessage("Please Enter the Value");
@@ -612,7 +612,7 @@ namespace SUNMark.Controllers
                                     inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                                     inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                                     inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                                    inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                                    inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                                     inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
                                     inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                                     SetErrorMessage("Dulplicate Vou.No Details");
@@ -666,7 +666,7 @@ namespace SUNMark.Controllers
                                 inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                                 inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                                 inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                                 inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
                                 inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                                 SetErrorMessage("Insert error");
@@ -695,7 +695,7 @@ namespace SUNMark.Controllers
                             inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                             inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                             inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                            inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                            inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                             inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
                             inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                             SetErrorMessage("Please Enter the Value");
@@ -724,7 +724,7 @@ namespace SUNMark.Controllers
                         inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                         inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                         inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                        inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                        inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                         inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
                         inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                         SetErrorMessage("Please Enter the Value");
@@ -837,7 +837,7 @@ namespace SUNMark.Controllers
                                     inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                                     inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                                     inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                                    inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                                    inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                                     inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
                                     inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                                     SetErrorMessage("Dulplicate Vou.No Details");
@@ -890,7 +890,7 @@ namespace SUNMark.Controllers
                                 inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                                 inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                                 inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                                 inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
                                 inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                                 SetErrorMessage("Insert error");
@@ -919,7 +919,7 @@ namespace SUNMark.Controllers
                             inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                             inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                             inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                            inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                            inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                             inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
                             inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                             SetErrorMessage("Please Enter the Value");
@@ -948,7 +948,7 @@ namespace SUNMark.Controllers
                         inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                         inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                         inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                        inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                        inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator,"");
                         inwardModel.Inward.CoilPrefixList = objProductHelper.GetLotMasterDropdown_1(companyId, administrator);
                         inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                         SetErrorMessage("Please Enter the Value");

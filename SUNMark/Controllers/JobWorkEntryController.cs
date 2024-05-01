@@ -101,7 +101,7 @@ namespace SUNMark.Controllers
             int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
             int administrator = 0;
             ViewBag.lottypeList = objProductHelper.GetLotMasterDropdown_2(companyId, administrator);
-            ViewBag.shiftList = objProductHelper.GetShiftNew(); ;
+            ViewBag.shiftList = objProductHelper.GetShiftNew();
             ViewBag.operatorList = ObjAccountMasterHelpers.GetOperatorCustomDropdown_New(companyId, 0);
             //   ViewBag.machineList = ObjAccountMasterHelpers.GetMachineMasterDropdown(companyId);
         }
@@ -509,7 +509,7 @@ namespace SUNMark.Controllers
             }
         }
 
-        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string frFinDt, string toFinDt)
+        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string frFinDt, string toFinDt, string isscoilno, string jobvno)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -538,11 +538,19 @@ namespace SUNMark.Controllers
                     string whereConditionQuery = string.Empty;
                     if (!string.IsNullOrWhiteSpace(frFinDt))
                     {
-                        whereConditionQuery += " WHERE JobMst.JobComDt>='" + frFinDt + "'";
+                        whereConditionQuery += " And JobMst.JobComDt>='" + frFinDt + "'";
                     }
                     if (!string.IsNullOrWhiteSpace(toFinDt))
                     {
                         whereConditionQuery += " AND JobMst.JobComDt<='" + toFinDt + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(isscoilno))
+                    {
+                        whereConditionQuery += " AND JobMst.JobIssCoilNo='" + isscoilno + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(jobvno))
+                    {
+                        whereConditionQuery += " AND JobMst.JobVNo='" + jobvno + "'";
                     }
                     getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                     if (getReportDataModel.IsError)
@@ -561,7 +569,7 @@ namespace SUNMark.Controllers
             return PartialView("_reportView", getReportDataModel);
         }
 
-        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string frFinDt, string toFinDt)
+        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string frFinDt, string toFinDt, string isscoilno, string jobvno)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -579,6 +587,14 @@ namespace SUNMark.Controllers
                 if (!string.IsNullOrWhiteSpace(toFinDt))
                 {
                     whereConditionQuery += " AND JobMst.JobComDt<='" + toFinDt + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(isscoilno))
+                {
+                    whereConditionQuery += " AND JobMst.JobIssCoilNo='" + isscoilno + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(jobvno))
+                {
+                    whereConditionQuery += " AND JobMst.JobVNo='" + jobvno + "'";
                 }
                 getReportDataModel = getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, YearId, "", 0, 1, whereConditionQuery);
                 if (type == 1)

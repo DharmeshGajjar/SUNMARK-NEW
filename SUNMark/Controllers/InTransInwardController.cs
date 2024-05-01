@@ -59,7 +59,7 @@ namespace SUNMark.Controllers
                 inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                 inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                 inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator,"");
 
                 SqlParameter[] sqlParam = new SqlParameter[3];
                 sqlParam[0] = new SqlParameter("@InwVou", id);
@@ -214,7 +214,7 @@ namespace SUNMark.Controllers
                 inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                 inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                 inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
 
                 if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwVNo).ToString()) && !string.IsNullOrWhiteSpace(inwardModel.InwDt) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(inwardModel.InwAccVou).ToString()) && inwardModel.Inward.IntThickCoil.Length > 0 && inwardModel.Inward.IntWidth.Length > 0 && inwardModel.Inward.IntQtyCoil.Length > 0)
                 {
@@ -399,7 +399,7 @@ namespace SUNMark.Controllers
                                 inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                                 inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                                 inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                                inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                                 inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                                 SetErrorMessage("Dulplicate Vou.No Details");
                                 ViewBag.FocusType = "1";
@@ -438,7 +438,7 @@ namespace SUNMark.Controllers
                             inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                             inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                             inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                            inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                            inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator,"");
                             inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                             SetErrorMessage("Insert error");
                             ViewBag.FocusType = "1";
@@ -465,7 +465,7 @@ namespace SUNMark.Controllers
                         inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                         inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                         inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                        inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                        inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                         inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                         SetErrorMessage("Please Enter the Value");
                         ViewBag.FocusType = "1";
@@ -492,7 +492,7 @@ namespace SUNMark.Controllers
                     inwardModel.Inward.GodownPipeList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                     inwardModel.Inward.GodownOtherList = objProductHelper.GetGoDownMasterDropdown(companyId, administrator);
                     inwardModel.Inward.FinishListPipe = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-                    inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+                    inwardModel.Inward.ProceListPipe = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator, "");
                     inwardModel.InwDt = Convert.ToDateTime(inwardModel.InwDt).ToString("yyyy-MM-dd");
                     SetErrorMessage("Please Enter the Value");
                     ViewBag.FocusType = "1";
@@ -627,7 +627,7 @@ namespace SUNMark.Controllers
         }
 
 
-        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby)
+        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string FltVno)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -653,7 +653,12 @@ namespace SUNMark.Controllers
                     {
                         startRecord = (pageIndex - 1) * pageSize;
                     }
-                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId);
+                    string whereConditionQuery = string.Empty;
+                    if (!string.IsNullOrWhiteSpace(FltVno) && FltVno != "0")
+                    {
+                        whereConditionQuery += " AND InwVNo='" + FltVno + "'";
+                    }
+                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                     if (getReportDataModel.IsError)
                     {
                         ViewBag.Query = getReportDataModel.Query;

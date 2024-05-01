@@ -113,6 +113,7 @@
                                                         }
                                                     </div>
                                                     <div class="col-md-4 mb-2 custommt-2-3">
+                                                        @*@Html.TextBoxFor(x => x.FltVno, new { @class = "form-control form-control-lg", @placeholder = "Langth", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })*@
                                                         <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
                                                         <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
                                                     </div>
@@ -841,6 +842,17 @@
 
         $('.OblPrdVou').select2({
             placeholder: "---Select---",
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Select---'
+            },
+            allowClear: true
         });
     });
 </script>

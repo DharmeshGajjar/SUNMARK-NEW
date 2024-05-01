@@ -124,6 +124,78 @@
                                 <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
                                     <div class="col-md-12 col-12 mb-2 mt-2">
                                         <div class="row">
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    OD <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.TextBoxFor(x => x.FltOD, new { @class = "form-control form-control-lg", @placeholder = "OD", @tabindex = "2", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    Langth <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.TextBoxFor(x => x.FltFeetPer, new { @class = "form-control form-control-lg", @placeholder = "Langth", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    NB <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.DropDownListFor(x => x.FltNB, Model.FltNBList, "Select", new { @class = "form-control select2 FltNB ", @tabindex = "4", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    SCH <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.DropDownListFor(x => x.FltSCH, Model.FltSCHList, "Select", new { @class = "form-control select2 FltSCH ", @tabindex = "5", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    Grade <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.DropDownListFor(x => x.FltGrade, Model.FltGradeList, "Select", new { @class = "form-control select2 FltGrade ", @tabindex = "6", @style = "font-family: Verdana;font-size:small; height:30px;width:180px" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    From Dt. <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.TextBoxFor(x => x.FrDt, new { @class = "form-control form-control-lg", @placeholder = "From Date", @tabindex = "7", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    To Dt. <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.TextBoxFor(x => x.ToDt, new { @class = "form-control form-control-lg", @placeholder = "To Date", @tabindex = "8", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "date" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    V. No. <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.TextBoxFor(x => x.FltVno, new { @class = "form-control form-control-lg", @placeholder = "Langth", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                @*<button class="btn btn-primary px-4 text-white" style="font-family:Verdana;font-size:medium" id="btnView" onclick=" loadData();">
+                                                    View (Alt+V)
+                                                </button>
+                                                <a href="/JobWorkEntry/index" class="btn btn-warning px-4 text-dark" style="font-family:Verdana;font-size:medium">
+                                                    Cancel (Esc)
+                                                </a>*@
+                                            </div>
                                             <div class="col-md-1 mb-2 float-left">
 
                                                 <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
@@ -137,9 +209,9 @@
                                                 </select>
 
                                             </div>
-                                            <div class="col-md-5 col-12">
+                                            <div class="col-md-7 col-12">
                                                 <div class="row">
-                                                    <div class="col-md-6 col">
+                                                    <div class="col-md-3 col">
                                                         <select class="form-control select2 drpReportLayout" onchange="loadData()">
                                                             <option value="" ; style="width:200px">--Select Layout--</option>
                                                             @if (layoutList != null && layoutList.Count > 0)
@@ -159,14 +231,16 @@
                                                             </button>
                                                         }
                                                     </div>
-                                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                                    <div class="col-md-7 mb-2 custommt-2-3">
                                                         <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
                                                         <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                        <button class="btn btn-primary btn-sm" id="btnView" onclick=" loadData();"> View (Alt+V) </button>
+                                                        <a href="/JobWorkEntry/index" class="btn btn-warning btn-sm">Cancel (Esc)</a>
                                                     </div>
 
                                                 </div>
                                             </div>
-                                            <div class="col-md-3"></div>
+                                            <div class="col-md-1"></div>
                                             <div class="col-md-3 col-12 float-right">
                                                 <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
                                             </div>
@@ -318,14 +392,14 @@
                                                             <th style="width:15% !important">
                                                                 SCH
                                                             </th>
+                                                            <th style="width:10%;text-align:right !important">
+                                                                Length <span class="text-danger">*</span>
+                                                            </th>
                                                             <th style="width:12%;text-align:right !important">
                                                                 OD <span class="text-danger">*</span>
                                                             </th>
                                                             <th style="width:10%;text-align:right !important">
                                                                 Thick <span class="text-danger">*</span>
-                                                            </th>
-                                                            <th style="width:10%;text-align:right !important">
-                                                                Length <span class="text-danger">*</span>
                                                             </th>
                                                             <th style="width:10%;text-align:right !important">
                                                                 No Of Pipe <span class="text-danger">*</span>
@@ -364,8 +438,8 @@
                                                                 Type
                                                             </th>
                                                             @*<th style="width:12% !important">
-                                                                lotvou
-                                                            </th>*@
+                                                                    lotvou
+                                                                </th>*@
                                                             <th style="width:5% !important">
                                                                 Actions
                                                             </th>
@@ -401,15 +475,15 @@
                                                                 }
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
+                                                                @Html.TextBoxFor(x => x.Annel.AnnLength, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnLength", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
+                                                            </td>
+                                                            <td style="padding:0 0 0 8px">
                                                                 @Html.TextBoxFor(x => x.Annel.AnnOD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnOD", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
                                                             </td>
                                                             <td style="padding:0 0 0 8px">
                                                                 @Html.TextBoxFor(x => x.Annel.AnnThick, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
                                                             </td>
 
-                                                            <td style="padding:0 0 0 8px">
-                                                                @Html.TextBoxFor(x => x.Annel.AnnLength, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnLength", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
-                                                            </td>
                                                             <td style="padding:0 0 0 8px">
                                                                 @Html.TextBoxFor(x => x.Annel.AnnNoOfPipe, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnNoOfPipe", @onKeyUp = "numericFilter(this);", @onblur = "GetCalculateQty(this)" })
                                                             </td>
@@ -447,8 +521,8 @@
                                                                 @Html.TextBoxFor(x => x.Annel.AnnType, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtAnnTypeStr" })
                                                             </td>
                                                             @*<td style="padding:0 0 0 8px">
-                                                                @Html.TextBoxFor(x => x.Annel.AnnLotVou, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtAnnLotVouStr" })
-                                                            </td>*@
+                                                                    @Html.TextBoxFor(x => x.Annel.AnnLotVou, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtAnnLotVouStr" })
+                                                                </td>*@
                                                             <td class="text-center">
                                                                 <i class="fa fa-plus text-blue" onclick="AddRowsAnnel(this)" style="font-size:18px"></i>
                                                                 <i class="fa fa-sync text-blue ml-3" onclick="RefreshAnnel(this)" style="font-size:18px"></i>
@@ -513,8 +587,8 @@
                                                                 <label class="control-label pl-1"></label>
                                                             </td>
                                                             @*<td style="padding:0 0 0 8px">
-                                                                <label class="control-label pl-1"></label>
-                                                            </td>*@
+                                                                    <label class="control-label pl-1"></label>
+                                                                </td>*@
                                                             <td>
                                                             </td>
                                                         </tr>
@@ -537,19 +611,19 @@
                                                                     Grade <span class="text-danger">*</span>
                                                                 </th>
                                                                 <th style="width:15% !important">
-                                                                    NB 
+                                                                    NB
                                                                 </th>
                                                                 <th style="width:15% !important">
                                                                     SCH
+                                                                </th>
+                                                                <th style="width:10%;text-align:right !important">
+                                                                    Length <span class="text-danger">*</span>
                                                                 </th>
                                                                 <th style="width:12%;text-align:right !important">
                                                                     OD <span class="text-danger">*</span>
                                                                 </th>
                                                                 <th style="width:10%;text-align:right !important">
                                                                     Thick <span class="text-danger">*</span>
-                                                                </th>
-                                                                <th style="width:10%;text-align:right !important">
-                                                                    Length <span class="text-danger">*</span>
                                                                 </th>
                                                                 <th style="width:10%;text-align:right !important">
                                                                     No Of Pipe <span class="text-danger">*</span>
@@ -588,8 +662,8 @@
                                                                     Type
                                                                 </th>
                                                                 @*<th style="width:12% !important">
-                                                                    lotvou
-                                                                </th>*@
+                                                                        lotvou
+                                                                    </th>*@
                                                                 <th style="width:5% !important">
                                                                     Actions
                                                                 </th>
@@ -627,13 +701,13 @@
                                                                         }
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
+                                                                        @Html.TextBoxFor(x => x.AnnelList[y].AnnLength, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnLength", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
+                                                                    </td>
+                                                                    <td style="padding:0 0 0 8px">
                                                                         @Html.TextBoxFor(x => x.AnnelList[y].AnnOD, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnOD", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
                                                                         @Html.TextBoxFor(x => x.AnnelList[y].AnnThick, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnThick", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
-                                                                    </td>
-                                                                    <td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.AnnelList[y].AnnLength, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnLength", @onKeyUp = "numericFilter(this);", @onblur = "GetLotIssAnnelProduct(this)" })
                                                                     </td>
                                                                     <td style="padding:0 0 0 8px">
                                                                         @Html.TextBoxFor(x => x.AnnelList[y].AnnNoOfPipe, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:right;width:80px !important", @onfocus = "this.select()", @name = "txtAnnNoOfPipe", @onKeyUp = "numericFilter(this);", @onblur = "GetCalculateQty(this)" })
@@ -672,8 +746,8 @@
                                                                         @Html.TextBoxFor(x => x.AnnelList[y].AnnType, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtAnnTypeStr" })
                                                                     </td>
                                                                     @*<td style="padding:0 0 0 8px">
-                                                                        @Html.TextBoxFor(x => x.AnnelList[y].AnnLotVou, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtAnnLotVouStr" })
-                                                                    </td>*@
+                                                                            @Html.TextBoxFor(x => x.AnnelList[y].AnnLotVou, new { @class = "form-control", @style = "font-family: Verdana;font-size:small; height:30px;text-align:left;width:100px !important", @onfocus = "this.select()", @name = "txtAnnLotVouStr" })
+                                                                        </td>*@
                                                                     <td class="text-center">
                                                                         <i class="fa fa-edit text-primary" onclick="EditRowsAnnel(this)" style="font-size:18px"></i>
                                                                         <i class="fa fa-trash text-danger ml-3" onclick="DeleteRowsAnnel(this)" style="font-size:18px"></i>
@@ -903,7 +977,8 @@
         $('#custom-tabs-three-list').addClass('show');
         $('#custom-tabs-three-add').removeClass('active');
         $('#custom-tabs-three-add').removeClass('show');
-        $('#txtReportSearchDataTable').focus();
+        //$('#txtReportSearchDataTable').focus();
+        $('#FltOD').focus();
     }
 </script>
 <script>
@@ -1007,7 +1082,7 @@
 
         if (!layoutId) {
             $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
-            SetSelect2()
+            //SetSelect2()
 
         }
         if (!columnName) {
@@ -1016,11 +1091,21 @@
         if (!sortBy) {
             sortBy = '';
         }
+
+        var fltod = $('#FltOD').val();
+        var fltfeetper = $('#FltFeetPer').val();
+        var fltnb = $('#FltNB').val();
+        var fltsch = $('#FltSCH').val();
+        var fltgrade = $('#FltGrade').children('option:selected').val()
+        var fltfrDt = $('#FrDt').val();
+        var flttoDt = $('#ToDt').val();
+        var FltVno = $('#FltVno').val();
+
         $('.dataTable').html();
         $.ajax({
             url: '/Annealing/GetReportView',
             type: 'GET',
-            data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
+            data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy, fltod: fltod, fltfeetper: fltfeetper, fltnb: fltnb, fltsch: fltsch, fltgrade: fltgrade, fltfrDt: fltfrDt, flttoDt: flttoDt, FltVno: FltVno },
             dataType: 'HTML',
             traditional: true, // add this
             success: function (data) {
@@ -1036,11 +1121,27 @@
     }
 
     $('#btnExportToExcel').click(function () {
-        window.location.href = "/Annealing/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1";
+        var fltod = $('#FltOD').val();
+        var fltfeetper = $('#FltFeetPer').val();
+        var fltnb = $('#FltNB').val();
+        var fltsch = $('#FltSCH').val();
+        var fltgrade = $('#FltGrade').children('option:selected').val()
+        var fltfrDt = $('#FrDt').val();
+        var flttoDt = $('#ToDt').val();
+
+        window.location.href = "/Annealing/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=1" + "&fltod=" + fltod + "&fltfeetper=" + fltfeetper + "&fltnb=" + fltnb + "&fltsch=" + fltsch + "&fltgrade=" + fltgrade + "&fltfrDt=" + fltfrDt + "&flttoDt=" + flttoDt;
     })
 
     $('#btnExportToPDF').click(function () {
-        window.location.href = "/Annealing/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2";
+        var fltod = $('#FltOD').val();
+        var fltfeetper = $('#FltFeetPer').val();
+        var fltnb = $('#FltNB').val();
+        var fltsch = $('#FltSCH').val();
+        var fltgrade = $('#FltGrade').children('option:selected').val()
+        var fltfrDt = $('#FrDt').val();
+        var flttoDt = $('#ToDt').val();
+
+        window.location.href = "/Annealing/ExportToExcelPDF?gridMstId=" + $('.drpReportLayout').val() + "&searchValue=" + $('#txtReportSearchDataTable').val() + "&type=2" + "&fltod=" + fltod + "&fltfeetper=" + fltfeetper + "&fltnb=" + fltnb + "&fltsch=" + fltsch + "&fltgrade=" + fltgrade + "&fltfrDt=" + fltfrDt + "&flttoDt=" + flttoDt;
     })
 
     function GetVoucherNumber() {
@@ -1120,12 +1221,6 @@
 </script>
 <script>
 
-    function SetSelect2() {
-        $(".select2").select2({
-            placeholder: "---Select---",
-        });
-    }
-
     function GetSupervisor() {
 
         var macNo = $('#MachineNo').val();
@@ -1168,7 +1263,6 @@
     var isPasteDone = false;
 
     function AddRowsAnnel() {
-        debugger;
         if (!isRecentCall) {
             var previousRow = $('#tblAnnel').children('tbody').children('tr:last').prev();
             if (previousRow != null) {
@@ -1180,9 +1274,9 @@
                 var NBvou = $(previousRow).children('td').eq(3).children('select').val();
                 var SCH = $(previousRow).children('td').eq(4).children('select').children('option:selected').text();
                 var SCHvou = $(previousRow).children('td').eq(4).children('select').val();
-                var od = $(previousRow).children('td').eq(5).children('input').val();
-                var thick = $(previousRow).children('td').eq(6).children('input').val();
-                var length = $(previousRow).children('td').eq(7).children('input').val();
+                var length = $(previousRow).children('td').eq(5).children('input').val();
+                var od = $(previousRow).children('td').eq(6).children('input').val();
+                var thick = $(previousRow).children('td').eq(7).children('input').val();
                 var noofpipe = $(previousRow).children('td').eq(8).children('input').val();
                 var qty = $(previousRow).children('td').eq(9).children('input').val();
                 var tdc1 = $(previousRow).children('td').eq(10).children('input').val();
@@ -1216,9 +1310,9 @@
                     $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(2).children('label').html(grade);
                     $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(3).children('label').html(NB);
                     $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(4).children('label').html(SCH);
-                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(5).children('label').html(od);
-                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(6).children('label').html(thick);
-                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(7).children('label').html(length);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(5).children('label').html(length);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(6).children('label').html(od);
+                    $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(7).children('label').html(thick);
                     $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(8).children('label').html(noofpipe);
                     $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(9).children('label').html(qty);
                     $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(10).children('label').html(tdc1);
@@ -1283,9 +1377,9 @@
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('select').val(SCHvou);
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('select').removeClass('select2')
 
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val(od);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val(thick);
-                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val(length);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val(length);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val(od);
+                        $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val(thick);
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val(noofpipe);
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val(qty);
                         $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').val(tdc1);
@@ -1367,11 +1461,10 @@
                                 $(this).children('td').eq(4).children('select').removeClass('select2')
                                 $(this).children('td').eq(4).children('select').attr('disabled', true)
 
-                                $(this).children('td').eq(5).children('input').val(od);
-                                $(this).children('td').eq(6).children('input').val(thick);
-
-
-                                $(this).children('td').eq(7).children('input').val(length);
+                                $(this).children('td').eq(5).children('input').val(length);
+                                $(this).children('td').eq(6).children('input').val(od);
+                                $(this).children('td').eq(7).children('input').val(thick);
+                                
                                 $(this).children('td').eq(8).children('input').val(noofpipe);
                                 $(this).children('td').eq(9).children('input').val(qty);
                                 $(this).children('td').eq(10).children('input').val(tdc1);
@@ -1456,18 +1549,19 @@
             $(this).children("td").eq(3).children("select").attr("Id", "Annel.Grade" + (i) + "");
             $(this).children("td").eq(4).children("select").attr("name", "AnnelList[" + (i) + "].SCH");
             $(this).children("td").eq(4).children("select").attr("Id", "Annel.Grade" + (i) + "");
-            $(this).children("td").eq(5).children("input").attr("name", "AnnelList[" + (i) + "].AnnOD");
-            $(this).children("td").eq(5).children("input").attr("Id", "Annel.AnnOD" + (i) + "");
+            $(this).children("td").eq(5).children("input").attr("name", "AnnelList[" + (i) + "].AnnLength");
+            $(this).children("td").eq(5).children("input").attr("Id", "Annel.AnnLength" + (i) + "");
             if (!isRemove)
                 $(this).children("td").eq(5).children("input").attr("onblur", 'GetLotIssAnnelProduct(this)');
-            $(this).children("td").eq(6).children("input").attr("name", "AnnelList[" + (i) + "].AnnThick");
-            $(this).children("td").eq(6).children("input").attr("Id", "Annel.AnnThick" + (i) + "");
+            $(this).children("td").eq(6).children("input").attr("name", "AnnelList[" + (i) + "].AnnOD");
+            $(this).children("td").eq(6).children("input").attr("Id", "Annel.AnnOD" + (i) + "");
             if (!isRemove)
                 $(this).children("td").eq(6).children("input").attr("onblur", 'GetLotIssAnnelProduct(this)');
-            $(this).children("td").eq(7).children("input").attr("name", "AnnelList[" + (i) + "].AnnLength");
-            $(this).children("td").eq(7).children("input").attr("Id", "Annel.AnnLength" + (i) + "");
+            $(this).children("td").eq(7).children("input").attr("name", "AnnelList[" + (i) + "].AnnThick");
+            $(this).children("td").eq(7).children("input").attr("Id", "Annel.AnnThick" + (i) + "");
             if (!isRemove)
                 $(this).children("td").eq(7).children("input").attr("onblur", 'GetLotIssAnnelProduct(this)');
+
             $(this).children("td").eq(8).children("input").attr("name", "AnnelList[" + (i) + "].AnnNoOfPipe");
             $(this).children("td").eq(8).children("input").attr("Id", "Annel.AnnNoOfPipe" + (i) + "");
             $(this).children("td").eq(9).children("input").attr("name", "AnnelList[" + (i) + "].AnnWeight");
@@ -1508,9 +1602,9 @@
             var cgrade = $(obj).closest('tr').children('td').eq(2).children('select').val();
             var cnb = $(obj).closest('tr').children('td').eq(3).children('select').val();
             var csch = $(obj).closest('tr').children('td').eq(4).children('select').val();
-            var cod = $(obj).closest('tr').children('td').eq(5).children('input').val();
-            var cthick = $(obj).closest('tr').children('td').eq(6).children('input').val();
-            var clength = $(obj).closest('tr').children('td').eq(7).children('input').val();
+            var clength = $(obj).closest('tr').children('td').eq(5).children('input').val();
+            var cod = $(obj).closest('tr').children('td').eq(6).children('input').val();
+            var cthick = $(obj).closest('tr').children('td').eq(7).children('input').val();
             var cnoofpipe = $(obj).closest('tr').children('td').eq(8).children('input').val();
             var cqty = $(obj).closest('tr').children('td').eq(9).children('input').val();
             var ctdc1 = $(obj).closest('tr').children('td').eq(10).children('input').val();
@@ -1532,9 +1626,9 @@
             $('#tblAnnel').children('tbody').children('tr').children('td').eq(2).children('select').val(cgrade);
             $('#tblAnnel').children('tbody').children('tr').children('td').eq(3).children('select').val(cnb);
             $('#tblAnnel').children('tbody').children('tr').children('td').eq(4).children('select').val(csch);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(5).children('input').val(cod);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(6).children('input').val(cthick);
-            $('#tblAnnel').children('tbody').children('tr').children('td').eq(7).children('input').val(clength);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(5).children('input').val(clength);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(6).children('input').val(cod);
+            $('#tblAnnel').children('tbody').children('tr').children('td').eq(7).children('input').val(cthick);
             $('#tblAnnel').children('tbody').children('tr').children('td').eq(8).children('input').val(cnoofpipe);
             $('#tblAnnel').children('tbody').children('tr').children('td').eq(9).children('input').val(cqty);
             $('#tblAnnel').children('tbody').children('tr').children('td').eq(10).children('input').val(ctdc1);
@@ -1571,16 +1665,16 @@
         var rgrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val();
         var rnb = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('select').val();
         var rsch = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('select').val();
-        var rod = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val();
-        var rlenght = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val();
+        var rlenght = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val();
+        var rod = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val();
 
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(1).children('select').val(rrecproduct);
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(2).children('select').val(rgrade);
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(3).children('select').val(rnb);
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(4).children('select').val(rsch);
-        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val(od);
-        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val('');
-        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val(rlenght);
+        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(5).children('input').val(rlenght);
+        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(6).children('input').val(od);
+        $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(7).children('input').val('');
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(8).children('input').val('');
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(9).children('input').val('');
         $('#tblAnnel').children('tbody').children('tr:last').prev().children('td').eq(10).children('input').val('');
@@ -1607,9 +1701,9 @@
             var agrade = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(2).children('select').val();
             var anb = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(3).children('select').val();
             var asch = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(4).children('select').val();
-            var aod = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val();
-            var athick = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val();
-            var alength = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val();
+            var alength = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(5).children('input').val();
+            var aod = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(6).children('input').val();
+            var athick = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(7).children('input').val();
             var anoofpipe = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(8).children('input').val();
             var aqty = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(9).children('input').val();
             var atdc1 = $('#tblDisplay').children('tbody').children('tr:last').children('td').eq(10).children('input').val();
@@ -1629,9 +1723,9 @@
             $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(2).children('label').html(agrade);
             $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(3).children('label').html(anb);
             $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(4).children('label').html(asch);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(5).children('label').html(aod);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(6).children('label').html(athick);
-            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(7).children('label').html(alength);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(5).children('label').html(alength);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(6).children('label').html(aod);
+            $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(7).children('label').html(athick);
             $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(8).children('label').html(anoofpipe);
             $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(9).children('label').html(aqty);
             $('#tblAnnel').children('tbody').children('tr:last').children('td').eq(10).children('label').html(atdc1);
@@ -1767,7 +1861,7 @@
 
 
     function GetLotIssAnnelProduct(previousRow, isExists) {
-        
+
         if (previousRow != null) {
             var annvou = '@Html.Raw(Model.AnnVou)';
             var dt = $('#Date').val();
@@ -1776,12 +1870,12 @@
             var nbId = $(previousRow).closest('tr').children('td').eq(3).children('select').val();
             var schId = $(previousRow).closest('tr').children('td').eq(4).children('select').val();
             var finishId = $('#FinishVou').val();
-            var od = $(previousRow).closest('tr').children('td').eq(5).children('input').val();
-            var thick = $(previousRow).closest('tr').children('td').eq(6).children('input').val();
-            var langth = $(previousRow).closest('tr').children('td').eq(7).children('input').val();
+            var langth = $(previousRow).closest('tr').children('td').eq(5).children('input').val();
+            var od = $(previousRow).closest('tr').children('td').eq(6).children('input').val();
+            var thick = $(previousRow).closest('tr').children('td').eq(7).children('input').val();
             var pcs = $(previousRow).closest('tr').children('td').eq(8).children('input').val();
             var gsrno = $(previousRow).closest('tr').children('td').eq(0).children('input').val();
-            if (gradeId != "" && od != "" && (pcs == "0" || pcs == "") ) {
+            if (gradeId != "" && od != "") {
                 $.ajax({
                     url: '/Annealing/GetLotIssAnnelProduct',
                     type: 'POST',
@@ -1801,7 +1895,7 @@
                             }
                             else if (data.data == "2" && !isExists) {
                                 showErrorMessage("Annealing Date Should be Grater Then!");
-                                $(previousRow).closest('tr').children('td').eq(7).children('input').val('');
+                                $(previousRow).closest('tr').children('td').eq(5).children('input').val('');
                                 $(previousRow).closest('tr').children('td').eq(8).children('input').val('');
                                 $(previousRow).closest('tr').children('td').eq(9).children('input').val('');
                                 //$(previousRow).closest('tr').children('td').eq(20).children('input').val('');
@@ -1812,12 +1906,12 @@
                             }
                             else {
                                 if (nbId != "" && schId != "") {
-                                    $(previousRow).closest('tr').children('td').eq(7).children('input').val("20");
-                                    $(previousRow).closest('tr').children('td').eq(6).children('input').val(data.lotThick);
+                                    $(previousRow).closest('tr').children('td').eq(5).children('input').val(data.length);
+                                    $(previousRow).closest('tr').children('td').eq(7).children('input').val(data.lotThick);
                                     $(previousRow).closest('tr').children('td').eq(8).children('input').val(data.lotPcs);
                                     $(previousRow).closest('tr').children('td').eq(9).children('input').val(data.lotQty);
                                     //$(previousRow).closest('tr').children('td').eq(20).children('input').val(data.lotvou);
-                                    var length = $(previousRow).closest('tr').children('td').eq(7).children('input').val();
+                                    var length = $(previousRow).closest('tr').children('td').eq(5).children('input').val();
                                     var lengthmtr = (length * 0.3048).toFixed(4);
                                     var weight = (((od) - thick) * thick * 0.02503 * lengthmtr).toFixed(2);
                                     var weight2 = (((od) - thick) * thick * 0.02503 * lengthmtr).toFixed(8);
@@ -1828,7 +1922,7 @@
                                     $(previousRow).closest('tr').children('td').eq(8).children('input').val(data.lotPcs);
                                     $(previousRow).closest('tr').children('td').eq(9).children('input').val(data.lotQty);
                                     //$(previousRow).closest('tr').children('td').eq(20).children('input').val(data.lotvou);
-                                    var length = $(previousRow).closest('tr').children('td').eq(7).children('input').val();
+                                    var length = $(previousRow).closest('tr').children('td').eq(5).children('input').val();
                                     var lengthmtr = (length * 0.3048).toFixed(4);
                                     var weight = (((od) - thick) * thick * 0.02503 * lengthmtr).toFixed(2);
                                     var weight2 = (((od) - thick) * thick * 0.02503 * lengthmtr).toFixed(8);
@@ -1854,12 +1948,11 @@
     }
 
     function GetCalculateQty(previousRow, isExists) {
-        debugger;
         if (previousRow != null) {
             var annvou = '@Html.Raw(Model.AnnVou)';
-            var bod = $(previousRow).closest('tr').children('td').eq(5).children('input').val();
-            var bthick = $(previousRow).closest('tr').children('td').eq(6).children('input').val();
-            var blength = $(previousRow).closest('tr').children('td').eq(7).children('input').val();
+            var bod = $(previousRow).closest('tr').children('td').eq(6).children('input').val();
+            var bthick = $(previousRow).closest('tr').children('td').eq(7).children('input').val();
+            var blength = $(previousRow).closest('tr').children('td').eq(5).children('input').val();
             var bpcs = $(previousRow).closest('tr').children('td').eq(8).children('input').val();
             var bqty = $(previousRow).closest('tr').children('td').eq(9).children('input').val();
             var blengthmtr = (blength * 0.3048).toFixed(4);
@@ -2040,4 +2133,15 @@
             });
         })
 
+</script>
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Selecte---'
+            },
+            allowClear: true
+        });
+    });
 </script>

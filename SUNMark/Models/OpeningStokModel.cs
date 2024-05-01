@@ -74,5 +74,7 @@ namespace SUNMark.Models
 
         public string NB { get; set; }
         public string SCH { get; set; }
+
+        public string FltVno { get; set; }
     }
 }

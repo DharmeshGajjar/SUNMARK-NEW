@@ -90,6 +90,17 @@
                             <div class="tab-pane fade  @gridList" id="custom-tabs-three-list" role="tabpanel" aria-labelledby="custom-tabs-three-list-tab">
                                 <div class="table-responsive mt-2" style="font-family:Verdana;font-size:small;font-display:inherit">
                                     <div class="col-md-12 col-12 mb-2 mt-2">
+                                        @*<div class="row">
+                                            <div class="col-md-2">
+                                                <label class="control-label font-weight-bold customLabel" style="font-family:Verdana;font-size:small">
+                                                    V. No. <span class="required"></span>
+                                                </label>
+                                                <div class="form-outline form-white mb-2">
+                                                    @Html.TextBoxFor(x => x.FltVno, new { @class = "form-control form-control-lg", @placeholder = "Langth", @tabindex = "3", @style = "font-family: Verdana;font-size:small; height:30px; width:180px", @type = "text" })
+                                                </div>
+                                            </div>
+                                            
+                                        </div>*@
                                         <div class="row">
                                             <div class="col-md-1 mb-2 float-left">
                                                 <select class="form-control form-control-sm" onchange="loadData()" id="drpReportPageNoDatable">
@@ -102,9 +113,9 @@
 
                                                 </select>
                                             </div>
-                                            <div class="col-md-5 col-12">
+                                            <div class="col-md-7 col-12">
                                                 <div class="row">
-                                                    <div class="col-md-6 col">
+                                                    <div class="col-md-3 col">
                                                         <select class="form-control select2 drpReportLayout" onchange="loadData()">
                                                             <option value="" ; style="width:200px">--Select Layout--</option>
                                                             @if (layoutList != null && layoutList.Count > 0)
@@ -124,21 +135,22 @@
                                                             </button>
                                                         }
                                                     </div>
-                                                    <div class="col-md-4 mb-2 custommt-2-3">
+                                                    <div class="col-md-7 mb-2 custommt-2-3">                                                       
                                                         <button class="btn btn-primary btn-sm" id="btnExportToExcel">Excel</button>
                                                         <button class="btn btn-primary btn-sm ml-6" id="btnExportToPDF">PDF</button>
+                                                        <button class="btn btn-primary btn-sm" id="btnView" onclick=" loadData();"> View (Alt+V) </button>
+                                                        <a href="/JobWorkEntry/index" class="btn btn-warning btn-sm">Cancel (Esc)</a>
                                                     </div>
 
                                                 </div>
                                             </div>
-                                            <div class="col-md-3"></div>
+                                            <div class="col-md-1"></div>
                                             <div class="col-md-3 col-12 float-right">
                                                 <input type="text" class="form-control form-control-sm" placeholder="Search" id="txtReportSearchDataTable" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="dataTable">
-
                                     </div>
                                     <div class="pager float-right"></div>
                                 </div>
@@ -186,7 +198,7 @@
                                                         <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
                                                             @Html.DropDownListFor(x => x.OblCmpVou, Model.OblCmpVouList, "Select", new { @class = "form-control select2 OblCmpVou", @tabindex = "3", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @ID = "txtOblCmpVou" })
                                                             @*<a class="btn btn-outline-info ml-2" href="/Department/index" target="_blank"><i class="fa fa-plus"></i></a>
-                            <a class="btn btn-outline-info ml-2" onclick="GetCompanyMasterDropdown()"><i class="fa fa-sync"></i></a>*@
+                                                        <a class="btn btn-outline-info ml-2" onclick="GetCompanyMasterDropdown()"><i class="fa fa-sync"></i></a>*@
                                                             @*<a class="btn btn-outline-info ml-2" onclick="OpenStateModal()"><i class="fa fa-plus"></i></a>*@
                                                         </div>
 
@@ -205,7 +217,7 @@
                                                         <div class="col-md-9 d-flex form-outline form-white mb-2">
                                                             @Html.DropDownListFor(x => x.OblGdnVou, Model.OblGdnVouList, "Select", new { @class = "form-control select2 OblGdnVou", @tabindex = "4", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @ID = "txtOblGdnVou" })
                                                             @*<a class="btn btn-outline-info ml-2" href="/GodownMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
-                            <a class="btn btn-outline-info ml-2" onclick="GetGoDownMasterDropdown()"><i class="fa fa-sync"></i></a>*@
+                                                        <a class="btn btn-outline-info ml-2" onclick="GetGoDownMasterDropdown()"><i class="fa fa-sync"></i></a>*@
                                                             @*<a class="btn btn-outline-info ml-2" onclick="OpenStateModal()"><i class="fa fa-plus"></i></a>*@
                                                         </div>
                                                     </div>
@@ -266,7 +278,7 @@
                                                         <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
                                                             @Html.DropDownListFor(x => x.LotPrcTypVou, Model.LotPrcTypVouList, "Select", new { @class = "form-control select2 LotPrcTypVou", @tabindex = "8", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @required = "required", @ID = "txtLotPrcTypVou" })
                                                             @*<a class="btn btn-outline-info ml-2" href="#" target="_blank"><i class="fa fa-plus"></i></a>
-                            <a class="btn btn-outline-info ml-2" onclick="GetLotPrcTypMasterDropdown()"><i class="fa fa-sync"></i></a>*@
+                                                        <a class="btn btn-outline-info ml-2" onclick="GetLotPrcTypMasterDropdown()"><i class="fa fa-sync"></i></a>*@
                                                             @*<a class="btn btn-outline-info ml-2" onclick="OpenStateModal()"><i class="fa fa-plus"></i></a>*@
                                                         </div>
                                                     </div>
@@ -404,7 +416,7 @@
                                                         <div class="col-md-9 d-flex form-outline form-white mb-2" tabindex=" = 2">
                                                             @Html.DropDownListFor(x => x.LotFinish, Model.LotFinishList, "Select", new { @class = "form-control select2 LotFinish", @tabindex = "18", onfocus = "this.select()", style = "font-family: Verdana;font-size:small; height:30px; width:300px", @ID = "txtLotFinish" })
                                                             @*<a class="btn btn-outline-info ml-2" href="/FinishMaster/index" target="_blank"><i class="fa fa-plus"></i></a>
-                            <a class="btn btn-outline-info ml-2" onclick="GetFinishMasterDropdown()"><i class="fa fa-sync"></i></a>*@
+                                                        <a class="btn btn-outline-info ml-2" onclick="GetFinishMasterDropdown()"><i class="fa fa-sync"></i></a>*@
                                                             @*<a class="btn btn-outline-info ml-2" onclick="OpenStateModal()"><i class="fa fa-plus"></i></a>*@
                                                         </div>
                                                     </div>
@@ -528,7 +540,7 @@
 
     $(document).ready(function () {
         var oblVou = '@Html.Raw(Model.OblVou)';
-        if (oblVou != null && oblVou != '' && oblVou != 0 ) {
+        if (oblVou != null && oblVou != '' && oblVou != 0) {
             GoToAddTab()
             GetVoucherNumber();
         }
@@ -606,7 +618,7 @@
             return false;
         }
     }
-    
+
     function GoToAddTab() {
         $('#custom-tabs-three-list-tab').removeClass('active');
         $('#custom-tabs-three-add-tab').addClass('active');
@@ -679,7 +691,7 @@
     //$("#txtDate").dateTimePicker();
     $(function () {
 
-        loadData();
+        //loadData();
         var pageIndex = '';
         var pageSize = '';
         var totalRecord = '';
@@ -702,40 +714,42 @@
     });
 
     function loadData(pageIndex, columnName, sortBy) {
-            isRecentCalled = true;
-            if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
-                pageIndex = 1;
-            }
-            var layoutId = $('.drpReportLayout').val();
+        isRecentCalled = true;
+        if (pageIndex == undefined || pageIndex == "" || pageIndex == "0" || pageIndex == 0) {
+            pageIndex = 1;
+        }
+        var layoutId = $('.drpReportLayout').val();
 
-            if (!layoutId) {
-                $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
-                //SetSelect2()
+        if (!layoutId) {
+            $('.drpReportLayout').val($('.drpReportLayout').children('option').eq(1).prop('value'));
+            //SetSelect2()
 
+        }
+        if (!columnName) {
+            columnName = '';
+        }
+        if (!sortBy) {
+            sortBy = '';
+        }
+
+        //var FltVno = $('#FltVno').val();
+        $('.dataTable').html();
+        $.ajax({
+            url: '/OpeningStockPipe/GetReportView',
+            type: 'GET',
+            data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy},
+            dataType: 'HTML',
+            traditional: true, // add this
+            success: function (data) {
+                $('.dataTable').html(data);
+                setTimeout(function () {
+                    isRecentCalled = false;
+                }, 2000)
+            },
+            failure: function (response) {
+                errorMessage(response);
             }
-            if (!columnName) {
-                columnName = '';
-            }
-            if (!sortBy) {
-                sortBy = '';
-            }
-            $('.dataTable').html();
-            $.ajax({
-                url: '/OpeningStockPipe/GetReportView',
-                type: 'GET',
-                data: { pageIndex: pageIndex, pageSize: $('#drpReportPageNoDatable').val(), searchValue: $('#txtReportSearchDataTable').val(), gridMstId: $('.drpReportLayout').val(), columnName: columnName, sortby: sortBy },
-                dataType: 'HTML',
-                traditional: true, // add this
-                success: function (data) {
-                    $('.dataTable').html(data);
-                    setTimeout(function () {
-                        isRecentCalled = false;
-                    }, 2000)
-                },
-                failure: function (response) {
-                    errorMessage(response);
-                }
-            });
+        });
     }
 
     $('#btnExportToExcel').click(function () {
@@ -793,21 +807,20 @@
         var OblVou = "0";
         if (oblPrdType != null && oblPrdType != "" && OblVou == "0") {
             var oblVou = '@Html.Raw(Model.OblVou)';
-            if (oblVou != null && oblVou != "" && oblVou == "0")
-                {
-                    $.ajax({
-                        type: "POST",
-                        url: '/OpeningStockPipe/GetLastVoucherNo',
-                        data: { "OblPrdType": oblPrdType },
-                        dataType: "JSON",
-                        success: function (response) {
-                            $('input[name="OblNVno"]').val(response.oblNVno);
-                        },
-                        error: function (response) {
+            if (oblVou != null && oblVou != "" && oblVou == "0") {
+                $.ajax({
+                    type: "POST",
+                    url: '/OpeningStockPipe/GetLastVoucherNo',
+                    data: { "OblPrdType": oblPrdType },
+                    dataType: "JSON",
+                    success: function (response) {
+                        $('input[name="OblNVno"]').val(response.oblNVno);
+                    },
+                    error: function (response) {
 
-                        }
-                    });
-                }
+                    }
+                });
+            }
 
         }
     }
@@ -1152,7 +1165,8 @@
                         else {
                             if (coiltype == "1") {
                                 $('input[name="LotOD"]').val(response.lotOD);
-                  LotODotOD}
+                                LotODotOD
+                            }
                             else {
                                 $('input[name="LotOD"]').val('');
                             }
@@ -1161,7 +1175,7 @@
                     }
                     else {
                         $('input[name="LotOD"]').val(response.lotOD);
-                        
+
                         $('#ODVal').text(response.lotOD);
                     }
                 },
@@ -1200,4 +1214,16 @@
         }
     }
 
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: '---Select---'
+            },
+            allowClear: true
+        });
+    });
 </script>

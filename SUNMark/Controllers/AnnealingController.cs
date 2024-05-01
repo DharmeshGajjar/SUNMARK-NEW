@@ -43,6 +43,11 @@ namespace SUNMark.Controllers
                 annealingMasterModel.Annel.GradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
                 annealingMasterModel.Annel.NBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
                 annealingMasterModel.Annel.SCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
+
+                annealingMasterModel.FltNBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                annealingMasterModel.FltSCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
+                annealingMasterModel.FltGradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
+
                 annealingMasterModel.Vno = GetVoucherNo();
                 if (id > 0)
                 {
@@ -140,6 +145,13 @@ namespace SUNMark.Controllers
                 {
                     return RedirectToAction("index", "dashboard");
                 }
+                int companyId = Convert.ToInt32(GetIntSession("CompanyId"));
+                int administrator = 0;
+
+                annealingMasterModel.FltNBList = ObjAccountMasterHelpers.GetNBMasterDropdown(companyId);
+                annealingMasterModel.FltSCHList = ObjAccountMasterHelpers.GetSCHMasterDropdown(companyId);
+                annealingMasterModel.FltGradeList = ObjAccountMasterHelpers.GetGradeDropdown(companyId);
+
                 if (!string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.Vno).ToString()) && !string.IsNullOrWhiteSpace(annealingMasterModel.Date) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.AnnCmpVou).ToString()) && !string.IsNullOrWhiteSpace(DbConnection.ParseInt32(annealingMasterModel.MachineNo).ToString()) && annealingMasterModel.AnnelList.Count > 0)
                 {
                     SqlParameter[] sqlParameter = new SqlParameter[16];
@@ -275,7 +287,7 @@ namespace SUNMark.Controllers
             ViewBag.milprocessList = ObjAccountMasterHelpers.GetMachineMasterDropdown(companyId, "ANNELING");
 
             ViewBag.finishList = objProductHelper.GetFinishMasterDropdown(companyId, administrator);
-            ViewBag.nextProcList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator);
+            ViewBag.nextProcList = objProductHelper.GetLotPrcTypMasterDropdown(companyId, administrator,"Annal");
         }
 
         public IActionResult Delete(int id)
@@ -295,7 +307,7 @@ namespace SUNMark.Controllers
             return RedirectToAction("Index", "Annealing", new { id = 0 });
         }
 
-        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby)
+        public IActionResult GetReportView(int gridMstId, int pageIndex, int pageSize, string searchValue, string columnName, string sortby, string fltod, string fltfeetper, string fltnb, string fltsch, string fltgrade, string fltfrDt, string flttoDt, string FltVno)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -321,7 +333,44 @@ namespace SUNMark.Controllers
                     {
                         startRecord = (pageIndex - 1) * pageSize;
                     }
-                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId);
+
+                    string whereConditionQuery = string.Empty;
+                    if (!string.IsNullOrWhiteSpace(fltod) && fltod != "0")
+                    {
+                        whereConditionQuery += " AND AnnTrn.AnnAOD='" + fltod + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltfeetper) && fltfeetper != "0")
+                    {
+                        whereConditionQuery += " AND AnnTrn.AnnALength='" + fltfeetper + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltnb) && fltnb != "0")
+                    {
+                        whereConditionQuery += " AND AnnTrn.AnnANB='" + fltnb + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltsch) && fltsch != "0")
+                    {
+                        whereConditionQuery += " AND AnnTrn.AnnASCH='" + fltsch + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltgrade))
+                    {
+                        if (fltgrade != "Select")
+                        {
+                            whereConditionQuery += " AND AnnTrn.AnnAGrdVou ='" + fltgrade + "'";
+                        }
+                    }
+                    if (!string.IsNullOrWhiteSpace(fltfrDt))
+                    {
+                        whereConditionQuery += " AND AnnMst.AnnDt >='" + fltfrDt + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(flttoDt))
+                    {
+                        whereConditionQuery += " AND AnnMst.AnnDt <='" + flttoDt + "'";
+                    }
+                    if (!string.IsNullOrWhiteSpace(FltVno) && FltVno != "0")
+                    {
+                        whereConditionQuery += " AND ANNVNO='" + FltVno + "'";
+                    }
+                    getReportDataModel = GetReportData(gridMstId, pageIndex, pageSize, columnName, sortby, searchValue, companyId, 0, 0, "", 0, 0, whereConditionQuery);
                     if (getReportDataModel.IsError)
                     {
                         ViewBag.Query = getReportDataModel.Query;
@@ -338,7 +387,7 @@ namespace SUNMark.Controllers
             return PartialView("_reportView", getReportDataModel);
         }
 
-        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type)
+        public IActionResult ExportToExcelPDF(int gridMstId, string searchValue, int type, string fltod, string fltfeetper, string fltnb, string fltsch, string fltgrade, string fltfrDt, string flttoDt)
         {
             GetReportDataModel getReportDataModel = new GetReportDataModel();
             try
@@ -348,7 +397,41 @@ namespace SUNMark.Controllers
                 var companyDetails = DbConnection.GetCompanyDetailsById(companyId);
                 int YearId = Convert.ToInt32(GetIntSession("YearId"));
                 //getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, 0, "", 0, 1);
-                getReportDataModel = getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, YearId, "", 0, 1);
+
+                string whereConditionQuery = string.Empty;
+                if (!string.IsNullOrWhiteSpace(fltod) && fltod != "0")
+                {
+                    whereConditionQuery += " AND AnnTrn.AnnAOD='" + fltod + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltfeetper) && fltfeetper != "0")
+                {
+                    whereConditionQuery += " AND AnnTrn.AnnALength='" + fltfeetper + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltnb) && fltnb != "0")
+                {
+                    whereConditionQuery += " AND AnnTrn.AnnANB='" + fltnb + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltsch) && fltsch != "0")
+                {
+                    whereConditionQuery += " AND AnnTrn.AnnASCH='" + fltsch + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(fltgrade))
+                {
+                    if (fltgrade != "Select")
+                    {
+                        whereConditionQuery += " AND AnnTrn.AnnAGrdVou ='" + fltgrade + "'";
+                    }
+                }
+                if (!string.IsNullOrWhiteSpace(fltfrDt))
+                {
+                    whereConditionQuery += " AND AnnMst.AnnDt >='" + fltfrDt + "'";
+                }
+                if (!string.IsNullOrWhiteSpace(flttoDt))
+                {
+                    whereConditionQuery += " AND AnnMst.AnnDt <='" + flttoDt + "'";
+                }
+
+                getReportDataModel = getReportDataModel = GetReportData(gridMstId, 0, 0, "", "", searchValue, companyId, 0, YearId, "", 0, 1, whereConditionQuery);
                 if (type == 1)
                 {
                     var bytes = Excel(getReportDataModel, "Annealing", companyDetails.CmpName);
@@ -429,15 +512,15 @@ namespace SUNMark.Controllers
                     if (DtInw != null)
                     {
                         int Status = DbConnection.ParseInt32(DtInw.Rows[0][0].ToString());
-                        if (Status == 1)
+                        if (Status == 1 && DtInw.Columns.Count == 1)
                         {
                             return Json(new { result = true, data = "1" });
                         }
-                        else if (Status == 2)
+                        else if (Status == 2 && DtInw.Columns.Count == 1)
                         {
                             return Json(new { result = true, data = "2" });
                         }
-                        else if (Status == 3)
+                        else if (Status == 3 && DtInw.Columns.Count == 1)
                         {
                             return Json(new { result = true, data = "3" });
                         }
